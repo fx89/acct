@@ -1,0 +1,48 @@
+<div class="account-records-input-form">
+    <div class="account-records-input-group account-record-input-group-date">
+        <label for="dtPick">Date</label> <br />
+
+        <input
+            type="text"
+            class="app-control-component account-record-input account-record-input-date"
+            [matDatepicker]="acctRecDtPick"
+            readonly="true"
+            [(ngModel)]="selectedAccountRecordDateStr"
+        >
+        <mat-datepicker-toggle matSuffix [for]="acctRecDtPick"></mat-datepicker-toggle>
+        <mat-datepicker id="acctRecDtPick" #acctRecDtPick></mat-datepicker>
+    </div>
+
+    <div class="account-records-input-group account-record-input-group-cat">
+        <label for="ioeCat">Input or Expense Category</label> <br />
+        <select
+            id="ioeCat"
+            *ngIf="state.incomeOrExpenseItems"
+            [(ngModel)]="selectedIncomeOrExpenseItem"
+            class="app-control-component app-accounts-list"
+            style="width: calc(100% - 80px); float: left;"
+            (change)="onItemChange($event)"
+        >
+            <option *ngFor="let item of state.incomeOrExpenseItems"
+                [ngValue]="item"
+                [selected]="item && selectedIncomeOrExpenseItem && item.id == selectedIncomeOrExpenseItem.id"
+            >
+                {{ item ? getCatItemName(item) : 'select one' }}
+            </option>
+        </select>
+
+        <div
+          class="app-control-component app-button input-form-categories-edit-button"
+          (click)="showIncomeOrExpenseItemsManager()"
+        ></div>
+    </div>
+
+    <div class="account-records-input-group account-record-input-group-value">
+        <label for="vaInput">Value</label> <br />
+        <input  id="vaInput"
+                class="app-control-component account-record-input"
+                type="text" [(ngModel)]="state.selectedAccountRecord.value"
+                (keyup)="onValueKeyUp($event)"
+        >
+    </div>
+</div>

@@ -1,0 +1,13 @@
+
+<select *ngIf="state.incomeOrExpenseItems"
+        [(ngModel)]="selectedIncomeOrExpenseItemObj"
+        class="app-control-component app-accounts-list {{cssClassName}}"
+        (change)="onChange()"
+>
+    <option *ngFor="let item of state.incomeOrExpenseItems"
+            [ngValue]="item"
+            [selected]="item && selectedIncomeOrExpenseItemObj.id == item.id"
+    >
+        {{ item ? getCatItemName(item) : 'select one' }}
+    </option>
+</select>

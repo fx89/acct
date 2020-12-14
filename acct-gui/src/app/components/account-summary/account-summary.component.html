@@ -1,0 +1,8 @@
+<table><tr><td></td><td>
+    <table>
+        <tr><td>Name     </td><td>&nbsp; </td><td style="text-align:right;">{{   account.name }}                       </td></tr>
+        <tr><td>Incoming </td><td>&nbsp; </td><td style="text-align:right;">{{   summary.runningSumIncoming | currency:'USD':'':'2.2-2'}}  </td></tr>
+        <tr><td>Outgoing </td><td>&nbsp; </td><td style="text-align:right;">{{ - summary.runningSumOutgoing | currency:'USD':'':'2.2-2'}}  </td></tr>
+        <tr><td>Balance  </td><td>&nbsp; </td><td style="text-align:right;">{{   summary.runningSumIncoming + summary.runningSumOutgoing | currency:'USD':'':'2.2-2'}}  </td></tr>
+    </table>
+</td></tr></table>

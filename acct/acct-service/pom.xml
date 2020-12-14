@@ -1,0 +1,31 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>acct-service</artifactId>
+    <name>ACCT service</name>
+    <description>Applying the business rules of the ACCT application</description>
+
+    <parent>
+        <groupId>com.desolatetimelines</groupId>
+        <artifactId>acct</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+	<dependencies>
+        <dependency>
+            <groupId>com.desolatetimelines</groupId>
+            <artifactId>acct-service-dao-spec</artifactId>
+            <version>${own-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.desolatetimelines</groupId>
+            <artifactId>acct-currency-spec</artifactId>
+            <version>${own-version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+	</dependencies>
+
+</project>

@@ -1,0 +1,65 @@
+<table style="width:100%">
+<tr><td>
+    <div style="float:top;">
+        <div class="editable-names-list-container" style="float: left">
+            Supported
+            <div class="editable-names-list" style="overflow-x: hidden; overflow-y: scroll; min-width:60px; width: 60px;">
+                <div
+                    *ngFor="let item of state.supportedCurrencies"
+                    class="editable-names-list-element {{ (selectedSupportedCurrency && (selectedSupportedCurrency == item)) ? 'editable-names-list-element-selected' : ' ' }}"
+                    (click)="selectSupportedCurrency(item)"
+                >
+                    {{ item }}
+                </div>
+            </div>
+        </div>
+
+        <div style="width:10px; float: left;">&nbsp; </div>
+
+        <div class="editable-names-list-container" style="float: left; width: calc(100% - 100px)">
+            Monitored
+            <div class="editable-names-list" style="overflow-x: hidden; overflow-y: scroll; min-width: 100%;">
+                <div
+                    *ngFor="let item of state.monitoredCurrencies"
+                    class="editable-names-list-element {{ (selectedMonitoredCurrency && (selectedMonitoredCurrency.id == item.id)) ? 'editable-names-list-element-selected' : ' ' }}"
+                    (click)="selectMonitoredCurrency(item)"
+                >
+                    <table><tr>
+                        <td style="width: 50px;">{{ item.currencyTypeName }}</td>
+                        <td style="width: 70px;">{{ item.lastCollectedDate | date:"yyyy-MM-dd" }}</td>
+                        <td style="width: 60px;">{{ item.lastCollectedValue | currency:'USD':'':'1.4-4' }}</td>
+                </tr></table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</td></tr><tr><td>
+
+    <div class="editable-names-list-control-panel" style="float:bottom;">
+        <div
+            *ngIf="selectedSupportedCurrency"
+            class="editable-names-list-button editable-names-list-button-add"
+            (click)="addButtonClicked()"
+        >
+            Add
+        </div>
+        <div
+            *ngIf="selectedMonitoredCurrency"
+            class="editable-names-list-button editable-names-list-button-del"
+            (click)="deleteButtonClicked()"
+        >
+            Del
+        </div>
+        <div
+            *ngIf="!loading && state.monitoredCurrencies && state.monitoredCurrencies.length > 0"
+            class="editable-names-list-button editable-names-list-button-collect"
+            (click)="collectButtonClicked()"
+        >
+            Collect
+        </div>
+        <div *ngIf="loading">... loading ...</div>
+    </div>
+
+</td></tr>
+</table>

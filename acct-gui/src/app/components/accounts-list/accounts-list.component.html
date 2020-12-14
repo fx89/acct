@@ -1,0 +1,7 @@
+
+<select class="app-control-component app-accounts-list" #t (change)="selectAccountId(t.value)">
+    <option *ngFor="let account of state.accounts"
+            value="{{account.id}}"
+            [selected]="account.id == state.selectedAccountId"> {{ account.name }}
+    </option>
+</select>

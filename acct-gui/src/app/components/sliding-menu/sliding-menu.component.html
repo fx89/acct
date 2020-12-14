@@ -1,0 +1,22 @@
+<div  id="sliding-menu"
+      style="position: absolute; height: 100px; right: 60px; top: -70px; border-style: none;"
+      class="sliding-menu-hidden"
+
+      [@pullMenu]=currentState
+      (mouseover)="onMouseOver()"
+      (mouseout)="onMouseOut()"
+>
+    <div style="width: 100%; height: 60px;" class="sliding-menu-icons-container">
+        <table><tr><td>
+            <div class="sliding-menu-nav-icon nav-back-icon" style="width:54px; height:54px; " (click)="navigation.navigateBack()"></div>
+
+            <div *ngFor="let navSection of navigation.getSections()"
+                  class="sliding-menu-nav-icon {{navSection.iconCssClass}}"
+                  style="width:54px; height:54px; "
+                  (click)="navigation.navigateToSectionId(navSection.id)"
+            ></div>
+        </td></tr></table>
+    </div>
+
+    <div style="width: 90px; height: 30px;" class="sliding-menu-pulldown-button"></div>
+</div>

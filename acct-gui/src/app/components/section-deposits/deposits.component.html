@@ -1,0 +1,60 @@
+<!-- ACCOUNT SUMMARY -->
+<div class="generic-panel deposits-summary-panel" style="float: left; ">
+    <span class="generic-panel-title">Deposits summary:</span><br />
+    <table style="width: 280px;" *ngIf="state.deposits">
+        <tr><td>Number of active Deposits</td><td style="text-align: right;">{{ state.deposits.length }}</td></tr>
+        <tr><td>Total deposited sum      </td><td style="text-align: right;">{{ getTotalDepositsValue()    | currency:'USD':'':'2.2-2' }}</td></tr>
+        <tr><td>Total expected interest  </td><td style="text-align: right;">{{ getTotalDepositsInterest() | currency:'USD':'':'2.2-2' }}</td></tr>
+    </table>
+    <br /><br />
+
+
+    <span class="generic-panel-title">First deposit to reach maturity:</span><br />
+    <table style="width: 280px;" *ngIf="state.firstDepositToReachMaturity">
+        <tr><td>Bank account number &nbsp; &nbsp; </td><td style="text-align: right;">{{ state.firstDepositToReachMaturity.accountNumber }}</td></tr>
+        <tr><td>Maturity date                     </td><td style="text-align: right;">{{ state.firstDepositToReachMaturity.endDate | date:"yyyy-MM-dd" }}</td></tr>
+        <tr><td>Deposited value                   </td><td style="text-align: right;">{{ state.firstDepositToReachMaturity.value | currency:'USD':'':'2.2-2' }}</td></tr>
+        <tr><td>Interest rate                     </td><td style="text-align: right;">{{ state.firstDepositToReachMaturity.interestPercent | currency:'USD':'':'2.2-2' }}</td></tr>
+        <tr><td>Interest value                    </td><td style="text-align: right;">{{ ((state.firstDepositToReachMaturity.value * state.firstDepositToReachMaturity.interestPercent) / 100) | currency:'USD':'':'2.2-2' }}</td></tr>
+    </table>
+
+    <br /><br />
+
+    <b>Monthly balance report</b>
+    <app-monthly-balance-report
+        [width]="280"
+        [height]="120"
+        [hideDates]="true"
+        [sourceDate]="state.monthlyDepositsBalanceReport"
+    ></app-monthly-balance-report>
+</div>
+
+
+
+<!-- SPACER -->
+<div id="account-panels-spacer" style="float: left;">&nbsp;</div>
+
+
+
+<!-- ACCOUNT DETAILS AND INPUT FORM -->
+<div class="generic-panel deposit-records-panel" style="float: left; ">
+    <!-- DEPOSIS LIST -->
+    <span class="generic-panel-title">Deposits</span><br />
+    <app-deposits-table></app-deposits-table>
+
+    <!-- SPACER -->
+    <div class="account-records-separator"></div>
+
+    <!-- INPUT FORM -->
+    <app-deposits-input-form *ngIf="state.selectedDeposit"></app-deposits-input-form>
+
+    <!-- NEW DEPOSIT BUTTON -->
+    <div
+        class="app-control-component app-button app-button-new-account"
+        *ngIf=" !(state.selectedDeposit)"
+        (click)= "state.newDeposit()"
+    >
+        New deposit
+    </div>
+</div>
+

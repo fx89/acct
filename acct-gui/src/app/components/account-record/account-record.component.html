@@ -1,0 +1,36 @@
+<!-- Delete button wannabe -->
+<div
+    class="account-record-cell account-record-delete-button"
+    style="float:left;"
+    (click)="state.deleteAccountRecord(rec)"
+>
+
+</div>
+
+<!-- Record date -->
+<div
+    class="account-record-cell account-record-list-record-date"
+    style="float:left;"
+    (click)="state.selectAccountRecord(rec);"
+>
+    {{rec.date | date:"yyyy-MM-dd"}}
+</div>
+
+<!-- Income or Expense item -->
+<div
+    class="account-record-cell account-record-list-record-income-or-expense-item"
+    style="float:left;"
+    (click)="state.selectAccountRecord(rec);"
+>
+    {{getIncomeOrExpenseItemCategoryName(rec.incomeOrExpenseItemId)}} - {{getIncomeOrExpenseItemName(rec.incomeOrExpenseItemId)}}
+</div>
+
+<!-- Record value -->
+<div
+    class="account-record-cell account-record-list-record-value {{rec.value < 0 ? 'account-record-list-record-value-red' : 'account-record-list-record-value-green'}}"
+    style="float:left;"
+    (click)="state.selectAccountRecord(rec);"
+>
+    {{rec.value | currency:'USD':'':'2.2-2' }}
+</div>
+

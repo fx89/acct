@@ -1,0 +1,65 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>acct-ws</artifactId>
+	<name>ACCT web service</name>
+	<description>Front end for the ACCT service</description>
+	<packaging>jar</packaging>
+
+	<parent>
+		<groupId>com.desolatetimelines</groupId>
+		<artifactId>acct</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+
+	<dependencies>
+		<!-- Own dependencies -->
+		<dependency>
+			<groupId>com.desolatetimelines</groupId>
+			<artifactId>acct-service</artifactId>
+			<version>${own-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.desolatetimelines</groupId>
+			<artifactId>acct-service-dao-springdata</artifactId>
+			<version>${own-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.desolatetimelines</groupId>
+			<artifactId>acct-currency-bnr</artifactId>
+			<version>${own-version}</version>
+		</dependency>
+
+
+		<!-- Spring Boot dependencies -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		<!-- Spring Retry -->
+		<dependency>
+		    <groupId>org.springframework.retry</groupId>
+		    <artifactId>spring-retry</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+</project>

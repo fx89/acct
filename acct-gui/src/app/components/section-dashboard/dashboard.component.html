@@ -1,0 +1,156 @@
+<!-- Status panel -->
+<div class="generic-panel" style="width:calc(50% - 15px); height:calc(100% - 10px); float:left;">
+    <div style="float: left">
+        <span class="generic-panel-title">Deposits Value</span>
+
+        <table *ngIf="state.monitoredCurrencies && state.totalDepositsValue">
+            <tr *ngFor="let cr of state.monitoredCurrencies">
+                <td>Deposits value in {{ cr.currencyTypeName }}</td>
+                <td> : </td>
+                <td style="text-align: right">
+                    {{ state.totalDepositsValue / cr.lastCollectedValue | currency:'USD':'':'2.2-2' }}
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div style="width: 50px; float: left;">&nbsp;</div>
+
+    <div style="float: left">
+        <span class="generic-panel-title">Account Balance</span>
+
+        <table *ngIf="state.accountSummariesLoaded">
+            <tr *ngFor="let acc of state.accounts">
+                <td>{{ acc.name }}</td>
+                <td> : </td>
+                <td style="text-align: right">
+                    {{ getAccountValue(acc.id) | currency:'USD':'':'2.2-2' }}
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div style="float: left; width:100%; height:25px;">&nbsp;</div>
+
+    <div *ngIf="state.monitoredCurrencies && state.monthlyDepositsBalanceReport">
+        <div
+            style="float: left;"
+            *ngFor="let cr of state.monitoredCurrencies"
+        >
+            <b>Historical deposits value in {{cr.currencyTypeName}}</b>
+            <app-monthly-savings-report
+                [chartType]="'ColumnChart'"
+                [width]="290"
+                [height]="120"
+                [hideDates]="true"
+                [sourceDate]="state.monthlyDepositsBalanceReport"
+                [sourceDataXValueMapper]="sourceXValueMapper"
+                [sourceDataYValueMapper]="sourceYValueMappers[cr.currencyTypeName.valueOf()]"
+                [forceMin]="-5"
+                [chartColumnNames]="['Month', 'Value in ' + cr.currencyTypeName]"
+            ></app-monthly-savings-report>
+        </div>
+    </div>
+</div>
+
+<!-- Spacer -->
+<div style="width: 10px; float: left;">&nbsp;</div>
+
+<!-- Breakdown panel -->
+<div class="generic-panel" style="width:calc(50% - 15px); height:calc(100% - 10px); float:left;">
+    <div *ngIf="state.incomeOrExpenseItems && state.incomeOrExpenseItemCategories && state.monthlyExpensesReports && state.accounts">
+        <span class="generic-panel-title">Breakdown of Expenses</span>
+
+        <br /><br />
+
+        <div class="dashboard-expenses-report-controls" style="width: 100%; height: 50px;  padding-top: 4px;">
+
+            <div style="width: 15px; float: left;">&nbsp;</div>
+
+            <!-- Account Select -->
+            <div style="float: left;">
+                Account <br />
+                <select
+                    [(ngModel)]="selectedAccount"
+                    class="app-control-component app-accounts-list"
+                    style="width: 100px;"
+                    (change)="onAccountChanged()"
+                >
+                    <option [ngValue]="null" [selected]="!selectedAccount">
+                        All
+                    </option>
+                    <option *ngFor="let item of state.accounts"
+                        [ngValue]="item"
+                        [selected]="seletedAccount && item.id == seletedAccount.id"
+                    >
+                        {{ item ? item.name : 'select one' }}
+                    </option>
+                </select>
+            </div>
+
+            <div style="width: 15px; float: left;">&nbsp;</div>
+
+            <!-- Category Select -->
+            <div style="float: left;">
+                Category <br />
+                <select
+                    [(ngModel)]="selectedCategory"
+                    class="app-control-component app-accounts-list"
+                    style="width: 100px;"
+                    (change)="onCategoryChanged()"
+                >
+                    <option [ngValue]="null" [selected]="!selectedCategory">
+                        All
+                    </option>
+                    <option *ngFor="let item of state.incomeOrExpenseItemCategories"
+                        [ngValue]="item"
+                        [selected]="selectedCategory && item.id == selectedCategory.id"
+                    >
+                        {{ item ? item.name : 'select one' }}
+                    </option>
+                </select>
+            </div>
+
+            <div style="width: 15px; float: left;">&nbsp;</div>
+
+            <!-- Item Select -->
+            <div style="float: left;">
+                Item <br />
+                <select
+                    [(ngModel)]="selectedItem"
+                    class="app-control-component app-accounts-list"
+                    style="width: 100px;"
+                    (change)="onItemChanged()"
+                >
+                    <option [ngValue]="null" [selected]="!selectedItem">
+                        All
+                    </option>
+                    <option *ngFor="let item of getValidIncomeOrExpenseItems()"
+                        [ngValue]="item"
+                        [selected]="selectedItem && item.id == selectedItem.id"
+                    >
+                        {{ item ? item.name : 'select one' }}
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <br /><br />
+
+        <!-- Breakdown Report Chart -->
+        <div class="dashboard-expenses-report-chart" style="width: 100%; height: 400px; padding-top: 10px; padding-bottom: 10px;">
+            <app-monthly-savings-report
+                *ngIf="monthlyExpensesReportChartData"
+                [chartType]="'ColumnChart'"
+                [width]="600"
+                [height]="200"
+                [hideDates]="false"
+                [sourceDate]="monthlyExpensesReportChartData"
+                [sourceDataXValueMapper]="monthlyExpensesReportChartXValueMapper"
+                [sourceDataYValueMapper]="monthlyExpensesReportChartYValueMapper"
+                [forceMin]="-5"
+                [chartColumnNames]="['Month', 'Total Expenses']"
+            ></app-monthly-savings-report>
+        </div>
+    </div>
+</div>

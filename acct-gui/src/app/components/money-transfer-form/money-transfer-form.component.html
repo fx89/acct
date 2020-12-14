@@ -1,0 +1,69 @@
+<div class="generic-panel" style="width: calc(100% - 10px); height:calc(100% - 10px);">
+    
+    <table>
+        <tr>
+            <td>
+                From account
+            </td>
+            <td style="width: 10px;"></td>
+            <td>
+                <select
+                    [(ngModel)]="fromAccount"
+                    class="app-control-component app-accounts-list"
+                    style="width: 100px;"
+                >
+                    <option *ngFor="let item of state.accounts"
+                        [ngValue]="item"
+                        [selected]="fromAccount && item.id == fromAccount.id"
+                    >
+                        {{ item ? item.name : 'select one' }}
+                    </option>
+                </select>
+            </td>
+        </tr><tr>
+            <td>
+                To account
+            </td>
+            <td></td>
+            <td>
+                <select
+                    [(ngModel)]="toAccount"
+                    class="app-control-component app-accounts-list"
+                    style="width: 100px;"
+                >
+                    <option *ngFor="let item of state.accounts"
+                        [ngValue]="item"
+                        [selected]="toAccount && item.id == toAccount.id"
+                    >
+                        {{ item ? item.name : 'select one' }}
+                    </option>
+                </select>
+            </td>
+        </tr><tr>
+            <td>
+                Amount
+            </td>
+            <td></td>
+            <td>
+                <input
+                    class="app-control-component account-record-input"
+                    type="text" [(ngModel)]="amount"
+                >
+            </td>
+        </tr><tr>
+            <td></td><td></td>
+            <td>
+                <div
+                    class="app-control-component app-button app-button-new-account"
+                    style="width: 150px;"
+                    (click)= "startMoneyTransfer()"
+                >
+                    Transfer
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+

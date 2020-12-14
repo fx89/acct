@@ -1,0 +1,11 @@
+/home/eu/FILES/Work/acct/workspace/acct/acct-service-dao-memory/src/main/java/com/desolatetimelines/acct/service/dao/model/InMemoryIncomeOrExpenseItemCategory.java
+/home/eu/FILES/Work/acct/workspace/acct/acct-service-dao-memory/src/main/java/com/desolatetimelines/acct/service/dao/model/InMemoryIncomeOrExpenseItem.java
+/home/eu/FILES/Work/acct/workspace/acct/acct-service-dao-memory/src/main/java/com/desolatetimelines/acct/service/dao/model/InMemoryAccount.java
+/home/eu/FILES/Work/acct/workspace/acct/acct-service-dao-memory/src/main/java/com/desolatetimelines/acct/service/dao/model/InMemoryBank.java
+/home/eu/FILES/Work/acct/workspace/acct/acct-service-dao-memory/src/main/java/com/desolatetimelines/acct/service/dao/common/CommonAccountingEntityRepository.java
+/home/eu/FILES/Work/acct/workspace/acct/acct-service-dao-memory/src/main/java/com/desolatetimelines/acct/service/dao/InMemoryAccountDataServiceImpl.java
+/home/eu/FILES/Work/acct/workspace/acct/acct-service-dao-memory/src/main/java/com/desolatetimelines/acct/service/dao/model/InMemoryDeposit.java
+/home/eu/FILES/Work/acct/workspace/acct/acct-service-dao-memory/src/main/java/com/desolatetimelines/acct/service/dao/model/InMemoryMonitoredCurrency.java
+/home/eu/FILES/Work/acct/workspace/acct/acct-service-dao-memory/src/main/java/com/desolatetimelines/acct/service/dao/model/InMemoryAccountRecord.java
+/home/eu/FILES/Work/acct/workspace/acct/acct-service-dao-memory/src/main/java/com/desolatetimelines/acct/service/dao/model/InMemoryInterestHistoryRecord.java
+/home/eu/FILES/Work/acct/workspace/acct/acct-service-dao-memory/src/main/java/com/desolatetimelines/acct/service/dao/model/InMemoryCurrencyHistoryRecord.java

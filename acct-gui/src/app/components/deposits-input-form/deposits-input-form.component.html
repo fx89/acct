@@ -1,0 +1,105 @@
+<!-- Source account -->
+<div style="float: left">
+    Source account <br />
+    <select
+        [(ngModel)]="sourceAccount"
+        class="app-control-component app-accounts-list"
+        style="width: 100%;"
+    >
+        <option *ngFor="let item of state.accounts"
+            [ngValue]="item"
+            [selected]="item && sourceAccount.id == item.id"
+        >
+            {{ item ? item.name : 'select one' }}
+        </option>
+    </select>
+</div>
+
+<!-- Bank -->
+<div style="float: left">
+    Bank <br />
+    <select
+        [(ngModel)]="bank"
+        class="app-control-component app-accounts-list"
+        style="width: 100%;"
+    >
+        <option *ngFor="let item of state.banks"
+            [ngValue]="item"
+            [selected]="item && bank.id == item.id"
+        >
+            {{ item ? item.name : 'select one' }}
+        </option>
+    </select>
+</div>
+
+<!-- Account number -->
+<div style="float: left">
+    Account number <br />
+    <input
+        class="app-control-component"
+        style="width: 100%;"
+        type="text"
+        [(ngModel)]="accountNumber"
+        (keyup)="onAccountNumberFieldUp($event)"
+    >
+</div>
+
+<div style="float: left">
+    &nbsp; &nbsp; &nbsp; 
+</div>
+
+<!-- Start date -->
+<div style="float: left">
+    Start date <br />
+    <input
+            type="text"
+            class="app-control-component account-record-input account-record-input-date"
+            style="width: 100%;"
+            [matDatepicker]="startDatePicker"
+            readonly="true"
+            [(ngModel)]="startDateStr"
+    >
+    <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+    <mat-datepicker id="startDatePicker" #startDatePicker></mat-datepicker>
+</div>
+
+<!-- End date -->
+<div style="float: left">
+    End date <br />
+    <input
+            type="text"
+            class="app-control-component account-record-input account-record-input-date"
+            style="width: 100%;"
+            [matDatepicker]="endDatePicker"
+            readonly="true"
+            [(ngModel)]="endDateStr"
+    >
+    <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+    <mat-datepicker id="endDatePicker" #endDatePicker></mat-datepicker>
+</div>
+
+<!-- Value -->
+<div style="float: left">
+    Value <br />
+    <input
+        class="app-control-component"
+        style="width: 50px;"
+        type="text"
+        [(ngModel)]="value"
+        (keyup)="onTextFieldUp($event)"
+    >
+</div>
+
+<!-- Interest % -->
+<div style="float: left">
+    Interest % <br />
+    <input
+        class="app-control-component"
+        style="width: 40px;"
+        type="text"
+        [(ngModel)]="interestPercent"
+        (keyup)="onTextFieldUp($event)"
+    >
+</div>
+
+

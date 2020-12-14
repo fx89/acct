@@ -1,0 +1,9 @@
+<div class="progress-bar-sheet">
+    <div class="progress-bar-border" style="float: left">
+        <div class="progress-bar-full" style="float: left;" [style.width.%]="valueFromZeroToOneHundred"></div>
+    </div>
+    <div class="progress-bar-value">
+        {{ valueFromZeroToOneHundred  | currency:'USD':'':'2.2-2' }}%
+    </div>
+</div>
+

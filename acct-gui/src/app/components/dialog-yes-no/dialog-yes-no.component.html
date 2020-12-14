@@ -1,0 +1,11 @@
+<div class="dialog-background" style="width:100%">
+    <p>{{ dialogService.dialogMessage }}</p>
+
+    <br />
+
+    <table style="width: 100%"><tr><td style="width: 50%; text-align: center;">
+        <div class="app-control-component app-button dialogue-button" (click)="dialogService.closeYesNoDialog(true)">Yes</div>
+    </td><td style="width: 50%; text-align: center;">
+        <div class="app-control-component app-button dialogue-button" (click)="dialogService.closeYesNoDialog(false)">No</div>
+    </td></tr></table>
+</div>
