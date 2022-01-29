@@ -7,6 +7,8 @@ public interface Account extends CommonAccountingEntity<Account>, Nameable {
 
 	void setId(Long id);
 
+
+
 	@Override
 	default void copyFrom(Account object) {
 		if (object != null) {

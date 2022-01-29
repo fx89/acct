@@ -1,5 +1,8 @@
 package com.desolatetimelines.acct.service.dao;
 
+import com.desolatetimelines.acct.service.dao.common.CommonAccountingEntityRepository;
+import com.desolatetimelines.acct.service.dao.model.*;
+
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.ZoneId;
@@ -8,49 +11,25 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
-import com.desolatetimelines.acct.service.dao.common.CommonAccountingEntityRepository;
-import com.desolatetimelines.acct.service.dao.model.Account;
-import com.desolatetimelines.acct.service.dao.model.AccountRecord;
-import com.desolatetimelines.acct.service.dao.model.Bank;
-import com.desolatetimelines.acct.service.dao.model.CurrencyHistoryRecord;
-import com.desolatetimelines.acct.service.dao.model.Deposit;
-import com.desolatetimelines.acct.service.dao.model.InMemoryAccount;
-import com.desolatetimelines.acct.service.dao.model.InMemoryAccountRecord;
-import com.desolatetimelines.acct.service.dao.model.InMemoryBank;
-import com.desolatetimelines.acct.service.dao.model.InMemoryCurrencyHistoryRecord;
-import com.desolatetimelines.acct.service.dao.model.InMemoryDeposit;
-import com.desolatetimelines.acct.service.dao.model.InMemoryIncomeOrExpenseItem;
-import com.desolatetimelines.acct.service.dao.model.InMemoryIncomeOrExpenseItemCategory;
-import com.desolatetimelines.acct.service.dao.model.InMemoryInterestHistoryRecord;
-import com.desolatetimelines.acct.service.dao.model.InMemoryMonitoredCurrency;
-import com.desolatetimelines.acct.service.dao.model.IncomeOrExpenseItem;
-import com.desolatetimelines.acct.service.dao.model.IncomeOrExpenseItemCategory;
-import com.desolatetimelines.acct.service.dao.model.InterestHistoryRecord;
-import com.desolatetimelines.acct.service.dao.model.MonitoredCurrency;
-
 public class InMemoryAccountDataServiceImpl implements AccountDataService {
 
-	private CommonAccountingEntityRepository<Account> accountsRepository = new CommonAccountingEntityRepository<>();
+	private final CommonAccountingEntityRepository<Account> accountsRepository = new CommonAccountingEntityRepository<>();
 
-	private CommonAccountingEntityRepository<AccountRecord> accountRecordsRepository = new CommonAccountingEntityRepository<>();
+	private final CommonAccountingEntityRepository<AccountRecord> accountRecordsRepository = new CommonAccountingEntityRepository<>();
 
-	private CommonAccountingEntityRepository<IncomeOrExpenseItem> incomeOrExpenseItemsRepository = new CommonAccountingEntityRepository<>();
+	private final CommonAccountingEntityRepository<IncomeOrExpenseItem> incomeOrExpenseItemsRepository = new CommonAccountingEntityRepository<>();
 
-	private CommonAccountingEntityRepository<IncomeOrExpenseItemCategory> incomeOrExpenseItemCategoriesRepository = new CommonAccountingEntityRepository<>();
+	private final CommonAccountingEntityRepository<IncomeOrExpenseItemCategory> incomeOrExpenseItemCategoriesRepository = new CommonAccountingEntityRepository<>();
 
-	private CommonAccountingEntityRepository<Bank> banksRepository = new CommonAccountingEntityRepository<>();
+	private final CommonAccountingEntityRepository<Bank> banksRepository = new CommonAccountingEntityRepository<>();
 
-	private CommonAccountingEntityRepository<InterestHistoryRecord> interestHistoryRecordsRepository = new CommonAccountingEntityRepository<>();
+	private final CommonAccountingEntityRepository<InterestHistoryRecord> interestHistoryRecordsRepository = new CommonAccountingEntityRepository<>();
 
-	private CommonAccountingEntityRepository<Deposit> depositsRepository = new CommonAccountingEntityRepository<>();
+	private final CommonAccountingEntityRepository<Deposit> depositsRepository = new CommonAccountingEntityRepository<>();
 
-	private CommonAccountingEntityRepository<MonitoredCurrency> monitoredCurrenciesRepository = new CommonAccountingEntityRepository<>();
+	private final CommonAccountingEntityRepository<MonitoredCurrency> monitoredCurrenciesRepository = new CommonAccountingEntityRepository<>();
 
-	private CommonAccountingEntityRepository<CurrencyHistoryRecord> currencyHistoryRecordsRepository = new CommonAccountingEntityRepository<>();
-
-	public InMemoryAccountDataServiceImpl() {
-
-	}
+	private final CommonAccountingEntityRepository<CurrencyHistoryRecord> currencyHistoryRecordsRepository = new CommonAccountingEntityRepository<>();
 
 	public InMemoryAccountDataServiceImpl withMockData() {
 		this.initRepositories();
@@ -131,7 +110,7 @@ public class InMemoryAccountDataServiceImpl implements AccountDataService {
 
 	@Override
 	public Stream<AccountRecord> getAccountRecords(Long accountId) {
-		return accountRecordsRepository.values().stream().filter(rec -> rec.getAccountId() == accountId);
+		return accountRecordsRepository.values().stream().filter(rec -> rec.getAccountId().equals(accountId));
 	}
 
 	@Override
@@ -208,14 +187,9 @@ public class InMemoryAccountDataServiceImpl implements AccountDataService {
 	public Stream<Deposit> getAllDepositsWithFutureEndDate() {
 		Date today = new Date();
 
-		Stream<Deposit> ret = depositsRepository.values().stream()
+		return
+			depositsRepository.values().stream()
 				.filter(dep -> dep.getEndDate().compareTo(today) >= 0);
-
-		if (ret == null) {
-			ret = new ArrayList<Deposit>().stream();
-		}
-
-		return ret;
 	}
 
 	@Override
@@ -272,9 +246,7 @@ public class InMemoryAccountDataServiceImpl implements AccountDataService {
 
 	@Override
 	public void saveAllCurrencyHistoryRecords(List<CurrencyHistoryRecord> records) {
-		records.forEach(rec -> {
-			saveCurrencyHistoryRecord(rec);
-		});
+		records.forEach(this::saveCurrencyHistoryRecord);
 	}
 
 	@Override
@@ -287,9 +259,7 @@ public class InMemoryAccountDataServiceImpl implements AccountDataService {
 			}
 		});
 
-		markedForDelete.forEach(id -> {
-			currencyHistoryRecordsRepository.remove(id);
-		});
+		markedForDelete.forEach(currencyHistoryRecordsRepository::remove);
 	}
 
 	private void initRepositories() {

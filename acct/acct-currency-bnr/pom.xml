@@ -15,7 +15,7 @@
 		<dependency>
 			<groupId>com.desolatetimelines</groupId>
 			<artifactId>acct-currency-spec</artifactId>
-			<version>${own-version}</version>
+			<version>${project.version}</version>
 		</dependency>
 
 		<!-- Apache HTTP Client -->

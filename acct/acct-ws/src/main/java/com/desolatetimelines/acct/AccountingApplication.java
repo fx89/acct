@@ -1,5 +1,6 @@
 package com.desolatetimelines.acct;
 
+import com.desolatetimelines.acct.service.dao.InMemoryAccountDataServiceImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -25,8 +26,7 @@ public class AccountingApplication {
 		CurrencyExtractor curEx = (CurrencyExtractor) appContext.getBean("CurrencyExtractor");
 		AccountReportingService repService = (AccountReportingService) appContext.getBean("AccountReportingService");
 
-		// AccountDataService dataService = new
-		// InMemoryAccountDataServiceImpl().withMockData();
+		// AccountDataService dataService = new InMemoryAccountDataServiceImpl().withMockData();
 		AccountDataService dataService = (AccountDataService) appContext.getBean("SpringDataAccountDataService");
 
 		accService.setDataService(dataService);

@@ -18,21 +18,22 @@
 		<dependency>
 			<groupId>com.desolatetimelines</groupId>
 			<artifactId>acct-service</artifactId>
-			<version>${own-version}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.desolatetimelines</groupId>
 			<artifactId>acct-service-dao-springdata</artifactId>
-			<version>${own-version}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.desolatetimelines</groupId>
 			<artifactId>acct-service-dao-memory</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.desolatetimelines</groupId>
 			<artifactId>acct-currency-bnr</artifactId>
-			<version>${own-version}</version>
+			<version>${project.version}</version>
 		</dependency>
 
 

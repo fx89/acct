@@ -40,6 +40,8 @@ import com.desolatetimelines.acct.service.dao.springdata.repository.SpringDataIn
 import com.desolatetimelines.acct.service.dao.springdata.repository.SpringDataInterestHistoryRecordsRepository;
 import com.desolatetimelines.acct.service.dao.springdata.repository.SpringDataMonitoredCurrenciesRepository;
 
+import static java.util.function.Function.identity;
+
 @ManagedBean("SpringDataAccountDataService")
 public class SpringDataAccountDataService implements AccountDataService {
 
@@ -73,7 +75,7 @@ public class SpringDataAccountDataService implements AccountDataService {
 	@Override
 	@Retryable
 	public Stream<Account> getAllAccounts() {
-		return StreamSupport.stream(accountsRepository.findAll().spliterator(), false).map(x -> (Account) x);
+		return StreamSupport.stream(accountsRepository.findAll().spliterator(), false).map(identity());
 	}
 
 	@Override
@@ -98,7 +100,7 @@ public class SpringDataAccountDataService implements AccountDataService {
 	@Retryable
 	public Stream<IncomeOrExpenseItemCategory> getAllIncomeOrExpenseCategories() {
 		return StreamSupport.stream(categoriesRepository.findAll().spliterator(), false)
-				.map(x -> (IncomeOrExpenseItemCategory) x);
+				.map(identity());
 	}
 
 	@Override
@@ -129,7 +131,7 @@ public class SpringDataAccountDataService implements AccountDataService {
 	@Override
 	@Retryable
 	public Stream<IncomeOrExpenseItem> getIncomeOrExpenseItems() {
-		return StreamSupport.stream(itemsRepository.findAll().spliterator(), false).map(x -> (IncomeOrExpenseItem) x);
+		return StreamSupport.stream(itemsRepository.findAll().spliterator(), false).map(identity());
 	}
 
 	@Override
@@ -160,7 +162,7 @@ public class SpringDataAccountDataService implements AccountDataService {
 	@Retryable
 	public Stream<AccountRecord> getAccountRecords(Long accountId) {
 		return StreamSupport.stream(accountRecordsRepository.findAllByAccountId(accountId).spliterator(), false)
-				.map(x -> (AccountRecord) x);
+				.map(identity());
 	}
 
 	@Override
@@ -168,7 +170,7 @@ public class SpringDataAccountDataService implements AccountDataService {
 	public Stream<AccountRecord> getAccountRecords(Long accountId, Date sinceDate) {
 		return StreamSupport.stream(
 				accountRecordsRepository.findAllByAccountIdAndDateGreaterThanEqual(accountId, sinceDate).spliterator(),
-				false).map(x -> (AccountRecord) x);
+				false).map(identity());
 	}
 
 	@Override
@@ -198,7 +200,7 @@ public class SpringDataAccountDataService implements AccountDataService {
 	@Override
 	@Retryable
 	public Stream<Bank> getAllBanks() {
-		return StreamSupport.stream(banksRepository.findAll().spliterator(), false).map(x -> (Bank) x);
+		return StreamSupport.stream(banksRepository.findAll().spliterator(), false).map(identity());
 	}
 
 	@Override
@@ -223,7 +225,7 @@ public class SpringDataAccountDataService implements AccountDataService {
 	@Retryable
 	public Stream<InterestHistoryRecord> getInterestHistoryRecords(Long bankId) {
 		return StreamSupport.stream(interestHistoryRecordsRepository.findAllByBankId(bankId).spliterator(), false)
-				.map(x -> (InterestHistoryRecord) x);
+				.map(identity());
 	}
 
 	@Override
@@ -247,7 +249,7 @@ public class SpringDataAccountDataService implements AccountDataService {
 	@Override
 	@Retryable
 	public Stream<Deposit> getAllDeposits() {
-		return StreamSupport.stream(depositsRepository.findAll().spliterator(), true).map(x -> (Deposit) x);
+		return StreamSupport.stream(depositsRepository.findAll().spliterator(), true).map(identity());
 	}
 
 	@Override
@@ -255,7 +257,7 @@ public class SpringDataAccountDataService implements AccountDataService {
 	public Stream<Deposit> getAllDepositsWithFutureEndDate() {
 		return StreamSupport
 				.stream(depositsRepository.findAllByEndDateGreaterThanEqual(new Date()).spliterator(), false)
-				.map(x -> (Deposit) x);
+				.map(identity());
 	}
 
 	@Override
@@ -286,7 +288,7 @@ public class SpringDataAccountDataService implements AccountDataService {
 	@Retryable
 	public Stream<MonitoredCurrency> getAllMonitoredCurrencies() {
 		return StreamSupport.stream(monitoredCurrenciesRepository.findAll().spliterator(), true)
-				.map(x -> (MonitoredCurrency) x);
+				.map(identity());
 	}
 
 	@Override
@@ -319,7 +321,7 @@ public class SpringDataAccountDataService implements AccountDataService {
 		return StreamSupport
 				.stream(currencyHistoryRecordsRepository
 						.findAllByCurrencyIdAndDateGreaterThanEqual(currencyId, sinceDate).spliterator(), false)
-				.map(x -> (CurrencyHistoryRecord) x);
+				.map(identity());
 	}
 
 	@Override

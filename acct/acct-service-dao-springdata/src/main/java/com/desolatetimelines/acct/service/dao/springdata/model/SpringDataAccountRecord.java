@@ -31,6 +31,9 @@ public class SpringDataAccountRecord implements AccountRecord {
 	@Column(name = "value")
 	private Double value;
 
+	@Column(name = "exchange_rate")
+	private Double exchangeRate;
+
 	@Override
 	public Long getId() {
 		return id;
@@ -79,6 +82,16 @@ public class SpringDataAccountRecord implements AccountRecord {
 	@Override
 	public void setValue(Double value) {
 		this.value = value;
+	}
+
+	@Override
+	public Double getExchangeRate() {
+		return exchangeRate;
+	}
+
+	@Override
+	public void setExchangeRate(Double exchangeRate) {
+		this.exchangeRate = exchangeRate;
 	}
 
 }

@@ -17,7 +17,6 @@
 	</parent>
 
 	<properties>
-		<own-version>1.0.0-SNAPSHOT</own-version>
 		<apache-commons-version>3.9</apache-commons-version>
 		<spring-boot-version>2.2.1.RELEASE</spring-boot-version>
 		<apache-httpclient-version>4.5.10</apache-httpclient-version>
