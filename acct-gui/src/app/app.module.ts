@@ -23,6 +23,9 @@ import {MatNativeDateModule, MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE} fro
 import {MatInputModule} from '@angular/material';
 import {MatDialogModule} from '@angular/material/dialog';
 
+// https://v6.material.angular.io/components/checkbox/api
+import {MatCheckboxModule} from '@angular/material/checkbox';
+
 // https://stackoverflow.com/questions/53359598/how-to-change-angular-material-datepicker-format
 import { MY_FORMATS } from './reusable/formats';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
@@ -50,6 +53,7 @@ import { MonthlySavingsReportComponent } from './components/monthly-savings-repo
 import { CurrenciesManagerComponent } from './components/currencies-manager/currencies-manager.component';
 import { SectionExchangeRatesComponent } from './components/section-exchange-rates/section-exchange-rates.component';
 import { MoneyTransferFormComponent } from './components/money-transfer-form/money-transfer-form.component';
+import { AccountPropertiesComponent } from './components/account-properties/account-properties.component';
 
 
 @NgModule({
@@ -80,7 +84,8 @@ import { MoneyTransferFormComponent } from './components/money-transfer-form/mon
     MonthlySavingsReportComponent,
     CurrenciesManagerComponent,
     SectionExchangeRatesComponent,
-    MoneyTransferFormComponent
+    MoneyTransferFormComponent,
+    AccountPropertiesComponent
   ],
   imports: [
     BrowserModule,
@@ -93,6 +98,7 @@ import { MoneyTransferFormComponent } from './components/money-transfer-form/mon
     MatNativeDateModule,
     MatInputModule,
     MatDialogModule,
+    MatCheckboxModule,
     GoogleChartsModule
   ],
   providers: [

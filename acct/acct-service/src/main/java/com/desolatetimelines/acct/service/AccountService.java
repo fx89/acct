@@ -4,11 +4,7 @@ import static com.desolatetimelines.acct.service.delegate.CommonOperations.check
 import static com.desolatetimelines.acct.service.delegate.CommonOperations.resolveOperationIncomeOrExpenseItemId;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -148,15 +144,12 @@ public class AccountService {
 	}
 
 	public Stream<IncomeOrExpenseItem> listIncomeOrExpenseItems() {
-		return dataService.getIncomeOrExpenseItems().sorted((a, b) -> {
-			int result = a.getIncomeOrExpenseItemCategoryId().compareTo(b.getIncomeOrExpenseItemCategoryId());
-
-			if (result == 0) {
-				result = a.getName().compareTo(b.getName());
-			}
-
-			return result;
-		});
+		return
+			dataService.getIncomeOrExpenseItems()
+				.sorted(Comparator
+						.comparingLong(IncomeOrExpenseItem::getIncomeOrExpenseItemCategoryId)
+						.thenComparing(Nameable::getName)
+					);
 	}
 
 	public IncomeOrExpenseItem newIncomeOrExpenseItem(String name, Long incomeOrExpenseItemCategoryId)
@@ -184,7 +177,7 @@ public class AccountService {
 	}
 
 	public Stream<AccountRecord> listAccountRecords(Long accountId) {
-		return dataService.getAccountRecords(accountId).sorted((r1, r2) -> r1.getDate().compareTo(r2.getDate()));
+		return dataService.getAccountRecords(accountId).sorted(Comparator.comparing(AccountRecord::getDate));
 	}
 
 	public AccountRecord newAccountRecord(Long accountId, Date date, Long incomeOrExpenseItemId, Double value)
@@ -200,7 +193,12 @@ public class AccountService {
 	}
 
 	public AccountRecord saveAccountRecord(AccountRecord accountRecord) throws AccountServiceValidationException {
-		validateAccountRecord(accountRecord);
+		boolean isForeignCurrency
+			= listAccounts()
+				.filter(acct -> acct.getId().equals(accountRecord.getAccountId()))
+				.anyMatch(Account::isForeignCurrencyAccount);
+
+		validateAccountRecord(accountRecord, isForeignCurrency);
 
 		AccountRecord rec = dataService.newAccountRecordInstance();
 		rec.copyFrom(accountRecord);
@@ -292,7 +290,7 @@ public class AccountService {
 	}
 
 	public Stream<String> getAllSupportedCurrencyTypes() {
-		return Arrays.asList(CurrencyType.values()).stream().map(cur -> cur.getValue());
+		return Arrays.stream(CurrencyType.values()).map(CurrencyType::getValue);
 	}
 
 	public Stream<MonitoredCurrency> getAllMonitoredCurrencies() {
@@ -375,7 +373,7 @@ public class AccountService {
 			// Sort the list to be able to:
 			// 1) get a minimum date for the database query
 			// 2) be able to return the latest record
-			recs.sort((d1, d2) -> d1.getDate().compareTo(d2.getDate()));
+			recs.sort(Comparator.comparing(CurrencyExtractorHistoryRecord::getDate));
 
 			// Get the minimum date so we can fetch any records already existing in the
 			// databases
@@ -398,7 +396,6 @@ public class AccountService {
 					hstRec.setValue(rec.getValue());
 					newRecs.add(hstRec);
 				}
-				;
 			});
 
 			// Add the new records to the repository
@@ -440,7 +437,7 @@ public class AccountService {
 
 	public Stream<CurrencyHistoryRecord> getCurrencyHistory(Long monitoredCurrencyId, Date sinceDate) {
 		return dataService.getCurrencyHistoryRecords(monitoredCurrencyId, sinceDate)
-				.sorted((rec1, rec2) -> rec1.getDate().compareTo(rec2.getDate()));
+				.sorted(Comparator.comparing(CurrencyHistoryRecord::getDate));
 	}
 
 	private static void validateNameable(Nameable item, String itemTypeName) throws AccountServiceValidationException {
@@ -504,7 +501,7 @@ public class AccountService {
 		}
 	}
 
-	private static void validateAccountRecord(AccountRecord accountRecord) throws AccountServiceValidationException {
+	private static void validateAccountRecord(AccountRecord accountRecord, boolean isForeignCurrencyAccount) throws AccountServiceValidationException {
 		if (accountRecord == null) {
 			throw new AccountServiceValidationException("Invalid account record");
 		}
@@ -519,6 +516,10 @@ public class AccountService {
 
 		if (accountRecord.getIncomeOrExpenseItemId() == null || accountRecord.getIncomeOrExpenseItemId() <= 0) {
 			throw new AccountServiceValidationException("Invalid income or expense item id");
+		}
+
+		if (isForeignCurrencyAccount && accountRecord.getExchangeRate() == null) {
+			throw new AccountServiceValidationException("Exchange rate must be provided");
 		}
 	}
 }

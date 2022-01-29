@@ -45,4 +45,13 @@ export class AccountRecordComponent implements OnInit {
 
         return null;
     }
+
+    public isIncome(rec:AccountRecord) : boolean {
+        return rec.value > 0;
+    }
+
+    public isSafeToExchangeBack(rec:AccountRecord) : boolean {;
+        let lastRecordedExchangeRate = this.state.getMonitoiredCurrency(this.state.getAccount(rec.accountId).currencyId).lastCollectedValue;
+        return (rec.exchangeRate < lastRecordedExchangeRate);
+    }
 }

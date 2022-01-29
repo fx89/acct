@@ -34,3 +34,13 @@
     {{rec.value | currency:'USD':'':'2.2-2' }}
 </div>
 
+<!-- Record exchange rate -->
+<div *ngIf="state.selectedAccount.foreignCurrencyAccount"
+    class="account-record-cell account-record-list-record-exchange-rate"
+    [class.account-record-list-record-exchange-rate-good]="isIncome(rec) && isSafeToExchangeBack(rec)"
+    [class.account-record-list-record-exchange-rate-bad]="isIncome(rec) && !isSafeToExchangeBack(rec)"
+    style="float:left;"
+    (click)="state.selectAccountRecord(rec);"
+>
+    {{rec.exchangeRate }}
+</div>

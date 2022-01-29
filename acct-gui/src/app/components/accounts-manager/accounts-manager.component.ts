@@ -21,7 +21,7 @@ export class AccountsManagerComponent implements OnInit {
     private getItemName : Function = (item => { return item.name; })
 
     private newItem : Function = (() => {
-        let acc = new Account(0, "New account");
+        let acc = new Account(0, "New account", false, 0);
         return acc;
     })
 

@@ -45,4 +45,13 @@
                 (keyup)="onValueKeyUp($event)"
         >
     </div>
+
+    <div class="account-records-input-group account-record-input-group-exchange-rate" *ngIf="state.selectedAccount.foreignCurrencyAccount">
+        <label for="erInput">Exchange Rate</label> <br />
+        <input  id="erInput"
+                class="app-control-component account-record-input"
+                type="text" [(ngModel)]="state.selectedAccountRecord.exchangeRate"
+                (keyup)="onValueKeyUp($event)"
+        >
+    </div>
 </div>

@@ -20,6 +20,12 @@ public class SpringDataAccount implements Account {
 	@Column(name = "name")
 	private String name;
 
+	@Column(name = "currency_id")
+	private Long currencyId;
+
+	@Column(name = "is_foreign_currency")
+	private Boolean isForeignCurrencyAccount;
+
 	@Override
 	public Long getId() {
 		return id;
@@ -28,6 +34,26 @@ public class SpringDataAccount implements Account {
 	@Override
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	@Override
+	public Long getCurrencyId() {
+		return currencyId;
+	}
+
+	@Override
+	public void setCurrencyId(Long currencyId) {
+		this.currencyId = currencyId;
+	}
+
+	@Override
+	public Boolean isForeignCurrencyAccount() {
+		return isForeignCurrencyAccount;
+	}
+
+	@Override
+	public void setForeignCurrencyAccount(Boolean isForeignCurrencyAccount) {
+		this.isForeignCurrencyAccount = isForeignCurrencyAccount;
 	}
 
 	@Override

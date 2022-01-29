@@ -10,7 +10,7 @@ import { Bank } from 'src/app/model/bank';
 })
 export class DepositsInputFormComponent implements OnInit {
 
-    private sourceAccount : Account = new Account(0, "Not selected");
+    private sourceAccount : Account = new Account(0, "Not selected", false, 0);
     private bank : Bank = new Bank(0, "Not selected");
     private accountNumber : String;
     private startDateStr : string;

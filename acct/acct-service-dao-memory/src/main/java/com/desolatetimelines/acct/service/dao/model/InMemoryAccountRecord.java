@@ -14,6 +14,8 @@ public class InMemoryAccountRecord implements AccountRecord {
 
 	private Double value;
 
+	private Double exchangeRate;
+
 	@Override
 	public Long getId() {
 		return id;
@@ -62,6 +64,16 @@ public class InMemoryAccountRecord implements AccountRecord {
 	@Override
 	public void setValue(Double value) {
 		this.value = value;
+	}
+
+	@Override
+	public Double getExchangeRate() {
+		return exchangeRate;
+	}
+
+	@Override
+	public void setExchangeRate(Double exchangeRate) {
+		this.exchangeRate = exchangeRate;
 	}
 
 }

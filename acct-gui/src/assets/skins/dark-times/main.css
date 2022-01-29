@@ -66,6 +66,9 @@
   scrollbar-color: dark !important;
   scrollbar-track-color: #000 !important;
   scrollbar-width: thin !important;
+
+  /* Checkbox */
+  --checkbox-component-border-color: #AAA;
 }
 
 /* ================================================================================ */
@@ -176,6 +179,28 @@ body {
   background-image: url("/assets/skins/dark-times/res/select/button_on.png");
   border-color: var(--general-component-border-color-selected);
 }
+
+
+.app-currencies-list {
+  /* Remove selection arrow button */
+  -moz-appearance:none; /* Firefox */
+  -webkit-appearance:none; /* Safari and Chrome */
+  appearance:none;
+
+  /* Button style */
+  background-image: url("/assets/skins/dark-times/res/select/button_off.png");
+  background-repeat: no-repeat;
+  background-position: top right;
+
+  /* Dimensions */
+  min-width: 70px;
+}
+
+.app-currencies-list:hover {
+  background-image: url("/assets/skins/dark-times/res/select/button_on.png");
+  border-color: var(--general-component-border-color-selected);
+}
+
 
 /* ================================================================================ */
 
@@ -290,6 +315,10 @@ body {
     height:var(--accounts-top-bar-height);
 }
 
+.accounts-top-bar > div {
+  display: inline;
+}
+
 .account-summary-panel {
   width: calc(var(--accounts-summary-panel-width) - (var(--generic-panel-padding) * 2));
   height: calc(100% - var(--accounts-top-bar-height) - (var(--generic-panel-padding) * 2));
@@ -339,7 +368,7 @@ body {
 .account-record-list-record-income-or-expense-item {
   border-left: solid 1px #000;
   border-right: solid 1px #000;
-  width: calc(100% - 15px - 100px - 90px - 50px);
+  width: calc(100% - 10px - 15px - 100px - 90px - 50px - 80px);
   float: left;
 }
 
@@ -355,6 +384,20 @@ body {
 
 .account-record-list-record-value-green {
   background-color: rgba(30,90,30,0.3);
+}
+
+.account-record-list-record-exchange-rate {
+  width: 80px;
+  text-align: right;
+  background-color: rgba(50,50,50,0.3);
+}
+
+.account-record-list-record-exchange-rate-bad {
+  background-color: #700;
+}
+
+.account-record-list-record-exchange-rate-good {
+  background-color: #570;
 }
 
 .account-records-separator {
@@ -387,11 +430,15 @@ body {
 }
 
 .account-record-input-group-cat {
-  width: calc(100% - 135px - 100px);
+  width: calc(100% - 135px - 100px - 50px - 100px);
 }
 
 .account-record-input-group-value {
   width: 50px;
+}
+
+.account-record-input-group-exchange-rate {
+  width: 100px;
 }
 
 .account-record-input-cat {
@@ -655,6 +702,10 @@ body {
 
 .mat-dialog-container {
   background-color: var(--general-component-background-color) !important;
+}
+
+.mat-checkbox-frame {
+  border-color: var(--checkbox-component-border-color) !important;
 }
 
 /* ================================================================================ */

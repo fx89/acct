@@ -24,6 +24,10 @@ public interface AccountRecord extends CommonAccountingEntity<AccountRecord> {
 
 	void setValue(Double value);
 
+	Double getExchangeRate();
+
+	void setExchangeRate(Double exchangeRate);
+
 	@Override
 	default void copyFrom(AccountRecord other) {
 		if (other != null) {
@@ -32,6 +36,7 @@ public interface AccountRecord extends CommonAccountingEntity<AccountRecord> {
 			this.setDate(other.getDate());
 			this.setIncomeOrExpenseItemId(other.getIncomeOrExpenseItemId());
 			this.setValue(other.getValue());
+			this.setExchangeRate(other.getExchangeRate());
 		}
 	}
 }

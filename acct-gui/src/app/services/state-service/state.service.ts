@@ -64,7 +64,7 @@ export class StateService {
     public monthlyDepositsBalanceReport : MonthlyBalanceReportRecord[] = [];
 
     public supportedCurrencies : String [];
-    public monitoredCurrencies : MonitoredCurrency[];
+    public monitoredCurrencies : MonitoredCurrency[] = [];
 
     public exchageRatesHistory : Map<String, ExchangeRateHistoryRecord[]> = new Map<String, ExchangeRateHistoryRecord[]>();
     public exchangeRatesHistoryLengthDays : number = 200;
@@ -465,6 +465,7 @@ export class StateService {
         ret.subscribe((result : Account[]) => {
             this.accounts = result;
             this.selectedAccount = (result[0] == null || result[0] == undefined) ? null : result[0];
+            this.selectedAccount.currencyId = this.selectedAccount.currencyId ? this.selectedAccount.currencyId : 0;
         });
 
         return ret;
@@ -473,6 +474,7 @@ export class StateService {
     public selectAccountId(accountId : Number){
         for (let acc of this.accounts) {
             if (acc.id == accountId) {
+                console.log(acc);
                 this.selectedAccount = acc;
                 this.clearSelectedAccountRecord();
                 break;
@@ -486,17 +488,23 @@ export class StateService {
         this.loadMonthlyBalanceReportForCurrentAccount();
     }
 
+    public saveSelectedAccount() {
+        this.saveAccount(this.selectedAccount);
+    }
+
     public saveAccount(account : Account) {
         this.dataService.save<Account>("accounts", account).subscribe(
             acc => {
                 account.id = acc.id;
+                account.foreignCurrencyAccount = acc.foreignCurrencyAccount;
+                account.currencyId = acc.currencyId;
                 this.integrateIdentifiable(account, this.accounts);
             }
         );
     }
 
     public getAccount(id : Number) : Account {
-        return this.getIdentifiable<Bank>(this.accounts, id);
+        return this.getIdentifiable<Account>(this.accounts, id);
     }
 
     public selectAccountRecord(rec : AccountRecord) {
@@ -552,6 +560,16 @@ export class StateService {
         });
 
         this.showYesNoDialog("Really delete account record ?");
+    }
+
+    public getMonitoiredCurrency(currencyId : Number) : MonitoredCurrency {
+        for(let mCur of this.monitoredCurrencies) {
+            if (mCur.id == currencyId) {
+                return mCur;
+            }
+        }
+
+        return null;
     }
 
     public saveIncomeOrExpenseItem(item : IncomeOrExpenseItem) : Observable<IncomeOrExpenseItem> {
@@ -794,5 +812,15 @@ export class StateService {
 
     private static makeIdParam(paramName : string, paramValue : Number) : Map<string,string> {
         return new Map([[paramName, paramValue.toFixed()]]);
+    }
+
+    public selectMonitoredCurrency(currencyId : Number){
+        for (let crr of this.monitoredCurrencies) {
+            if (crr.id == currencyId) {
+                this.selectedAccount.currencyId = crr.id;
+                break;
+            }
+        }
+        this.saveSelectedAccount();
     }
 }

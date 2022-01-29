@@ -5,4 +5,5 @@ export class AccountRecord extends Identifiable {
     public date : Date;
     public incomeOrExpenseItemId : Number;
     public value : Number;
+    public exchangeRate : Number;
 }

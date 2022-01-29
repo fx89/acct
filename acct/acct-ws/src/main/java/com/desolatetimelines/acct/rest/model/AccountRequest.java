@@ -8,6 +8,10 @@ public class AccountRequest implements Account {
 
 	private String name;
 
+	private Long currencyId;
+
+	private Boolean isForeignCurrencyAccount;
+
 	@Override
 	public Long getId() {
 		return id;
@@ -19,6 +23,26 @@ public class AccountRequest implements Account {
 	}
 
 	@Override
+	public Long getCurrencyId() {
+		return currencyId;
+	}
+
+	@Override
+	public void setCurrencyId(Long currencyId) {
+		this.currencyId = currencyId;
+	}
+
+	@Override
+	public Boolean isForeignCurrencyAccount() {
+		return isForeignCurrencyAccount;
+	}
+
+	@Override
+	public void setForeignCurrencyAccount(Boolean isForeignCurrencyAccount) {
+		this.isForeignCurrencyAccount = isForeignCurrencyAccount;
+	}
+
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -27,5 +51,4 @@ public class AccountRequest implements Account {
 	public void setName(String name) {
 		this.name = name;
 	}
-
 }
