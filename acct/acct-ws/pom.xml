@@ -27,6 +27,10 @@
 		</dependency>
 		<dependency>
 			<groupId>com.desolatetimelines</groupId>
+			<artifactId>acct-service-dao-memory</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.desolatetimelines</groupId>
 			<artifactId>acct-currency-bnr</artifactId>
 			<version>${own-version}</version>
 		</dependency>
@@ -52,7 +56,7 @@
 		    <groupId>org.springframework.retry</groupId>
 		    <artifactId>spring-retry</artifactId>
 		</dependency>
-	</dependencies>
+    </dependencies>
 
 	<build>
 		<plugins>
