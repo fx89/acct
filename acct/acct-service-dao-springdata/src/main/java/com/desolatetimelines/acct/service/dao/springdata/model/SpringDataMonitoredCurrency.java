@@ -28,6 +28,9 @@ public class SpringDataMonitoredCurrency implements MonitoredCurrency {
 	@Column(name = "last_collected_value")
 	private Double lastCollectedValue;
 
+	@Column(name = "bank_id")
+	private Long bankId;
+
 	@Override
 	public Long getId() {
 		return id;
@@ -68,4 +71,13 @@ public class SpringDataMonitoredCurrency implements MonitoredCurrency {
 		this.lastCollectedValue = lastCollectedValue;
 	}
 
+	@Override
+	public Long getBankId() {
+		return bankId;
+	}
+
+	@Override
+	public void setBankId(Long bankId) {
+		this.bankId = bankId;
+	}
 }

@@ -17,8 +17,12 @@ public interface MonitoredCurrency extends CommonAccountingEntity<MonitoredCurre
 
 	void setLastCollectedValue(Double lastCollectedValue);
 
+	Long getBankId();
+
+	void setBankId(Long bankId);
+
 	@Override
-	public default void copyFrom(MonitoredCurrency other) {
+	default void copyFrom(MonitoredCurrency other) {
 		if (other == null) {
 			return;
 		}
@@ -27,5 +31,6 @@ public interface MonitoredCurrency extends CommonAccountingEntity<MonitoredCurre
 		this.setCurrencyTypeName(other.getCurrencyTypeName());
 		this.setLastCollectedDate(other.getLastCollectedDate());
 		this.setLastCollectedValue(other.getLastCollectedValue());
+		this.setBankId(other.getBankId());
 	}
 }

@@ -5,7 +5,7 @@
 
         <table *ngIf="state.monitoredCurrencies && state.totalDepositsValue">
             <tr *ngFor="let cr of state.monitoredCurrencies">
-                <td>Deposits value in {{ cr.currencyTypeName }}</td>
+                <td>Deposits value in {{ state.monitoredCurrencyHashName(cr) }}) </td>
                 <td> : </td>
                 <td style="text-align: right">
                     {{ state.totalDepositsValue / cr.lastCollectedValue | currency:'USD':'':'2.2-2' }}
@@ -37,7 +37,7 @@
             style="float: left;"
             *ngFor="let cr of state.monitoredCurrencies"
         >
-            <b>Historical deposits value in {{cr.currencyTypeName}}</b>
+            <b>Historical deposits value in {{cr.currencyTypeName}} <br /> ({{ state.getBank(cr.bankId).name }})</b>
             <app-monthly-savings-report
                 [chartType]="'ColumnChart'"
                 [width]="290"

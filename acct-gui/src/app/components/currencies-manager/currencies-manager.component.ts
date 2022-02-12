@@ -30,8 +30,13 @@ export class CurrenciesManagerComponent implements OnInit {
     }
 
     private addButtonClicked() {
-        this.state.monitorCurrency(this.selectedSupportedCurrency);
-        this.selectedSupportedCurrency = null;
+        if (this.state.selectedBank) {
+            this.state.monitorCurrency(this.selectedSupportedCurrency, this.state.selectedBank.id);
+            this.selectedSupportedCurrency = null;
+        } else {
+            this.state.showErrDialog("Please select a bank from the banks list.");
+        }
+        
     }
 
     private deleteButtonClicked() {
@@ -41,13 +46,11 @@ export class CurrenciesManagerComponent implements OnInit {
 
     private collectButtonClicked() {
         if (!(this.loading)) {
-            this.loading = true;
+            this.loading = true
 
             this.state.updateCurrenciesFromSource().subscribe(
-                result => {
-                    this.loading = false;
-                }
-            );
+                () => this.loading = false
+            )
         }
     }
 }

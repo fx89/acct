@@ -2,6 +2,10 @@ package com.desolatetimelines.acct.service.currency.exception;
 
 public class CurrencyExtractorException extends Exception {
 
+	public CurrencyExtractorException() {
+		super();
+	}
+
 	public CurrencyExtractorException(String message) {
 		super(message);
 	}

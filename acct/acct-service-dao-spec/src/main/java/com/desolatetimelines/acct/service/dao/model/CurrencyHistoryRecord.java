@@ -1,8 +1,8 @@
 package com.desolatetimelines.acct.service.dao.model;
 
-import java.util.Date;
-
 import com.desolatetimelines.acct.service.dao.common.CommonAccountingEntity;
+
+import java.util.Date;
 
 public interface CurrencyHistoryRecord extends CommonAccountingEntity<CurrencyHistoryRecord> {
 	Long getCurrencyId();

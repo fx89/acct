@@ -1,6 +1,6 @@
 package com.desolatetimelines.acct.service.Exception;
 
-public class AccountingAppException extends Exception {
+public class AccountingAppException extends RuntimeException {
 	public AccountingAppException() {
 
 	}

@@ -12,6 +12,8 @@ public class InMemoryMonitoredCurrency implements MonitoredCurrency {
 
 	private Double lastCollectedValue;
 
+	private Long bankId;
+
 	@Override
 	public Long getId() {
 		return id;
@@ -42,12 +44,25 @@ public class InMemoryMonitoredCurrency implements MonitoredCurrency {
 		this.lastCollectedDate = lastCollectedDate;
 	}
 
+	@Override
 	public Double getLastCollectedValue() {
 		return lastCollectedValue;
 	}
 
+	@Override
 	public void setLastCollectedValue(Double lastCollectedValue) {
 		this.lastCollectedValue = lastCollectedValue;
 	}
+
+	@Override
+	public Long getBankId() {
+		return bankId;
+	}
+
+	@Override
+	public void setBankId(Long bankId) {
+		this.bankId = bankId;
+	}
+
 
 }

@@ -2,6 +2,7 @@ package com.desolatetimelines.acct.rest.datamanipulation;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Comparator;
 import java.util.stream.Stream;
 
 import javax.transaction.Transactional;
@@ -32,7 +33,12 @@ public class MonitoredCurrencyController {
 	@ResponseBody
 	@Transactional
 	public Stream<MonitoredCurrency> list() {
-		return accountService.getAllMonitoredCurrencies();
+		return accountService.getAllMonitoredCurrencies()
+					.sorted(
+							Comparator
+								.comparing(MonitoredCurrency::getCurrencyTypeName)
+								.thenComparing(MonitoredCurrency::getBankId)
+						);
 	}
 
 	@GetMapping("/listSupportedCurrencies")
@@ -45,8 +51,12 @@ public class MonitoredCurrencyController {
 	@PostMapping("/monitorCurrency")
 	@ResponseBody
 	@Transactional
-	public MonitoredCurrency monitorCurrency(@RequestParam String currencyName) throws AccountServiceBusinessException {
-		return accountService.monitorCurrency(currencyName);
+	public MonitoredCurrency monitorCurrency(
+		@RequestParam String currencyName,
+		@RequestParam Long bankId
+	) throws AccountServiceBusinessException
+	{
+		return accountService.monitorCurrency(currencyName, bankId);
 	}
 
 	@DeleteMapping("/delete")
@@ -61,8 +71,10 @@ public class MonitoredCurrencyController {
 	@ResponseBody
 	@Transactional
 	@Retryable
-	public String updateCurrenciesFromSource() throws AccountServiceException {
-		accountService.updateCurrenciesFromSource();
+	public String updateCurrenciesFromSource(
+		@RequestParam Long bankId
+	) throws AccountServiceException {
+		accountService.updateCurrenciesFromSource(bankId);
 		return "OK";
 	}
 

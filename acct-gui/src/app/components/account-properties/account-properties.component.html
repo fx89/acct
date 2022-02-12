@@ -22,7 +22,9 @@
     >
         <option *ngFor="let currency of state.monitoredCurrencies"
                 value="{{currency.id}}"
-                [selected]="currency.id == state.selectedAccount.currencyId"> {{ currency.currencyTypeName }}
+                [selected]="currency.id == state.selectedAccount.currencyId"
+        >
+            {{ state.monitoredCurrencyHashName(currency) }}
         </option>
     </select>
 </span>

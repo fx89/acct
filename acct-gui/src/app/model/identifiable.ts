@@ -1,7 +1,7 @@
 export class Identifiable {
-  public id : Number;
+  public id : number;
 
-  constructor(id : Number) {
+  constructor(id : number) {
     this.id = id;
   }
 }

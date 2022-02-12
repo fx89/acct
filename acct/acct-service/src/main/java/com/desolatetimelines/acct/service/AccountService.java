@@ -1,13 +1,5 @@
 package com.desolatetimelines.acct.service;
 
-import static com.desolatetimelines.acct.service.delegate.CommonOperations.checkAccountAvailableAmount;
-import static com.desolatetimelines.acct.service.delegate.CommonOperations.resolveOperationIncomeOrExpenseItemId;
-import static org.apache.commons.lang3.StringUtils.isBlank;
-
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import com.desolatetimelines.acct.service.Exception.AccountServiceBusinessException;
 import com.desolatetimelines.acct.service.Exception.AccountServiceException;
 import com.desolatetimelines.acct.service.Exception.AccountServiceValidationException;
@@ -17,19 +9,21 @@ import com.desolatetimelines.acct.service.currency.CurrencyType;
 import com.desolatetimelines.acct.service.currency.exception.CurrencyExtractorException;
 import com.desolatetimelines.acct.service.dao.AccountDataService;
 import com.desolatetimelines.acct.service.dao.common.Nameable;
-import com.desolatetimelines.acct.service.dao.model.Account;
-import com.desolatetimelines.acct.service.dao.model.AccountRecord;
-import com.desolatetimelines.acct.service.dao.model.Bank;
-import com.desolatetimelines.acct.service.dao.model.CurrencyHistoryRecord;
-import com.desolatetimelines.acct.service.dao.model.Deposit;
-import com.desolatetimelines.acct.service.dao.model.IncomeOrExpenseItem;
-import com.desolatetimelines.acct.service.dao.model.IncomeOrExpenseItemCategory;
-import com.desolatetimelines.acct.service.dao.model.InterestHistoryRecord;
-import com.desolatetimelines.acct.service.dao.model.MonitoredCurrency;
+import com.desolatetimelines.acct.service.dao.model.*;
 import com.desolatetimelines.acct.service.delegate.AccountsHelper;
 import com.desolatetimelines.acct.service.delegate.DepositsHelper;
 import com.desolatetimelines.acct.service.delegate.IncomeOrExpenseItemsHelper;
 import com.desolatetimelines.acct.service.model.AccountSummary;
+
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static com.desolatetimelines.acct.service.delegate.CommonOperations.checkAccountAvailableAmount;
+import static com.desolatetimelines.acct.service.delegate.CommonOperations.resolveOperationIncomeOrExpenseItemId;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toMap;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class AccountService {
 
@@ -42,7 +36,7 @@ public class AccountService {
 
 	private AccountDataService dataService;
 
-	private CurrencyExtractor currencyExtractor;
+	private final Map<String, CurrencyExtractor> currencyExtractorsByBankName = new HashMap<>();
 
 	public AccountDataService getDataService() {
 		return dataService;
@@ -52,12 +46,8 @@ public class AccountService {
 		this.dataService = dataService;
 	}
 
-	public CurrencyExtractor getCurrencyExtractor() {
-		return currencyExtractor;
-	}
-
-	public void setCurrencyExtractor(CurrencyExtractor currencyExtractor) {
-		this.currencyExtractor = currencyExtractor;
+	public void putCurrencyExtractor(String bankName, CurrencyExtractor currencyExtractor) {
+		currencyExtractorsByBankName.put(bankName, currencyExtractor);
 	}
 
 	public Stream<Account> listAccounts() {
@@ -297,24 +287,32 @@ public class AccountService {
 		return dataService.getAllMonitoredCurrencies();
 	}
 
-	public MonitoredCurrency monitorCurrency(String currencyName) throws AccountServiceBusinessException {
+	public MonitoredCurrency monitorCurrency(String currencyName, Long bankId)
+			throws AccountServiceBusinessException
+	{
+		// Get the currency type
 		CurrencyType currencyType;
-
 		try {
 			currencyType = CurrencyType.valueOf(currencyName);
 		} catch (IllegalArgumentException exc) {
 			throw new AccountServiceBusinessException("The requested currency is not supported", exc);
 		}
 
-		MonitoredCurrency currency = dataService.getMonitoredCurrency(currencyName);
+		// Check if the currency is already monitored
+		MonitoredCurrency currency
+			= dataService.getMonitoredCurrency(currencyName, bankId);
 
+		// If the currency is not already monitored, then start monitoring it
 		if (currency == null) {
 			currency = dataService.newMonitoredCurrency();
+			currency.setCurrencyTypeName(currencyType.getValue());
+			currency.setBankId(bankId);
+
+			currency = dataService.saveMonitoredCurrency(currency);
 		}
 
-		currency.setCurrencyTypeName(currencyType.getValue());
-
-		return dataService.saveMonitoredCurrency(currency);
+		// Return a reference to the monitored currency
+		return currency;
 	}
 
 	public void unmonitorCurrency(Long monitoredCurrencyId) {
@@ -322,7 +320,14 @@ public class AccountService {
 		dataService.deleteMonitoredCurrency(monitoredCurrencyId);
 	}
 
-	public void updateCurrenciesFromSource() throws AccountServiceException {
+	/**
+	 * Updates the monitored currencies form the {@link CurrencyExtractor}
+	 * defined for the referenced bank. If there is no {@link CurrencyExtractor}
+	 * in the application context that can handle the referenced bank, an
+	 * exception is thrown. If there is no bank ID provided, then it updates
+	 * the monitored currencies for all the banks registered in the system.
+	 */
+	public void updateCurrenciesFromSource(Long bankId) throws AccountServiceException {
 		if (currencyHistoryCollectionIsRunning) {
 			return;
 		}
@@ -330,15 +335,46 @@ public class AccountService {
 		currencyHistoryCollectionIsRunning = true;
 
 		try {
-			Stream<MonitoredCurrency> currencies = dataService.getAllMonitoredCurrencies();
+			// Get the monitored currencies grouped by bank ID.
+			// Get monitored currencies for all banks, unless
+			// the bankId was provided, in which case get only
+			// the monitored currencies for the referenced bank.
+			Map<Long, List<MonitoredCurrency>> currenciesByBankId
+				= dataService.getAllMonitoredCurrencies()
+					.filter(currency -> bankId == null || bankId.equals(currency.getBankId()))
+					.collect(groupingBy(MonitoredCurrency::getBankId));
 
-			if (currencies == null) {
-				throw new AccountServiceBusinessException("There no currencies currently being monitored.");
+			if (currenciesByBankId.isEmpty()) {
+				throw new AccountServiceBusinessException("There are no currencies currently being monitored.");
 			}
 
-			currencies.forEach(cur -> {
-				CurrencyExtractorHistoryRecord lastExtractedRecord = updateCurrencyHistory(cur);
-				updateMonitoredCurrency(cur, lastExtractedRecord);
+			// Get the bank names grouped by bank ID
+			Map<Long, String> bankNamesByBankId
+				= dataService.getAllBanks()
+					.collect(toMap(Bank::getId, Bank::getName));
+
+			if (bankNamesByBankId.isEmpty()) {
+				throw new AccountServiceBusinessException("There are no banks defined.");
+			}
+
+			// Gather the currency history from the extractors of each bank
+			currenciesByBankId.forEach((dbBankId, currencies) -> {
+				// Get the currency extractor
+				CurrencyExtractor currencyExtractor
+					= getCurrencyExtractorForBankId(dbBankId, bankNamesByBankId);
+
+				// Get the history of each currency
+				currencies.forEach(cur -> {
+					// Retrieve the currency history from the extractor and register
+					// the history that's missing from the local data source, while
+					// also returning the last record retrieved for the next step
+					CurrencyExtractorHistoryRecord lastExtractedRecord
+						= updateCurrencyHistory(cur, currencyExtractor);
+
+					// Update the snapshot in the local data source with information
+					// from the last historical record retrieved by the extractor
+					updateMonitoredCurrency(cur, lastExtractedRecord);
+				});
 			});
 		} catch (Exception e) {
 			currencyHistoryCollectionIsRunning = false;
@@ -348,14 +384,42 @@ public class AccountService {
 		currencyHistoryCollectionIsRunning = false;
 	}
 
-	private void updateMonitoredCurrency(MonitoredCurrency mc, CurrencyExtractorHistoryRecord hr) {
-		mc.setLastCollectedDate(hr.getDate());
-		mc.setLastCollectedValue(hr.getValue());
+	private CurrencyExtractor getCurrencyExtractorForBankId(
+		Long bankId,
+		Map<Long, String> bankNamesByBankId
+	) {
+		// Get the bank name
+		String bankName = bankNamesByBankId.get(bankId);
+		if (bankName == null) {
+			throw new AccountServiceBusinessException("Bank with id = [" + bankId + "] not found");
+		}
 
-		dataService.saveMonitoredCurrency(mc);
+		// Get currency extractor
+		CurrencyExtractor currencyExtractor = currencyExtractorsByBankName.get(bankName);
+		if (currencyExtractor == null) {
+			throw new AccountServiceBusinessException(
+					"There is no currency extractor defined for bank [" + bankName + "]"
+			);
+		}
+
+		// Return the currency extractor
+		return currencyExtractor;
 	}
 
-	private CurrencyExtractorHistoryRecord updateCurrencyHistory(MonitoredCurrency currency) throws RuntimeException {
+	private void updateMonitoredCurrency(
+		MonitoredCurrency monitoredCurrency,
+		CurrencyExtractorHistoryRecord lastHistoryRecord
+	) {
+		monitoredCurrency.setLastCollectedDate(lastHistoryRecord.getDate());
+		monitoredCurrency.setLastCollectedValue(lastHistoryRecord.getValue());
+
+		dataService.saveMonitoredCurrency(monitoredCurrency);
+	}
+
+	private CurrencyExtractorHistoryRecord updateCurrencyHistory(
+		MonitoredCurrency currency,
+		CurrencyExtractor currencyExtractor
+	) throws RuntimeException {
 		try {
 			// Get the currency type to be provided to the currency extractor
 			CurrencyType cType = CurrencyType.valueOf(currency.getCurrencyTypeName());
@@ -375,18 +439,18 @@ public class AccountService {
 			// 2) be able to return the latest record
 			recs.sort(Comparator.comparing(CurrencyExtractorHistoryRecord::getDate));
 
-			// Get the minimum date so we can fetch any records already existing in the
-			// databases
+			// Get the minimum date, so we can fetch any records already existing
+			// in the databases
 			Date minDate = recs.get(0).getDate();
 
 			// Fetch any records already existing in the database, to be updated
-			List<CurrencyHistoryRecord> registererdHistory = dataService
+			List<CurrencyHistoryRecord> registeredHistory = dataService
 					.getCurrencyHistoryRecords(currency.getId(), minDate).collect(Collectors.toList());
 
 			// Prepare the list of new records to be added
 			// Continuously update the return value
 			recs.forEach(rec -> {
-				CurrencyHistoryRecord hstRec = registererdHistory.stream()
+				CurrencyHistoryRecord hstRec = registeredHistory.stream()
 						.filter(e -> isSameDay(e.getDate(), rec.getDate())).findFirst().orElse(null);
 
 				if (hstRec == null) {

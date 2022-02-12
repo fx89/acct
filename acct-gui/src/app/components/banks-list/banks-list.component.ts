@@ -15,18 +15,16 @@ export class BanksListComponent implements OnInit {
 
     private newBank : Function = ( () => { return new Bank(0, "New bank"); } );
 
-    private selectedBank : Bank;
-
     ngOnInit() {
         this.state.loadBanks();
     }
 
     public selectBank(bank : Bank) {
-        this.selectedBank = bank;
+        this.state.selectedBank = bank;
     }
 
     public addBank(bank : Bank) {
-        this.selectedBank = bank;
+        this.state.selectedBank = bank;
     }
 
     public deleteBank(bank : Bank) {
@@ -34,11 +32,11 @@ export class BanksListComponent implements OnInit {
     }
 
     public beginEditBank(bank : Bank) {
-        this.selectedBank = bank;
+        this.state.selectedBank = bank;
     }
 
     public endEditBank(bankName : string) {
-        this.selectedBank.name = bankName;
-        this.state.saveBank(this.selectedBank);
+        this.state.selectedBank.name = bankName;
+        this.state.saveBank(this.state.selectedBank);
     }
 }

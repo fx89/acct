@@ -36,8 +36,9 @@ export class DashboardSectionComponent implements OnInit {
 
         this.state.loadMonitoredCurrency().subscribe(mnCr => {
             for(let mc of mnCr) {
+                const den = mc.lastCollectedValue ? mc.lastCollectedValue.valueOf() : 1
                 this.sourceYValueMappers[mc.currencyTypeName.valueOf()]
-                          = (rec) => { return rec.remainingBalance / mc.lastCollectedValue.valueOf() };
+                    = (rec) => { return rec.remainingBalance / den };
             }
             
         });

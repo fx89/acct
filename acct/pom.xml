@@ -37,6 +37,9 @@
 		<module>acct-service-dao-memory</module>
 		<module>acct-currency-spec</module>
 		<module>acct-currency-bnr</module>
+		<module>acct-currency-bt</module>
+		<module>acct-util-httpclient</module>
+		<module>acct-util-xml</module>
 	</modules>
 
 

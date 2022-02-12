@@ -10,4 +10,12 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.desolatetimelines</groupId>
+            <artifactId>acct-util-httpclient</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
 </project>

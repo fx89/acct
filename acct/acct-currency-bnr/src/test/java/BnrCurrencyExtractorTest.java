@@ -9,10 +9,6 @@ import com.desolatetimelines.acct.service.currency.exception.CurrencyExtractorEx
 
 public class BnrCurrencyExtractorTest {
 
-	public BnrCurrencyExtractorTest() {
-
-	}
-
 	@Test
 	public void test() throws CurrencyExtractorException {
 		CurrencyExtractor currencyExtractor = new BnrCurrencyExtractor();

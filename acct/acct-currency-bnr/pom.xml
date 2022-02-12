@@ -17,11 +17,16 @@
 			<artifactId>acct-currency-spec</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
-		<!-- Apache HTTP Client -->
 		<dependency>
-		    <groupId>org.apache.httpcomponents</groupId>
-		    <artifactId>httpclient</artifactId>
+			<groupId>com.desolatetimelines</groupId>
+			<artifactId>acct-util-xml</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<!-- Spring Context -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
 		</dependency>
 
 		<dependency>

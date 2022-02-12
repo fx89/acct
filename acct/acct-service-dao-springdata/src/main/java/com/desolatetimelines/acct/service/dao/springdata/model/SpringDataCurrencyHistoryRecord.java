@@ -66,5 +66,4 @@ public class SpringDataCurrencyHistoryRecord implements CurrencyHistoryRecord {
 	public void setCurrencyId(Long currencyId) {
 		this.currencyId = currencyId;
 	}
-
 }

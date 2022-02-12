@@ -31,7 +31,6 @@ export class AccountRecordsInputFormComponent implements OnInit {
     }
 
     private editFormVariablesToSelectedAccountRecord() {
-        console.log(this.selectedIncomeOrExpenseItem);
         this.state.selectedAccountRecord.incomeOrExpenseItemId = this.selectedIncomeOrExpenseItem.id;
         this.state.selectedAccountRecord.date = new Date(this.selectedAccountRecordDateStr);
         this.selectedAccountRecordDateStr = null;

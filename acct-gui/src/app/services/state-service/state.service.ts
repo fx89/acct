@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { Account } from 'src/app/model/account';
 import { AccountSummary } from 'src/app/model/account-summary';
 import { DataService } from '../data-service/data.service';
@@ -54,6 +54,7 @@ export class StateService {
 
 
     public banks : Bank[];
+    public selectedBank : Bank;
 
     public deposits : Deposit[];
     public selectedDeposit : Deposit;
@@ -63,7 +64,7 @@ export class StateService {
 
     public monthlyDepositsBalanceReport : MonthlyBalanceReportRecord[] = [];
 
-    public supportedCurrencies : String [];
+    public supportedCurrencies : any[];
     public monitoredCurrencies : MonitoredCurrency[] = [];
 
     public exchageRatesHistory : Map<String, ExchangeRateHistoryRecord[]> = new Map<String, ExchangeRateHistoryRecord[]>();
@@ -119,11 +120,15 @@ export class StateService {
         }
     }
 
+    public monitoredCurrencyHashName(c:MonitoredCurrency) : string {
+        return c.currencyTypeName + " - " + this.getBank(c.bankId).name
+    }
+
     private updateExchangeRatesHistoryRecordsState() {
         this.allExchangeRatesHistoryLoaded = false;
 
         for (let c of this.monitoredCurrencies) {
-            if (!(this.exchageRatesHistory.get(c.currencyTypeName))) {
+            if (!(this.exchageRatesHistory.get(this.monitoredCurrencyHashName(c)))) {
                 return;
             }
         }
@@ -138,7 +143,7 @@ export class StateService {
     }
 
     public loadExchangeRatesHistoryForCurrency(currency : MonitoredCurrency) {
-        if (this.exchageRatesHistory.get(currency.currencyTypeName)) {
+        if (this.exchageRatesHistory.get(this.monitoredCurrencyHashName(currency))) {
             this.updateExchangeRatesHistoryRecordsState();
             return;
         }
@@ -155,38 +160,67 @@ export class StateService {
                 if (errMsg) {
                     this.showErrDialog("ERROR: " + errMsg);
                 } else {
-                    this.exchageRatesHistory.set(currency.currencyTypeName, result);
+                    this.exchageRatesHistory.set(this.monitoredCurrencyHashName(currency), result);
                     this.updateExchangeRatesHistoryRecordsState();
                 }
             }
         );
     }
 
-    public loadMonitoredCurrency() : Observable<MonitoredCurrency[]> {
-        let obs = this.dataService.get<MonitoredCurrency[]>("currency/list")
-        
-        obs.subscribe(monCr => {
-            this.monitoredCurrencies = monCr;
+    public computeMonitoredCurrenciesForSelectedBank() : MonitoredCurrency[] {
+        const ret : MonitoredCurrency[] = []
 
-            this.dataService.get<String[]>("currency/listSupportedCurrencies").subscribe(
-                supCr => {
-                    this.supportedCurrencies = [];
-                    for (let sc of supCr) {
-                        if (!(this.isCurrencyMonitored(sc))) {
-                            this.supportedCurrencies.push(sc);
-                        }
-                    }
-                    this.clearExchangeRatesHistory();
+        if (this.selectedBank) {
+            for(let mc of this.monitoredCurrencies) {
+                if (mc.bankId == this.selectedBank.id) {
+                    ret.push(mc)
                 }
-            );
-        });
+            }
+        }
 
-        return obs;
+        return ret
     }
 
-    public monitorCurrency(currencyName : String) {
-        let params = new ParamsBuilder().withStringParam("currencyName", currencyName).build();
+    public loadMonitoredCurrency() : Observable<MonitoredCurrency[]> {
+        const ret : EventEmitter<MonitoredCurrency[]> = new EventEmitter<MonitoredCurrency[]>()
 
+        this.loadBanks().subscribe(() => {
+            const obs : Observable<MonitoredCurrency[]> = this.dataService.get<MonitoredCurrency[]>("currency/list")
+        
+            obs.subscribe(monCr => {
+                this.monitoredCurrencies = monCr;
+
+                this.dataService.get<String[]>("currency/listSupportedCurrencies").subscribe(
+                    supCr => {
+                        this.supportedCurrencies = [];
+
+                        for(let bnk of this.banks) {
+                            this.supportedCurrencies[bnk.id] = []
+
+                            for (let sc of supCr) {
+                                if (!(this.isCurrencyMonitored(sc, bnk.id))) {
+                                    this.supportedCurrencies[bnk.id].push(sc);
+                                }
+                            }
+                        }
+
+                        this.clearExchangeRatesHistory();
+
+                        ret.emit(monCr)
+                    }
+                );
+            });
+        })
+
+        return ret;
+    }
+
+    public monitorCurrency(currencyName : String, bankId : number) {
+        let params = new ParamsBuilder()
+                            .withStringParam("currencyName", currencyName)
+                            .withNumberParam("bankId", bankId)
+                        .build();
+ 
         this.dataService.post<MonitoredCurrency>("currency/monitorCurrency", params)
         .subscribe(
             mCr => {
@@ -215,21 +249,31 @@ export class StateService {
     }
 
     public updateCurrenciesFromSource() {
-        let obs = this.dataService.get<String>("currency/updateCurrenciesFromSource");
-        
-        obs.subscribe(
-            result => {
-                let errMsg : string = StateService.resultErrorMsg(result);
+        const ret : EventEmitter<any> = new EventEmitter<any>()
 
-                if (errMsg) {
-                    this.showErrDialog("ERROR: " + errMsg);
-                } else {
-                    this.loadMonitoredCurrency();
+        if (this.selectedBank) {
+            this.dataService.get<String>(
+                "currency/updateCurrenciesFromSource", 
+                new ParamsBuilder().withNumberParam("bankId", this.selectedBank.id).build()
+            )
+            .subscribe(
+                result => {
+                    let errMsg : string = StateService.resultErrorMsg(result)
+
+                    if (errMsg) {
+                        this.showErrDialog("ERROR: " + errMsg);
+                    } else {
+                        this.loadMonitoredCurrency();
+                        ret.emit(result)
+                    }
                 }
-            }
-        );
+            )
+        } else {
+            this.showErrDialog("Please select a bank")
+            ret.emit("Bank not selected")
+        }
 
-        return obs;
+        return ret;
     }
 
     private popSupportedCurrency(spCrName : String) {
@@ -254,9 +298,9 @@ export class StateService {
         }
     }
 
-    private isCurrencyMonitored(crName : String) : boolean {
+    private isCurrencyMonitored(crName : String, bankId : number) : boolean {
         for (let mCr of this.monitoredCurrencies) {
-            if (mCr.currencyTypeName == crName) {
+            if (mCr.currencyTypeName == crName && mCr.bankId == bankId) {
                 return true;
             }
         }
@@ -431,14 +475,19 @@ export class StateService {
         );
     }
 
-    public loadBanks() {
+    public loadBanks() : Observable<any> {
+        const ret = new EventEmitter<any>()
+
         if (this.banks == null || this.banks == undefined) {
             this.dataService.list<Bank[]>("banks").subscribe(
                 banks => {
                     this.banks = banks;
+                    ret.emit()
                 }
             );
         }
+
+        return ret;
     }
 
     public saveBank(bank : Bank) {
@@ -474,7 +523,6 @@ export class StateService {
     public selectAccountId(accountId : Number){
         for (let acc of this.accounts) {
             if (acc.id == accountId) {
-                console.log(acc);
                 this.selectedAccount = acc;
                 this.clearSelectedAccountRecord();
                 break;
@@ -497,7 +545,7 @@ export class StateService {
             acc => {
                 account.id = acc.id;
                 account.foreignCurrencyAccount = acc.foreignCurrencyAccount;
-                account.currencyId = acc.currencyId;
+                account.currencyId = acc.currencyId ? acc.currencyId : 0;
                 this.integrateIdentifiable(account, this.accounts);
             }
         );
@@ -630,7 +678,7 @@ export class StateService {
         }
     }
 
-    private showErrDialog(errStr : string) {
+    public showErrDialog(errStr : string) {
         this.dialogService.dialogMessage = errStr;
         this.dialogService.errDialogRef = this.dialog.open(DialogErrorComponent, {
             height: '150px',

@@ -11,6 +11,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static java.util.Collections.singletonList;
+
 public class InMemoryAccountDataServiceImpl implements AccountDataService {
 
 	private final CommonAccountingEntityRepository<Account> accountsRepository = new CommonAccountingEntityRepository<>();
@@ -208,9 +210,18 @@ public class InMemoryAccountDataServiceImpl implements AccountDataService {
 	}
 
 	@Override
-	public MonitoredCurrency getMonitoredCurrency(String currencyName) {
-		return monitoredCurrenciesRepository.values().stream()
-				.filter(val -> val.getCurrencyTypeName().equals(currencyName)).findFirst().orElse(null);
+	public Stream<MonitoredCurrency> getMonitoredCurrencies(String currencyName) {
+		return
+			monitoredCurrenciesRepository.values().stream()
+				.filter(val -> val.getCurrencyTypeName().equals(currencyName));
+	}
+
+	@Override
+	public MonitoredCurrency getMonitoredCurrency(String currencyName, Long bankId) {
+		return
+			monitoredCurrenciesRepository.values().stream()
+				.filter(val -> val.getCurrencyTypeName().equals(currencyName))
+					.findFirst().orElse(null);
 	}
 
 	@Override

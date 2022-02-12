@@ -48,5 +48,4 @@ public class InMemoryAccount implements Account {
 	public void setForeignCurrencyAccount(Boolean isForeignCurrencyAccount) {
 		this.isForeignCurrencyAccount = isForeignCurrencyAccount;
 	}
-
 }

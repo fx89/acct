@@ -113,7 +113,7 @@ body {
 
     border-style: solid;
     border-width: 1px;
-    border-color: #333;
+    border-color: #333 !important;
 }
 
 .section-title {
@@ -193,7 +193,7 @@ body {
   background-position: top right;
 
   /* Dimensions */
-  min-width: 70px;
+  min-width: 300px;
 }
 
 .app-currencies-list:hover {

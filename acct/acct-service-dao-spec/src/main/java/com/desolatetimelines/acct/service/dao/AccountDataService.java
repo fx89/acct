@@ -82,7 +82,9 @@ public interface AccountDataService {
 
 	MonitoredCurrency newMonitoredCurrency();
 
-	MonitoredCurrency getMonitoredCurrency(String currencyName);
+	Stream<? extends MonitoredCurrency> getMonitoredCurrencies(String currencyName);
+
+	MonitoredCurrency getMonitoredCurrency(String currencyName, Long bankId);
 
 	Stream<MonitoredCurrency> getAllMonitoredCurrencies();
 

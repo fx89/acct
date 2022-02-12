@@ -4,6 +4,10 @@ import org.springframework.data.repository.CrudRepository;
 
 import com.desolatetimelines.acct.service.dao.springdata.model.SpringDataMonitoredCurrency;
 
+import java.util.stream.Stream;
+
 public interface SpringDataMonitoredCurrenciesRepository extends CrudRepository<SpringDataMonitoredCurrency, Long> {
-	SpringDataMonitoredCurrency findOneByCurrencyTypeName(String currencyTypeName);
+	Stream<SpringDataMonitoredCurrency> findAllByCurrencyTypeName(String currencyTypeName);
+
+	SpringDataMonitoredCurrency findOneByCurrencyTypeNameAndBankId(String currencyTypeName, Long bankId);
 }

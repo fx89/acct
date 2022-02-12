@@ -280,8 +280,14 @@ public class SpringDataAccountDataService implements AccountDataService {
 
 	@Override
 	@Retryable
-	public MonitoredCurrency getMonitoredCurrency(String currencyName) {
-		return monitoredCurrenciesRepository.findOneByCurrencyTypeName(currencyName);
+	public Stream<? extends MonitoredCurrency> getMonitoredCurrencies(String currencyName) {
+		return monitoredCurrenciesRepository.findAllByCurrencyTypeName(currencyName);
+	}
+
+	@Override
+	@Retryable
+	public MonitoredCurrency getMonitoredCurrency(String currencyName, Long bankId) {
+		return monitoredCurrenciesRepository.findOneByCurrencyTypeNameAndBankId(currencyName, bankId);
 	}
 
 	@Override
