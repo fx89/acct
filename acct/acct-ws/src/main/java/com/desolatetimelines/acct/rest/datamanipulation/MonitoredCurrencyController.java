@@ -62,20 +62,18 @@ public class MonitoredCurrencyController {
 	@DeleteMapping("/delete")
 	@ResponseBody
 	@Transactional
-	public String unmonitorCurrency(@RequestParam Long id) {
+	public void unmonitorCurrency(@RequestParam Long id) {
 		accountService.unmonitorCurrency(id);
-		return "OK";
 	}
 
 	@GetMapping("/updateCurrenciesFromSource")
 	@ResponseBody
 	@Transactional
 	@Retryable
-	public String updateCurrenciesFromSource(
+	public void updateCurrenciesFromSource(
 		@RequestParam Long bankId
 	) throws AccountServiceException {
 		accountService.updateCurrenciesFromSource(bankId);
-		return "OK";
 	}
 
 	@GetMapping("/listHistory")

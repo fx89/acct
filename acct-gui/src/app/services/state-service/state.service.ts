@@ -186,7 +186,7 @@ export class StateService {
 
         this.loadBanks().subscribe(() => {
             const obs : Observable<MonitoredCurrency[]> = this.dataService.get<MonitoredCurrency[]>("currency/list")
-        
+
             obs.subscribe(monCr => {
                 this.monitoredCurrencies = monCr;
 
@@ -481,10 +481,12 @@ export class StateService {
         if (this.banks == null || this.banks == undefined) {
             this.dataService.list<Bank[]>("banks").subscribe(
                 banks => {
-                    this.banks = banks;
+                    this.banks = banks
                     ret.emit()
                 }
             );
+        } else {
+            setTimeout(() => ret.emit(), 500)
         }
 
         return ret;
