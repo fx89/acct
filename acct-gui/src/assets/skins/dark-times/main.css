@@ -106,7 +106,7 @@ body {
     left: var(--paper-margin-horizontal);
     top: calc(var(--paper-margin-vertical) + var(--section-title-height));
     width: calc( 100vw - (var(--border-margin-horizontal) * 2) - (var(--paper-margin-horizontal) * 2) - (var(--paper-padding) * 2) );
-    height: calc(100vh - (var(--border-margin-vertical) * 2) - (var(--paper-margin-vertical) * 2) - (var(--paper-padding) * 2) - var(--section-title-height));
+    min-height: calc(100vh - (var(--border-margin-vertical) * 2) - (var(--paper-margin-vertical) * 2) - (var(--paper-padding) * 2) - var(--section-title-height));
     padding: var(--paper-padding);
 
     background-color: #222;
