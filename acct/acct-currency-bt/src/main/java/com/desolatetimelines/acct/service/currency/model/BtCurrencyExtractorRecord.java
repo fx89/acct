@@ -5,9 +5,9 @@ import com.desolatetimelines.acct.service.currency.CurrencyExtractorHistoryRecor
 import java.util.Date;
 
 public class BtCurrencyExtractorRecord implements CurrencyExtractorHistoryRecord {
-    private final Date date;
+    private Date date;
 
-    private final Double value;
+    private Double value;
 
     public BtCurrencyExtractorRecord(Date date, Double value) {
         this.date = date;
@@ -21,7 +21,7 @@ public class BtCurrencyExtractorRecord implements CurrencyExtractorHistoryRecord
 
     @Override
     public void setDate(Date date) {
-        throw new UnsupportedOperationException();
+        this.date = date;
     }
 
     @Override
@@ -31,6 +31,6 @@ public class BtCurrencyExtractorRecord implements CurrencyExtractorHistoryRecord
 
     @Override
     public void setValue(Double value) {
-        throw new UnsupportedOperationException();
+        this.value = value;
     }
 }
