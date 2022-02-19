@@ -141,3 +141,5 @@ tools/gulp-tasks/cldr/cldr-data/
 
 .classpath
 target/
+
+dist/
