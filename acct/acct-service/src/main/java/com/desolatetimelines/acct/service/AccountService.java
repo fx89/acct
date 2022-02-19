@@ -14,6 +14,7 @@ import com.desolatetimelines.acct.service.delegate.AccountsHelper;
 import com.desolatetimelines.acct.service.delegate.DepositsHelper;
 import com.desolatetimelines.acct.service.delegate.IncomeOrExpenseItemsHelper;
 import com.desolatetimelines.acct.service.model.AccountSummary;
+import org.apache.commons.lang3.time.DateUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -431,39 +432,22 @@ public class AccountService {
 				throw new RuntimeException(new AccountServiceException("The currency extractor has malfunctioned"));
 			}
 
-			// Initialize the list of new records to add
-			List<CurrencyHistoryRecord> newRecs = new ArrayList<>();
+			// Truncate the dates of each of the received records to eliminate the time
+			// Sort the records by date to allow easy extraction of the earliest and latest record
+			recs = recs.stream()
+						.peek(rec -> rec.setDate(DateUtils.truncate(rec.getDate(), Calendar.DAY_OF_MONTH)))
+						.sorted(Comparator.comparing(CurrencyExtractorHistoryRecord::getDate))
+						.collect(Collectors.toList());
 
-			// Sort the list to be able to:
-			// 1) get a minimum date for the database query
-			// 2) be able to return the latest record
-			recs.sort(Comparator.comparing(CurrencyExtractorHistoryRecord::getDate));
+			// Remove any pre-existing records since the earliest date until today
+			dataService.deleteMonitoredCurrencyRecordsSinceDate(currency.getId(), recs.get(0).getDate());
 
-			// Get the minimum date, so we can fetch any records already existing
-			// in the databases
-			Date minDate = recs.get(0).getDate();
-
-			// Fetch any records already existing in the database, to be updated
-			List<CurrencyHistoryRecord> registeredHistory = dataService
-					.getCurrencyHistoryRecords(currency.getId(), minDate).collect(Collectors.toList());
-
-			// Prepare the list of new records to be added
-			// Continuously update the return value
-			recs.forEach(rec -> {
-				CurrencyHistoryRecord hstRec = registeredHistory.stream()
-						.filter(e -> isSameDay(e.getDate(), rec.getDate())).findFirst().orElse(null);
-
-				if (hstRec == null) {
-					hstRec = dataService.newCurrencyHistoryRecord();
-					hstRec.setCurrencyId(currency.getId());
-					hstRec.setDate(rec.getDate());
-					hstRec.setValue(rec.getValue());
-					newRecs.add(hstRec);
-				}
-			});
-
-			// Add the new records to the repository
-			dataService.saveAllCurrencyHistoryRecords(newRecs);
+			// Add the newly fetched records to the repository
+			dataService.saveAllCurrencyHistoryRecords(
+								recs.stream()
+										.map(rec -> newCurrencyHistoryRecord(currency, rec, dataService))
+										.collect(Collectors.toList())
+							);
 
 			// Return the last record for further processing
 			return recs.get(recs.size() - 1);
@@ -471,6 +455,20 @@ public class AccountService {
 		} catch (CurrencyExtractorException exc) {
 			throw new RuntimeException(new AccountServiceException(exc.getMessage(), exc));
 		}
+	}
+
+	private static CurrencyHistoryRecord newCurrencyHistoryRecord(
+		MonitoredCurrency currency,
+		CurrencyExtractorHistoryRecord currencyExtractorRecord,
+		AccountDataService dataService
+	) {
+		CurrencyHistoryRecord newRec = dataService.newCurrencyHistoryRecord();
+
+		newRec.setCurrencyId(currency.getId());
+		newRec.setDate(currencyExtractorRecord.getDate());
+		newRec.setValue(currencyExtractorRecord.getValue());
+
+		return newRec;
 	}
 
 	/**

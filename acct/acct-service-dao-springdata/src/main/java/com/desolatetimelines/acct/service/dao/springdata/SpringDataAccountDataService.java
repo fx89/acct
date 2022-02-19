@@ -326,7 +326,8 @@ public class SpringDataAccountDataService implements AccountDataService {
 	public Stream<CurrencyHistoryRecord> getCurrencyHistoryRecords(Long currencyId, Date sinceDate) {
 		return StreamSupport
 				.stream(currencyHistoryRecordsRepository
-						.findAllByCurrencyIdAndDateGreaterThanEqual(currencyId, sinceDate).spliterator(), false)
+						.findAllByCurrencyIdAndDateGreaterThanEqual(currencyId, sinceDate).spliterator(),
+						false)
 				.map(identity());
 	}
 
@@ -342,4 +343,9 @@ public class SpringDataAccountDataService implements AccountDataService {
 		currencyHistoryRecordsRepository.deleteAllByCurrencyId(currencyId);
 	}
 
+	@Override
+	@Retryable
+	public void deleteMonitoredCurrencyRecordsSinceDate(Long currencyId, Date sinceDate) {
+		currencyHistoryRecordsRepository.deleteAllByCurrencyIdAndDateGreaterThanEqual(currencyId, sinceDate);
+	}
 }

@@ -102,4 +102,6 @@ public interface AccountDataService {
 
 	void deleteMonitoredCurrencyRecords(Long currencyId);
 
+	void deleteMonitoredCurrencyRecordsSinceDate(Long currencyId, Date sinceDate);
+
 }

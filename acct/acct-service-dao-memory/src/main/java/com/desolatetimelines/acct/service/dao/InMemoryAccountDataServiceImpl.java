@@ -273,6 +273,11 @@ public class InMemoryAccountDataServiceImpl implements AccountDataService {
 		markedForDelete.forEach(currencyHistoryRecordsRepository::remove);
 	}
 
+	@Override
+	public void deleteMonitoredCurrencyRecordsSinceDate(Long currencyId, Date sinceDate) {
+		throw new UnsupportedOperationException("Not implemented");
+	}
+
 	private void initRepositories() {
 		Account accIncome = newAccountInstance();
 		accIncome.setName("Mock income account");

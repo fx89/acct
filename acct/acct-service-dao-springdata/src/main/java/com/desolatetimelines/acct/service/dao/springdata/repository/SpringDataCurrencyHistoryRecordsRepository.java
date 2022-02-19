@@ -11,5 +11,7 @@ public interface SpringDataCurrencyHistoryRecordsRepository
 
 	void deleteAllByCurrencyId(Long currencyId);
 
+	void deleteAllByCurrencyIdAndDateGreaterThanEqual(Long currencyId, Date sinceDate);
+
 	Iterable<SpringDataCurrencyHistoryRecord> findAllByCurrencyIdAndDateGreaterThanEqual(Long currencyId, Date date);
 }
