@@ -38,6 +38,9 @@
 		<module>acct-currency-spec</module>
 		<module>acct-currency-bnr</module>
 		<module>acct-currency-bt</module>
+		<module>acct-currency-batch-collect</module>
+		<module>acct-currency-batch-collect-output-spec</module>
+		<module>acct-currency-batch-collect-output-sql</module>
 		<module>acct-util-httpclient</module>
 		<module>acct-util-xml</module>
 	</modules>
