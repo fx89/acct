@@ -400,6 +400,22 @@ body {
   background-color: #570;
 }
 
+.account-record-exchange-rate-popup {
+  position: absolute;
+  width: 160px;
+  height: 110px;
+  visibility: hidden;
+  background-color: var(--general-component-background-color);
+  border-style: visible;
+  border-color: var(--general-component-border-color);
+  border-radius: 7px;
+  padding: 10px;
+}
+
+.account-record-exchange-rate-popup-table tr:nth-Child(even) td {
+  background-color: var(--generic-list-item-background-color-hover);
+}
+
 .account-records-separator {
   height: var(--account-records-separator-height);
 }

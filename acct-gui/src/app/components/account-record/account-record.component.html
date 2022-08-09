@@ -36,11 +36,32 @@
 
 <!-- Record exchange rate -->
 <div *ngIf="state.selectedAccount.foreignCurrencyAccount"
+    [id]="getExchangeRateTextboxId()"
     class="account-record-cell account-record-list-record-exchange-rate"
     [class.account-record-list-record-exchange-rate-good]="isIncome(rec) && isSafeToExchangeBack(rec)"
     [class.account-record-list-record-exchange-rate-bad]="isIncome(rec) && !isSafeToExchangeBack(rec)"
     style="float:left;"
     (click)="state.selectAccountRecord(rec);"
+    (mouseover)="showExchangeRateDetailBox($event, getExchangeRateDetailsBoxId())"
 >
     {{rec.exchangeRate }}
+</div>
+
+<div [id]="getExchangeRateDetailsBoxId()" class="account-record-exchange-rate-popup"
+    (mouseleave)="hideExchangeRateDetailsBox(getExchangeRateDetailsBoxId())"
+>
+    <div *ngIf="isIncome(rec)">
+        <table style="width:100%; margin:0px;" class="account-record-exchange-rate-popup-table">
+            <tr><td>Purchased</td><td>{{ getRecValue() }}</td></tr>
+            <tr><td>Purchase price</td><td>{{ getRecExchangeRate()?.toFixed(5) }}</td></tr>
+            <tr><td>Current price</td><td>{{ getLastRecordedExchangeRate()?.toFixed(5) }}</td></tr>
+            <tr><td>Gain</td><td>{{ (getLastRecordedExchangeRate() - getRecExchangeRate())?.toFixed(5) }}</td></tr>
+            <tr><td>Gain PCT</td><td>{{ (((getLastRecordedExchangeRate() - getRecExchangeRate()) / getRecExchangeRate()) * 100)?.toFixed(2) }}%</td></tr>
+            <tr><td>Total Gain</td><td>{{ ((getLastRecordedExchangeRate() - getRecExchangeRate()) * getRecValue())?.toFixed(2) }}</td></tr>
+        </table>
+    </div>
+
+    <div *ngIf="!isIncome(rec)">
+        This is not an incoming item
+    </div>
 </div>
