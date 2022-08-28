@@ -54,13 +54,13 @@ public class CurrencyExtractorHistoryRecordOutputChannelToSql implements Currenc
         String isoDateStr = DATE_FORMATTER.format(new Date().toInstant().atZone(ZoneId.systemDefault()));
 
         return
-    		(
+            (
 	            properties.getFilePath() + "/" +
-	                properties.getFileNamePrefix() + "---" +
-	                bankName + "--" +
-	                currencyType.name() + "--" +
-	                isoDateStr +
-	                ".sql"
+                properties.getFileNamePrefix() + "---" +
+                bankName + "--" +
+                currencyType.name() + "--" +
+                isoDateStr +
+                ".sql"
             ).replaceAll("\\s", "");
     }
 
