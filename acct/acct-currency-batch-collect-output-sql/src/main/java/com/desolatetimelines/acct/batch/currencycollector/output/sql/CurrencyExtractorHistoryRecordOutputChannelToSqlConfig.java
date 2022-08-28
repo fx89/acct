@@ -22,4 +22,13 @@ public class CurrencyExtractorHistoryRecordOutputChannelToSqlConfig {
         return fileNamePrefix;
     }
 
+    public CurrencyExtractorHistoryRecordOutputChannelToSqlConfig withFilePath(String filePath) {
+    	this.filePath = filePath;
+    	return this;
+    }
+
+    public CurrencyExtractorHistoryRecordOutputChannelToSqlConfig withFilenamePrefix(String filenamePrefix) {
+    	this.fileNamePrefix = filenamePrefix;
+    	return this;
+    }
 }

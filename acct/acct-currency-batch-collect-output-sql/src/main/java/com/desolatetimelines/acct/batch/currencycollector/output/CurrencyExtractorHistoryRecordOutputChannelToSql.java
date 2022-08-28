@@ -20,8 +20,13 @@ public class CurrencyExtractorHistoryRecordOutputChannelToSql implements Currenc
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
 
-    @Autowired
-    private CurrencyExtractorHistoryRecordOutputChannelToSqlConfig properties;
+    private final CurrencyExtractorHistoryRecordOutputChannelToSqlConfig properties;
+
+    public CurrencyExtractorHistoryRecordOutputChannelToSql(
+        @Autowired CurrencyExtractorHistoryRecordOutputChannelToSqlConfig properties
+    ) {
+        this.properties = properties;
+    }
 
     @Override
     public String getName() {
@@ -45,16 +50,18 @@ public class CurrencyExtractorHistoryRecordOutputChannelToSql implements Currenc
         }
     }
 
-    private String getFilePathName(String bankName, CurrencyType currencyType) {
+    protected String getFilePathName(String bankName, CurrencyType currencyType) {
         String isoDateStr = DATE_FORMATTER.format(new Date().toInstant().atZone(ZoneId.systemDefault()));
 
         return
-            properties.getFilePath() + "/" +
-                properties.getFileNamePrefix() + "---" +
-                bankName + "--" +
-                currencyType.name() + "--" +
-                isoDateStr +
-                ".sql";
+    		(
+	            properties.getFilePath() + "/" +
+	                properties.getFileNamePrefix() + "---" +
+	                bankName + "--" +
+	                currencyType.name() + "--" +
+	                isoDateStr +
+	                ".sql"
+            ).replaceAll("\\s", "");
     }
 
     private String composeDeleteSql(
