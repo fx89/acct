@@ -471,32 +471,6 @@ public class AccountService {
 		return newRec;
 	}
 
-	/**
-	 * Should be able to tell if two dates are in the same day even if one's a
-	 * timestamp, the other's a date, etc
-	 */
-	private static boolean isSameDay(Date date1, Date date2) {
-		Calendar cal1 = Calendar.getInstance();
-		cal1.setTime(date1);
-
-		Calendar cal2 = Calendar.getInstance();
-		cal2.setTime(date2);
-
-		if (cal1.get(Calendar.YEAR) != cal2.get(Calendar.YEAR)) {
-			return false;
-		}
-
-		if (cal1.get(Calendar.MONTH) != cal2.get(Calendar.MONTH)) {
-			return false;
-		}
-
-		if (cal1.get(Calendar.DAY_OF_MONTH) != cal2.get(Calendar.DAY_OF_MONTH)) {
-			return false;
-		}
-
-		return true;
-	}
-
 	public Stream<CurrencyHistoryRecord> getCurrencyHistory(Long monitoredCurrencyId, Date sinceDate) {
 		return dataService.getCurrencyHistoryRecords(monitoredCurrencyId, sinceDate)
 				.sorted(Comparator.comparing(CurrencyHistoryRecord::getDate));

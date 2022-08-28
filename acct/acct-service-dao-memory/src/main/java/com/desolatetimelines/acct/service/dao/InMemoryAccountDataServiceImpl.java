@@ -11,8 +11,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static java.util.Collections.singletonList;
-
 public class InMemoryAccountDataServiceImpl implements AccountDataService {
 
 	private final CommonAccountingEntityRepository<Account> accountsRepository = new CommonAccountingEntityRepository<>();
