@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.retry.annotation.EnableRetry;
 
 import java.util.Map;
@@ -17,6 +18,7 @@ import java.util.Map;
 @EnableAutoConfiguration
 @EnableRetry
 @ComponentScan("com.desolatetimelines.acct")
+@PropertySource("classpath:application.properties")
 public class AccountingApplication {
 
 	public static void main(String[] args) {
