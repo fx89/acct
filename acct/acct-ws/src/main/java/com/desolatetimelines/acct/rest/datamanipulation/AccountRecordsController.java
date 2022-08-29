@@ -27,9 +27,14 @@ public class AccountRecordsController {
 
 	@GetMapping("/list")
 	@ResponseBody
-	@Transactional
 	public Stream<AccountRecord> list(@RequestParam Long accountId) {
 		return accountService.listAccountRecords(accountId);
+	}
+
+	@GetMapping("/page")
+	@ResponseBody
+	public Stream<AccountRecord> page(@RequestParam Long accountId, int pageNumber, int rowsPerPage) {
+		return accountService.pageAccountRecordsOrderByDate(accountId, pageNumber, rowsPerPage);
 	}
 
 	@PostMapping("/save")

@@ -26,11 +26,14 @@ import { MonthlyExpensesReport } from 'src/app/model/monthly-expenses-report';
   providedIn: 'root'
 })
 export class StateService {
+    private RECS_PER_PAGE : number = 20;
+
     public accounts: Account[] = [];
     public selectedAccount : Account;
     public selectedAccountSummary : AccountSummary;
     public selectedAccountRecords : AccountRecord[];
     public selectedAccountRecord : AccountRecord;
+    public selectedAccountCurrentPage : number = 0;
 
     public accountSummaries : AccountSummary[];
     public accountSummariesLoaded : boolean = false;
@@ -612,6 +615,24 @@ export class StateService {
         this.showYesNoDialog("Really delete account record ?");
     }
 
+    public prevAcctRecsPage() {
+        if (this.selectedAccountCurrentPage > 0) {
+            this.selectedAccountCurrentPage--;
+            this.loadSelectedAccountRecords();
+        }
+    }
+
+    public nextAcctRecsPage() {
+        const prevRecs = this.selectedAccountRecords;
+        this.selectedAccountCurrentPage++;
+        this.loadSelectedAccountRecords(() => {
+            if (!this.selectedAccountRecords || !this.selectedAccountRecords[0]) {
+                this.selectedAccountCurrentPage--;
+                this.selectedAccountRecords = prevRecs;
+            }
+        })
+    }
+
     public getMonitoiredCurrency(currencyId : Number) : MonitoredCurrency {
         for(let mCur of this.monitoredCurrencies) {
             if (mCur.id == currencyId) {
@@ -720,6 +741,7 @@ export class StateService {
     private clearSelectedAccountRecord() {
         this.selectedAccountRecord = null;
         this.monthlyBalanceReport = [];
+        this.selectedAccountCurrentPage = 0;
     }
 
     public loadSummaryOfAllAccounts() {
@@ -770,10 +792,19 @@ export class StateService {
         return this.dataService.get<AccountSummary>("accounts/summary", StateService.makeIdParam("accountId", accountId));
     }
 
-    private loadSelectedAccountRecords() {
-        this.dataService.get<AccountRecord[]>("records/list", StateService.makeIdParam("accountId", this.selectedAccount.id))
+    private loadSelectedAccountRecords(then?:Function) {
+        const params = new Map([
+            ["accountId"  , this.selectedAccount.id.toFixed()],
+            ["pageNumber" , this.selectedAccountCurrentPage.toFixed()],
+            ["rowsPerPage", this.RECS_PER_PAGE.toFixed()]
+        ]);
+
+        this.dataService.get<AccountRecord[]>("records/page", params)
           .subscribe(ret => {
               this.selectedAccountRecords = ret;
+              if (then) {
+                  then()
+              }
           });
     }
 

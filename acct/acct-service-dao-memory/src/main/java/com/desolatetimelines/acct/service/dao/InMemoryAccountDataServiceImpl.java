@@ -119,6 +119,11 @@ public class InMemoryAccountDataServiceImpl implements AccountDataService {
 	}
 
 	@Override
+	public Stream<AccountRecord> pageAccountRecordsOrderByDate(Long accountId, int pageNumber, int rowsPerPage) {
+		return accountRecordsRepository.values().stream().filter(rec -> rec.getAccountId().equals(accountId));
+	}
+
+	@Override
 	public AccountRecord newAccountRecordInstance() {
 		return new InMemoryAccountRecord();
 	}

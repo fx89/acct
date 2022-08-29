@@ -486,6 +486,11 @@ body {
   background-color: var(--green-button-background-color-hover);
 }
 
+.app-button-pagination {
+  width: 90px;
+  float: left;
+}
+
 /* ================================================================================ */
 
 

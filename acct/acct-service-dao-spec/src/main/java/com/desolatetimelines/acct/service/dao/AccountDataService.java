@@ -48,6 +48,8 @@ public interface AccountDataService {
 
 	Stream<AccountRecord> getAccountRecords(Long accountId, Date sinceDate);
 
+	Stream<AccountRecord> pageAccountRecordsOrderByDate(Long accountId, int pageNumber, int rowsPerPage);
+
 	AccountRecord newAccountRecordInstance();
 
 	AccountRecord saveAccountRecord(AccountRecord accountRecord);

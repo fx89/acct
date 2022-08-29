@@ -118,6 +118,6 @@ export class AccountRecordComponent implements OnInit {
     }
 
     public getRecExchangeRate() {
-        return this.rec ? this.rec.exchangeRate : 0
+        return this.rec ? this.rec.exchangeRate : 1
     }
 }

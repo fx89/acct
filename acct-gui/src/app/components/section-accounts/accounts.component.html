@@ -61,7 +61,14 @@
 <!-- ACCOUNT DETAILS AND INPUT FORM -->
 <div class="generic-panel account-records-panel" style="float: left; ">
     <!-- RECORDS LIST -->
-    <span class="generic-panel-title">Account records:</span><br />
+    <table style="width:100%"><tr>
+        <td><span class="generic-panel-title">Account records:</span></td>
+        <td style="padding-left:calc(100vw - 700px);"><span style="text-align:right">
+            <div class="app-control-component app-button app-button-pagination" (click)= "state.prevAcctRecsPage()"> &lt; prev page </div>
+            <div class="app-control-component app-button app-button-pagination" (click)= "state.nextAcctRecsPage()"> next page &gt; </div>
+        </span></td>
+    </tr></table>
+    
     <app-account-records *ngIf="state.selectedAccountRecords != null && state.incomeOrExpenseItems != null"></app-account-records>
 
     <!-- SPACER -->

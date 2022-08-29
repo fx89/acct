@@ -15,6 +15,8 @@ import com.desolatetimelines.acct.service.dao.model.AccountRecord;
 @Table(name = "account_record")
 public class SpringDataAccountRecord implements AccountRecord {
 
+	public static final String DATE_FIELD_NAME = "date";
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -22,7 +24,7 @@ public class SpringDataAccountRecord implements AccountRecord {
 	@Column(name = "account_id")
 	private Long accountId;
 
-	@Column(name = "date")
+	@Column(name = DATE_FIELD_NAME)
 	private Date date;
 
 	@Column(name = "income_or_expense_item_id")

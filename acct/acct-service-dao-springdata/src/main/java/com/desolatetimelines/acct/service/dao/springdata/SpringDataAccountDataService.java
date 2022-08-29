@@ -1,45 +1,22 @@
 package com.desolatetimelines.acct.service.dao.springdata;
 
+import com.desolatetimelines.acct.service.dao.AccountDataService;
+import com.desolatetimelines.acct.service.dao.model.*;
+import com.desolatetimelines.acct.service.dao.springdata.model.*;
+import com.desolatetimelines.acct.service.dao.springdata.repository.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.retry.annotation.Retryable;
+
+import javax.annotation.ManagedBean;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import javax.annotation.ManagedBean;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.retry.annotation.Retryable;
-
-import com.desolatetimelines.acct.service.dao.AccountDataService;
-import com.desolatetimelines.acct.service.dao.model.Account;
-import com.desolatetimelines.acct.service.dao.model.AccountRecord;
-import com.desolatetimelines.acct.service.dao.model.Bank;
-import com.desolatetimelines.acct.service.dao.model.CurrencyHistoryRecord;
-import com.desolatetimelines.acct.service.dao.model.Deposit;
-import com.desolatetimelines.acct.service.dao.model.IncomeOrExpenseItem;
-import com.desolatetimelines.acct.service.dao.model.IncomeOrExpenseItemCategory;
-import com.desolatetimelines.acct.service.dao.model.InterestHistoryRecord;
-import com.desolatetimelines.acct.service.dao.model.MonitoredCurrency;
-import com.desolatetimelines.acct.service.dao.springdata.model.SpringDataAccount;
-import com.desolatetimelines.acct.service.dao.springdata.model.SpringDataAccountRecord;
-import com.desolatetimelines.acct.service.dao.springdata.model.SpringDataBank;
-import com.desolatetimelines.acct.service.dao.springdata.model.SpringDataCurrencyHistoryRecord;
-import com.desolatetimelines.acct.service.dao.springdata.model.SpringDataDeposit;
-import com.desolatetimelines.acct.service.dao.springdata.model.SpringDataIncomeOrExpenseItem;
-import com.desolatetimelines.acct.service.dao.springdata.model.SpringDataIncomeOrExpenseItemCategory;
-import com.desolatetimelines.acct.service.dao.springdata.model.SpringDataInterestHistoryRecord;
-import com.desolatetimelines.acct.service.dao.springdata.model.SpringDataMonitoredCurrency;
-import com.desolatetimelines.acct.service.dao.springdata.repository.SpringDataAccountRecordsRepository;
-import com.desolatetimelines.acct.service.dao.springdata.repository.SpringDataAccountsRepository;
-import com.desolatetimelines.acct.service.dao.springdata.repository.SpringDataBanksRepository;
-import com.desolatetimelines.acct.service.dao.springdata.repository.SpringDataCurrencyHistoryRecordsRepository;
-import com.desolatetimelines.acct.service.dao.springdata.repository.SpringDataDepositsRepository;
-import com.desolatetimelines.acct.service.dao.springdata.repository.SpringDataIncomeOrExpenseItemCategoriesRepository;
-import com.desolatetimelines.acct.service.dao.springdata.repository.SpringDataIncomeOrExpenseItemsRepository;
-import com.desolatetimelines.acct.service.dao.springdata.repository.SpringDataInterestHistoryRecordsRepository;
-import com.desolatetimelines.acct.service.dao.springdata.repository.SpringDataMonitoredCurrenciesRepository;
-
+import static com.desolatetimelines.acct.service.dao.springdata.model.SpringDataAccountRecord.DATE_FIELD_NAME;
 import static java.util.function.Function.identity;
 
 @ManagedBean("SpringDataAccountDataService")
@@ -171,6 +148,17 @@ public class SpringDataAccountDataService implements AccountDataService {
 		return StreamSupport.stream(
 				accountRecordsRepository.findAllByAccountIdAndDateGreaterThanEqual(accountId, sinceDate).spliterator(),
 				false).map(identity());
+	}
+
+	@Override
+	@Retryable
+	public Stream<AccountRecord> pageAccountRecordsOrderByDate(Long accountId, int pageNumber, int rowsPerPage) {
+		return StreamSupport.stream(
+				accountRecordsRepository.findAllByAccountId(
+						accountId, PageRequest.of(pageNumber, rowsPerPage, Sort.by(DATE_FIELD_NAME))
+					).spliterator(),
+				false
+		).map(identity());
 	}
 
 	@Override

@@ -171,6 +171,10 @@ public class AccountService {
 		return dataService.getAccountRecords(accountId).sorted(Comparator.comparing(AccountRecord::getDate));
 	}
 
+	public Stream<AccountRecord> pageAccountRecordsOrderByDate(Long accountId, int pageNumber, int rowsPerPage) {
+		return dataService.pageAccountRecordsOrderByDate(accountId, pageNumber, rowsPerPage);
+	}
+
 	public AccountRecord newAccountRecord(Long accountId, Date date, Long incomeOrExpenseItemId, Double value)
 			throws AccountServiceValidationException {
 		AccountRecord rec = dataService.newAccountRecordInstance();
