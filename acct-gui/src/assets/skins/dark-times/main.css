@@ -334,7 +334,7 @@ body {
 }
 
 .acount-records-list {
-  height:calc(100vh - var(--generic-panel-height) - var(--account-records-input-form-height) - var(--account-records-separator-height) - 100px);
+  height:calc(100vh - var(--generic-panel-height) - var(--account-records-input-form-height) - var(--account-records-separator-height) - 150px);
 }
 
 .acount-records-list-record {
