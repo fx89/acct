@@ -1,8 +1,0 @@
-<div class="records-list-body acount-records-list">
-    <div
-      *ngFor="let rec of state.selectedAccountRecords"
-      class="records-list-record acount-records-list-record {{ (state.selectedAccountRecord && state.selectedAccountRecord.id) == rec.id ? 'records-list-record-selected' : ' ' }}"
-    >
-        <app-account-record [rec]="rec"></app-account-record>
-    </div>
-</div>
