@@ -1,0 +1,679 @@
+<mxfile host="Electron" modified="2024-10-20T08:45:49.889Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.1.15 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="b8yAUcEvKz-3ExDWs5VL" version="22.1.15" type="device">
+  <diagram name="Page-1" id="7FewCz6WxxCJnukyFhWN">
+    <mxGraphModel dx="2250" dy="619" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="ESy4iB7SFVXvlthgngtp-1" value="acct-user-management-ws-server" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="-400" y="400" width="480" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ESy4iB7SFVXvlthgngtp-2" value="acct-workspace-ws-server" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="4040" y="400" width="840" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ESy4iB7SFVXvlthgngtp-3" value="acct-catalog-ws-server" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="1520" y="400" width="840" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ESy4iB7SFVXvlthgngtp-4" value="acct-currency-ws-server" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="2480" y="400" width="1440" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ESy4iB7SFVXvlthgngtp-5" value="acct-user-management-ws-client" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="-400" y="240" width="480" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ESy4iB7SFVXvlthgngtp-6" value="acct-user-management-service" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="-120" y="640" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ESy4iB7SFVXvlthgngtp-7" value="acct-user-management-data" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="-120" y="880" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ESy4iB7SFVXvlthgngtp-8" value="acct-user-management-repo-spec" style="rounded=0;whiteSpace=wrap;html=1;fontColor=#B9E0A5;fillColor=#006633;" parent="1" vertex="1">
+          <mxGeometry x="-120" y="960" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ESy4iB7SFVXvlthgngtp-9" value="acct-user-management-repo-springdata" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="-120" y="1040" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ESy4iB7SFVXvlthgngtp-10" value="acct-workspace-service" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="4320" y="640" width="560" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ESy4iB7SFVXvlthgngtp-11" value="acct-workspace-data" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="4320" y="880" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ESy4iB7SFVXvlthgngtp-13" value="acct-workspace-repo-springdata" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="4320" y="1040" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ESy4iB7SFVXvlthgngtp-14" value="acct-workspace-ws-client" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="4040" y="240" width="840" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ESy4iB7SFVXvlthgngtp-15" value="acct-catalog-service" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="1800" y="640" width="560" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ESy4iB7SFVXvlthgngtp-16" value="acct-catalog-data" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="1800" y="880" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ESy4iB7SFVXvlthgngtp-18" value="acct-catalog-repo-springdata" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="1800" y="1040" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ESy4iB7SFVXvlthgngtp-19" value="acct-catalog-ws-client" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="1520" y="240" width="840" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ESy4iB7SFVXvlthgngtp-20" value="acct-currency-ws-client" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="2480" y="240" width="1440" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ESy4iB7SFVXvlthgngtp-21" value="acct-currency-service" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="2760" y="640" width="760" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ESy4iB7SFVXvlthgngtp-22" value="acct-currency-data" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="2760" y="880" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ESy4iB7SFVXvlthgngtp-24" value="acct-currency-repo-springdata" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="2760" y="1040" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ESy4iB7SFVXvlthgngtp-25" value="acct-currency-collector-spec" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#006633;fontColor=#B9E0A5;" parent="1" vertex="1">
+          <mxGeometry x="2960" y="720" width="560" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ESy4iB7SFVXvlthgngtp-27" value="acct-currency-collector-ro-bnr" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="2960" y="800" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ESy4iB7SFVXvlthgngtp-28" value="acct-currency-collector-ro-bt" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="3160" y="800" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ESy4iB7SFVXvlthgngtp-30" value="acct-currency-collector-ro-bcr" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="3360" y="800" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Eh2ojBqKWhO5o19DLVm0-4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="hXg05alJvG0ffrV5KUbo-2" target="ESy4iB7SFVXvlthgngtp-1" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-2" value="acct-user-management-ws-spec" style="rounded=0;whiteSpace=wrap;html=1;fontColor=#B9E0A5;fillColor=#006633;" parent="1" vertex="1">
+          <mxGeometry x="-400" y="320" width="480" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-3" value="acct-workspace-ws-spec" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="4040" y="320" width="840" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-4" value="acct-currency-collector-ro-bnr-data" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="2960" y="880" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-5" value="acct-catalog-ws-spec" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="1520" y="320" width="840" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-6" value="acct-currency-ws-spec" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="2480" y="320" width="1440" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-7" value="acct-security-service" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="840" y="640" width="560" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-8" value="acct-security-data" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="840" y="880" width="110" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-10" value="acct-security-repo-&lt;br&gt;springdata" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="840" y="1040" width="110" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-11" value="acct-security-ws-spec" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="200" y="320" width="1200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-12" value="acct-security-ws-server" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="200" y="400" width="1200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-13" value="acct-security-ws-client" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="200" y="240" width="1200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-14" value="acct-access-aop" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="6830" y="240" width="440" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-15" value="acct-privileges-provider-spec" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#006633;fontColor=#B9E0A5;" parent="1" vertex="1">
+          <mxGeometry x="6830" y="320" width="440" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-16" value="service1-privileges-provider" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="6830" y="400" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-25" value="acct-user-management-privileges-provider" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="-280" y="480" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-26" value="acct-privileges-provider-spec" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;fillColor=#006633;fontColor=#B9E0A5;" parent="1" vertex="1">
+          <mxGeometry x="-400" y="560" width="240" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-28" value="acct-access-aop" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="-400" y="480" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-29" value="serviceN-privileges-provider" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="7110" y="400" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-30" value="..." style="rounded=0;whiteSpace=wrap;html=1;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="7030" y="400" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-55" value="acct-security-privileges-provider" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="320" y="480" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-57" value="acct-access-aop" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="200" y="480" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-58" value="acct-workspace-privileges-provider" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="4160" y="480" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-60" value="acct-access-aop" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="4040" y="480" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-61" value="acct-catalog-privileges-provider" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="1640" y="480" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-63" value="acct-access-aop" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="1520" y="480" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-64" value="acct-currency-collector-ro-bt-data" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="3160" y="880" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-65" value="acct-currency-collector-ro-bcr-data" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="3360" y="880" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-67" value="acct-currency-privileges-provider" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="2600" y="480" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-69" value="acct-access-aop" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="2480" y="480" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-71" value="&lt;font style=&quot;&quot;&gt;&lt;span style=&quot;font-size: 24px;&quot;&gt;User management microservice&lt;/span&gt;&lt;br&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;Provides CRUD operations for managing users and groups.&lt;/font&gt;&lt;br&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="-400" y="120" width="480" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-73" value="&lt;font style=&quot;&quot;&gt;&lt;span style=&quot;font-size: 24px;&quot;&gt;Security microservice&lt;/span&gt;&lt;br&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;Provides CRUD operations for managing user / workspace mapping as well as group privileges.&lt;/font&gt;&lt;br&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="200" y="120" width="1200" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-74" value="&lt;font style=&quot;&quot;&gt;&lt;span style=&quot;font-size: 24px;&quot;&gt;Workspace microservice&lt;/span&gt;&lt;br&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;Provides CRUD operations for managing workspaces, accounts, account records, deposits, etc. Also provides functions for transfers, currency conversion, etc.&lt;/font&gt;&lt;br&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="4040" y="120" width="840" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-75" value="&lt;font style=&quot;&quot;&gt;&lt;span style=&quot;font-size: 24px;&quot;&gt;Catalog microservice&lt;/span&gt;&lt;br&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;Provides CRUD operations for managing currencies, banks, income or expense item categories and sub-categories, etc.&lt;/font&gt;&lt;br&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="1520" y="120" width="840" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-76" value="&lt;font style=&quot;&quot;&gt;&lt;span style=&quot;font-size: 24px;&quot;&gt;Currency microservice&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;Provides functionality for collecting per-day exchange rates from various banks. Also provides CRUD operations to read the collected exchange rate history. Provides even more CRUD operations to allow setting up currency collectors.&lt;/span&gt;&lt;br&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="2480" y="120" width="1440" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-37" value="" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="-840" y="80" width="20" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-38" value="&amp;nbsp; &amp;nbsp; &amp;nbsp; Reference to module defined in the another context" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;container=1;" parent="1" vertex="1">
+          <mxGeometry x="-820" y="80" width="340" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-39" value="&lt;font style=&quot;font-size: 20px;&quot;&gt;&lt;b&gt;LEGEND&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="-840" y="10" width="110" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-78" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="-840" y="50" width="20" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-79" value="&amp;nbsp; &amp;nbsp; &amp;nbsp; Module defined in the current scope" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;container=1;" parent="1" vertex="1">
+          <mxGeometry x="-820" y="50" width="340" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-80" value="" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;strokeColor=none;fillStyle=solid;fillColor=#006633;fontColor=#D5E8D4;" parent="1" vertex="1">
+          <mxGeometry x="-840" y="110" width="20" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-81" value="&amp;nbsp; &amp;nbsp; &amp;nbsp; Specification module" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;container=1;" parent="1" vertex="1">
+          <mxGeometry x="-820" y="110" width="340" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-82" value="acct-privileges-provider-spec" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;fillColor=#006633;fontColor=#B9E0A5;" parent="1" vertex="1">
+          <mxGeometry x="200" y="560" width="600" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-83" value="acct-privileges-provider-spec" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;fillColor=#006633;fontColor=#B9E0A5;" parent="1" vertex="1">
+          <mxGeometry x="1520" y="560" width="240" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-84" value="acct-privileges-provider-spec" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;fillColor=#006633;fontColor=#B9E0A5;" parent="1" vertex="1">
+          <mxGeometry x="2480" y="560" width="240" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-85" value="acct-privileges-provider-spec" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;fillColor=#006633;fontColor=#B9E0A5;" parent="1" vertex="1">
+          <mxGeometry x="4040" y="560" width="240" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-86" value="acct-security-repo-spec" style="rounded=0;whiteSpace=wrap;html=1;fontColor=#B9E0A5;fillColor=#006633;" parent="1" vertex="1">
+          <mxGeometry x="840" y="960" width="110" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-87" value="acct-catalog-repo-spec" style="rounded=0;whiteSpace=wrap;html=1;fontColor=#B9E0A5;fillColor=#006633;" parent="1" vertex="1">
+          <mxGeometry x="1800" y="960" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-88" value="acct-currency-repo-spec" style="rounded=0;whiteSpace=wrap;html=1;fontColor=#B9E0A5;fillColor=#006633;" parent="1" vertex="1">
+          <mxGeometry x="2760" y="960" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-89" value="acct-workspace-repo-spec" style="rounded=0;whiteSpace=wrap;html=1;fontColor=#B9E0A5;fillColor=#006633;" parent="1" vertex="1">
+          <mxGeometry x="4320" y="960" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-90" value="" style="endArrow=none;html=1;rounded=0;strokeWidth=5;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-840" y="380" as="sourcePoint" />
+            <mxPoint x="6800" y="380" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-91" value="" style="endArrow=none;html=1;rounded=0;strokeWidth=5;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-840" y="620" as="sourcePoint" />
+            <mxPoint x="6800" y="620" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-92" value="" style="endArrow=none;html=1;rounded=0;strokeWidth=5;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-840" y="860" as="sourcePoint" />
+            <mxPoint x="6800.7998046875" y="860" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-93" value="" style="endArrow=none;html=1;rounded=0;strokeWidth=5;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-640" y="1200" as="sourcePoint" />
+            <mxPoint x="-640" y="200" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-94" value="&lt;h1&gt;Presentation layer&lt;/h1&gt;&lt;p&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;REST controllers, mappers, security configuration, adapters.&lt;/font&gt;&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="1" vertex="1">
+          <mxGeometry x="-840" y="400" width="190" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-95" value="" style="endArrow=none;html=1;rounded=0;strokeWidth=5;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-840" y="300" as="sourcePoint" />
+            <mxPoint x="6800" y="300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-96" value="&lt;h1&gt;Services and business layer&lt;/h1&gt;&lt;p&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;Application logic, business rules, transaction management, integration of multiple data services.&lt;/span&gt;&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="1" vertex="1">
+          <mxGeometry x="-840" y="640" width="190" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-97" value="" style="endArrow=none;html=1;rounded=0;strokeWidth=5;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-440" y="1200" as="sourcePoint" />
+            <mxPoint x="-440" y="80" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-98" value="" style="endArrow=none;html=1;rounded=0;strokeWidth=2;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-640" y="460" as="sourcePoint" />
+            <mxPoint x="6800" y="460" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-99" value="" style="endArrow=none;html=1;rounded=0;strokeWidth=2;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-640" y="700" as="sourcePoint" />
+            <mxPoint x="6802.3994140625" y="700" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-100" value="" style="endArrow=none;html=1;rounded=0;strokeWidth=2;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-640" y="780" as="sourcePoint" />
+            <mxPoint x="6801.599609375" y="780" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-101" value="" style="endArrow=none;html=1;rounded=0;strokeWidth=2;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-640" y="940" as="sourcePoint" />
+            <mxPoint x="6801.6005859375" y="940" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-102" value="" style="endArrow=none;html=1;rounded=0;strokeWidth=2;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-640" y="1020" as="sourcePoint" />
+            <mxPoint x="6800" y="1020" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-106" value="&lt;font style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;Data services&lt;br&gt;&lt;/b&gt;&lt;/font&gt;Facades for data repositories" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="1" vertex="1">
+          <mxGeometry x="-630" y="870" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-107" value="&lt;font style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;Repository specs&lt;br&gt;&lt;/b&gt;&lt;/font&gt;Java interfaces that specify each repository&#39;s functionality to allow switching between multiple access methods" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="1" vertex="1">
+          <mxGeometry x="-630" y="950" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-108" value="&lt;font style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;Repo implementations&lt;br&gt;&lt;/b&gt;&lt;/font&gt;Implementations of the repository specs - one for each access method" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="1" vertex="1">
+          <mxGeometry x="-630" y="1030" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-109" value="&lt;font style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;Application services&lt;br&gt;&lt;/b&gt;&lt;/font&gt;Integration of plugins and data services with application logic on top" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="1" vertex="1">
+          <mxGeometry x="-630" y="630" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-110" value="&lt;font style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;Plugin specifications&lt;br&gt;&lt;/b&gt;&lt;/font&gt;Specifications for current and future plugins" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="1" vertex="1">
+          <mxGeometry x="-630" y="710" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-111" value="&lt;font style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;Plugin implementations&lt;br&gt;&lt;/b&gt;&lt;/font&gt;Implementations of plugin specifications" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="1" vertex="1">
+          <mxGeometry x="-630" y="790" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-112" value="&lt;font style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;Privileges providers&lt;br&gt;&lt;/b&gt;&lt;/font&gt;Services that provide lists of access rights, complete with names and descriptions, to be referenced and used both as keywords in the security configuration of the REST APIs and as plugins in the secuirity service" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="1" vertex="1">
+          <mxGeometry x="-630" y="470" width="180" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-113" value="&lt;font style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;REST APIs&lt;br&gt;&lt;/b&gt;&lt;/font&gt;REST controlers, mappers, adapters and whatever else is needed for exposing the services to the outside world" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="1" vertex="1">
+          <mxGeometry x="-630" y="390" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-114" value="&lt;h1&gt;Data layer&lt;/h1&gt;&lt;p&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;Repository specifications, repository implementations for various access methods and facades to present the functionality in a unitary fashion.&lt;/span&gt;&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="1" vertex="1">
+          <mxGeometry x="-840" y="890" width="190" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-115" value="&lt;font style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;Web services specs&lt;br&gt;&lt;/b&gt;&lt;/font&gt;Defines the functionality presented by the service to keep te ws-client and ws-server modules aligned" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="1" vertex="1">
+          <mxGeometry x="-630" y="310" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-117" value="&lt;font style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;REST API clients&lt;br&gt;&lt;/b&gt;&lt;/font&gt;Redistributable modules that can be used by other ACCT microservices to access the functionality exposed by the presentation layer" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="1" vertex="1">
+          <mxGeometry x="-630" y="200" width="180" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-118" value="&lt;h1&gt;Redistributables&lt;/h1&gt;&lt;p&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;REST API clients&lt;/font&gt;&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="1" vertex="1">
+          <mxGeometry x="-840" y="200" width="200" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-120" value="acct-user-management-privileges-provider" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="410" y="480" width="80" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-123" value="acct-catalog-privileges-provider" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="490" y="480" width="70" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-124" value="acct-currency-privileges-provider" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="560" y="480" width="70" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-125" value="acct-workspace-privileges-provider" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="630" y="480" width="90" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-126" value="" style="endArrow=none;html=1;rounded=0;strokeWidth=2;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="140" y="1200" as="sourcePoint" />
+            <mxPoint x="140" y="80" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-127" value="acct-security-workspace-data" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="960" y="880" width="270" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-128" value="acct-security-workspace-repo-spec" style="rounded=0;whiteSpace=wrap;html=1;fontColor=#B9E0A5;fillColor=#006633;" parent="1" vertex="1">
+          <mxGeometry x="960" y="960" width="270" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-129" value="acct-security-workspace-repo-rest" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="960" y="1040" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-130" value="acct-workspace-ws-client" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="960" y="1120" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-131" value="" style="endArrow=none;html=1;rounded=0;strokeWidth=2;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-640" y="1100" as="sourcePoint" />
+            <mxPoint x="6800.7998046875" y="1100" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-132" value="&lt;font style=&quot;font-size: 15px;&quot;&gt;&lt;b&gt;Repo implementation dependencies&lt;br&gt;&lt;/b&gt;&lt;/font&gt;Proprietary modules that ar required to make certain repository implementations work" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;movable=1;resizable=1;rotatable=1;deletable=1;editable=1;locked=0;connectable=1;" parent="1" vertex="1">
+          <mxGeometry x="-630" y="1110" width="180" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-133" value="acct-security-workspace-repo-springdata" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#663300;fontColor=#FFFFCC;" parent="1" vertex="1">
+          <mxGeometry x="1090" y="1040" width="140" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-135" value="" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;strokeColor=none;fillStyle=solid;fillColor=#663300;fontColor=#D5E8D4;" parent="1" vertex="1">
+          <mxGeometry x="-840" y="140" width="20" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-136" value="&amp;nbsp; &amp;nbsp; &amp;nbsp; Alternative module that will likely never be used" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;container=1;" parent="1" vertex="1">
+          <mxGeometry x="-820" y="140" width="340" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-137" value="" style="endArrow=none;html=1;rounded=0;strokeWidth=2;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1460" y="1240" as="sourcePoint" />
+            <mxPoint x="1460" y="120" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-138" value="" style="endArrow=none;html=1;rounded=0;strokeWidth=2;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="2420" y="1240" as="sourcePoint" />
+            <mxPoint x="2420" y="120" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-139" value="acct-currency-catalog-data" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="3560" y="880" width="360" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-140" value="acct-currency-catalog-repo-spec" style="rounded=0;whiteSpace=wrap;html=1;fontColor=#B9E0A5;fillColor=#006633;" parent="1" vertex="1">
+          <mxGeometry x="3560" y="960" width="360" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-141" value="acct-currency-catalog-repo-rest" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="3560" y="1040" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-143" value="acct-currency-catalog-repo-springdata" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#663300;fontColor=#FFFFCC;" parent="1" vertex="1">
+          <mxGeometry x="3760" y="1040" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-144" value="acct-catalog-data" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;fontColor=#FFE6CC;fillColor=#663300;" parent="1" vertex="1">
+          <mxGeometry x="3760" y="1120" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-147" value="acct-workspace-currency-data" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="4520" y="880" width="360" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-148" value="acct-workspace-data" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="2000" y="880" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-149" value="acct-currency-data" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="2200" y="880" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-150" value="acct-catalog-workspace-repo-spec" style="rounded=0;whiteSpace=wrap;html=1;fontColor=#B9E0A5;fillColor=#006633;" parent="1" vertex="1">
+          <mxGeometry x="2000" y="960" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-151" value="acct-catalog-workspace-repo-rest" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="2000" y="1040" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-152" value="acct-catalog-currency-repo-spec" style="rounded=0;whiteSpace=wrap;html=1;fontColor=#B9E0A5;fillColor=#006633;" parent="1" vertex="1">
+          <mxGeometry x="2200" y="960" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-153" value="acct-catalog-currency-repo-rest" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="2200" y="1040" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-154" value="acct-workspace-ws-client" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="2000" y="1120" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-155" value="acct-currency-ws-client" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="2200" y="1120" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-156" value="Don&#39;t delete items if they are in use by other services" style="text;html=1;strokeColor=default;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="2000" y="1170" width="360" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-157" value="" style="endArrow=none;html=1;rounded=0;strokeWidth=2;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="3980" y="1240" as="sourcePoint" />
+            <mxPoint x="3980" y="120" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-158" value="acct-workspace-currency-repo-spec" style="rounded=0;whiteSpace=wrap;html=1;fontColor=#B9E0A5;fillColor=#006633;" parent="1" vertex="1">
+          <mxGeometry x="4520" y="960" width="360" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-160" value="acct-workspace-currency-repo-rest" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="4520" y="1040" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-161" value="acct-workspace-currency-repo-springdata" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#663300;fontColor=#FFFFCC;" parent="1" vertex="1">
+          <mxGeometry x="4720" y="1040" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-163" value="acct-currency-data" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;fontColor=#FFE6CC;fillColor=#663300;" parent="1" vertex="1">
+          <mxGeometry x="4720" y="1120" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-164" value="acct-currency-ws-client" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="3560" y="1120" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-165" value="acct-currency-ws-client" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="4520" y="1120" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-166" value="acct-reporting-ws-client" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="5000" y="240" width="1000" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-167" value="acct-reporting-ws-spec" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="5000" y="320" width="1000" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-168" value="acct-reporting-ws-server" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="5000" y="400" width="1000" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-169" value="&lt;font style=&quot;&quot;&gt;&lt;span style=&quot;font-size: 24px;&quot;&gt;Reporting microservice&lt;/span&gt;&lt;br&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;Provides various reports in JSON format as well as background job to pre-compile and store certain reports.&lt;/font&gt;&lt;br&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="5000" y="120" width="1000" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-170" value="acct-reporting-privileges-provider" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="5120" y="480" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-171" value="acct-access-aop" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="5000" y="480" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-172" value="acct-privileges-provider-spec" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;fillColor=#006633;fontColor=#B9E0A5;" parent="1" vertex="1">
+          <mxGeometry x="5000" y="560" width="240" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-173" value="acct-reporting-privileges-provider" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="720" y="480" width="80" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-174" value="acct-reporting-service" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="5280" y="640" width="720" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-175" value="acct-reporting-compiler-spec" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#006633;fontColor=#B9E0A5;" parent="1" vertex="1">
+          <mxGeometry x="5440" y="720" width="560" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-176" value="acct-reporting-compiler-stock" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="5440" y="800" width="560" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-178" value="acct-reporting-data" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="5280" y="880" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-179" value="acct-reporting-compiler-stock-workspace-data" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="5440" y="880" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-180" value="acct-reporting-repo-spec" style="rounded=0;whiteSpace=wrap;html=1;fontColor=#B9E0A5;fillColor=#006633;" parent="1" vertex="1">
+          <mxGeometry x="5280" y="960" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-181" value="acct-reporting-repo-springdata" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="5280" y="1040" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-182" value="acct-reporting-compiler-stock-currency-data" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="5640" y="880" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-183" value="acct-reporting-compiler-stock-catalog-data" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="5840" y="880" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-184" value="acct-reporting-compiler-stock-workspace-repo-spec" style="rounded=0;whiteSpace=wrap;html=1;fontColor=#B9E0A5;fillColor=#006633;" parent="1" vertex="1">
+          <mxGeometry x="5440" y="960" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-185" value="acct-reporting-compiler-stock-currency-repo-spec" style="rounded=0;whiteSpace=wrap;html=1;fontColor=#B9E0A5;fillColor=#006633;" parent="1" vertex="1">
+          <mxGeometry x="5640" y="960" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-186" value="acct-reporting-compiler-stock-catalog-repo-spec" style="rounded=0;whiteSpace=wrap;html=1;fontColor=#B9E0A5;fillColor=#006633;" parent="1" vertex="1">
+          <mxGeometry x="5840" y="960" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-187" value="acct-reporting-compiler-stock-workspace-repo-rest" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="5440" y="1040" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-189" value="acct-reporting-compiler-stock-currency-repo-rest" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="5640" y="1040" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-190" value="acct-reporting-compiler-stock-catalog-repo-rest" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="5840" y="1040" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-191" value="acct-currency-ws-client" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="5640" y="1120" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-192" value="acct-workspace-ws-client" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="5440" y="1120" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-193" value="acct-catalog-ws-client" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="5840" y="1120" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="hXg05alJvG0ffrV5KUbo-194" value="" style="endArrow=none;html=1;rounded=0;strokeWidth=2;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="4940" y="1240" as="sourcePoint" />
+            <mxPoint x="4940" y="120" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Eh2ojBqKWhO5o19DLVm0-1" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;fillColor=default;" parent="1" source="ESy4iB7SFVXvlthgngtp-5" target="hXg05alJvG0ffrV5KUbo-2" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-169.7" y="282" as="sourcePoint" />
+            <mxPoint x="-170" y="310" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Eh2ojBqKWhO5o19DLVm0-3" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;fillColor=default;" parent="1" source="ESy4iB7SFVXvlthgngtp-1" target="hXg05alJvG0ffrV5KUbo-2" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-150" y="290" as="sourcePoint" />
+            <mxPoint x="-150" y="330" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Eh2ojBqKWhO5o19DLVm0-5" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;fillColor=default;exitX=0.084;exitY=1.05;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="ESy4iB7SFVXvlthgngtp-1" target="hXg05alJvG0ffrV5KUbo-28" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-150" y="410" as="sourcePoint" />
+            <mxPoint x="-150" y="370" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Eh2ojBqKWhO5o19DLVm0-6" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;fillColor=default;exitX=0.376;exitY=1.03;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="ESy4iB7SFVXvlthgngtp-1" target="hXg05alJvG0ffrV5KUbo-25" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-140" y="420" as="sourcePoint" />
+            <mxPoint x="-140" y="380" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Eh2ojBqKWhO5o19DLVm0-7" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;fillColor=default;entryX=0.165;entryY=-0.01;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="hXg05alJvG0ffrV5KUbo-28" target="hXg05alJvG0ffrV5KUbo-26" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-130" y="430" as="sourcePoint" />
+            <mxPoint x="-130" y="390" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Eh2ojBqKWhO5o19DLVm0-8" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;fillColor=default;entryX=0.75;entryY=0;entryDx=0;entryDy=0;" parent="1" source="hXg05alJvG0ffrV5KUbo-25" target="hXg05alJvG0ffrV5KUbo-26" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-350" y="530" as="sourcePoint" />
+            <mxPoint x="-350" y="570" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Eh2ojBqKWhO5o19DLVm0-9" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;fillColor=default;" parent="1" target="ESy4iB7SFVXvlthgngtp-6" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-20" y="440" as="sourcePoint" />
+            <mxPoint x="-340" y="580" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Eh2ojBqKWhO5o19DLVm0-10" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;fillColor=default;" parent="1" source="ESy4iB7SFVXvlthgngtp-6" target="ESy4iB7SFVXvlthgngtp-7" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-330" y="550" as="sourcePoint" />
+            <mxPoint x="-330" y="590" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Eh2ojBqKWhO5o19DLVm0-11" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;fillColor=default;" parent="1" source="ESy4iB7SFVXvlthgngtp-7" target="ESy4iB7SFVXvlthgngtp-8" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-320" y="560" as="sourcePoint" />
+            <mxPoint x="-320" y="600" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Eh2ojBqKWhO5o19DLVm0-12" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;fillColor=default;" parent="1" source="ESy4iB7SFVXvlthgngtp-9" target="ESy4iB7SFVXvlthgngtp-8" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="220" y="1070" as="sourcePoint" />
+            <mxPoint x="-10" y="970" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7mXwNFF6rQSaRcRwVDP_-1" value="acct-background-jobs" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="7310" y="240" width="440" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="7mXwNFF6rQSaRcRwVDP_-2" value="acct-background-jobs-provider-spec" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#006633;fontColor=#B9E0A5;" parent="1" vertex="1">
+          <mxGeometry x="7310" y="320" width="440" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="7mXwNFF6rQSaRcRwVDP_-3" value="service1-background-jobs-provider-provider" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="7310" y="400" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="7mXwNFF6rQSaRcRwVDP_-4" value="serviceN-background-jobs-provider-provider" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="7590" y="400" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="7mXwNFF6rQSaRcRwVDP_-5" value="..." style="rounded=0;whiteSpace=wrap;html=1;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="7510" y="400" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="WBmJNAm9Qy6_qThMKuaz-1" value="acct-security-user-management-data" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="1240" y="880" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="WBmJNAm9Qy6_qThMKuaz-2" value="acct-security-user-management-repo-spec" style="rounded=0;whiteSpace=wrap;html=1;fontColor=#B9E0A5;fillColor=#006633;" parent="1" vertex="1">
+          <mxGeometry x="1240" y="960" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="WBmJNAm9Qy6_qThMKuaz-4" value="acct-security-user-management-repo-rest" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="1240" y="1040" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="rYrKvNRdtJEMLWtImmNn-1" value="acct-user-management-ws-client" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="1240" y="1120" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="YjPGKsFg06byZKDeOiuD-1" value="" style="endArrow=none;html=1;rounded=0;strokeWidth=2;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="6060" y="1240" as="sourcePoint" />
+            <mxPoint x="6060" y="120" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="YjPGKsFg06byZKDeOiuD-2" value="acct-usage-ws-server" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="6120" y="400" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="YjPGKsFg06byZKDeOiuD-3" value="acct-usage-service" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="6120" y="640" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="YjPGKsFg06byZKDeOiuD-4" value="acct-usage-data" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="6120" y="880" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="YjPGKsFg06byZKDeOiuD-5" value="acct-usage-repo-springdata" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="6120" y="1040" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="YjPGKsFg06byZKDeOiuD-6" value="acct-usage-repo-spec" style="rounded=0;whiteSpace=wrap;html=1;fontColor=#B9E0A5;fillColor=#006633;" vertex="1" parent="1">
+          <mxGeometry x="6120" y="960" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="YjPGKsFg06byZKDeOiuD-7" value="acct-usage-ws-spec" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="6120" y="320" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="YjPGKsFg06byZKDeOiuD-8" value="acct-usage-ws-client" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="6120" y="240" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="YjPGKsFg06byZKDeOiuD-9" value="" style="endArrow=none;html=1;rounded=0;strokeWidth=2;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="6340" y="1240" as="sourcePoint" />
+            <mxPoint x="6340" y="120" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="YjPGKsFg06byZKDeOiuD-10" value="&lt;font style=&quot;&quot;&gt;&lt;span style=&quot;font-size: 24px;&quot;&gt;Usage microservice&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;Relay for resource usage queries&lt;/span&gt;&lt;br&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="6060" y="120" width="280" height="80" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

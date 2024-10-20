@@ -1,9 +1,6 @@
 # Compiled class file
 *.class
 
-# Log file
-*.log
-
 # BlueJ files
 *.ctxt
 
@@ -30,7 +27,6 @@ tmp/
 *.swp
 *~.nib
 local.properties
-.settings/
 .loadpath
 .recommenders
 
@@ -145,3 +141,7 @@ target/
 dist/
 
 *.iml
+
+# Diagrams Net backup files
+*.bkp
+*.dtmp
