@@ -1,0 +1,51 @@
+curl \
+    --insecure \
+    -X GET 'http://localhost:9001/service/authorization/v1/.well-known/oauth-authorization-server' \
+    | jq
+
+# Use https://www.browserling.com/tools/bcrypt for hashing the password
+# Use the default strength of 10, as the BCryptPasswordEncoder does if the strength is not specified, which it isn't
+curl \
+    --insecure \
+    -v \
+    -H 'Content-Type: application/x-www-form-urlencoded' \
+    -d 'grant_type=client_credentials' \
+    -d 'client_id=backend-client' \
+    -d 'client_secret=34if3fj134-f1309fWEFhqweifEWFhew9fh314-frhF13-8fh341WEF2f43h23iSp413pr1h3Wrh130rh13EH19dhF143d03d023yh9eF20jdfcnWdsfherc' \
+    -d 'scope=openid backend' \
+    -X POST 'http://localhost:9001/service/authorization/v1/oauth2/token' \
+    | jq
+
+# Use https://www.browserling.com/tools/bcrypt for hashing the password
+# Use the default strength of 10, as the BCryptPasswordEncoder does if the strength is not specified, which it isn't
+curl \
+    --insecure \
+    -v \
+    -H 'Content-Type: application/x-www-form-urlencoded' \
+    -d 'grant_type=client_credentials' \
+    -d 'client_id=frontend-client' \
+    -d 'client_secret=lkjdwsf23odnwqkld23odfbqweorh23oihd' \
+    -d 'scope=openid frontend' \
+    -X POST 'http://localhost:9001/service/authorization/v1/oauth2/token' \
+    | jq
+
+curl \
+    --insecure \
+    -v \
+    --cookie 'JSESSIONID=7407199BA87F3DFB653F997C13F430E5' \
+    -X GET 'http://localhost:9001/service/authorization/v1/oauth2/authorize?response_type=code&client_id=frontend-client'
+
+curl \
+    --insecure \
+    -v \
+    -H 'Content-Type: application/x-www-form-urlencoded' \
+    -d 'grant_type=authorization_code' \
+    -d 'code=1qmvR5fyfHLt4yPPj2JBaXCQD__h_bIwT9QFGP_N0Bu10u3L5aJKbPnz_rxpz8lesGuBzFIhowpBioMD8bkfGpZlXznUSJbZrg9KmuL-otkjeU0QVyf8RLI15aAZeUQO' \
+    -d 'client_id=frontend-client' \
+    -d 'client_secret=lkjdwsf23odnwqkld23odfbqweorh23oihd' \
+    -X POST 'http://localhost:9001/service/authorization/v1/oauth2/token' \
+    | jq
+
+curl \
+    --insecure \
+    -X GET 'http://localhost:9001/service/authorization/v1/oauth2/jwks'

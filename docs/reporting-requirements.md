@@ -346,32 +346,8 @@ Response body example:
 <br /><br />
 ### Used items endpoint
 
-#### `REP-03001` Get types of items that may be in use
-Returns a list of values that are accepted for the `objectType` to the "Get items in use of type" operation.
-
----
-**NOTE**
-
-The reporting service does not block any items from being deleted,
-therefore it does not use any object type from any other service.
-
----
-
-Example request URL:
-- `GET http://acct.desolatetimelines.com/service/reporting/v1/itemsInUse/objectTypesByService
-
-Response body example:
-```
-{
-    "objectTypesByService": [
-    ]
-}
-```
-
-
-
 <br /><br />
-#### `REP-03002` Get items in use of type
+#### `REP-03001` Get items in use of type
 Returns a list of UUIDs of objects of the given `objectType` which are in use by this service.
 Only the objects having their UUIDs in the given list are verified.
 

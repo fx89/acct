@@ -367,11 +367,13 @@ Example request URL:
 - `GET http://acct.desolatetimelines.com/service/security/v1/privileges/userPrivileges?userUUID=e03095ac-3302-435a-afde-c5f4613d1ed8`
 
 Example response body:
+```
 [
-"WORKSPACE_OWNER_CREATE",
-"WORKSPACE_OWNER_DELETE",
-"WORKSPACE_OWNER_GET"
+    "WORKSPACE_OWNER_CREATE",
+    "WORKSPACE_OWNER_DELETE",
+    "WORKSPACE_OWNER_GET"
 ]
+```
 
 
 
@@ -383,7 +385,7 @@ The `privilegeName` is validated against the privileges supplied by the plugged 
 `acct-privileges-provider-spec`.
 
 Example request URL:
-- `PUT http://acct.desolatetimelines.com/service/security/v1/privileges`
+- `PUT http://acct.desolatetimelines.com/service/security/v1/privileges/groupPrivileges`
 
 Example request body:
 ```
@@ -411,48 +413,32 @@ Example request body:
 ```
 
 
+<br /><br />
+#### `SEC-04005` List all assignable privileges
+Returns a list of privileges that can be assigned to a group.
+
+Example request URL:
+- `GET http://acct.desolatetimelines.com/service/security/v1/privileges`
+
+Example request body:
+```
+[
+    {
+        "privilegeId": "USERS_READ_CURRENT",
+        "privilegeName": "Read current user properties",
+        "privilegeDescription": "Allows reading properties of the current user, such as the icon UUID and the default workspace UUID"
+    }
+]
+```
+
+
+
 
 <br /><br />
 ### Used items endpoint
 
-#### `SEC-05001` Get types of items that may be in use
-Returns a list of values that are accepted for the `objectType` to the "Get items in use of type" operation.
-
-Example request URL:
-- `GET http://acct.desolatetimelines.com/service/security/v1/itemsInUse/objectTypesByService
-
-Response body example:
-```
-{
-    "objectTypesByService": [
-        {
-            "serviceName": "user-management",
-            "objectTypes": [
-                "USER",
-                "GROUP"
-            ]
-        },
-        {
-            "serviceName": "workspace",
-            "objectTypes": [
-                "WORKSPACE"
-            ]
-        },
-        {
-            "serviceName": "reporting",
-            "objectTypes": [
-                "DASHBOARD",
-                "REPORT"
-            ]
-        }
-    ]
-}
-```
-
-
-
 <br /><br />
-#### `SEC-05002` Get items in use of type
+#### `SEC-05001` Get items in use of type
 Returns a list of UUIDs of objects of the given `objectType` which are in use by this service.
 Only the objects having their UUIDs in the given list are verified.
 
@@ -507,7 +493,7 @@ to register the item types that can be in use by this service.
 This service exposes the following privileges:
 - WORKSPACE_OWNERS_READ
 - WORKSPACE_OWNERS_SAVE
-- WORKSPACE_OWNERS_READ
+- WORKSPACE_OWNERS_DELETE
 - DASHBOARD_OWNERS_READ
 - DASHBOARD_OWNERS_SAVE
 - DASHBOARD_OWNERS_DELETE

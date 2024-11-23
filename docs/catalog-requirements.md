@@ -487,22 +487,7 @@ http://acct.desolatetimelines.com/service/catalog/v1
 <br /><br />
 ### Used items endpoint
 
-#### `04001` Get types of items that may be in use
-Returns a list of UUIDs of objects of the given `objectType` which are in use by this service.
-Only the objects having their UUIDs in the given list are verified.
-
----
-**NOTE**
-
-The reporting service does not block any items from being deleted,
-therefore it does not use any object type from any other service.
-
----
-
-
-
-<br /><br />
-#### `CAT-04002` Get items in use of type
+#### `CAT-04001` Get items in use of type
 Returns a list of UUIDs of objects of the given `objectType` which are in use by this service.
 Only the objects having their UUIDs in the given list are verified.
 

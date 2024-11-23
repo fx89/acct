@@ -5,8 +5,7 @@
 // TODO: CUR-01005: Monitored currencies endpoint: Collect manually
 // TODO: CUR-01006: Monitored currencies endpoint: Get monitored currency records
 
-// TODO: CUR-02001: Used items endpoint: Get types of items that may be in use
-// TODO: CUR-02002: Used items endpoint: Get items in use of type
+// TODO: CUR-02001: Used items endpoint: Get items in use of type
 
 // TODO: CUR-03001: Monitored currencies client: API client
 

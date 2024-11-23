@@ -166,6 +166,24 @@ Example response body:
 
 
 <br /><br />
+#### `USR-01009` Get user by login name
+Returns public details about the user with the given login name.
+
+Example request URL:
+- `GET http://acct.desolatetimelines.com/service/user-management/v1/users/username?username=admin`
+
+Example response body:
+```
+{
+    "userLoginName": "mAnon101",
+    "userName": "Mr. Anonymous",
+    "userIconUUID": "6e5921e1-8a4b-44c8-8689-f439ce3c8c0c"
+}
+```
+
+
+
+<br /><br />
 ### Groups endpoint
 
 <br /><br />
@@ -285,29 +303,8 @@ Example request body:
 <br /><br />
 ### Used items endpoint
 
-#### `USR-04001` Get types of items that may be in use
-Returns a list of values that are accepted for the `objectType` to the "Get items in use of type" operation.
-
-Example request URL:
-- `GET http://acct.desolatetimelines.com/service/user-management/v1/itemsInUse/objectTypesByService
-
-Response body example:
-```
-{
-    "objectTypesByService": [
-        {
-            "serviceName": "workspace",
-            "objectTypes": [
-                "WORKSPACE"
-            ]
-        }
-    ]
-}
-```
-
-
 <br /><br />
-#### `USR-04002` Get items in use of type
+#### `USR-04001` Get items in use of type
 Returns a list of UUIDs of objects of the given `objectType` which are in use by this service.
 Only the objects having their UUIDs in the given list are verified.
 

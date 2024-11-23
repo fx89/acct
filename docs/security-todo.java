@@ -16,18 +16,18 @@
 // TODO: SEC-03004: Report ownership endpoint: Remove report owner
 // TODO: SEC-03005: Report ownership endpoint: Check if report is accessible by user or by groups assigned to the user
 
-// TODO: SEC-04001: Privileges endpoint: Get privileges assigned to a group
+// DONE: SEC-04001: Privileges endpoint: Get privileges assigned to a group
 // TODO: SEC-04002: Privileges endpoint: Get privileges assigned to a user
 // TODO: SEC-04003: Privileges endpoint: Assign privileges to group
 // TODO: SEC-04004: Privileges endpoint: Remove privileges from group
+// DONE: SEC-04005: Privileges endpoint: List all assignable privileges
 
-// TODO: SEC-05001: Used items endpoint: Get types of items that may be in use
-// TODO: SEC-05002: Used items endpoint: Get items in use of type
+// TODO: SEC-05001: Used items endpoint: Get items in use of type
 
 // TODO: SEC-06001: Security client: API client
 
-// TODO: SEC-07001: Authentication
+// DONE: SEC-07001: Authentication
 
-// TODO: SEC-08001: Registration with the usage service
+// DONE: SEC-08001: Registration with the usage service
 
-// TODO: SEC-09001: Privileges
+// DONE: SEC-09001: Privileges

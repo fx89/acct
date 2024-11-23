@@ -1,0 +1,19 @@
+server:
+  port: ${SECURITY_SERVER_PORT}
+  servlet:
+    context-path: ${SECURITY_SERVER_CONTEXT_PATH}
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_SERVER_SCHEME}://${EUREKA_SERVER_HOST}:${EUREKA_SERVER_PORT}/eureka/
+
+spring:
+  application:
+    name: ${SECURITY_APPLICATION_NAME}
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${AUTHORIZATION_SERVER_SCHEME}://${AUTHORIZATION_SERVER_HOST}:${AUTHORIZATION_SERVER_PORT}${AUTHORIZATION_SERVER_CONTEXT_PATH}/oauth2/jwks

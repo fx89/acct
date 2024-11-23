@@ -112,31 +112,8 @@ Example request URL:
 <br /><br />
 ### Used items endpoint
 
-#### `CUR-02001` Get types of items that may be in use
-Returns a list of values that are accepted for the `objectType` to the "Get items in use of type" operation.
-
-Example request URL:
-- `GET http://acct.desolatetimelines.com/service/currency/v1/itemsInUse/objectTypesByService
-
-Response body example:
-```
-{
-    "objectTypesByService": [
-        {
-            "serviceName": "catalog",
-            "objectTypes": [
-                "BANK",
-                "CURRENCY"
-            ]
-        }
-    ]
-}
-```
-
-
-
 <br /><br />
-#### `CUR-02002` Get items in use of type
+#### `CUR-02001` Get items in use of type
 Returns a list of UUIDs of objects of the given `objectType` which are in use by this service.
 Only the objects having their UUIDs in the given list are verified.
 

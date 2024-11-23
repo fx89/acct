@@ -11,8 +11,7 @@
 // TODO: REP-02004: Reports endpoint: Save report for user or group (reports without UUID are considered to be new) - includes series
 // TODO: REP-02005: Reports endpoint: Get report data with filters
 
-// TODO: REP-03001: Used items endpoint: Get types of items that may be in use
-// TODO: REP-03002: Used items endpoint: Get items in use of type
+// TODO: REP-03001: Used items endpoint: Get items in use of type
 
 // TODO: REP-04001: Reporting client: API client
 

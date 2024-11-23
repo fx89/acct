@@ -1,0 +1,27 @@
+# Use https://www.browserling.com/tools/bcrypt for hashing the password
+# Use the default strength of 10, as the BCryptPasswordEncoder does if the strength is not specified, which it isn't
+export ACCT_BACKEND_CLIENT_ACCESS_TOKEN=$(\
+curl \
+    --insecure \
+    -v \
+    -H 'Content-Type: application/x-www-form-urlencoded' \
+    -d 'grant_type=client_credentials' \
+    -d 'client_id=backend-client' \
+    -d 'client_secret=34if3fj134-f1309fWEFhqweifEWFhew9fh314-frhF13-8fh341WEF2f43h23iSp413pr1h3Wrh130rh13EH19dhF143d03d023yh9eF20jdfcnWdsfherc' \
+    -d 'scope=openid backend' \
+    -X POST 'http://localhost:9001/service/authorization/v1/oauth2/token' \
+    | jq -j '.access_token'\
+)
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
+    -X GET 'http://localhost:8082/service/security/v1/privileges/byGroupUUIDs?groupUUIDs=3acddb9f-6485-455a-b320-76c2021c942d,3acddb9f-6485-455a-b320-76c2021c942e' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
+    -X GET 'http://localhost:8082/service/security/v1/privileges/' \
+    | jq
+

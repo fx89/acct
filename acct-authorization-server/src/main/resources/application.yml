@@ -1,0 +1,70 @@
+server:
+  port: ${AUTHORIZATION_SERVER_PORT}
+  servlet:
+    context-path: ${AUTHORIZATION_SERVER_CONTEXT_PATH}
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_SERVER_SCHEME}://${EUREKA_SERVER_HOST}:${EUREKA_SERVER_PORT}/eureka/
+  instance:
+    hostname: ${EUREKA_SERVER_HOST}
+
+spring:
+  application:
+    name: ${AUTHORIZATION_SERVER_APPLICATION_NAME}
+
+  security:
+    oauth2:
+      authorizationserver:
+        endpoints:
+          path-mapping:
+            /oauth2/token: ${AUTHORIZATION_SERVER_TOKEN_ENDPOINT_PATH}
+        client:
+
+#         Front-end client properties
+          frontend-client:
+            registration:
+              client-id: frontend-client
+              client-secret: "{bcrypt}${FRONTEND_CLIENT_SECRET}"
+              client-name: Front-end Client
+              client-authentication-methods:
+                - client_secret_post
+              authorization-grant-types:
+                - authorization_code
+                - client_credentials
+              redirect-uris:
+                - ${FRONTEND_SERVER_SCHEME}://${FRONTEND_SERVER_HOST}:${FRONTEND_SERVER_PORT}/${FRONTEND_SERVER_CONTEXT_PATH}${FRONTEND_AUTHORIZED_SUFFIX}
+              scopes:
+                - openid
+                - profile
+                - frontend
+            require-authorization-consent: false
+            token:
+              access-token-format: self-contained
+              access-token-time-to-live: PT${FRONTEND_JWT_TIME_TO_LIVE_IN_MINUTES}M
+              refresh-token-time-to-live: PT${FRONTEND_JWT_TIME_TO_LIVE_IN_MINUTES}M
+              authorization-code-time-to-live: PT${FRONTEND_AUTH_CODE_TIME_TO_LIVE_IN_MINUTES}M
+              reuse-refresh-tokens: false
+
+#         Back-end client properties
+          backend-client:
+            registration:
+              client-id: backend-client
+              client-secret: "{bcrypt}${BACKEND_CLIENT_SECRET}"
+              client-name: Back-end Client
+              client-authentication-methods:
+                - client_secret_post
+              authorization-grant-types:
+                - client_credentials
+              redirect-uris:
+                - no-redirect-necessary
+              scopes:
+                - openid
+                - backend
+            require-authorization-consent: false
+            token:
+              access-token-format: self-contained
+              access-token-time-to-live: PT${BACKEND_JWT_TIME_TO_LIVE_IN_MINUTES}M
+              refresh-token-time-to-live: PT${BACKEND_JWT_TIME_TO_LIVE_IN_MINUTES}M
+              reuse-refresh-tokens: false

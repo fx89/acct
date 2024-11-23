@@ -13,6 +13,8 @@ the query to the proxy. The proxy, having previously registered a mapping betwee
 services, queries the usage endpoint of the service that owns the given item type and relays the response
 back to the service that raised the query.
 
+![Usage service workflow](res/usage-service-workflow.png)
+
 ## Endpoints
 
 ### Usage endpoint
@@ -31,6 +33,7 @@ Request body example:
 ```
 {
     "serviceName": "workspace",
+    "serviceContextPath": "/service/workspace/v1",
     "itemTypes": [
         "CURRENCY",
         "BANK",
@@ -43,10 +46,9 @@ Request body example:
 Steps:
 1) Look up the service with the given `serviceName` in the configuration table.
    If not registered, register it now.
-2) Update the list of item types mapped to the service identified previously,
+2) Save the `contextPath` of the service identified at the previous step.
+3) Update the list of item types mapped to the service identified previously,
    even if it's not the first time the service is registered.
-3) Look up the FeignClient that's been internally mapped to the given `serviceName`.
-   If not found, create one at this time.
 
 
 

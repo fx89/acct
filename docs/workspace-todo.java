@@ -21,8 +21,7 @@
 
 // TODO: WKS-05001: Autocomplete endpoint: Get the account record autocomplete data for workspace, income or expense item and account record text pattern
 
-// TODO: WKS-06001: Used items endpoint: Get types of items that may be in use
-// TODO: WKS-06002: Used items endpoint: Get items in use of type
+// TODO: WKS-06001: Used items endpoint: Get items in use of type
 
 // TODO: WKS-07001: Workspace client: API client
 
