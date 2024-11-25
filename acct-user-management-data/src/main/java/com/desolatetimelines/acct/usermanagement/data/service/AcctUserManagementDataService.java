@@ -1,9 +1,14 @@
 package com.desolatetimelines.acct.usermanagement.data.service;
 
+import com.desolatetimelines.acct.usermanagement.data.model.AcctUserCreationParameters;
 import com.desolatetimelines.acct.usermanagement.data.model.AcctUserDetails;
+import com.desolatetimelines.acct.usermanagement.data.model.AcctUserGroupCreationParameters;
 import com.desolatetimelines.acct.usermanagement.model.AcctUser;
-import com.desolatetimelines.acct.usermanagement.repository.UserAccountsRepository;
-import com.desolatetimelines.acct.usermanagement.repository.UserGroupsRepository;
+import com.desolatetimelines.acct.usermanagement.model.AcctUserGroupMapping;
+import com.desolatetimelines.acct.usermanagement.model.AcctUsersGroup;
+import com.desolatetimelines.acct.usermanagement.repository.AcctUserGroupMappingsRepository;
+import com.desolatetimelines.acct.usermanagement.repository.AcctUserGroupsRepository;
+import com.desolatetimelines.acct.usermanagement.repository.AcctUsersRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -15,16 +20,20 @@ import java.util.Optional;
 @Service
 public class AcctUserManagementDataService {
 
-    private final UserAccountsRepository userAccountsRepository;
+    private final AcctUsersRepository usersRepository;
 
-    private final UserGroupsRepository userGroupsRepository;
+    private final AcctUserGroupsRepository userGroupsRepository;
+
+    private final AcctUserGroupMappingsRepository userGroupMappingsRepository;
 
     public AcctUserManagementDataService(
-        UserAccountsRepository userAccountsRepository,
-        UserGroupsRepository userGroupsRepository
+        AcctUsersRepository userAccountsRepository,
+        AcctUserGroupsRepository userGroupsRepository,
+        AcctUserGroupMappingsRepository userGroupMappingsRepository
     ) {
-        this.userAccountsRepository = userAccountsRepository;
+        this.usersRepository = userAccountsRepository;
         this.userGroupsRepository = userGroupsRepository;
+        this.userGroupMappingsRepository = userGroupMappingsRepository;
     }
 
     /**
@@ -35,7 +44,7 @@ public class AcctUserManagementDataService {
      */
     public Optional<AcctUserDetails> retrieveUserDetailsByUserUUID(String userUUID) {
         return
-            userAccountsRepository
+            usersRepository
                 .findUserAccountByUserUUID(userUUID)
                 .map(this::enrichUserAccountWithUsersGroups);
     }
@@ -48,9 +57,88 @@ public class AcctUserManagementDataService {
      */
     public Optional<AcctUserDetails> retrieveUserDetailsByUserLoginName(String userLoginName) {
         return
-            userAccountsRepository
+            usersRepository
                 .findUserAccountByUserLoginName(userLoginName)
                 .map(this::enrichUserAccountWithUsersGroups);
+    }
+
+    /**
+     * Creates a user with the given parameters
+     *
+     * @param userCreationParameters container for the given parameters
+     * @return the created user
+     */
+    public AcctUser createUser(AcctUserCreationParameters userCreationParameters) {
+        // Create the user entity
+        final AcctUser acctUser = usersRepository.createNew();
+
+        // Set the properties of the user entity
+        acctUser.setUserUUID(userCreationParameters.userUUID());
+        acctUser.setUserName(userCreationParameters.userName());
+        acctUser.setUserLoginName(userCreationParameters.userLoginName());
+        acctUser.setUserEncryptedPassword(userCreationParameters.userEncryptedPassword());
+        acctUser.setUserIconUUID(userCreationParameters.userIconUUID());
+        acctUser.setDefaultWorkspaceUUID(userCreationParameters.defaultWorkspaceUUID());
+
+        // Persist the user entity and return the UUID of the newly created user
+        return usersRepository.save(acctUser);
+    }
+
+    /**
+     * Retrieves a users group having the given group UUID or returns an empty optional
+     *
+     * @param groupUUID the given group UUID
+     */
+    public Optional<AcctUsersGroup> findUsersGroupByGroupUUID(String groupUUID) {
+        return userGroupsRepository.findFirstByGroupUUID(groupUUID);
+    }
+
+    /**
+     * Creates a users group with the given details
+     *
+     * @param usersGroupCreationParameters container for the given parameters
+     * @return a new reference to the saved object
+     */
+    public AcctUsersGroup createUsersGroup(AcctUserGroupCreationParameters usersGroupCreationParameters) {
+        // Create the users group
+        final AcctUsersGroup newGroup = userGroupsRepository.createNew();
+
+        // Set the properties of the users group
+        newGroup.setGroupUUID(usersGroupCreationParameters.groupUUID());
+        newGroup.setGroupName(usersGroupCreationParameters.groupName());
+        newGroup.setGroupDescription(usersGroupCreationParameters.groupDescription());
+        newGroup.setGroupIconUUID(usersGroupCreationParameters.groupIconUUID());
+
+        // Save the users group and return a reference
+        return userGroupsRepository.save(newGroup);
+    }
+
+    /**
+     * Creates a user / group mapping for the referenced user and group
+     *
+     * @param user       the referenced user
+     * @param usersGroup the referenced group
+     */
+    public void createUserGroupMapping(AcctUser user, AcctUsersGroup usersGroup) {
+        // Create the entity
+        final AcctUserGroupMapping userGroupMapping = userGroupMappingsRepository.createNew();
+
+        // Set the properties
+        userGroupMapping.setUser(user);
+        userGroupMapping.setGroup(usersGroup);
+
+        // Save
+        userGroupMappingsRepository.save(userGroupMapping);
+    }
+
+    /**
+     * Removes the user / group mapping identified by the referenced user and group
+     *
+     * @param user       the referenced user
+     * @param usersGroup the referenced group
+     */
+    public void deleteUserGroupMapping(AcctUser user, AcctUsersGroup usersGroup) {
+        userGroupMappingsRepository.deleteByUserUUIDAndGroupUUID(user.getUserUUID(), usersGroup.getGroupUUID());
     }
 
     private AcctUserDetails enrichUserAccountWithUsersGroups(AcctUser userAccount) {

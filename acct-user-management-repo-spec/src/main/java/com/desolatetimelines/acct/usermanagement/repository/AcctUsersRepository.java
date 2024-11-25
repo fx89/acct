@@ -7,7 +7,7 @@ import java.util.Optional;
 /**
  * Repository for loading and persisting {@link AcctUser user accounts}
  */
-public interface UserAccountsRepository {
+public interface AcctUsersRepository {
 
     /**
      * Returns a new instance of {@link AcctUser}
@@ -15,7 +15,14 @@ public interface UserAccountsRepository {
     AcctUser createNew();
 
     /**
-     * Retrieves the {@link AcctUser user account} having the given {@link AcctUser#userUUID() user UUID},
+     * Persists the referenced user and returns a reference to the persisted entity
+     *
+     * @param acctUser the referenced user
+     */
+    AcctUser save(AcctUser acctUser);
+
+    /**
+     * Retrieves the {@link AcctUser user account} having the given {@link AcctUser#getUserUUID()} user UUID},
      * if such a user account exists, or an empty optional if such a user account does not exist.
      *
      * @param userUUID the given user UUID
@@ -24,7 +31,7 @@ public interface UserAccountsRepository {
 
     /**
      * Retrieves the {@link AcctUser user account} having the given
-     * {@link AcctUser#getUserLoginName()}  user login name}, if such
+     * {@link AcctUser#getUserLoginName()}  user login name, if such
      * a user account exists, or an empty optional if such a user account
      * does not exist.
      *

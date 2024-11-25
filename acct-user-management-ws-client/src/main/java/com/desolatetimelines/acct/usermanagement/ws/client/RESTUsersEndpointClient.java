@@ -1,8 +1,11 @@
 package com.desolatetimelines.acct.usermanagement.ws.client;
 
 import com.desolatetimelines.acct.usermanagement.ws.endpoint.UsersEndpoint;
+import com.desolatetimelines.acct.usermanagement.ws.model.AcctUserCreationRequest;
 import com.desolatetimelines.acct.usermanagement.ws.model.AcctUserDetails;
+import com.desolatetimelines.acct.usermanagement.ws.model.AcctUserUUIDResponse;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,5 +19,9 @@ public interface RESTUsersEndpointClient extends UsersEndpoint {
     @Override
     @RequestMapping(value = "/userUUID", method = RequestMethod.GET)
     AcctUserDetails getUserByUserUUID(@RequestParam("userUUID") String userUUID);
+
+    @Override
+    @RequestMapping(value = "", method = RequestMethod.PUT)
+    AcctUserUUIDResponse saveUser(@RequestBody AcctUserCreationRequest request);
 
 }

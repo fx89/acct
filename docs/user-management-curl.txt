@@ -19,3 +19,19 @@ curl \
     -X GET 'http://localhost:8081/service/user-management/v1/users/username?username=admin' \
     | jq
 
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X POST 'http://localhost:8081/service/user-management/v1/users' \
+    --data-raw '
+        {
+            "userLoginName": "testUser5",
+            "userName": "Test User 5",
+            "userIconUUID": "9c0ddfbc-cb04-4ae0-a9a9-105d4ecfee86",
+            "defaultWorkspaceUUID": "7519dd8b-9ef1-4238-adcc-b091949e5eb2",
+            "userEncryptedPassword": "{bcrypt}SomethingSomething"
+        }
+    ' \
+    | jq
