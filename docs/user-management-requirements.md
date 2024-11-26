@@ -106,7 +106,7 @@ Example request URL:
 Example request body:
 ```
 {
-    "userPassword": "edij230djqwe40rj2d"
+    "userEncryptedPassword": "edij230djqwe40rj2d"
 }
 ```
 

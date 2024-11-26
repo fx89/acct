@@ -116,6 +116,26 @@ public class AcctUserManagementService {
     }
 
     /**
+     * Sets the encrypted password of the user identified by the given user UUID
+     * to the given encrypted password
+     *
+     * @param userUUID                 the given user UUID
+     * @param newUserEncryptedPassword the given encrypted password
+     */
+    public void setUserPassword(String userUUID, String newUserEncryptedPassword) {
+        // Get the user. If the user does not exist, throw a "not found" exception.
+        final AcctUser acctUser =
+            dataService.findUserByUserUUID(userUUID)
+                .orElseThrow(() -> new AcctUserManagementNotFoundException("User not found"));
+
+        // Set the user's encrypted password
+        acctUser.setUserEncryptedPassword(newUserEncryptedPassword);
+
+        // Save the user
+        dataService.saveUser(acctUser);
+    }
+
+    /**
      * Supplies a reference to the "Users" group while making sure the group is created if it doesn't exist
      */
     private static final class UsersGroupSupplier implements Supplier<AcctUsersGroup> {

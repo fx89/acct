@@ -1,6 +1,7 @@
 package com.desolatetimelines.acct.usermanagement.ws.client;
 
 import com.desolatetimelines.acct.usermanagement.ws.endpoint.UsersEndpoint;
+import com.desolatetimelines.acct.usermanagement.ws.model.AcctCurrentUserPasswordSettingRequest;
 import com.desolatetimelines.acct.usermanagement.ws.model.AcctUserCreationRequest;
 import com.desolatetimelines.acct.usermanagement.ws.model.AcctUserDetails;
 import com.desolatetimelines.acct.usermanagement.ws.model.AcctUserUUIDResponse;
@@ -24,4 +25,8 @@ public interface RESTUsersEndpointClient extends UsersEndpoint {
     @RequestMapping(value = "", method = RequestMethod.PUT)
     AcctUserUUIDResponse saveUser(@RequestBody AcctUserCreationRequest request);
 
+    @Override
+    default void setCurrentUserPassword(AcctCurrentUserPasswordSettingRequest passwordSettingRequest) {
+        throw new UnsupportedOperationException("This operation is not intended for back-end clients");
+    }
 }

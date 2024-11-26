@@ -31,7 +31,7 @@ public class AcctOAuth2TokenCustomizer implements OAuth2TokenCustomizer<JwtEncod
         // Add the user's granted authorities
         claimsBuilder
             .claim(
-                "authorities",
+                "scp", // One of the claim names supported by Spring Boot for the scope / authorities
                 userDetails.getAuthorities().stream()
                     .map(GrantedAuthority::getAuthority)
                     .collect(Collectors.toSet())

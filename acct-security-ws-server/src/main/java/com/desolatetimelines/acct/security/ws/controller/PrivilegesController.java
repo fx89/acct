@@ -35,7 +35,7 @@ public class PrivilegesController implements PrivilegesEndpoint {
     }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('SCOPE_backend', '" + PRIVILEGES_READ + "')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + PRIVILEGES_READ + "')")
     @GetMapping(value = "/", produces = APPLICATION_JSON_VALUE)
     public Set<Privilege> getAllAssignablePrivileges() {
         return
@@ -52,7 +52,7 @@ public class PrivilegesController implements PrivilegesEndpoint {
     }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('SCOPE_backend', '" + PRIVILEGES_DELETE + "')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + PRIVILEGES_DELETE + "')")
     @DeleteMapping(value = "/groupPrivileges", produces = APPLICATION_JSON_VALUE)
     public void removePrivilegesFromGroup(
         @RequestParam("groupUUID") String groupUUID,

@@ -85,6 +85,25 @@ public class AcctUserManagementDataService {
     }
 
     /**
+     * Returns the user with the given user UUID or an empty optional if such a user does not exist
+     *
+     * @param userUUID the given user UUID
+     */
+    public Optional<AcctUser> findUserByUserUUID(String userUUID) {
+        return usersRepository.findUserAccountByUserUUID(userUUID);
+    }
+
+    /**
+     * Saves the referenced user
+     *
+     * @param acctUser the referenced user
+     * @return a reference to the persisted entity
+     */
+    public AcctUser saveUser(AcctUser acctUser) {
+        return usersRepository.save(acctUser);
+    }
+
+    /**
      * Retrieves a users group having the given group UUID or returns an empty optional
      *
      * @param groupUUID the given group UUID
