@@ -14,4 +14,6 @@ public interface AcctGroupPrivilegesRepository {
 
     Set<AcctGroupPrivilege> findAllByGroupUUIDIn(Collection<String> groupUUIDs);
 
+    AcctGroupPrivilege save(AcctGroupPrivilege acctGroupPrivilege);
+
 }

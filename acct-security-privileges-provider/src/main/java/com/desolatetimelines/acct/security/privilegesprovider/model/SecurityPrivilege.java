@@ -9,84 +9,84 @@ public enum SecurityPrivilege {
 
     WORKSPACE_OWNERS_READ(
         AcctPrivilege.builder()
-            .withPrivilegeId("WORKSPACE_OWNERS_READ")
+            .withPrivilegeId(SecurityPrivilegeIds.WORKSPACE_OWNERS_READ)
             .withPrivilegeName("")
             .withPrivilegeDescription("")
             .build()
     ),
     WORKSPACE_OWNERS_SAVE(
         AcctPrivilege.builder()
-            .withPrivilegeId("WORKSPACE_OWNERS_SAVE")
+            .withPrivilegeId(SecurityPrivilegeIds.WORKSPACE_OWNERS_SAVE)
             .withPrivilegeName("")
             .withPrivilegeDescription("")
             .build()
     ),
     WORKSPACE_OWNERS_DELETE(
         AcctPrivilege.builder()
-            .withPrivilegeId("WORKSPACE_OWNERS_DELETE")
+            .withPrivilegeId(SecurityPrivilegeIds.WORKSPACE_OWNERS_DELETE)
             .withPrivilegeName("")
             .withPrivilegeDescription("")
             .build()
     ),
     DASHBOARD_OWNERS_READ(
         AcctPrivilege.builder()
-            .withPrivilegeId("DASHBOARD_OWNERS_READ")
+            .withPrivilegeId(SecurityPrivilegeIds.DASHBOARD_OWNERS_READ)
             .withPrivilegeName("")
             .withPrivilegeDescription("")
             .build()
     ),
     DASHBOARD_OWNERS_SAVE(
         AcctPrivilege.builder()
-            .withPrivilegeId("DASHBOARD_OWNERS_SAVE")
+            .withPrivilegeId(SecurityPrivilegeIds.DASHBOARD_OWNERS_SAVE)
             .withPrivilegeName("")
             .withPrivilegeDescription("")
             .build()
     ),
     DASHBOARD_OWNERS_DELETE(
         AcctPrivilege.builder()
-            .withPrivilegeId("DASHBOARD_OWNERS_DELETE")
+            .withPrivilegeId(SecurityPrivilegeIds.DASHBOARD_OWNERS_DELETE)
             .withPrivilegeName("")
             .withPrivilegeDescription("")
             .build()
     ),
     REPORT_OWNERS_READ(
         AcctPrivilege.builder()
-            .withPrivilegeId("REPORT_OWNERS_READ")
+            .withPrivilegeId(SecurityPrivilegeIds.REPORT_OWNERS_READ)
             .withPrivilegeName("")
             .withPrivilegeDescription("")
             .build()
     ),
     REPORT_OWNERS_SAVE(
         AcctPrivilege.builder()
-            .withPrivilegeId("REPORT_OWNERS_SAVE")
+            .withPrivilegeId(SecurityPrivilegeIds.REPORT_OWNERS_SAVE)
             .withPrivilegeName("")
             .withPrivilegeDescription("")
             .build()
     ),
     REPORT_OWNERS_DELETE(
         AcctPrivilege.builder()
-            .withPrivilegeId("REPORT_OWNERS_DELETE")
+            .withPrivilegeId(SecurityPrivilegeIds.REPORT_OWNERS_DELETE)
             .withPrivilegeName("")
             .withPrivilegeDescription("")
             .build()
     ),
     PRIVILEGES_READ(
         AcctPrivilege.builder()
-            .withPrivilegeId("PRIVILEGES_READ")
+            .withPrivilegeId(SecurityPrivilegeIds.PRIVILEGES_READ)
             .withPrivilegeName("")
             .withPrivilegeDescription("")
             .build()
     ),
     PRIVILEGES_SAVE(
         AcctPrivilege.builder()
-            .withPrivilegeId("PRIVILEGES_SAVE")
+            .withPrivilegeId(SecurityPrivilegeIds.PRIVILEGES_SAVE)
             .withPrivilegeName("")
             .withPrivilegeDescription("")
             .build()
     ),
     PRIVILEGES_DELETE(
         AcctPrivilege.builder()
-            .withPrivilegeId("PRIVILEGES_DELETE")
+            .withPrivilegeId(SecurityPrivilegeIds.PRIVILEGES_DELETE)
             .withPrivilegeName("")
             .withPrivilegeDescription("")
             .build()

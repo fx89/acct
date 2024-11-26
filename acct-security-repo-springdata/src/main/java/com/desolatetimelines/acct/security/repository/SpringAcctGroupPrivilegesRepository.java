@@ -37,4 +37,9 @@ public class SpringAcctGroupPrivilegesRepository implements AcctGroupPrivilegesR
                 .map(acctGroupPrivilege -> doWithJJpaAcctGroupPrivilege(acctGroupPrivilege, identity()))
                 .collect(Collectors.toSet());
     }
+
+    @Override
+    public AcctGroupPrivilege save(AcctGroupPrivilege acctGroupPrivilege) {
+        return doWithJJpaAcctGroupPrivilege(acctGroupPrivilege, groupPrivilegesRepository::save);
+    }
 }

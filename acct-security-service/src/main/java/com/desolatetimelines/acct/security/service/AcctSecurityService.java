@@ -2,11 +2,11 @@ package com.desolatetimelines.acct.security.service;
 
 import com.desolatetimelines.acct.common.ObjectTypes;
 import com.desolatetimelines.acct.privilegesprovider.model.AcctPrivilege;
+import com.desolatetimelines.acct.security.data.service.AcctSecurityDataService;
 import com.desolatetimelines.acct.security.model.AcctGroupPrivilege;
+import com.desolatetimelines.acct.security.privilegesprovider.service.AcctPrivilegesDataService;
 import com.desolatetimelines.acct.usage.ws.client.RESTUsageEndpointClient;
 import com.desolatetimelines.acct.usage.ws.model.ServiceItemTypesList;
-import com.desolatetimelines.acct.usermanagement.data.service.AcctPrivilegesDataService;
-import com.desolatetimelines.acct.usermanagement.data.service.AcctSecurityDataService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Main module of the security services layer
@@ -80,6 +81,38 @@ public class AcctSecurityService {
 
     public Set<AcctPrivilege> getAllPrivileges() {
         return privilegesDataService.findAllPrivileges();
+    }
+
+    /**
+     * Assigns the privileges referenced in the given privileges collection to the group
+     * with the given group UUID. If any privilege is already assigned then it remains assigned.
+     * The privilege IDs in the given privileges collection are validated against the currently
+     * available list of valid privileges
+     *
+     * @param groupUUID    the given group UUID
+     * @param privilegeIds the given privileges collection
+     */
+    public void assignPrivilegesToGroup(String groupUUID, Collection<String> privilegeIds) {
+        // Validate the privileges
+        privilegesDataService.validatePrivileges(privilegeIds);
+
+        // Get the current privileges
+        final Set<String> alreadyAssignedPrivilegeIds =
+            securityDataService.findAllGroupPrivilegesByGroupUUIDIn(List.of(groupUUID))
+                .stream()
+                .map(AcctGroupPrivilege::getPrivilegeName)
+                .collect(Collectors.toSet());
+
+        // Filter out any already assigned privilege
+        final Stream<String> notYetAssignedPrivileges =
+            privilegeIds.stream()
+                .filter(privilegeId -> !alreadyAssignedPrivilegeIds.contains(privilegeId));
+
+        // Create and save a new ACCT group / privilege mapping for the given group UUID
+        // and each of the provided, not yet assigned, privilege IDs
+        notYetAssignedPrivileges.forEach(privilegeId -> {
+            securityDataService.createAcctGroupPrivilege(groupUUID, privilegeId);
+        });
     }
 
 }

@@ -1,7 +1,8 @@
-package com.desolatetimelines.acct.privilegesprovider.service;
+package com.desolatetimelines.acct.security.privilegesprovider.service;
 
-import com.desolatetimelines.acct.privilegesprovider.model.AcctGlobalPrivilege;
+import com.desolatetimelines.acct.security.privilegesprovider.model.AcctGlobalPrivilege;
 import com.desolatetimelines.acct.privilegesprovider.model.AcctPrivilege;
+import com.desolatetimelines.acct.privilegesprovider.service.AcctServicePrivilegesProvider;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;

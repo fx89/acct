@@ -1,4 +1,4 @@
-package com.desolatetimelines.acct.usermanagement.data.service;
+package com.desolatetimelines.acct.security.data.service;
 
 import com.desolatetimelines.acct.security.model.AcctGroupPrivilege;
 import com.desolatetimelines.acct.security.repository.AcctGroupPrivilegesRepository;
@@ -27,6 +27,25 @@ public class AcctSecurityDataService {
      */
     public Set<AcctGroupPrivilege> findAllGroupPrivilegesByGroupUUIDIn(Collection<String> groupUUIDs) {
         return groupPrivilegesRepository.findAllByGroupUUIDIn(groupUUIDs);
+    }
+
+    /**
+     * Creates an ACCT group / privilege mapping using the given group UUID and privilege ID
+     *
+     * @param groupUUID   the given group UUID
+     * @param privilegeId the given privilege ID
+     * @return a reference to the newly created ACCT group / privilege mapping
+     */
+    public AcctGroupPrivilege createAcctGroupPrivilege(String groupUUID, String privilegeId) {
+        // Create a new entity
+        final AcctGroupPrivilege newAcctGroupPrivilege = groupPrivilegesRepository.createNew();
+
+        // Set the properties
+        newAcctGroupPrivilege.setGroupUUID(groupUUID);
+        newAcctGroupPrivilege.setPrivilegeName(privilegeId);
+
+        // Persist
+        return groupPrivilegesRepository.save(newAcctGroupPrivilege);
     }
 
 }

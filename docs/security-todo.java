@@ -18,7 +18,7 @@
 
 // DONE: SEC-04001: Privileges endpoint: Get privileges assigned to a group
 // TODO: SEC-04002: Privileges endpoint: Get privileges assigned to a user
-// TODO: SEC-04003: Privileges endpoint: Assign privileges to group
+// DONE: SEC-04003: Privileges endpoint: Assign privileges to group
 // TODO: SEC-04004: Privileges endpoint: Remove privileges from group
 // DONE: SEC-04005: Privileges endpoint: List all assignable privileges
 

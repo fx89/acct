@@ -379,19 +379,23 @@ Example response body:
 
 <br /><br />
 #### `SEC-04003` Assign privileges to group
-Assigns the named privilege to the group with the given `groupUUID`.
+Assigns the named privileges to the group with the given `groupUUID`. If any of the assigned
+privileges is already assigned to the group then that specific group/privilege mapping does
+not suffer any changes.
 
-The `privilegeName` is validated against the privileges supplied by the plugged in implementations of the
-`acct-privileges-provider-spec`.
+The contents of the `privilegeNames` array is validated against the privileges supplied by 
+the plugged in implementations of the `acct-privileges-provider-spec`.
 
 Example request URL:
-- `PUT http://acct.desolatetimelines.com/service/security/v1/privileges/groupPrivileges`
+- `POST http://acct.desolatetimelines.com/service/security/v1/privileges/groupPrivileges`
 
 Example request body:
 ```
 {
     "groupUUID": "afb92971-69f0-49c6-b631-4c658eec1a3f",
-    "privilegeName": "WORKSPACE_OWNER_GET"
+    "privilegeNames": [
+        "WORKSPACE_OWNER_GET"
+    ]
 }
 ```
 

@@ -1,5 +1,6 @@
 package com.desolatetimelines.acct.security.ws.endpoint;
 
+import com.desolatetimelines.acct.security.ws.endpoint.model.GroupPrivileges;
 import com.desolatetimelines.acct.security.ws.endpoint.model.Privilege;
 
 import java.util.Collection;
@@ -19,5 +20,10 @@ public interface PrivilegesEndpoint {
      * Returns a set of all the privileges that can be assigned to a group
      */
     Set<Privilege> getAllAssignablePrivileges();
+
+    /**
+     * Assigns a set of privileges to a group
+     */
+    void assignPrivilegesToGroup(GroupPrivileges groupPrivileges);
 
 }
