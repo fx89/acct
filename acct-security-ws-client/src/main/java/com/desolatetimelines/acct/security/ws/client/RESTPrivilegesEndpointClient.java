@@ -26,5 +26,12 @@ public interface RESTPrivilegesEndpointClient extends PrivilegesEndpoint {
 
     @Override
     @PutMapping(value = "/groupPrivileges", produces = APPLICATION_JSON_VALUE)
-    public void assignPrivilegesToGroup(@RequestBody GroupPrivileges groupPrivileges);
+    void assignPrivilegesToGroup(@RequestBody GroupPrivileges groupPrivilegeIDs);
+
+    @Override
+    @DeleteMapping(value = "/groupPrivileges", produces = APPLICATION_JSON_VALUE)
+    void removePrivilegesFromGroup(
+        @RequestParam("groupUUID") String groupUUID,
+        @RequestBody Collection<String> privilegeIDs
+    );
 }

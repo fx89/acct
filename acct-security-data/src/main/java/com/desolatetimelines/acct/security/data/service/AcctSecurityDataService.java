@@ -48,4 +48,11 @@ public class AcctSecurityDataService {
         return groupPrivilegesRepository.save(newAcctGroupPrivilege);
     }
 
+    /**
+     * Deletes the group / privilege mappings for the given group and privileges
+     */
+    public void deleteGroupPrivilegeMappings(String groupUUID, Collection<String> privilegeIDs) {
+        groupPrivilegesRepository.deleteAllByGroupUUIDAndPrivilegeNameIn(groupUUID, privilegeIDs);
+    }
+
 }

@@ -42,4 +42,9 @@ public class SpringAcctGroupPrivilegesRepository implements AcctGroupPrivilegesR
     public AcctGroupPrivilege save(AcctGroupPrivilege acctGroupPrivilege) {
         return doWithJJpaAcctGroupPrivilege(acctGroupPrivilege, groupPrivilegesRepository::save);
     }
+
+    @Override
+    public void deleteAllByGroupUUIDAndPrivilegeNameIn(String groupUUID, Collection<String> privilegeNames) {
+        groupPrivilegesRepository.deleteByGroupUUIDAndPrivilegeNameIn(groupUUID, privilegeNames);
+    }
 }

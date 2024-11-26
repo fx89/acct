@@ -35,7 +35,19 @@ curl \
             "groupUUID": "06f916c8-97c8-4c59-ac17-f858b8e3a186",
             "privilegeNames": [
                 "USERS_RESET_PASSWORD"
-            ]
+            ]s
         }
+    ' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X DELETE 'http://localhost:8082/service/security/v1/privileges/groupPrivileges?groupUUID=06f916c8-97c8-4c59-ac17-f858b8e3a186' \
+    --data-raw '
+        [
+            "USERS_RESET_PASSWORD"
+        ]
     ' \
     | jq

@@ -16,4 +16,6 @@ public interface AcctGroupPrivilegesRepository {
 
     AcctGroupPrivilege save(AcctGroupPrivilege acctGroupPrivilege);
 
+    void deleteAllByGroupUUIDAndPrivilegeNameIn(String groupUUID, Collection<String> privilegeNames);
+
 }

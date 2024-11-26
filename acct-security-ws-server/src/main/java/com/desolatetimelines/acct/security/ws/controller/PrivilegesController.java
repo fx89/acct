@@ -12,8 +12,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.desolatetimelines.acct.security.privilegesprovider.model.SecurityPrivilegeIds.PRIVILEGES_READ;
-import static com.desolatetimelines.acct.security.privilegesprovider.model.SecurityPrivilegeIds.PRIVILEGES_SAVE;
+import static com.desolatetimelines.acct.security.privilegesprovider.model.SecurityPrivilegeIds.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
@@ -48,8 +47,18 @@ public class PrivilegesController implements PrivilegesEndpoint {
     @Override
     @PreAuthorize("hasAnyAuthority('SCOPE_backend', '" + PRIVILEGES_SAVE + "')")
     @PutMapping(value = "/groupPrivileges", produces = APPLICATION_JSON_VALUE)
-    public void assignPrivilegesToGroup(@RequestBody GroupPrivileges groupPrivileges) {
-        securityService.assignPrivilegesToGroup(groupPrivileges.groupUUID(), groupPrivileges.privilegeNames());
+    public void assignPrivilegesToGroup(@RequestBody GroupPrivileges groupPrivilegeIDs) {
+        securityService.assignPrivilegesToGroup(groupPrivilegeIDs.groupUUID(), groupPrivilegeIDs.privilegeNames());
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', '" + PRIVILEGES_DELETE + "')")
+    @DeleteMapping(value = "/groupPrivileges", produces = APPLICATION_JSON_VALUE)
+    public void removePrivilegesFromGroup(
+        @RequestParam("groupUUID") String groupUUID,
+        @RequestBody Collection<String> privilegeIDs
+    ) {
+        securityService.removePrivilegesFromGroup(groupUUID, privilegeIDs);
     }
 
 }

@@ -7,6 +7,7 @@ import com.desolatetimelines.acct.security.model.AcctGroupPrivilege;
 import com.desolatetimelines.acct.security.privilegesprovider.service.AcctPrivilegesDataService;
 import com.desolatetimelines.acct.usage.ws.client.RESTUsageEndpointClient;
 import com.desolatetimelines.acct.usage.ws.model.ServiceItemTypesList;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -53,7 +54,7 @@ public class AcctSecurityService {
      */
     @SuppressWarnings("unused")
     @EventListener(ApplicationReadyEvent.class)
-    private void registerInUseObjectTypes() {
+    protected void registerInUseObjectTypes() {
         usageEndpointClient.registerItemTypesForService(
             ServiceItemTypesList.builder()
                 .withServiceName(applicationName)
@@ -110,9 +111,20 @@ public class AcctSecurityService {
 
         // Create and save a new ACCT group / privilege mapping for the given group UUID
         // and each of the provided, not yet assigned, privilege IDs
-        notYetAssignedPrivileges.forEach(privilegeId -> {
-            securityDataService.createAcctGroupPrivilege(groupUUID, privilegeId);
-        });
+        notYetAssignedPrivileges.forEach(privilegeId ->
+            securityDataService.createAcctGroupPrivilege(groupUUID, privilegeId)
+        );
     }
 
+    /**
+     * Unmaps the privileges referenced by the given collection of privilege IDs
+     * from the group identified by the given group UUID
+     *
+     * @param groupUUID    the given group UUID
+     * @param privilegeIds the given collection of privilege IDs
+     */
+    @Transactional
+    public void removePrivilegesFromGroup(String groupUUID, Collection<String> privilegeIds) {
+        securityDataService.deleteGroupPrivilegeMappings(groupUUID, privilegeIds);
+    }
 }

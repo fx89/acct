@@ -24,6 +24,12 @@ public interface PrivilegesEndpoint {
     /**
      * Assigns a set of privileges to a group
      */
-    void assignPrivilegesToGroup(GroupPrivileges groupPrivileges);
+    void assignPrivilegesToGroup(GroupPrivileges groupPrivilegeIDs);
+
+    /**
+     * Removes the privileges referenced by the given collection from the group identified
+     * by the given group UUID. If a privilege is not assigned to the group, it is ignored.
+     */
+    void removePrivilegesFromGroup(String groupUUID, Collection<String> privilegeIDs);
 
 }
