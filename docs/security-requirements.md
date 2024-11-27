@@ -363,6 +363,8 @@ Example response body:
 <br /><br />
 #### `SEC-04002` Get privileges assigned to a user
 Retrieves a set of distinct privileges assigned to all the groups that the user with the given `userUUID` is mapped to.
+To get the groups mapped to the user, calls `USR-02004`
+
 Example request URL:
 - `GET http://acct.desolatetimelines.com/service/security/v1/privileges/userPrivileges?userUUID=e03095ac-3302-435a-afde-c5f4613d1ed8`
 

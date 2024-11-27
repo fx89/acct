@@ -32,4 +32,12 @@ public interface PrivilegesEndpoint {
      */
     void removePrivilegesFromGroup(String groupUUID, Collection<String> privilegeIDs);
 
+    /**
+     * Returns a list of privilege IDs for all the privileges assigned to all the groups
+     * mapped to the user with the given user UUID
+     *
+     * @param userUUID the given user UUID
+     */
+    Collection<String> getPrivilegesAssignedToUser(String userUUID);
+
 }

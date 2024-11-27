@@ -61,4 +61,11 @@ public class PrivilegesController implements PrivilegesEndpoint {
         securityService.removePrivilegesFromGroup(groupUUID, privilegeIDs);
     }
 
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + PRIVILEGES_READ + "')")
+    @GetMapping(value = "/userPrivileges", produces = APPLICATION_JSON_VALUE)
+    public Collection<String> getPrivilegesAssignedToUser(@RequestParam("userUUID") String userUUID) {
+        return securityService.getPrivilegesAssignedToUser(userUUID);
+    }
+
 }

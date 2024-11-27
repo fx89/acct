@@ -3,6 +3,7 @@ package com.desolatetimelines.acct.security.service;
 import com.desolatetimelines.acct.common.ObjectTypes;
 import com.desolatetimelines.acct.privilegesprovider.model.AcctPrivilege;
 import com.desolatetimelines.acct.security.data.service.AcctSecurityDataService;
+import com.desolatetimelines.acct.security.data.usermanagement.service.AcctSecurityUserManagementDataService;
 import com.desolatetimelines.acct.security.model.AcctGroupPrivilege;
 import com.desolatetimelines.acct.security.privilegesprovider.service.AcctPrivilegesDataService;
 import com.desolatetimelines.acct.usage.ws.client.RESTUsageEndpointClient;
@@ -19,6 +20,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Collections.emptySet;
+
 /**
  * Main module of the security services layer
  */
@@ -29,6 +32,8 @@ public class AcctSecurityService {
 
     private final AcctPrivilegesDataService privilegesDataService;
 
+    private final AcctSecurityUserManagementDataService securityUserManagementDataService;
+
     private final RESTUsageEndpointClient usageEndpointClient;
 
     private final String applicationName;
@@ -38,12 +43,14 @@ public class AcctSecurityService {
     public AcctSecurityService(
         AcctSecurityDataService securityDataService,
         AcctPrivilegesDataService privilegesDataService,
+        AcctSecurityUserManagementDataService securityUserManagementDataService,
         RESTUsageEndpointClient usageEndpointClient,
         @Value("${SECURITY_APPLICATION_NAME}") String applicationName,
         @Value("${SECURITY_SERVER_CONTEXT_PATH}") String contextPath
     ) {
         this.securityDataService = securityDataService;
         this.privilegesDataService = privilegesDataService;
+        this.securityUserManagementDataService = securityUserManagementDataService;
         this.usageEndpointClient = usageEndpointClient;
         this.applicationName = applicationName;
         this.contextPath = contextPath;
@@ -126,5 +133,29 @@ public class AcctSecurityService {
     @Transactional
     public void removePrivilegesFromGroup(String groupUUID, Collection<String> privilegeIds) {
         securityDataService.deleteGroupPrivilegeMappings(groupUUID, privilegeIds);
+    }
+
+    /**
+     * Retrieves a set of privilege Ids for the privileges assigned to the groups
+     * mapped to the user with the given user UUID
+     *
+     * @param userUUID the given user UUID
+     */
+    public Set<String> getPrivilegesAssignedToUser(String userUUID) {
+        // First, get the groups mapped to the user
+        final Set<String> groupUUIDs =
+            securityUserManagementDataService.getUUIDsOfGroupsAssignedToUser(userUUID);
+
+        // If the set is empty, return an empty set
+        if (groupUUIDs.isEmpty()) {
+            return emptySet();
+        }
+
+        // Lastly, get the privileges mapped to the groups
+        return
+            securityDataService.findAllGroupPrivilegesByGroupUUIDIn(groupUUIDs)
+                .stream()
+                .map(AcctGroupPrivilege::getPrivilegeName)
+                .collect(Collectors.toSet());
     }
 }

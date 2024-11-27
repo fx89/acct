@@ -65,6 +65,9 @@
         <module>acct-user-management-data</module>
         <module>acct-user-management-repo-spec</module>
         <module>acct-user-management-repo-springdata</module>
+        <module>acct-security-user-management-data</module>
+        <module>acct-security-user-management-repo-spec</module>
+        <module>acct-security-user-management-repo-rest</module>
 
         <!-- Security -->
         <module>acct-security-ws-spec</module>
