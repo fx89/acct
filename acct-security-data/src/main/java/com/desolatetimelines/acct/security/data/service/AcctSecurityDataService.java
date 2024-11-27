@@ -1,7 +1,13 @@
 package com.desolatetimelines.acct.security.data.service;
 
+import com.desolatetimelines.acct.security.model.AcctDashboardOwner;
 import com.desolatetimelines.acct.security.model.AcctGroupPrivilege;
+import com.desolatetimelines.acct.security.model.AcctReportOwner;
+import com.desolatetimelines.acct.security.model.AcctWorkspaceOwner;
+import com.desolatetimelines.acct.security.repository.AcctDashboardOwnersRepository;
 import com.desolatetimelines.acct.security.repository.AcctGroupPrivilegesRepository;
+import com.desolatetimelines.acct.security.repository.AcctReportOwnersRepository;
+import com.desolatetimelines.acct.security.repository.AcctWorkspaceOwnersRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -16,8 +22,22 @@ public class AcctSecurityDataService {
 
     private final AcctGroupPrivilegesRepository groupPrivilegesRepository;
 
-    public AcctSecurityDataService(AcctGroupPrivilegesRepository groupPrivilegesRepository) {
+    private final AcctWorkspaceOwnersRepository workspaceOwnersRepository;
+
+    private final AcctDashboardOwnersRepository dashboardOwnersRepository;
+
+    private final AcctReportOwnersRepository reportOwnersRepository;
+
+    public AcctSecurityDataService(
+        AcctGroupPrivilegesRepository groupPrivilegesRepository,
+        AcctWorkspaceOwnersRepository workspaceOwnersRepository,
+        AcctDashboardOwnersRepository dashboardOwnersRepository,
+        AcctReportOwnersRepository reportOwnersRepository
+    ) {
         this.groupPrivilegesRepository = groupPrivilegesRepository;
+        this.workspaceOwnersRepository = workspaceOwnersRepository;
+        this.dashboardOwnersRepository = dashboardOwnersRepository;
+        this.reportOwnersRepository = reportOwnersRepository;
     }
 
     /**
@@ -27,6 +47,39 @@ public class AcctSecurityDataService {
      */
     public Set<AcctGroupPrivilege> findAllGroupPrivilegesByGroupUUIDIn(Collection<String> groupUUIDs) {
         return groupPrivilegesRepository.findAllByGroupUUIDIn(groupUUIDs);
+    }
+
+    /**
+     * Retrieves all {@link AcctWorkspaceOwner workspace owners} for which the
+     * {@link AcctWorkspaceOwner#getWorkspaceUUID() workspace UUID} matches one
+     * of the UUIDs in the given list of workspace UUIDs
+     *
+     * @param workspaceUUIDs the given list of workspace UUIDs
+     */
+    public Set<AcctWorkspaceOwner> findAllWorkspaceOwnersByWorkspaceUUIDIn(Collection<String> workspaceUUIDs) {
+        return workspaceOwnersRepository.findAllByWorkspaceUUIDIn(workspaceUUIDs);
+    }
+
+    /**
+     * Retrieves all {@link AcctDashboardOwner dashboard owners} for which the
+     * {@link AcctDashboardOwner#getDashboardUUID() dashboard UUID} matches one
+     * of the UUIDs in the given list of dashboard UUIDs
+     *
+     * @param dashboardUUIDs the given list of dashboard UUIDs
+     */
+    public Set<AcctDashboardOwner> findAllDashboardOwnersByDashboardUUIDIn(Collection<String> dashboardUUIDs) {
+        return dashboardOwnersRepository.findAllByDashboardUUIDIn(dashboardUUIDs);
+    }
+
+    /**
+     * Retrieves all {@link AcctReportOwner report owners} for which the
+     * {@link AcctReportOwner#getReportUUID() report UUID} matches one
+     * of the UUIDs in the given list of report UUIDs
+     *
+     * @param reportUUIDs the given list of report UUIDs
+     */
+    public Set<AcctReportOwner> findAllReportOwnersByReportUUIDIn(Collection<String> reportUUIDs) {
+        return reportOwnersRepository.findAllByReportUUIDIn(reportUUIDs);
     }
 
     /**

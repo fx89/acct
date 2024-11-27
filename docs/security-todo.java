@@ -22,7 +22,7 @@
 // DONE: SEC-04004: Privileges endpoint: Remove privileges from group
 // DONE: SEC-04005: Privileges endpoint: List all assignable privileges
 
-// TODO: SEC-05001: Used items endpoint: Get items in use of type
+// DONE: SEC-05001: Used items endpoint: Get items in use of type
 
 // TODO: SEC-06001: Security client: API client
 

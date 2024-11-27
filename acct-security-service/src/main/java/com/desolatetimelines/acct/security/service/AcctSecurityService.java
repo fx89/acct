@@ -4,7 +4,10 @@ import com.desolatetimelines.acct.common.ObjectTypes;
 import com.desolatetimelines.acct.privilegesprovider.model.AcctPrivilege;
 import com.desolatetimelines.acct.security.data.service.AcctSecurityDataService;
 import com.desolatetimelines.acct.security.data.usermanagement.service.AcctSecurityUserManagementDataService;
+import com.desolatetimelines.acct.security.model.AcctDashboardOwner;
 import com.desolatetimelines.acct.security.model.AcctGroupPrivilege;
+import com.desolatetimelines.acct.security.model.AcctReportOwner;
+import com.desolatetimelines.acct.security.model.AcctWorkspaceOwner;
 import com.desolatetimelines.acct.security.privilegesprovider.service.AcctPrivilegesDataService;
 import com.desolatetimelines.acct.usage.ws.client.RESTUsageEndpointClient;
 import com.desolatetimelines.acct.usage.ws.model.ServiceItemTypesList;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -74,6 +78,54 @@ public class AcctSecurityService {
                 ))
                 .build()
         );
+    }
+
+    /**
+     * Returns a set of UUIDs for the items of the given type that are in use by the Security service
+     * and have the UUID equal to one of the UUIDs in the given list of UUIDs
+     *
+     * @param objectType the given type
+     * @param itemUUIDs  the given list of UUIDs
+     * @throws IllegalArgumentException in case the given object type is not supported
+     */
+    public Collection<String> getInUseItemUUIDs(String objectType, Collection<String> itemUUIDs) {
+        // If the object type is WORKSPACE then search for workspaces referenced by workspace owner entities
+        if (Objects.equals(objectType, ObjectTypes.WORKSPACE.name())) {
+            return
+                securityDataService.findAllWorkspaceOwnersByWorkspaceUUIDIn(itemUUIDs)
+                    .stream()
+                    .map(AcctWorkspaceOwner::getWorkspaceUUID)
+                    .collect(Collectors.toSet());
+        }
+
+        // If the object type is DASHBOARD then search for dashboards referenced by dashboard owner entities
+        if (Objects.equals(objectType, ObjectTypes.DASHBOARD.name())) {
+            return
+                securityDataService.findAllDashboardOwnersByDashboardUUIDIn(itemUUIDs)
+                    .stream()
+                    .map(AcctDashboardOwner::getDashboardUUID)
+                    .collect(Collectors.toSet());
+        }
+
+        // If the object type is REPORT then search for reports referenced by report owner entities
+        if (Objects.equals(objectType, ObjectTypes.REPORT.name())) {
+            return
+                securityDataService.findAllReportOwnersByReportUUIDIn(itemUUIDs)
+                    .stream()
+                    .map(AcctReportOwner::getReportUUID)
+                    .collect(Collectors.toSet());
+        }
+
+        // If the object type is GROUP then search groups referenced by group privilege entities
+        if (Objects.equals(objectType, ObjectTypes.GROUP.name())) {
+            return
+                securityDataService.findAllGroupPrivilegesByGroupUUIDIn(itemUUIDs)
+                    .stream()
+                    .map(AcctGroupPrivilege::getGroupUUID)
+                    .collect(Collectors.toSet());
+        }
+
+        throw new IllegalArgumentException("Object type [" + objectType + "] not supported");
     }
 
     /**
