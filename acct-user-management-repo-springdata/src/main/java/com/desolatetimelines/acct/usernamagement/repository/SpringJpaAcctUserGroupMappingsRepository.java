@@ -6,6 +6,9 @@ import com.desolatetimelines.acct.usernamagement.model.JpaAcctUserGroupMapping;
 import com.desolatetimelines.acct.usernamagement.springrepository.JpaUserGroupMappingsRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import static com.desolatetimelines.acct.usernamagement.util.AcctUserManagementRepoSpringDataUtils.doWithJpaAcctUserGroupMapping;
 
 /**
@@ -33,5 +36,10 @@ public class SpringJpaAcctUserGroupMappingsRepository implements AcctUserGroupMa
     @Override
     public void deleteByUserUUIDAndGroupUUID(String userUUID, String groupUUID) {
         userGroupMappingsRepository.deleteByUserUserUUIDAndGroupGroupUUID(userUUID, groupUUID);
+    }
+
+    @Override
+    public Set<AcctUserGroupMapping> findAllByUserUserUUID(String userUUID) {
+        return new HashSet<>(userGroupMappingsRepository.findAllByUserUserUUID(userUUID));
     }
 }

@@ -2,6 +2,8 @@ package com.desolatetimelines.acct.usermanagement.repository;
 
 import com.desolatetimelines.acct.usermanagement.model.AcctUserGroupMapping;
 
+import java.util.Set;
+
 /**
  * Repository for loading and persisting {@link AcctUserGroupMapping user / group mappings}
  */
@@ -26,5 +28,13 @@ public interface AcctUserGroupMappingsRepository {
      * @param groupUUID the given group UUID
      */
     void deleteByUserUUIDAndGroupUUID(String userUUID, String groupUUID);
+
+    /**
+     * Returns all the {@link AcctUserGroupMapping user / group mappings} for the
+     * user with the given user UUID
+     *
+     * @param userUUID the given user UUID
+     */
+    Set<AcctUserGroupMapping> findAllByUserUserUUID(String userUUID);
 
 }

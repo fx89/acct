@@ -3,6 +3,7 @@ package com.desolatetimelines.acct.usermanagement.service;
 import com.desolatetimelines.acct.common.ObjectTypes;
 import com.desolatetimelines.acct.usage.ws.client.RESTUsageEndpointClient;
 import com.desolatetimelines.acct.usage.ws.model.ServiceItemTypesList;
+import com.desolatetimelines.acct.usermanagement.data.model.AcctGroupDetails;
 import com.desolatetimelines.acct.usermanagement.data.model.AcctUserCreationParameters;
 import com.desolatetimelines.acct.usermanagement.data.model.AcctUserDetails;
 import com.desolatetimelines.acct.usermanagement.data.model.AcctUserGroupCreationParameters;
@@ -17,6 +18,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
 
@@ -134,6 +136,17 @@ public class AcctUserManagementService {
         // Save the user
         dataService.saveUser(acctUser);
     }
+
+    /**
+     * Returns a set of {@link AcctGroupDetails entities} containing the details of all
+     * the groups mapped to the user defined by the given user UUID
+     *
+     * @param userUUID the given user UUID
+     */
+    public Set<AcctGroupDetails> getUserGroups(String userUUID) {
+        return dataService.findGroupsForUser(userUUID);
+    }
+
 
     /**
      * Supplies a reference to the "Users" group while making sure the group is created if it doesn't exist

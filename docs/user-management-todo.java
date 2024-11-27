@@ -11,7 +11,7 @@
 // TODO: USR-02001: Groups endpoint: Find sorted page of groups by login name pattern or by name pattern
 // TODO: USR-02002: Groups endpoint: Save group
 // TODO: USR-02003: Groups endpoint: Delete group
-// TODO: USR-02004: Groups endpoint: Get user groups
+// DONE: USR-02004: Groups endpoint: Get user groups
 
 // TODO: USR-03001: Custom operations endpoint: Set default workspace for the current user
 

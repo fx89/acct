@@ -1,5 +1,6 @@
 package com.desolatetimelines.acct.usermanagement.data.service;
 
+import com.desolatetimelines.acct.usermanagement.data.model.AcctGroupDetails;
 import com.desolatetimelines.acct.usermanagement.data.model.AcctUserCreationParameters;
 import com.desolatetimelines.acct.usermanagement.data.model.AcctUserDetails;
 import com.desolatetimelines.acct.usermanagement.data.model.AcctUserGroupCreationParameters;
@@ -12,6 +13,8 @@ import com.desolatetimelines.acct.usermanagement.repository.AcctUsersRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Facade for the data layer of the user management service, allowing for the
@@ -160,11 +163,36 @@ public class AcctUserManagementDataService {
         userGroupMappingsRepository.deleteByUserUUIDAndGroupUUID(user.getUserUUID(), usersGroup.getGroupUUID());
     }
 
+    /**
+     * Retrieves a set of {@link AcctGroupDetails groups} mapped to the user
+     * identified by the given user UUID
+     *
+     * @param userUUID the given user UUID
+     */
+    public Set<AcctGroupDetails> findGroupsForUser(String userUUID) {
+        return
+            userGroupMappingsRepository.findAllByUserUserUUID(userUUID)
+                .stream()
+                .map(AcctUserGroupMapping::getGroup)
+                .map(AcctUserManagementDataService::mapAcctUsersGroupToAcctGroupDetails)
+                .collect(Collectors.toSet());
+    }
+
     private AcctUserDetails enrichUserAccountWithUsersGroups(AcctUser userAccount) {
         return
             AcctUserDetails.builder()
                 .withUserAccount(userAccount)
                 .withUserGroups(userGroupsRepository.findUserGroupByUserUUID(userAccount.getUserUUID()))
+                .build();
+    }
+
+    private static AcctGroupDetails mapAcctUsersGroupToAcctGroupDetails(AcctUsersGroup acctUserGroup) {
+        return
+            AcctGroupDetails.builder()
+                .withGroupUUID(acctUserGroup.getGroupUUID())
+                .withGroupName(acctUserGroup.getGroupName())
+                .withGroupDescription(acctUserGroup.getGroupDescription())
+                .withGroupIconUUID(acctUserGroup.getGroupIconUUID())
                 .build();
     }
 }
