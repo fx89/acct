@@ -13,15 +13,15 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @FeignClient(
     contextId = "${SECURITY_APPLICATION_NAME}-privileges",
-    name = "${SECURITY_APPLICATION_NAME}/${SECURITY_SERVER_CONTEXT_PATH}"
+    name = "${SECURITY_APPLICATION_NAME}/${SECURITY_SERVER_CONTEXT_PATH}/privileges"
 )
 public interface RESTPrivilegesEndpointClient extends PrivilegesEndpoint {
     @Override
-    @RequestMapping(value = "/privileges/byGroupUUIDs", method = RequestMethod.GET)
+    @RequestMapping(value = "/byGroupUUIDs", method = RequestMethod.GET)
     Set<String> getGroupPrivilegesByGroupUUIDs(@RequestParam("groupUUIDs") Collection<String> groupUUIDs);
 
     @Override
-    @RequestMapping(value = "/privileges", method = RequestMethod.GET)
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     Set<Privilege> getAllAssignablePrivileges();
 
     @Override

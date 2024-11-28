@@ -1,9 +1,6 @@
 package com.desolatetimelines.acct.security.data.service;
 
-import com.desolatetimelines.acct.security.model.AcctDashboardOwner;
-import com.desolatetimelines.acct.security.model.AcctGroupPrivilege;
-import com.desolatetimelines.acct.security.model.AcctReportOwner;
-import com.desolatetimelines.acct.security.model.AcctWorkspaceOwner;
+import com.desolatetimelines.acct.security.model.*;
 import com.desolatetimelines.acct.security.repository.AcctDashboardOwnersRepository;
 import com.desolatetimelines.acct.security.repository.AcctGroupPrivilegesRepository;
 import com.desolatetimelines.acct.security.repository.AcctReportOwnersRepository;
@@ -12,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Facade for the data layer of the security service, allowing for the
@@ -106,6 +104,21 @@ public class AcctSecurityDataService {
      */
     public void deleteGroupPrivilegeMappings(String groupUUID, Collection<String> privilegeIDs) {
         groupPrivilegesRepository.deleteAllByGroupUUIDAndPrivilegeNameIn(groupUUID, privilegeIDs);
+    }
+
+    /**
+     * Returns a set of workspace UUIDs for the workspaces owned by the owner
+     * of one of the given owner types having the given owner UUID
+     *
+     * @param ownerTypes the given owner types
+     * @param ownerUUID  the given owner UUID
+     */
+    public Set<String> getWorkspacesOwnedByOwnerOfType(Set<OwnerType> ownerTypes, String ownerUUID) {
+        return
+            workspaceOwnersRepository.findAllByOwnerTypeInAndOwnerUUID(ownerTypes, ownerUUID)
+                .stream()
+                .map(AcctWorkspaceOwner::getWorkspaceUUID)
+                .collect(Collectors.toSet());
     }
 
 }

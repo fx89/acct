@@ -4,10 +4,7 @@ import com.desolatetimelines.acct.common.ObjectTypes;
 import com.desolatetimelines.acct.privilegesprovider.model.AcctPrivilege;
 import com.desolatetimelines.acct.security.data.service.AcctSecurityDataService;
 import com.desolatetimelines.acct.security.data.usermanagement.service.AcctSecurityUserManagementDataService;
-import com.desolatetimelines.acct.security.model.AcctDashboardOwner;
-import com.desolatetimelines.acct.security.model.AcctGroupPrivilege;
-import com.desolatetimelines.acct.security.model.AcctReportOwner;
-import com.desolatetimelines.acct.security.model.AcctWorkspaceOwner;
+import com.desolatetimelines.acct.security.model.*;
 import com.desolatetimelines.acct.security.privilegesprovider.service.AcctPrivilegesDataService;
 import com.desolatetimelines.acct.usage.ws.client.RESTUsageEndpointClient;
 import com.desolatetimelines.acct.usage.ws.model.ServiceItemTypesList;
@@ -209,5 +206,30 @@ public class AcctSecurityService {
                 .stream()
                 .map(AcctGroupPrivilege::getPrivilegeName)
                 .collect(Collectors.toSet());
+    }
+
+    /**
+     * Returns a set of workspace UUIDs for the workspaces owned by the owner
+     * of the given owner type having the given owner UUID
+     *
+     * @param ownerType the given owner type
+     * @param ownerUUID the given owner UUID
+     */
+    public Set<String> getWorkspacesOwnedByOwnerOfType(OwnerType ownerType, String ownerUUID) {
+        return securityDataService.getWorkspacesOwnedByOwnerOfType(Set.of(ownerType), ownerUUID);
+    }
+
+    /**
+     * Returns a set of workspace UUIDs for the workspaces owned by the owner
+     * having the given owner UUID
+     *
+     * @param ownerUUID the given owner UUID
+     */
+    public Set<String> getWorkspacesOwnedByOwner(String ownerUUID) {
+        return
+            securityDataService.getWorkspacesOwnedByOwnerOfType(
+                Set.of(OwnerType.GROUP, OwnerType.USER, OwnerType.PUBLIC),
+                ownerUUID
+            );
     }
 }

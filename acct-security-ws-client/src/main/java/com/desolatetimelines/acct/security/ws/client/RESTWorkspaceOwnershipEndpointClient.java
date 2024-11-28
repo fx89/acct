@@ -1,0 +1,26 @@
+package com.desolatetimelines.acct.security.ws.client;
+
+import com.desolatetimelines.acct.security.ws.endpoint.WorkspaceOwnershipEndpoint;
+import com.desolatetimelines.acct.security.ws.endpoint.model.OwnerType;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Collection;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
+@FeignClient(
+    contextId = "${SECURITY_APPLICATION_NAME}-workspace-ownership",
+    name = "${SECURITY_APPLICATION_NAME}/${SECURITY_SERVER_CONTEXT_PATH}/workspaceOwners"
+)
+public interface RESTWorkspaceOwnershipEndpointClient extends WorkspaceOwnershipEndpoint {
+
+    @Override
+    @GetMapping(value = "/ownedWorkspaces", produces = APPLICATION_JSON_VALUE)
+    public Collection<String> getWorkspacesOwnedByOwnerOfType(
+        @RequestParam("ownerType") OwnerType ownerType,
+        @RequestParam("ownerUUID") String ownerUUID
+    );
+
+}

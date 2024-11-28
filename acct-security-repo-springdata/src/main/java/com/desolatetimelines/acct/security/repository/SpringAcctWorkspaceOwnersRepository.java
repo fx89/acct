@@ -1,6 +1,7 @@
 package com.desolatetimelines.acct.security.repository;
 
 import com.desolatetimelines.acct.security.model.AcctWorkspaceOwner;
+import com.desolatetimelines.acct.security.model.OwnerType;
 import com.desolatetimelines.acct.security.springrepository.JpaAcctWorkspaceOwnersRepository;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,11 @@ public class SpringAcctWorkspaceOwnersRepository implements AcctWorkspaceOwnersR
     @Override
     public Set<AcctWorkspaceOwner> findAllByWorkspaceUUIDIn(Collection<String> workspaceUUIDs) {
         return new HashSet<>(workspaceOwnersRepository.findAllByWorkspaceUUIDIn(workspaceUUIDs));
+    }
+
+    @Override
+    public Set<AcctWorkspaceOwner> findAllByOwnerTypeInAndOwnerUUID(Collection<OwnerType> ownerTypes, String ownerUUID) {
+        return new HashSet<>(workspaceOwnersRepository.findAllByOwnerTypeInAndOwnerUUID(ownerTypes, ownerUUID));
     }
 
 }
