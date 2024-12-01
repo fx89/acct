@@ -20,8 +20,14 @@ public interface JpaAcctWorkspaceOwnersRepository extends CrudRepository<JpaAcct
 
     Set<JpaAcctWorkspaceOwner> findAllByOwnerTypeInAndOwnerUUID(Collection<OwnerType> ownerType, String ownerUUID);
 
-    Set<JpaAcctWorkspaceOwner> findAllByOwnerTypeAndOwnerUUIDIn(OwnerType ownerType, Collection<String> ownerUUID);
+    Set<JpaAcctWorkspaceOwner> findAllByOwnerTypeAndOwnerUUIDIn(OwnerType ownerType, Collection<String> ownerUUIDs);
 
     Set<JpaAcctWorkspaceOwner> findAllByOwnerType(OwnerType ownerType);
+
+    Set<JpaAcctWorkspaceOwner> findAllByOwnerTypeAndOwnerUUIDInAndWorkspaceUUID(
+        OwnerType ownerType,
+        Collection<String> ownerUUIDs,
+        String workspaceUUID
+    );
 
 }

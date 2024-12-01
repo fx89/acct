@@ -14,14 +14,12 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.desolatetimelines.acct.common.Streams.multiConcat;
+import static com.desolatetimelines.acct.security.model.AccessibilityReport.*;
 import static java.util.Collections.emptySet;
 
 /**
@@ -218,7 +216,7 @@ public class AcctSecurityService {
      */
     public Set<String> getWorkspacesOwnedByOwnerOfType(OwnerType ownerType, String ownerUUID) {
         return
-            securityDataService.getWorkspacesOwnedByOwnerOfType(Set.of(ownerType), ownerUUID)
+            securityDataService.findWorkspacesOwnedByOwnerOfType(Set.of(ownerType), ownerUUID)
                 .stream()
                 .map(AcctWorkspaceOwner::getWorkspaceUUID)
                 .collect(Collectors.toSet());
@@ -232,7 +230,7 @@ public class AcctSecurityService {
      */
     public Set<String> getWorkspacesOwnedByOwner(String ownerUUID) {
         return
-            securityDataService.getWorkspacesOwnedByOwnerOfType(
+            securityDataService.findWorkspacesOwnedByOwnerOfType(
                     Set.of(OwnerType.GROUP, OwnerType.USER, OwnerType.PUBLIC),
                     ownerUUID
                 )
@@ -250,7 +248,7 @@ public class AcctSecurityService {
     public Set<AcctWorkspaceOwner> getWorkspacesOwnedByUser(String userUUID) {
         // Get the user workspaces
         final Set<AcctWorkspaceOwner> userWorkspaces =
-            securityDataService.getWorkspacesOwnedByOwnerOfType(
+            securityDataService.findWorkspacesOwnedByOwnerOfType(
                 Set.of(OwnerType.USER),
                 userUUID
             );
@@ -262,7 +260,7 @@ public class AcctSecurityService {
         // Get the UUIDs of the groups assigned to the user and then
         // search for the workspaces owned by each of those groups
         final Set<AcctWorkspaceOwner> groupWorkspaces =
-            securityDataService.getWorkspacesOwnedByOwnersOfType(
+            securityDataService.findWorkspacesOwnedByOwnersOfType(
                 OwnerType.GROUP,
                 securityUserManagementDataService.getUUIDsOfGroupsAssignedToUser(userUUID)
             );
@@ -271,6 +269,40 @@ public class AcctSecurityService {
         return
             multiConcat(userWorkspaces.stream(), groupWorkspaces.stream(), publicWorkspaces.stream())
                 .collect(Collectors.toSet());
+    }
+
+    public AccessibilityReport getWorkspaceOwnedByUser(String userUUID, String workspaceUUIDs) {
+        // Check for direct ownership
+        final Optional<AcctWorkspaceOwner> directOwnership =
+            securityDataService.findWorkspaceOwner(OwnerType.USER, userUUID, workspaceUUIDs);
+
+        // If direct ownership is found, return a direct ownership report
+        if (directOwnership.isPresent()) {
+            return DIRECT_OWNERSHIP_REPORT;
+        }
+
+        // If direct ownership is not found, check for group ownership
+
+        // To do that, get the groups mapped to the user
+        final Set<String> userGroupUUIDs =
+            securityUserManagementDataService.getUUIDsOfGroupsAssignedToUser(userUUID);
+
+        // If there's no group then return a negative ownership report
+        if (userGroupUUIDs.isEmpty()) {
+            return NEGATIVE_OWNERSHIP_REPORT;
+        }
+
+        // If there are groups assigned to the user, look for
+        final Set<AcctWorkspaceOwner> groupOwnership =
+            securityDataService.findWorkspaceOwners(OwnerType.GROUP, userGroupUUIDs, workspaceUUIDs);
+
+        // If nothing is found, return a negative ownership report
+        if (groupOwnership.isEmpty()) {
+            return NEGATIVE_OWNERSHIP_REPORT;
+        }
+
+        // If anything is found, return a group ownership report
+        return GROUP_OWNERSHIP_REPORT;
     }
 
     /**

@@ -24,6 +24,12 @@ public interface AcctWorkspaceOwnersRepository {
         String workspaceUUID
     );
 
+    Set<AcctWorkspaceOwner> findAllByOwnerTypeAndOwnerUUIDInAndWorkspaceUUID(
+        OwnerType ownerType,
+        Collection<String> ownerUUID,
+        String workspaceUUID
+    );
+
     Set<AcctWorkspaceOwner> findAllByWorkspaceUUIDIn(Collection<String> workspaceUUIDs);
 
     Set<AcctWorkspaceOwner> findAllByOwnerTypeInAndOwnerUUID(Collection<OwnerType> ownerTypes, String ownerUUID);

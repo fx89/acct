@@ -9,6 +9,7 @@ import com.desolatetimelines.acct.security.repository.AcctWorkspaceOwnersReposit
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -113,18 +114,63 @@ public class AcctSecurityDataService {
      * @param ownerTypes the given owner types
      * @param ownerUUID  the given owner UUID
      */
-    public Set<AcctWorkspaceOwner> getWorkspacesOwnedByOwnerOfType(Set<OwnerType> ownerTypes, String ownerUUID) {
+    public Set<AcctWorkspaceOwner> findWorkspacesOwnedByOwnerOfType(Set<OwnerType> ownerTypes, String ownerUUID) {
         return workspaceOwnersRepository.findAllByOwnerTypeInAndOwnerUUID(ownerTypes, ownerUUID);
     }
 
     /**
+     * Returns an optional {@link AcctWorkspaceOwner workspace owner} record for the given
+     * owner type, the given owner UUID and the given workspace UUID. If there is no such
+     * record, the returned optional is empty.
+     *
+     * @param ownerType     the given owner type
+     * @param ownerUUID     the given owner UID
+     * @param workspaceUUID the given workspace UUID
+     */
+    public Optional<AcctWorkspaceOwner> findWorkspaceOwner(
+        OwnerType ownerType,
+        String ownerUUID,
+        String workspaceUUID
+    ) {
+        return
+            workspaceOwnersRepository
+                .findFirstByOwnerTypeAndOwnerUUIDAndWorkspaceUUID(
+                    ownerType,
+                    ownerUUID,
+                    workspaceUUID
+                );
+    }
+
+    /**
      * Returns a set of {@link AcctWorkspaceOwner workspace owners} for the workspaces owned by the owners
-     * of one of the given owner type having the given owner UUIDs
+     * of the given owner type, having the given owner UUIDs and the given workspace UUID
+     *
+     * @param ownerType     the given owner type
+     * @param ownerUUIDs    the given owner UUIDs
+     * @param workspaceUUID the given workspace UUID
+     */
+    public Set<AcctWorkspaceOwner> findWorkspaceOwners(
+        OwnerType ownerType,
+        Collection<String> ownerUUIDs,
+        String workspaceUUID
+    ) {
+        return
+            workspaceOwnersRepository
+                .findAllByOwnerTypeAndOwnerUUIDInAndWorkspaceUUID(
+                    ownerType,
+                    ownerUUIDs,
+                    workspaceUUID
+                );
+    }
+
+    /**
+     * Returns a set of {@link AcctWorkspaceOwner workspace owners} for the workspaces owned by the owners
+     * of the given owner type having the given owner UUIDs
      *
      * @param ownerType  the given owner type
      * @param ownerUUIDs the given owner UUIDs
      */
-    public Set<AcctWorkspaceOwner> getWorkspacesOwnedByOwnersOfType(
+    public Set<AcctWorkspaceOwner> findWorkspacesOwnedByOwnersOfType(
         OwnerType ownerType,
         Collection<String> ownerUUIDs
     ) {

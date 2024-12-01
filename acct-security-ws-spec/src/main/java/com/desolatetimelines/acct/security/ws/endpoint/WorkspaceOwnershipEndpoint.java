@@ -2,6 +2,7 @@ package com.desolatetimelines.acct.security.ws.endpoint;
 
 import com.desolatetimelines.acct.security.ws.endpoint.model.OwnedWorkspacesGroup;
 import com.desolatetimelines.acct.security.ws.endpoint.model.OwnerType;
+import com.desolatetimelines.acct.security.ws.endpoint.model.WorkspaceAccessibilityReport;
 import com.desolatetimelines.acct.security.ws.endpoint.model.WorkspaceOwner;
 
 import java.util.Collection;
@@ -48,5 +49,15 @@ public interface WorkspaceOwnershipEndpoint {
      * @param workspaceUUID the given workspace UUID
      */
     void deleteWorkspaceOwner(OwnerType ownerType, String ownerUUID, String workspaceUUID);
+
+    /**
+     * Checks the accessibility of the workspace identified by the given workspace UUID
+     * to the user identified by the given user UUID
+     *
+     * @param userUUID      the given user UUID
+     * @param workspaceUUID the given workspace UUID
+     * @return the accessibility report
+     */
+    WorkspaceAccessibilityReport isUserAccessibleWorkspace(String userUUID, String workspaceUUID);
 
 }

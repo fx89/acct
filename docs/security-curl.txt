@@ -128,3 +128,9 @@ curl \
     -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
     -X DELETE 'http://localhost:8082/service/security/v1/workspaceOwners?ownerType=GROUP&ownerUUID=6f3b4a48-24eb-49b2-934b-5a80198cf317&workspaceUUID=2bf769d9-c911-472d-9162-93381a8d1128' \
     | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
+    -X GET 'http://localhost:8082/service/security/v1/workspaceOwners/userAccessibleWorkspace?userUUID=962c6d5e-eb3d-431c-a93e-c9747596d998&workspaceUUID=962c6d5e-eb3d-431c-a93e-c9747596d999' \
+    | jq

@@ -3,6 +3,7 @@ package com.desolatetimelines.acct.security.ws.client;
 import com.desolatetimelines.acct.security.ws.endpoint.WorkspaceOwnershipEndpoint;
 import com.desolatetimelines.acct.security.ws.endpoint.model.OwnedWorkspacesGroup;
 import com.desolatetimelines.acct.security.ws.endpoint.model.OwnerType;
+import com.desolatetimelines.acct.security.ws.endpoint.model.WorkspaceAccessibilityReport;
 import com.desolatetimelines.acct.security.ws.endpoint.model.WorkspaceOwner;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +38,13 @@ public interface RESTWorkspaceOwnershipEndpointClient extends WorkspaceOwnership
     void deleteWorkspaceOwner(
         @RequestParam("ownerType") OwnerType ownerType,
         @RequestParam("ownerUUID") String ownerUUID,
+        @RequestParam("workspaceUUID") String workspaceUUID
+    );
+
+    @Override
+    @GetMapping(value = "/userAccessibleWorkspace")
+    WorkspaceAccessibilityReport isUserAccessibleWorkspace(
+        @RequestParam("userUUID") String userUUID,
         @RequestParam("workspaceUUID") String workspaceUUID
     );
 
