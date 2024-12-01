@@ -5,6 +5,7 @@ import com.desolatetimelines.acct.security.model.AcctWorkspaceOwner;
 import com.desolatetimelines.acct.security.model.JpaAcctGroupPrivilege;
 import com.desolatetimelines.acct.security.model.JpaAcctWorkspaceOwner;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -26,7 +27,7 @@ public abstract class AcctSecurityRepoSpringdataUtils {
         );
     }
 
-    public static JpaAcctWorkspaceOwner doWithJJpaAcctWorkspaceOwner(
+    public static JpaAcctWorkspaceOwner doWithJJpaAcctWorkspaceOwnerReturning(
         AcctWorkspaceOwner acctWorkspaceOwner,
         Function<JpaAcctWorkspaceOwner, JpaAcctWorkspaceOwner> todo
     ) {
@@ -38,6 +39,16 @@ public abstract class AcctSecurityRepoSpringdataUtils {
             "The referenced " + AcctWorkspaceOwner.class.getName() +
                 " is not of type " + JpaAcctWorkspaceOwner.class.getCanonicalName()
         );
+    }
+
+    public static void doWithJJpaAcctWorkspaceOwner(
+        AcctWorkspaceOwner acctWorkspaceOwner,
+        Consumer<JpaAcctWorkspaceOwner> todo
+    ) {
+        doWithJJpaAcctWorkspaceOwnerReturning(acctWorkspaceOwner, in -> {
+            todo.accept(in);
+            return null;
+        });
     }
 
 }

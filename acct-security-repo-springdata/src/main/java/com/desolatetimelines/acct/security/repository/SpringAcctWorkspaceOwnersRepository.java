@@ -8,9 +8,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import static com.desolatetimelines.acct.security.util.AcctSecurityRepoSpringdataUtils.doWithJJpaAcctWorkspaceOwner;
+import static com.desolatetimelines.acct.security.util.AcctSecurityRepoSpringdataUtils.doWithJJpaAcctWorkspaceOwnerReturning;
+import static java.util.function.Function.identity;
 
 /**
  * Implementation of the {@link AcctWorkspaceOwnersRepository} based on Spring Data
@@ -31,7 +34,24 @@ public class SpringAcctWorkspaceOwnersRepository implements AcctWorkspaceOwnersR
 
     @Override
     public AcctWorkspaceOwner save(AcctWorkspaceOwner acctWorkspaceOwner) {
-        return doWithJJpaAcctWorkspaceOwner(acctWorkspaceOwner, workspaceOwnersRepository::save);
+        return doWithJJpaAcctWorkspaceOwnerReturning(acctWorkspaceOwner, workspaceOwnersRepository::save);
+    }
+
+    @Override
+    public void delete(AcctWorkspaceOwner acctWorkspaceOwner) {
+        doWithJJpaAcctWorkspaceOwner(acctWorkspaceOwner, workspaceOwnersRepository::delete);
+    }
+
+    @Override
+    public Optional<AcctWorkspaceOwner> findFirstByOwnerTypeAndOwnerUUIDAndWorkspaceUUID(
+        OwnerType ownerType,
+        String ownerUUID,
+        String workspaceUUID
+    ) {
+        return
+            workspaceOwnersRepository
+                .findFirstByOwnerTypeAndOwnerUUIDAndWorkspaceUUID(ownerType, ownerUUID, workspaceUUID)
+                .map(identity());
     }
 
     @Override

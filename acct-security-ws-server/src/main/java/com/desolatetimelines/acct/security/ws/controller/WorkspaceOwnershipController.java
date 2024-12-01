@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
-import static com.desolatetimelines.acct.security.privilegesprovider.model.SecurityPrivilegeIds.WORKSPACE_OWNERS_READ;
-import static com.desolatetimelines.acct.security.privilegesprovider.model.SecurityPrivilegeIds.WORKSPACE_OWNERS_SAVE;
+import static com.desolatetimelines.acct.security.privilegesprovider.model.SecurityPrivilegeIds.*;
 import static com.desolatetimelines.acct.security.ws.mapper.OwnedWorkspacesGroupsMapper.fromAcctWorkspaceOwnersCollection;
 import static com.desolatetimelines.acct.security.ws.mapper.OwnerTypeMapper.toDataLayerOwnerType;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -62,5 +61,16 @@ public class WorkspaceOwnershipController implements WorkspaceOwnershipEndpoint 
             workspaceOwner.ownerUUID(),
             workspaceOwner.workspaceUUID()
         );
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + WORKSPACE_OWNERS_DELETE + "')")
+    @DeleteMapping(value = "")
+    public void deleteWorkspaceOwner(
+        @RequestParam("ownerType") OwnerType ownerType,
+        @RequestParam("ownerUUID") String ownerUUID,
+        @RequestParam("workspaceUUID") String workspaceUUID
+    ) {
+        securityService.deleteWorkspaceOwner(toDataLayerOwnerType(ownerType), ownerUUID, workspaceUUID);
     }
 }

@@ -39,4 +39,14 @@ public interface WorkspaceOwnershipEndpoint {
      */
     void addWorkspaceOwner(WorkspaceOwner workspaceOwner);
 
+    /**
+     * Deletes the workspace owner of the given owner type having the given owner UUID
+     * and the given workspaceUUID
+     *
+     * @param ownerType     the given owner type
+     * @param ownerUUID     the given owner UUID
+     * @param workspaceUUID the given workspace UUID
+     */
+    void deleteWorkspaceOwner(OwnerType ownerType, String ownerUUID, String workspaceUUID);
+
 }

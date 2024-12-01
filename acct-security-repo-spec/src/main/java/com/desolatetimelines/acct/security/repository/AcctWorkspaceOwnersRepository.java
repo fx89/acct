@@ -4,6 +4,7 @@ import com.desolatetimelines.acct.security.model.AcctWorkspaceOwner;
 import com.desolatetimelines.acct.security.model.OwnerType;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -14,6 +15,14 @@ public interface AcctWorkspaceOwnersRepository {
     AcctWorkspaceOwner createNew();
 
     AcctWorkspaceOwner save(AcctWorkspaceOwner acctWorkspaceOwner);
+
+    void delete(AcctWorkspaceOwner acctWorkspaceOwner);
+
+    Optional<AcctWorkspaceOwner> findFirstByOwnerTypeAndOwnerUUIDAndWorkspaceUUID(
+        OwnerType ownerType,
+        String ownerUUID,
+        String workspaceUUID
+    );
 
     Set<AcctWorkspaceOwner> findAllByWorkspaceUUIDIn(Collection<String> workspaceUUIDs);
 

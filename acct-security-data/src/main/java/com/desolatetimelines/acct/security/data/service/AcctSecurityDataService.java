@@ -1,11 +1,11 @@
 package com.desolatetimelines.acct.security.data.service;
 
+import com.desolatetimelines.acct.security.data.exception.AcctSecurityDataServiceNotFoundException;
 import com.desolatetimelines.acct.security.model.*;
 import com.desolatetimelines.acct.security.repository.AcctDashboardOwnersRepository;
 import com.desolatetimelines.acct.security.repository.AcctGroupPrivilegesRepository;
 import com.desolatetimelines.acct.security.repository.AcctReportOwnersRepository;
 import com.desolatetimelines.acct.security.repository.AcctWorkspaceOwnersRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -147,7 +147,6 @@ public class AcctSecurityDataService {
      * @param workspaceUUID the given workspace UUID
      * @return the created workspace owner
      */
-    @Transactional
     public AcctWorkspaceOwner createWorkspaceOwner(OwnerType ownerType, String ownerUUID, String workspaceUUID) {
         // Create the new workspace owner
         final AcctWorkspaceOwner newWorkspaceOwner = workspaceOwnersRepository.createNew();
@@ -159,6 +158,28 @@ public class AcctSecurityDataService {
 
         // Save the new workspace owner and return a reference to the saved entity
         return workspaceOwnersRepository.save(newWorkspaceOwner);
+    }
+
+    /**
+     * Deletes the {@link AcctWorkspaceOwner workspace owner} of the given owner type
+     * for the given owner UUID and the given workspace UUID
+     *
+     * @param ownerType     the given owner type
+     * @param ownerUUID     the given owner UUID
+     * @param workspaceUUID the given workspace UUID
+     */
+    public void deleteWorkspaceOwner(OwnerType ownerType, String ownerUUID, String workspaceUUID) {
+        // Get the workspace owner or throw a "Not Found" exception
+        final AcctWorkspaceOwner workspaceOwner =
+            workspaceOwnersRepository.findFirstByOwnerTypeAndOwnerUUIDAndWorkspaceUUID(
+                    ownerType, ownerUUID, workspaceUUID
+                )
+                .orElseThrow(() -> new AcctSecurityDataServiceNotFoundException(
+                    "Workspace owner not found"
+                ));
+
+        // Delete the workspace owner
+        workspaceOwnersRepository.delete(workspaceOwner);
     }
 
 }

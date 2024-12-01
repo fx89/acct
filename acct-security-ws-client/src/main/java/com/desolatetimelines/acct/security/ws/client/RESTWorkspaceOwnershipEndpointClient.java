@@ -5,10 +5,7 @@ import com.desolatetimelines.acct.security.ws.endpoint.model.OwnedWorkspacesGrou
 import com.desolatetimelines.acct.security.ws.endpoint.model.OwnerType;
 import com.desolatetimelines.acct.security.ws.endpoint.model.WorkspaceOwner;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
@@ -34,5 +31,13 @@ public interface RESTWorkspaceOwnershipEndpointClient extends WorkspaceOwnership
     @Override
     @PostMapping(value = "", produces = APPLICATION_JSON_VALUE)
     void addWorkspaceOwner(@RequestBody WorkspaceOwner workspaceOwner);
+
+    @Override
+    @DeleteMapping(value = "")
+    void deleteWorkspaceOwner(
+        @RequestParam("ownerType") OwnerType ownerType,
+        @RequestParam("ownerUUID") String ownerUUID,
+        @RequestParam("workspaceUUID") String workspaceUUID
+    );
 
 }
