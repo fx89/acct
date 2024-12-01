@@ -1,6 +1,6 @@
 // DONE: SEC-01001: Workspace ownership endpoint: Get workspaces owned by owner of the given type
 // DONE: SEC-01002: Workspace ownership endpoint: Get workspaces owned by user and groups assigned to the user (calls USR-02004)
-// TODO: SEC-01003: Workspace ownership endpoint: Add workspace owner
+// DONE: SEC-01003: Workspace ownership endpoint: Add workspace owner
 // TODO: SEC-01004: Workspace ownership endpoint: Remove workspace owner
 // TODO: SEC-01005: Workspace ownership endpoint: Check if workspace is accessible by user or by groups assigned to the user
 

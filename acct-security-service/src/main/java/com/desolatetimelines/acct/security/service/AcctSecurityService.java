@@ -272,4 +272,17 @@ public class AcctSecurityService {
             multiConcat(userWorkspaces.stream(), groupWorkspaces.stream(), publicWorkspaces.stream())
                 .collect(Collectors.toSet());
     }
+
+    /**
+     * Creates a {@link AcctWorkspaceOwner workspace owner} of the given owner type
+     * for the given owner UUID and the given workspace UUID
+     *
+     * @param ownerType     the given owner type
+     * @param ownerUUID     the given owner UUID
+     * @param workspaceUUID the given workspace UUID
+     * @return the created workspace owner
+     */
+    public AcctWorkspaceOwner createWorkspaceOwner(OwnerType ownerType, String ownerUUID, String workspaceUUID) {
+        return securityDataService.createWorkspaceOwner(ownerType, ownerUUID, workspaceUUID);
+    }
 }

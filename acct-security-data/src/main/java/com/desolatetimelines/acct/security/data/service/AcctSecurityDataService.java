@@ -5,6 +5,7 @@ import com.desolatetimelines.acct.security.repository.AcctDashboardOwnersReposit
 import com.desolatetimelines.acct.security.repository.AcctGroupPrivilegesRepository;
 import com.desolatetimelines.acct.security.repository.AcctReportOwnersRepository;
 import com.desolatetimelines.acct.security.repository.AcctWorkspaceOwnersRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -135,6 +136,29 @@ public class AcctSecurityDataService {
      */
     public Set<AcctWorkspaceOwner> getPublicWorkspaces() {
         return workspaceOwnersRepository.findAllByOwnerType(OwnerType.PUBLIC);
+    }
+
+    /**
+     * Creates a {@link AcctWorkspaceOwner workspace owner} of the given owner type
+     * for the given owner UUID and the given workspace UUID
+     *
+     * @param ownerType     the given owner type
+     * @param ownerUUID     the given owner UUID
+     * @param workspaceUUID the given workspace UUID
+     * @return the created workspace owner
+     */
+    @Transactional
+    public AcctWorkspaceOwner createWorkspaceOwner(OwnerType ownerType, String ownerUUID, String workspaceUUID) {
+        // Create the new workspace owner
+        final AcctWorkspaceOwner newWorkspaceOwner = workspaceOwnersRepository.createNew();
+
+        // Set the properties of the new workspace owner
+        newWorkspaceOwner.setOwnerType(ownerType);
+        newWorkspaceOwner.setOwnerUUID(ownerUUID);
+        newWorkspaceOwner.setWorkspaceUUID(workspaceUUID);
+
+        // Save the new workspace owner and return a reference to the saved entity
+        return workspaceOwnersRepository.save(newWorkspaceOwner);
     }
 
 }

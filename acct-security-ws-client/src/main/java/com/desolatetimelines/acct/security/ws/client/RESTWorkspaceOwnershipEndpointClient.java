@@ -3,8 +3,11 @@ package com.desolatetimelines.acct.security.ws.client;
 import com.desolatetimelines.acct.security.ws.endpoint.WorkspaceOwnershipEndpoint;
 import com.desolatetimelines.acct.security.ws.endpoint.model.OwnedWorkspacesGroup;
 import com.desolatetimelines.acct.security.ws.endpoint.model.OwnerType;
+import com.desolatetimelines.acct.security.ws.endpoint.model.WorkspaceOwner;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Collection;
@@ -27,5 +30,9 @@ public interface RESTWorkspaceOwnershipEndpointClient extends WorkspaceOwnership
     @Override
     @GetMapping(value = "/userAccessibleWorkspaces", produces = APPLICATION_JSON_VALUE)
     OwnedWorkspacesGroup getUserAccessibleWorkspaces(@RequestParam("userUUID") String userUUID);
+
+    @Override
+    @PostMapping(value = "", produces = APPLICATION_JSON_VALUE)
+    void addWorkspaceOwner(@RequestBody WorkspaceOwner workspaceOwner);
 
 }

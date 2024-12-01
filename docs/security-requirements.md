@@ -73,7 +73,7 @@ Creates a direct mapping between the owner of the given `ownerType`, reference b
 and the workspace referenced by the given `workspaceUUID`.
 
 Example request URL:
-- `PUT http://acct.desolatetimelines.com/service/security/v1/workspaceOwners`
+- `POST http://acct.desolatetimelines.com/service/security/v1/workspaceOwners`
 
 Example request body:
 ```
@@ -88,7 +88,6 @@ Possible values for the `ownerType`:
 - USER
 - GROUP
 - PUBLIC
-- ANY
 
 
 

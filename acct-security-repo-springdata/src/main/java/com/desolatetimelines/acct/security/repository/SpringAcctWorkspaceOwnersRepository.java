@@ -1,6 +1,7 @@
 package com.desolatetimelines.acct.security.repository;
 
 import com.desolatetimelines.acct.security.model.AcctWorkspaceOwner;
+import com.desolatetimelines.acct.security.model.JpaAcctWorkspaceOwner;
 import com.desolatetimelines.acct.security.model.OwnerType;
 import com.desolatetimelines.acct.security.springrepository.JpaAcctWorkspaceOwnersRepository;
 import org.springframework.stereotype.Service;
@@ -8,6 +9,8 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
+import static com.desolatetimelines.acct.security.util.AcctSecurityRepoSpringdataUtils.doWithJJpaAcctWorkspaceOwner;
 
 /**
  * Implementation of the {@link AcctWorkspaceOwnersRepository} based on Spring Data
@@ -19,6 +22,16 @@ public class SpringAcctWorkspaceOwnersRepository implements AcctWorkspaceOwnersR
 
     public SpringAcctWorkspaceOwnersRepository(JpaAcctWorkspaceOwnersRepository workspaceOwnersRepository) {
         this.workspaceOwnersRepository = workspaceOwnersRepository;
+    }
+
+    @Override
+    public AcctWorkspaceOwner createNew() {
+        return new JpaAcctWorkspaceOwner();
+    }
+
+    @Override
+    public AcctWorkspaceOwner save(AcctWorkspaceOwner acctWorkspaceOwner) {
+        return doWithJJpaAcctWorkspaceOwner(acctWorkspaceOwner, workspaceOwnersRepository::save);
     }
 
     @Override

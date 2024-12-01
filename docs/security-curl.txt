@@ -121,3 +121,18 @@ curl \
     -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
     -X GET 'http://localhost:8082/service/security/v1/workspaceOwners/userAccessibleWorkspaces?userUUID=962c6d5e-eb3d-431c-a93e-c9747596d998' \
     | jq
+
+curl \
+    --insecure \
+    -v \
+    -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X POST 'http://localhost:8082/service/security/v1/workspaceOwners' \
+    --data-raw '
+            {
+                "ownerType": "GROUP",
+                "ownerUUID": "6f3b4a48-24eb-49b2-934b-5a80198cf316",
+                "workspaceUUID": "2bf769d9-c911-472d-9162-93381a8d1128"
+            }
+        ' \
+    | jq

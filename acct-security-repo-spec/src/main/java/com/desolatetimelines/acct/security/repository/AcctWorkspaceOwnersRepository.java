@@ -11,6 +11,10 @@ import java.util.Set;
  */
 public interface AcctWorkspaceOwnersRepository {
 
+    AcctWorkspaceOwner createNew();
+
+    AcctWorkspaceOwner save(AcctWorkspaceOwner acctWorkspaceOwner);
+
     Set<AcctWorkspaceOwner> findAllByWorkspaceUUIDIn(Collection<String> workspaceUUIDs);
 
     Set<AcctWorkspaceOwner> findAllByOwnerTypeInAndOwnerUUID(Collection<OwnerType> ownerTypes, String ownerUUID);

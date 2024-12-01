@@ -2,6 +2,7 @@ package com.desolatetimelines.acct.security.ws.endpoint;
 
 import com.desolatetimelines.acct.security.ws.endpoint.model.OwnedWorkspacesGroup;
 import com.desolatetimelines.acct.security.ws.endpoint.model.OwnerType;
+import com.desolatetimelines.acct.security.ws.endpoint.model.WorkspaceOwner;
 
 import java.util.Collection;
 
@@ -30,5 +31,12 @@ public interface WorkspaceOwnershipEndpoint {
      * @param userUUID the UUID of the user whose resources are being queried
      */
     OwnedWorkspacesGroup getUserAccessibleWorkspaces(String userUUID);
+
+    /**
+     * Creates a new workspace ownership record with the provider details
+     *
+     * @param workspaceOwner container for the provided details
+     */
+    void addWorkspaceOwner(WorkspaceOwner workspaceOwner);
 
 }
