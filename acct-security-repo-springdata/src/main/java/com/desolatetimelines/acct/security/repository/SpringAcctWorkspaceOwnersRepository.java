@@ -31,4 +31,14 @@ public class SpringAcctWorkspaceOwnersRepository implements AcctWorkspaceOwnersR
         return new HashSet<>(workspaceOwnersRepository.findAllByOwnerTypeInAndOwnerUUID(ownerTypes, ownerUUID));
     }
 
+    @Override
+    public Set<AcctWorkspaceOwner> findAllByOwnerTypeAndOwnerUUIDIn(OwnerType ownerType, Collection<String> ownerUUIDs) {
+        return new HashSet<>(workspaceOwnersRepository.findAllByOwnerTypeAndOwnerUUIDIn(ownerType, ownerUUIDs));
+    }
+
+    @Override
+    public Set<AcctWorkspaceOwner> findAllByOwnerType(OwnerType ownerType) {
+        return new HashSet<>(workspaceOwnersRepository.findAllByOwnerType(ownerType));
+    }
+
 }

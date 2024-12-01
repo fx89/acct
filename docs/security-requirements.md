@@ -32,7 +32,7 @@ Example response body:
 
 
 <br /><br />
-#### `SEC-02002` Get workspaces owned by user and group assigned to the user
+#### `SEC-01002` Get workspaces owned by user and group assigned to the user
 Retrieves a list of workspace UUIDs for the workspaces accessible to the user represented by the given `userUUID`
 either directly or through a group that the user is part of. Also returns public workspaces.
 

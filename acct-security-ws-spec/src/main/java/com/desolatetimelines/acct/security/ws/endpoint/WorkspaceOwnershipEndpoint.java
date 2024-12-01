@@ -1,5 +1,6 @@
 package com.desolatetimelines.acct.security.ws.endpoint;
 
+import com.desolatetimelines.acct.security.ws.endpoint.model.OwnedWorkspacesGroup;
 import com.desolatetimelines.acct.security.ws.endpoint.model.OwnerType;
 
 import java.util.Collection;
@@ -17,5 +18,17 @@ public interface WorkspaceOwnershipEndpoint {
      * @param ownerUUID the given owner UUID
      */
     Collection<String> getWorkspacesOwnedByOwnerOfType(OwnerType ownerType, String ownerUUID);
+
+    /**
+     * Returns a group of collections containing the UUIDs of the workspaces accessible to the user
+     * via each possible ownership type: <ul>
+     * <li>{@link OwnerType#USER accessible to the user}</li>
+     * <li>{@link OwnerType#GROUP accessible to the user's group}</li>
+     * <li>{@link OwnerType#PUBLIC accessible to everyone}</li>
+     * </ul>
+     *
+     * @param userUUID the UUID of the user whose resources are being queried
+     */
+    OwnedWorkspacesGroup getUserAccessibleWorkspaces(String userUUID);
 
 }

@@ -2,6 +2,7 @@ package com.desolatetimelines.acct.security.ws.controller;
 
 import com.desolatetimelines.acct.security.service.AcctSecurityService;
 import com.desolatetimelines.acct.security.ws.endpoint.WorkspaceOwnershipEndpoint;
+import com.desolatetimelines.acct.security.ws.endpoint.model.OwnedWorkspacesGroup;
 import com.desolatetimelines.acct.security.ws.endpoint.model.OwnerType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Collection;
 
 import static com.desolatetimelines.acct.security.privilegesprovider.model.SecurityPrivilegeIds.WORKSPACE_OWNERS_READ;
+import static com.desolatetimelines.acct.security.ws.mapper.OwnedWorkspacesGroupsMapper.fromAcctWorkspaceOwnersCollection;
 import static com.desolatetimelines.acct.security.ws.mapper.OwnerTypeMapper.toDataLayerOwnerType;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -43,5 +45,12 @@ public class WorkspaceOwnershipController implements WorkspaceOwnershipEndpoint 
                 toDataLayerOwnerType(ownerType),
                 ownerUUID
             );
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + WORKSPACE_OWNERS_READ + "')")
+    @GetMapping(value = "/userAccessibleWorkspaces", produces = APPLICATION_JSON_VALUE)
+    public OwnedWorkspacesGroup getUserAccessibleWorkspaces(@RequestParam("userUUID") String userUUID) {
+        return fromAcctWorkspaceOwnersCollection(securityService.getWorkspacesOwnedByUser(userUUID));
     }
 }

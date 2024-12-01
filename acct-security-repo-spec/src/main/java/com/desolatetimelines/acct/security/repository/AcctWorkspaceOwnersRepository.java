@@ -13,6 +13,10 @@ public interface AcctWorkspaceOwnersRepository {
 
     Set<AcctWorkspaceOwner> findAllByWorkspaceUUIDIn(Collection<String> workspaceUUIDs);
 
-    Set<AcctWorkspaceOwner> findAllByOwnerTypeInAndOwnerUUID(Collection<OwnerType> ownerType, String ownerUUID);
+    Set<AcctWorkspaceOwner> findAllByOwnerTypeInAndOwnerUUID(Collection<OwnerType> ownerTypes, String ownerUUID);
+
+    Set<AcctWorkspaceOwner> findAllByOwnerTypeAndOwnerUUIDIn(OwnerType ownerType, Collection<String> ownerUUIDs);
+
+    Set<AcctWorkspaceOwner> findAllByOwnerType(OwnerType ownerType);
 
 }

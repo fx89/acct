@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.desolatetimelines.acct.common.Streams.multiConcat;
 import static java.util.Collections.emptySet;
 
 /**
@@ -216,7 +217,11 @@ public class AcctSecurityService {
      * @param ownerUUID the given owner UUID
      */
     public Set<String> getWorkspacesOwnedByOwnerOfType(OwnerType ownerType, String ownerUUID) {
-        return securityDataService.getWorkspacesOwnedByOwnerOfType(Set.of(ownerType), ownerUUID);
+        return
+            securityDataService.getWorkspacesOwnedByOwnerOfType(Set.of(ownerType), ownerUUID)
+                .stream()
+                .map(AcctWorkspaceOwner::getWorkspaceUUID)
+                .collect(Collectors.toSet());
     }
 
     /**
@@ -228,8 +233,43 @@ public class AcctSecurityService {
     public Set<String> getWorkspacesOwnedByOwner(String ownerUUID) {
         return
             securityDataService.getWorkspacesOwnedByOwnerOfType(
-                Set.of(OwnerType.GROUP, OwnerType.USER, OwnerType.PUBLIC),
-                ownerUUID
+                    Set.of(OwnerType.GROUP, OwnerType.USER, OwnerType.PUBLIC),
+                    ownerUUID
+                )
+                .stream()
+                .map(AcctWorkspaceOwner::getWorkspaceUUID)
+                .collect(Collectors.toSet());
+    }
+
+    /**
+     * Returns a set of {@link AcctWorkspaceOwner workspace owner entities} for
+     * the user with the given user UUID
+     *
+     * @param userUUID the given user UUID
+     */
+    public Set<AcctWorkspaceOwner> getWorkspacesOwnedByUser(String userUUID) {
+        // Get the user workspaces
+        final Set<AcctWorkspaceOwner> userWorkspaces =
+            securityDataService.getWorkspacesOwnedByOwnerOfType(
+                Set.of(OwnerType.USER),
+                userUUID
             );
+
+        // Get the public workspaces
+        final Set<AcctWorkspaceOwner> publicWorkspaces =
+            securityDataService.getPublicWorkspaces();
+
+        // Get the UUIDs of the groups assigned to the user and then
+        // search for the workspaces owned by each of those groups
+        final Set<AcctWorkspaceOwner> groupWorkspaces =
+            securityDataService.getWorkspacesOwnedByOwnersOfType(
+                OwnerType.GROUP,
+                securityUserManagementDataService.getUUIDsOfGroupsAssignedToUser(userUUID)
+            );
+
+        // Concatenate the streams and return the result
+        return
+            multiConcat(userWorkspaces.stream(), groupWorkspaces.stream(), publicWorkspaces.stream())
+                .collect(Collectors.toSet());
     }
 }

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Facade for the data layer of the security service, allowing for the
@@ -107,18 +106,35 @@ public class AcctSecurityDataService {
     }
 
     /**
-     * Returns a set of workspace UUIDs for the workspaces owned by the owner
+     * Returns a set of {@link AcctWorkspaceOwner workspace owners} for the workspaces owned by the owner
      * of one of the given owner types having the given owner UUID
      *
      * @param ownerTypes the given owner types
      * @param ownerUUID  the given owner UUID
      */
-    public Set<String> getWorkspacesOwnedByOwnerOfType(Set<OwnerType> ownerTypes, String ownerUUID) {
-        return
-            workspaceOwnersRepository.findAllByOwnerTypeInAndOwnerUUID(ownerTypes, ownerUUID)
-                .stream()
-                .map(AcctWorkspaceOwner::getWorkspaceUUID)
-                .collect(Collectors.toSet());
+    public Set<AcctWorkspaceOwner> getWorkspacesOwnedByOwnerOfType(Set<OwnerType> ownerTypes, String ownerUUID) {
+        return workspaceOwnersRepository.findAllByOwnerTypeInAndOwnerUUID(ownerTypes, ownerUUID);
+    }
+
+    /**
+     * Returns a set of {@link AcctWorkspaceOwner workspace owners} for the workspaces owned by the owners
+     * of one of the given owner type having the given owner UUIDs
+     *
+     * @param ownerType  the given owner type
+     * @param ownerUUIDs the given owner UUIDs
+     */
+    public Set<AcctWorkspaceOwner> getWorkspacesOwnedByOwnersOfType(
+        OwnerType ownerType,
+        Collection<String> ownerUUIDs
+    ) {
+        return workspaceOwnersRepository.findAllByOwnerTypeAndOwnerUUIDIn(ownerType, ownerUUIDs);
+    }
+
+    /**
+     * Returns a set of {@link OwnerType#PUBLIC public} {@link AcctWorkspaceOwner workspace owners}
+     */
+    public Set<AcctWorkspaceOwner> getPublicWorkspaces() {
+        return workspaceOwnersRepository.findAllByOwnerType(OwnerType.PUBLIC);
     }
 
 }
