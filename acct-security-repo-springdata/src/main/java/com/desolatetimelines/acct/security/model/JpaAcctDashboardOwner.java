@@ -41,13 +41,21 @@ public class JpaAcctDashboardOwner implements AcctDashboardOwner {
         this.dashboardOwnerId = dashboardOwnerId;
     }
 
-    @Override
     public String getDashboardUUID() {
         return dashboardUUID;
     }
 
-    @Override
     public void setDashboardUUID(String dashboardUUID) {
+        this.dashboardUUID = dashboardUUID;
+    }
+
+    @Override
+    public String getResourceUUID() {
+        return dashboardUUID;
+    }
+
+    @Override
+    public void setResourceUUID(String dashboardUUID) {
         this.dashboardUUID = dashboardUUID;
     }
 

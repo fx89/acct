@@ -41,13 +41,21 @@ public class JpaAcctReportOwner implements AcctReportOwner {
         this.reportOwnerId = reportOwnerId;
     }
 
-    @Override
     public String getReportUUID() {
         return reportUUID;
     }
 
-    @Override
     public void setReportUUID(String reportUUID) {
+        this.reportUUID = reportUUID;
+    }
+
+    @Override
+    public String getResourceUUID() {
+        return reportUUID;
+    }
+
+    @Override
+    public void setResourceUUID(String reportUUID) {
         this.reportUUID = reportUUID;
     }
 

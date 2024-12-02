@@ -11,8 +11,8 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.desolatetimelines.acct.security.util.AcctSecurityRepoSpringdataUtils.doWithJJpaAcctWorkspaceOwner;
-import static com.desolatetimelines.acct.security.util.AcctSecurityRepoSpringdataUtils.doWithJJpaAcctWorkspaceOwnerReturning;
+import static com.desolatetimelines.acct.security.util.AcctSecurityRepoSpringdataUtils.doWithJpaAcctWorkspaceOwner;
+import static com.desolatetimelines.acct.security.util.AcctSecurityRepoSpringdataUtils.doWithJpaAcctWorkspaceOwnerReturning;
 import static java.util.function.Function.identity;
 
 /**
@@ -33,46 +33,46 @@ public class SpringAcctWorkspaceOwnersRepository implements AcctWorkspaceOwnersR
     }
 
     @Override
-    public AcctWorkspaceOwner save(AcctWorkspaceOwner acctWorkspaceOwner) {
-        return doWithJJpaAcctWorkspaceOwnerReturning(acctWorkspaceOwner, workspaceOwnersRepository::save);
+    public AcctWorkspaceOwner save(AcctWorkspaceOwner resourceOwner) {
+        return doWithJpaAcctWorkspaceOwnerReturning(resourceOwner, workspaceOwnersRepository::save);
     }
 
     @Override
-    public void delete(AcctWorkspaceOwner acctWorkspaceOwner) {
-        doWithJJpaAcctWorkspaceOwner(acctWorkspaceOwner, workspaceOwnersRepository::delete);
+    public void delete(AcctWorkspaceOwner resourceOwner) {
+        doWithJpaAcctWorkspaceOwner(resourceOwner, workspaceOwnersRepository::delete);
     }
 
     @Override
-    public Optional<AcctWorkspaceOwner> findFirstByOwnerTypeAndOwnerUUIDAndWorkspaceUUID(
+    public Optional<AcctWorkspaceOwner> findFirstByOwnerTypeAndOwnerUUIDAndResourceUUID(
         OwnerType ownerType,
         String ownerUUID,
-        String workspaceUUID
+        String resourceUUID
     ) {
         return
             workspaceOwnersRepository
-                .findFirstByOwnerTypeAndOwnerUUIDAndWorkspaceUUID(ownerType, ownerUUID, workspaceUUID)
+                .findFirstByOwnerTypeAndOwnerUUIDAndWorkspaceUUID(ownerType, ownerUUID, resourceUUID)
                 .map(identity());
     }
 
     @Override
-    public Set<AcctWorkspaceOwner> findAllByOwnerTypeAndOwnerUUIDInAndWorkspaceUUID(
+    public Set<AcctWorkspaceOwner> findAllByOwnerTypeAndOwnerUUIDInAndResourceUUID(
         OwnerType ownerType,
         Collection<String> ownerUUIDs,
-        String workspaceUUID
+        String resourceUUID
     ) {
         return
             new HashSet<>(
                 workspaceOwnersRepository.findAllByOwnerTypeAndOwnerUUIDInAndWorkspaceUUID(
                     ownerType,
                     ownerUUIDs,
-                    workspaceUUID
+                    resourceUUID
                 )
             );
     }
 
     @Override
-    public Set<AcctWorkspaceOwner> findAllByWorkspaceUUIDIn(Collection<String> workspaceUUIDs) {
-        return new HashSet<>(workspaceOwnersRepository.findAllByWorkspaceUUIDIn(workspaceUUIDs));
+    public Set<AcctWorkspaceOwner> findAllByResourceUUIDIn(Collection<String> resourceUUIDs) {
+        return new HashSet<>(workspaceOwnersRepository.findAllByWorkspaceUUIDIn(resourceUUIDs));
     }
 
     @Override

@@ -19,9 +19,6 @@ public record OwnedWorkspacesGroup(
         return new OwnedWorkspacesGroupBuilder();
     }
 
-    /**
-     * {@code OwnedWorkspaces} builder static inner class.
-     */
     public static final class OwnedWorkspacesGroupBuilder {
         private Collection<String> userWorkspaces;
         private Collection<String> groupWorkspaces;
@@ -64,9 +61,9 @@ public record OwnedWorkspacesGroup(
         }
 
         /**
-         * Returns a {@code OwnedWorkspaces} built from the parameters previously set.
+         * Returns a {@code OwnedWorkspacesGroup} built from the parameters previously set.
          *
-         * @return a {@code OwnedWorkspaces} built with parameters of this {@code OwnedWorkspaces.Builder}
+         * @return a {@code OwnedWorkspacesGroup} built with parameters of this builder
          */
         public OwnedWorkspacesGroup build() {
             return new OwnedWorkspacesGroup(userWorkspaces, groupWorkspaces, publicWorkspaces);

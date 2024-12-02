@@ -41,13 +41,21 @@ public class JpaAcctWorkspaceOwner implements AcctWorkspaceOwner {
         this.workspaceOwnerId = workspaceOwnerId;
     }
 
-    @Override
     public String getWorkspaceUUID() {
         return workspaceUUID;
     }
 
-    @Override
     public void setWorkspaceUUID(String workspaceUUID) {
+        this.workspaceUUID = workspaceUUID;
+    }
+
+    @Override
+    public String getResourceUUID() {
+        return workspaceUUID;
+    }
+
+    @Override
+    public void setResourceUUID(String workspaceUUID) {
         this.workspaceUUID = workspaceUUID;
     }
 

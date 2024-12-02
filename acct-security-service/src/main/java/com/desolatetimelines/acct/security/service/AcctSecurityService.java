@@ -18,8 +18,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.desolatetimelines.acct.common.Streams.multiConcat;
-import static com.desolatetimelines.acct.security.model.AccessibilityReport.*;
 import static java.util.Collections.emptySet;
 
 /**
@@ -40,6 +38,9 @@ public class AcctSecurityService {
 
     private final String contextPath;
 
+    private final Map<Class<? extends AcctResourceOwner>, AcctSecurityResourceOwnersService<?>>
+        resourceOwnersDataServices;
+
     public AcctSecurityService(
         AcctSecurityDataService securityDataService,
         AcctPrivilegesDataService privilegesDataService,
@@ -54,7 +55,29 @@ public class AcctSecurityService {
         this.usageEndpointClient = usageEndpointClient;
         this.applicationName = applicationName;
         this.contextPath = contextPath;
+
+        resourceOwnersDataServices = Map.of(
+            AcctWorkspaceOwner.class,
+            new AcctSecurityResourceOwnersService<>(
+                securityDataService.getResourceOwnerDataService(AcctWorkspaceOwner.class),
+                securityUserManagementDataService
+            ),
+
+            AcctDashboardOwner.class,
+            new AcctSecurityResourceOwnersService<>(
+                securityDataService.getResourceOwnerDataService(AcctDashboardOwner.class),
+                securityUserManagementDataService
+            ),
+
+            AcctReportOwner.class,
+            new AcctSecurityResourceOwnersService<>(
+                securityDataService.getResourceOwnerDataService(AcctReportOwner.class),
+                securityUserManagementDataService
+            )
+        );
     }
+
+    // ----------------------------------------------------------------------------------------------------------------
 
     /**
      * Registers in-use item types with the usage service upon startup
@@ -76,53 +99,7 @@ public class AcctSecurityService {
         );
     }
 
-    /**
-     * Returns a set of UUIDs for the items of the given type that are in use by the Security service
-     * and have the UUID equal to one of the UUIDs in the given list of UUIDs
-     *
-     * @param objectType the given type
-     * @param itemUUIDs  the given list of UUIDs
-     * @throws IllegalArgumentException in case the given object type is not supported
-     */
-    public Collection<String> getInUseItemUUIDs(String objectType, Collection<String> itemUUIDs) {
-        // If the object type is WORKSPACE then search for workspaces referenced by workspace owner entities
-        if (Objects.equals(objectType, ObjectTypes.WORKSPACE.name())) {
-            return
-                securityDataService.findAllWorkspaceOwnersByWorkspaceUUIDIn(itemUUIDs)
-                    .stream()
-                    .map(AcctWorkspaceOwner::getWorkspaceUUID)
-                    .collect(Collectors.toSet());
-        }
-
-        // If the object type is DASHBOARD then search for dashboards referenced by dashboard owner entities
-        if (Objects.equals(objectType, ObjectTypes.DASHBOARD.name())) {
-            return
-                securityDataService.findAllDashboardOwnersByDashboardUUIDIn(itemUUIDs)
-                    .stream()
-                    .map(AcctDashboardOwner::getDashboardUUID)
-                    .collect(Collectors.toSet());
-        }
-
-        // If the object type is REPORT then search for reports referenced by report owner entities
-        if (Objects.equals(objectType, ObjectTypes.REPORT.name())) {
-            return
-                securityDataService.findAllReportOwnersByReportUUIDIn(itemUUIDs)
-                    .stream()
-                    .map(AcctReportOwner::getReportUUID)
-                    .collect(Collectors.toSet());
-        }
-
-        // If the object type is GROUP then search groups referenced by group privilege entities
-        if (Objects.equals(objectType, ObjectTypes.GROUP.name())) {
-            return
-                securityDataService.findAllGroupPrivilegesByGroupUUIDIn(itemUUIDs)
-                    .stream()
-                    .map(AcctGroupPrivilege::getGroupUUID)
-                    .collect(Collectors.toSet());
-        }
-
-        throw new IllegalArgumentException("Object type [" + objectType + "] not supported");
-    }
+    // ----------------------------------------------------------------------------------------------------------------
 
     /**
      * Retrieves a set of all the privileges mapped to all groups with the given UUIDs
@@ -208,19 +185,42 @@ public class AcctSecurityService {
     }
 
     /**
-     * Returns a set of workspace UUIDs for the workspaces owned by the owner
-     * of the given owner type having the given owner UUID
+     * Returns a set of UUIDs for the items of the given type that are in use by the Security service
+     * and have the UUID equal to one of the UUIDs in the given list of UUIDs
      *
-     * @param ownerType the given owner type
-     * @param ownerUUID the given owner UUID
+     * @param objectType    the given type
+     * @param resourceUUIDs the given list of UUIDs
+     * @throws IllegalArgumentException in case the given object type is not supported
      */
-    public Set<String> getWorkspacesOwnedByOwnerOfType(OwnerType ownerType, String ownerUUID) {
-        return
-            securityDataService.findWorkspacesOwnedByOwnerOfType(Set.of(ownerType), ownerUUID)
-                .stream()
-                .map(AcctWorkspaceOwner::getWorkspaceUUID)
-                .collect(Collectors.toSet());
+    public Collection<String> getInUseItemUUIDs(String objectType, Collection<String> resourceUUIDs) {
+        // If the object type is WORKSPACE then search for workspaces referenced by workspace owner entities
+        if (Objects.equals(objectType, ObjectTypes.WORKSPACE.name())) {
+            return resourceOwnersDataServices.get(AcctWorkspaceOwner.class).getInUseResourceUUIDs(resourceUUIDs);
+        }
+
+        // If the object type is DASHBOARD then search for dashboards referenced by dashboard owner entities
+        if (Objects.equals(objectType, ObjectTypes.DASHBOARD.name())) {
+            return resourceOwnersDataServices.get(AcctDashboardOwner.class).getInUseResourceUUIDs(resourceUUIDs);
+        }
+
+        // If the object type is REPORT then search for reports referenced by report owner entities
+        if (Objects.equals(objectType, ObjectTypes.REPORT.name())) {
+            return resourceOwnersDataServices.get(AcctReportOwner.class).getInUseResourceUUIDs(resourceUUIDs);
+        }
+
+        // If the object type is GROUP then search groups referenced by group privilege entities
+        if (Objects.equals(objectType, ObjectTypes.GROUP.name())) {
+            return
+                securityDataService.findAllGroupPrivilegesByGroupUUIDIn(resourceUUIDs)
+                    .stream()
+                    .map(AcctGroupPrivilege::getGroupUUID)
+                    .collect(Collectors.toSet());
+        }
+
+        throw new IllegalArgumentException("Object type [" + objectType + "] not supported");
     }
+
+    // Workspace owners -----------------------------------------------------------------------------------------------
 
     /**
      * Returns a set of workspace UUIDs for the workspaces owned by the owner
@@ -230,13 +230,21 @@ public class AcctSecurityService {
      */
     public Set<String> getWorkspacesOwnedByOwner(String ownerUUID) {
         return
-            securityDataService.findWorkspacesOwnedByOwnerOfType(
-                    Set.of(OwnerType.GROUP, OwnerType.USER, OwnerType.PUBLIC),
-                    ownerUUID
-                )
-                .stream()
-                .map(AcctWorkspaceOwner::getWorkspaceUUID)
-                .collect(Collectors.toSet());
+            getResourceOwnersService(AcctWorkspaceOwner.class)
+                .getResourcesOwnedByOwner(ownerUUID);
+    }
+
+    /**
+     * Returns a set of workspace UUIDs for the workspaces owned by the owner
+     * of the given owner type having the given owner UUID
+     *
+     * @param ownerType the given owner type
+     * @param ownerUUID the given owner UUID
+     */
+    public Set<String> getWorkspacesOwnedByOwnerOfType(OwnerType ownerType, String ownerUUID) {
+        return
+            getResourceOwnersService(AcctWorkspaceOwner.class)
+                .getResourcesOwnedByOwnerOfType(ownerType, ownerUUID);
     }
 
     /**
@@ -246,63 +254,12 @@ public class AcctSecurityService {
      * @param userUUID the given user UUID
      */
     public Set<AcctWorkspaceOwner> getWorkspacesOwnedByUser(String userUUID) {
-        // Get the user workspaces
-        final Set<AcctWorkspaceOwner> userWorkspaces =
-            securityDataService.findWorkspacesOwnedByOwnerOfType(
-                Set.of(OwnerType.USER),
-                userUUID
-            );
-
-        // Get the public workspaces
-        final Set<AcctWorkspaceOwner> publicWorkspaces =
-            securityDataService.getPublicWorkspaces();
-
-        // Get the UUIDs of the groups assigned to the user and then
-        // search for the workspaces owned by each of those groups
-        final Set<AcctWorkspaceOwner> groupWorkspaces =
-            securityDataService.findWorkspacesOwnedByOwnersOfType(
-                OwnerType.GROUP,
-                securityUserManagementDataService.getUUIDsOfGroupsAssignedToUser(userUUID)
-            );
-
-        // Concatenate the streams and return the result
         return
-            multiConcat(userWorkspaces.stream(), groupWorkspaces.stream(), publicWorkspaces.stream())
+            getResourceOwnersService(AcctWorkspaceOwner.class)
+                .getResourcesOwnedByUser(userUUID)
+                .stream()
+                .map(resource -> (AcctWorkspaceOwner) resource)
                 .collect(Collectors.toSet());
-    }
-
-    public AccessibilityReport getWorkspaceOwnedByUser(String userUUID, String workspaceUUIDs) {
-        // Check for direct ownership
-        final Optional<AcctWorkspaceOwner> directOwnership =
-            securityDataService.findWorkspaceOwner(OwnerType.USER, userUUID, workspaceUUIDs);
-
-        // If direct ownership is found, return a direct ownership report
-        if (directOwnership.isPresent()) {
-            return DIRECT_OWNERSHIP_REPORT;
-        }
-
-        // If direct ownership is not found, check for group ownership
-
-        // To do that, get the groups mapped to the user
-        final Set<String> userGroupUUIDs =
-            securityUserManagementDataService.getUUIDsOfGroupsAssignedToUser(userUUID);
-
-        // If there's no group then return a negative ownership report
-        if (userGroupUUIDs.isEmpty()) {
-            return NEGATIVE_OWNERSHIP_REPORT;
-        }
-
-        // If there are groups assigned to the user, look for
-        final Set<AcctWorkspaceOwner> groupOwnership =
-            securityDataService.findWorkspaceOwners(OwnerType.GROUP, userGroupUUIDs, workspaceUUIDs);
-
-        // If nothing is found, return a negative ownership report
-        if (groupOwnership.isEmpty()) {
-            return NEGATIVE_OWNERSHIP_REPORT;
-        }
-
-        // If anything is found, return a group ownership report
-        return GROUP_OWNERSHIP_REPORT;
     }
 
     /**
@@ -315,20 +272,217 @@ public class AcctSecurityService {
      * @return the created workspace owner
      */
     @Transactional
+    @SuppressWarnings("UnusedReturnValue")
     public AcctWorkspaceOwner createWorkspaceOwner(OwnerType ownerType, String ownerUUID, String workspaceUUID) {
-        return securityDataService.createWorkspaceOwner(ownerType, ownerUUID, workspaceUUID);
+        return (AcctWorkspaceOwner)
+            getResourceOwnersService(AcctWorkspaceOwner.class)
+                .createResourceOwner(ownerType, ownerUUID, workspaceUUID);
     }
 
     /**
-     * Deletes the {@link AcctWorkspaceOwner workspace owner} of the given owner type
-     * for the given owner UUID and the given workspace UUID
+     * Returns an {@link AccessibilityReport accessibility report} for the given user UUID and workspace UUID
+     *
+     * @param userUUID      the given user UUID
+     * @param workspaceUUID the given dashboard UUID
+     */
+    public AccessibilityReport getWorkspaceOwnedByUser(String userUUID, String workspaceUUID) {
+        return
+            getResourceOwnersService(AcctWorkspaceOwner.class)
+                .getResourceOwnedByUser(userUUID, workspaceUUID);
+    }
+
+    /**
+     * Deletes the {@link AcctDashboardOwner dashboard owner} of the given owner type
+     * for the given owner UUID and the given dashboard UUID
      *
      * @param ownerType     the given owner type
      * @param ownerUUID     the given owner UUID
-     * @param workspaceUUID the given workspace UUID
+     * @param workspaceUUID the given dashboard UUID
      */
     @Transactional
     public void deleteWorkspaceOwner(OwnerType ownerType, String ownerUUID, String workspaceUUID) {
-        securityDataService.deleteWorkspaceOwner(ownerType, ownerUUID, workspaceUUID);
+        getResourceOwnersService(AcctWorkspaceOwner.class)
+            .deleteResourceOwner(ownerType, ownerUUID, workspaceUUID);
+    }
+
+    // Dashboard owners -----------------------------------------------------------------------------------------------
+
+    /**
+     * Returns a set of dashboard UUIDs for the dashboards owned by the owner
+     * having the given owner UUID
+     *
+     * @param ownerUUID the given owner UUID
+     */
+    public Set<String> getDashboardsOwnedByOwner(String ownerUUID) {
+        return
+            getResourceOwnersService(AcctDashboardOwner.class)
+                .getResourcesOwnedByOwner(ownerUUID);
+    }
+
+    /**
+     * Returns a set of dashboard UUIDs for the dashboards owned by the owner
+     * of the given owner type having the given owner UUID
+     *
+     * @param ownerType the given owner type
+     * @param ownerUUID the given owner UUID
+     */
+    public Set<String> getDashboardsOwnedByOwnerOfType(OwnerType ownerType, String ownerUUID) {
+        return
+            getResourceOwnersService(AcctDashboardOwner.class)
+                .getResourcesOwnedByOwnerOfType(ownerType, ownerUUID);
+    }
+
+    /**
+     * Returns a set of {@link AcctDashboardOwner dashboard owner entities} for
+     * the user with the given user UUID
+     *
+     * @param userUUID the given user UUID
+     */
+    public Set<AcctDashboardOwner> getDashboardsOwnedByUser(String userUUID) {
+        return
+            getResourceOwnersService(AcctDashboardOwner.class)
+                .getResourcesOwnedByUser(userUUID)
+                .stream()
+                .map(resource -> (AcctDashboardOwner) resource)
+                .collect(Collectors.toSet());
+    }
+
+    /**
+     * Creates a {@link AcctDashboardOwner dashboard owner} of the given owner type
+     * for the given owner UUID and the given dashboard UUID
+     *
+     * @param ownerType     the given owner type
+     * @param ownerUUID     the given owner UUID
+     * @param dashboardUUID the given dashboard UUID
+     * @return the created dashboard owner
+     */
+    @Transactional
+    @SuppressWarnings("UnusedReturnValue")
+    public AcctDashboardOwner createDashboardOwner(OwnerType ownerType, String ownerUUID, String dashboardUUID) {
+        return (AcctDashboardOwner)
+            getResourceOwnersService(AcctDashboardOwner.class)
+                .createResourceOwner(ownerType, ownerUUID, dashboardUUID);
+    }
+
+    /**
+     * Returns an {@link AccessibilityReport accessibility report} for the given user UUID and dashboard UUID
+     *
+     * @param userUUID      the given user UUID
+     * @param dashboardUUID the given workspace UUID
+     */
+    public AccessibilityReport getDashboardOwnedByUser(String userUUID, String dashboardUUID) {
+        return
+            getResourceOwnersService(AcctDashboardOwner.class)
+                .getResourceOwnedByUser(userUUID, dashboardUUID);
+    }
+
+    /**
+     * Deletes the {@link AcctDashboardOwner dashboard owner} of the given owner type
+     * for the given owner UUID and the given dashboard UUID
+     *
+     * @param ownerType     the given owner type
+     * @param ownerUUID     the given owner UUID
+     * @param dashboardUUID the given dashboard UUID
+     */
+    @Transactional
+    public void deleteDashboardOwner(OwnerType ownerType, String ownerUUID, String dashboardUUID) {
+        getResourceOwnersService(AcctDashboardOwner.class)
+            .deleteResourceOwner(ownerType, ownerUUID, dashboardUUID);
+    }
+
+    // Report owners --------------------------------------------------------------------------------------------------
+
+    /**
+     * Returns a set of report UUIDs for the reports owned by the owner
+     * having the given owner UUID
+     *
+     * @param ownerUUID the given owner UUID
+     */
+    public Set<String> getReportsOwnedByOwner(String ownerUUID) {
+        return
+            getResourceOwnersService(AcctReportOwner.class)
+                .getResourcesOwnedByOwner(ownerUUID);
+    }
+
+    /**
+     * Returns a set of report UUIDs for the reports owned by the owner
+     * of the given owner type having the given owner UUID
+     *
+     * @param ownerType the given owner type
+     * @param ownerUUID the given owner UUID
+     */
+    public Set<String> getReportsOwnedByOwnerOfType(OwnerType ownerType, String ownerUUID) {
+        return
+            getResourceOwnersService(AcctReportOwner.class)
+                .getResourcesOwnedByOwnerOfType(ownerType, ownerUUID);
+    }
+
+    /**
+     * Returns a set of {@link AcctReportOwner report owner entities} for
+     * the user with the given user UUID
+     *
+     * @param userUUID the given user UUID
+     */
+    public Set<AcctReportOwner> getReportsOwnedByUser(String userUUID) {
+        return
+            getResourceOwnersService(AcctReportOwner.class)
+                .getResourcesOwnedByUser(userUUID)
+                .stream()
+                .map(resource -> (AcctReportOwner) resource)
+                .collect(Collectors.toSet());
+    }
+
+    /**
+     * Creates a {@link AcctReportOwner report owner} of the given owner type
+     * for the given owner UUID and the given report UUID
+     *
+     * @param ownerType  the given owner type
+     * @param ownerUUID  the given owner UUID
+     * @param reportUUID the given report UUID
+     * @return the created report owner
+     */
+    @Transactional
+    @SuppressWarnings("UnusedReturnValue")
+    public AcctReportOwner createReportOwner(OwnerType ownerType, String ownerUUID, String reportUUID) {
+        return (AcctReportOwner)
+            getResourceOwnersService(AcctReportOwner.class)
+                .createResourceOwner(ownerType, ownerUUID, reportUUID);
+    }
+
+    /**
+     * Returns an {@link AccessibilityReport accessibility report} for the given user UUID and report UUID
+     *
+     * @param userUUID   the given user UUID
+     * @param reportUUID the given report UUID
+     */
+    public AccessibilityReport getReportOwnedByUser(String userUUID, String reportUUID) {
+        return
+            getResourceOwnersService(AcctReportOwner.class)
+                .getResourceOwnedByUser(userUUID, reportUUID);
+    }
+
+    /**
+     * Deletes the {@link AcctReportOwner report owner} of the given owner type
+     * for the given owner UUID and the given report UUID
+     *
+     * @param ownerType  the given owner type
+     * @param ownerUUID  the given owner UUID
+     * @param reportUUID the given report UUID
+     */
+    @Transactional
+    public void deleteReportOwner(OwnerType ownerType, String ownerUUID, String reportUUID) {
+        getResourceOwnersService(AcctReportOwner.class)
+            .deleteResourceOwner(ownerType, ownerUUID, reportUUID);
+    }
+
+    // ----------------------------------------------------------------------------------------------------------------
+
+    @SuppressWarnings("unchecked")
+    private <T extends AcctResourceOwner> AcctSecurityResourceOwnersService<T> getResourceOwnersService(
+        Class<? extends AcctResourceOwner> resourceOwnerType
+    ) {
+        return
+            (AcctSecurityResourceOwnersService<T>)
+                resourceOwnersDataServices.get(resourceOwnerType);
     }
 }

@@ -1,6 +1,6 @@
 package com.desolatetimelines.acct.security.data.service;
 
-import com.desolatetimelines.acct.security.data.exception.AcctSecurityDataServiceNotFoundException;
+import com.desolatetimelines.acct.security.data.exception.AcctSecurityDataServiceUnsupportedResourceException;
 import com.desolatetimelines.acct.security.model.*;
 import com.desolatetimelines.acct.security.repository.AcctDashboardOwnersRepository;
 import com.desolatetimelines.acct.security.repository.AcctGroupPrivilegesRepository;
@@ -9,6 +9,7 @@ import com.desolatetimelines.acct.security.repository.AcctWorkspaceOwnersReposit
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -21,11 +22,8 @@ public class AcctSecurityDataService {
 
     private final AcctGroupPrivilegesRepository groupPrivilegesRepository;
 
-    private final AcctWorkspaceOwnersRepository workspaceOwnersRepository;
-
-    private final AcctDashboardOwnersRepository dashboardOwnersRepository;
-
-    private final AcctReportOwnersRepository reportOwnersRepository;
+    private final Map<Class<? extends AcctResourceOwner>, AcctSecurityResourceOwnersDataService<?>>
+        resourceOwnerDataServices;
 
     public AcctSecurityDataService(
         AcctGroupPrivilegesRepository groupPrivilegesRepository,
@@ -34,9 +32,19 @@ public class AcctSecurityDataService {
         AcctReportOwnersRepository reportOwnersRepository
     ) {
         this.groupPrivilegesRepository = groupPrivilegesRepository;
-        this.workspaceOwnersRepository = workspaceOwnersRepository;
-        this.dashboardOwnersRepository = dashboardOwnersRepository;
-        this.reportOwnersRepository = reportOwnersRepository;
+
+        resourceOwnerDataServices =
+            Map.of(
+                AcctWorkspaceOwner.class,
+                new AcctSecurityResourceOwnersDataService<>(workspaceOwnersRepository),
+
+                AcctDashboardOwner.class,
+                new AcctSecurityResourceOwnersDataService<>(dashboardOwnersRepository),
+
+                AcctReportOwner.class,
+                new AcctSecurityResourceOwnersDataService<>(reportOwnersRepository)
+            );
+
     }
 
     /**
@@ -46,39 +54,6 @@ public class AcctSecurityDataService {
      */
     public Set<AcctGroupPrivilege> findAllGroupPrivilegesByGroupUUIDIn(Collection<String> groupUUIDs) {
         return groupPrivilegesRepository.findAllByGroupUUIDIn(groupUUIDs);
-    }
-
-    /**
-     * Retrieves all {@link AcctWorkspaceOwner workspace owners} for which the
-     * {@link AcctWorkspaceOwner#getWorkspaceUUID() workspace UUID} matches one
-     * of the UUIDs in the given list of workspace UUIDs
-     *
-     * @param workspaceUUIDs the given list of workspace UUIDs
-     */
-    public Set<AcctWorkspaceOwner> findAllWorkspaceOwnersByWorkspaceUUIDIn(Collection<String> workspaceUUIDs) {
-        return workspaceOwnersRepository.findAllByWorkspaceUUIDIn(workspaceUUIDs);
-    }
-
-    /**
-     * Retrieves all {@link AcctDashboardOwner dashboard owners} for which the
-     * {@link AcctDashboardOwner#getDashboardUUID() dashboard UUID} matches one
-     * of the UUIDs in the given list of dashboard UUIDs
-     *
-     * @param dashboardUUIDs the given list of dashboard UUIDs
-     */
-    public Set<AcctDashboardOwner> findAllDashboardOwnersByDashboardUUIDIn(Collection<String> dashboardUUIDs) {
-        return dashboardOwnersRepository.findAllByDashboardUUIDIn(dashboardUUIDs);
-    }
-
-    /**
-     * Retrieves all {@link AcctReportOwner report owners} for which the
-     * {@link AcctReportOwner#getReportUUID() report UUID} matches one
-     * of the UUIDs in the given list of report UUIDs
-     *
-     * @param reportUUIDs the given list of report UUIDs
-     */
-    public Set<AcctReportOwner> findAllReportOwnersByReportUUIDIn(Collection<String> reportUUIDs) {
-        return reportOwnersRepository.findAllByReportUUIDIn(reportUUIDs);
     }
 
     /**
@@ -108,124 +83,23 @@ public class AcctSecurityDataService {
     }
 
     /**
-     * Returns a set of {@link AcctWorkspaceOwner workspace owners} for the workspaces owned by the owner
-     * of one of the given owner types having the given owner UUID
+     * Returns a reference to the data service that manages the resource owner
+     * records of the given type
      *
-     * @param ownerTypes the given owner types
-     * @param ownerUUID  the given owner UUID
+     * @param resourceOwnerType the given type
      */
-    public Set<AcctWorkspaceOwner> findWorkspacesOwnedByOwnerOfType(Set<OwnerType> ownerTypes, String ownerUUID) {
-        return workspaceOwnersRepository.findAllByOwnerTypeInAndOwnerUUID(ownerTypes, ownerUUID);
-    }
-
-    /**
-     * Returns an optional {@link AcctWorkspaceOwner workspace owner} record for the given
-     * owner type, the given owner UUID and the given workspace UUID. If there is no such
-     * record, the returned optional is empty.
-     *
-     * @param ownerType     the given owner type
-     * @param ownerUUID     the given owner UID
-     * @param workspaceUUID the given workspace UUID
-     */
-    public Optional<AcctWorkspaceOwner> findWorkspaceOwner(
-        OwnerType ownerType,
-        String ownerUUID,
-        String workspaceUUID
+    @SuppressWarnings("unchecked")
+    public <T extends AcctResourceOwner> AcctSecurityResourceOwnersDataService<T> getResourceOwnerDataService(
+        Class<T> resourceOwnerType
     ) {
         return
-            workspaceOwnersRepository
-                .findFirstByOwnerTypeAndOwnerUUIDAndWorkspaceUUID(
-                    ownerType,
-                    ownerUUID,
-                    workspaceUUID
-                );
+            (AcctSecurityResourceOwnersDataService<T>)
+                Optional
+                    .ofNullable(resourceOwnerDataServices.get(resourceOwnerType))
+                    .orElseThrow(() -> new AcctSecurityDataServiceUnsupportedResourceException(
+                        "Resources of type [" + resourceOwnerType.getCanonicalName() + "] are not supported"
+                    ));
     }
 
-    /**
-     * Returns a set of {@link AcctWorkspaceOwner workspace owners} for the workspaces owned by the owners
-     * of the given owner type, having the given owner UUIDs and the given workspace UUID
-     *
-     * @param ownerType     the given owner type
-     * @param ownerUUIDs    the given owner UUIDs
-     * @param workspaceUUID the given workspace UUID
-     */
-    public Set<AcctWorkspaceOwner> findWorkspaceOwners(
-        OwnerType ownerType,
-        Collection<String> ownerUUIDs,
-        String workspaceUUID
-    ) {
-        return
-            workspaceOwnersRepository
-                .findAllByOwnerTypeAndOwnerUUIDInAndWorkspaceUUID(
-                    ownerType,
-                    ownerUUIDs,
-                    workspaceUUID
-                );
-    }
-
-    /**
-     * Returns a set of {@link AcctWorkspaceOwner workspace owners} for the workspaces owned by the owners
-     * of the given owner type having the given owner UUIDs
-     *
-     * @param ownerType  the given owner type
-     * @param ownerUUIDs the given owner UUIDs
-     */
-    public Set<AcctWorkspaceOwner> findWorkspacesOwnedByOwnersOfType(
-        OwnerType ownerType,
-        Collection<String> ownerUUIDs
-    ) {
-        return workspaceOwnersRepository.findAllByOwnerTypeAndOwnerUUIDIn(ownerType, ownerUUIDs);
-    }
-
-    /**
-     * Returns a set of {@link OwnerType#PUBLIC public} {@link AcctWorkspaceOwner workspace owners}
-     */
-    public Set<AcctWorkspaceOwner> getPublicWorkspaces() {
-        return workspaceOwnersRepository.findAllByOwnerType(OwnerType.PUBLIC);
-    }
-
-    /**
-     * Creates a {@link AcctWorkspaceOwner workspace owner} of the given owner type
-     * for the given owner UUID and the given workspace UUID
-     *
-     * @param ownerType     the given owner type
-     * @param ownerUUID     the given owner UUID
-     * @param workspaceUUID the given workspace UUID
-     * @return the created workspace owner
-     */
-    public AcctWorkspaceOwner createWorkspaceOwner(OwnerType ownerType, String ownerUUID, String workspaceUUID) {
-        // Create the new workspace owner
-        final AcctWorkspaceOwner newWorkspaceOwner = workspaceOwnersRepository.createNew();
-
-        // Set the properties of the new workspace owner
-        newWorkspaceOwner.setOwnerType(ownerType);
-        newWorkspaceOwner.setOwnerUUID(ownerUUID);
-        newWorkspaceOwner.setWorkspaceUUID(workspaceUUID);
-
-        // Save the new workspace owner and return a reference to the saved entity
-        return workspaceOwnersRepository.save(newWorkspaceOwner);
-    }
-
-    /**
-     * Deletes the {@link AcctWorkspaceOwner workspace owner} of the given owner type
-     * for the given owner UUID and the given workspace UUID
-     *
-     * @param ownerType     the given owner type
-     * @param ownerUUID     the given owner UUID
-     * @param workspaceUUID the given workspace UUID
-     */
-    public void deleteWorkspaceOwner(OwnerType ownerType, String ownerUUID, String workspaceUUID) {
-        // Get the workspace owner or throw a "Not Found" exception
-        final AcctWorkspaceOwner workspaceOwner =
-            workspaceOwnersRepository.findFirstByOwnerTypeAndOwnerUUIDAndWorkspaceUUID(
-                    ownerType, ownerUUID, workspaceUUID
-                )
-                .orElseThrow(() -> new AcctSecurityDataServiceNotFoundException(
-                    "Workspace owner not found"
-                ));
-
-        // Delete the workspace owner
-        workspaceOwnersRepository.delete(workspaceOwner);
-    }
 
 }

@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import static java.util.Collections.emptyList;
 
 /**
- * Provides mapper methods for the {@link OwnedWorkspacesGroupsMapper} object
+ * Provides mapper methods for the {@link OwnedWorkspacesGroup} object
  */
 public class OwnedWorkspacesGroupsMapper {
 
@@ -41,7 +41,7 @@ public class OwnedWorkspacesGroupsMapper {
         return
             workspaceOwnersByOwnerType.getOrDefault(ownerType.name(), emptyList())
                 .stream()
-                .map(AcctWorkspaceOwner::getWorkspaceUUID)
+                .map(AcctWorkspaceOwner::getResourceUUID)
                 .toList();
     }
 
