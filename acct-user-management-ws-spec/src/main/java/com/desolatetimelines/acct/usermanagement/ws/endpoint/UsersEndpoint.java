@@ -33,4 +33,9 @@ public interface UsersEndpoint {
      */
     void setCurrentUserPassword(AcctCurrentUserPasswordSettingRequest passwordSettingRequest);
 
+    /**
+     * Retrieves the details of the current user
+     */
+    AcctUserDetails getCurrentUser();
+
 }

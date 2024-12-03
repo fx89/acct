@@ -29,4 +29,9 @@ public interface RESTUsersEndpointClient extends UsersEndpoint {
     default void setCurrentUserPassword(AcctCurrentUserPasswordSettingRequest passwordSettingRequest) {
         throw new UnsupportedOperationException("This operation is not intended for back-end clients");
     }
+
+    @Override
+    default AcctUserDetails getCurrentUser() {
+        throw new UnsupportedOperationException("This operation is not intended for back-end clients");
+    }
 }

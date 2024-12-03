@@ -39,7 +39,7 @@ curl \
 curl \
     --insecure \
     -v \
-    --cookie 'JSESSIONID=6881BEB60F263E71DA6B64A87D259A8F' \
+    --cookie 'JSESSIONID=088B7F7D02BB0A3F33068F9F7B21EAF3' \
     -X GET 'http://localhost:9001/service/authorization/v1/oauth2/authorize?response_type=code&client_id=frontend-client'
 
 export ACCT_USER_ACCESS_TOKEN=$(\
@@ -48,7 +48,7 @@ curl \
     -v \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'grant_type=authorization_code' \
-    -d 'code=f2PdMpYiwSkv9corYrYmWkyt46KswLD6KjsgUQVOKhb9ekaJzauU7G-GZyha0YdkqcFRVOdXSPXunVgWHBXGQT58nSt6OKbymwT3T9es6UbbV3sQpXVRI94HN2C5M2VX' \
+    -d 'code=aJPRRRCB00XiFBRukGmmtfKvajJl2MOSJnJ2pahOsIh1VrIDaKNog_b_jwH_UWiwf6o2_Mj_Ru6KLzIBcnHM1aswiRrw1Inf1EulVjKynxQ9KP5EOzyQ0KD_saL58dGm' \
     -d 'client_id=frontend-client' \
     -d 'client_secret=lkjdwsf23odnwqkld23odfbqweorh23oihd' \
     -X POST 'http://localhost:9001/service/authorization/v1/oauth2/token' \
@@ -72,4 +72,11 @@ curl \
     --insecure \
     -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
     -X GET 'http://localhost:8081/service/user-management/v1/groups/userGroups?userUUID=348835f6-c4dc-4c4c-a454-77d5e1cf5e22' \
+    | jq
+
+curl \
+    --insecure \
+    -v \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -X GET 'http://localhost:8081/service/user-management/v1/users/currentUser' \
     | jq

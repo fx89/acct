@@ -9,13 +9,13 @@ import com.desolatetimelines.acct.usermanagement.ws.model.AcctUserCreationReques
 import com.desolatetimelines.acct.usermanagement.ws.model.AcctUserDetails;
 import com.desolatetimelines.acct.usermanagement.ws.model.AcctUserUUIDResponse;
 import com.desolatetimelines.acct.usermanagement.ws.privateendpoint.UsersPrivateEndpoint;
+import com.desolatetimelines.acct.usermanagement.ws.service.AcctUsersEndpointControllerHelperService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
-import static com.desolatetimelines.acct.usermanagement.privilegesprovider.model.UserManagementPrivilegeIds.USERS_RESET_PASSWORD;
-import static com.desolatetimelines.acct.usermanagement.privilegesprovider.model.UserManagementPrivilegeIds.USERS_SAVE;
+import static com.desolatetimelines.acct.usermanagement.privilegesprovider.model.UserManagementPrivilegeIds.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
@@ -24,10 +24,14 @@ public class UsersEndpointController implements UsersEndpoint, UsersPrivateEndpo
 
     private final AcctUserManagementService userManagementService;
 
+    private final AcctUsersEndpointControllerHelperService helper;
+
     public UsersEndpointController(
-        AcctUserManagementService userManagementService
+        AcctUserManagementService userManagementService,
+        AcctUsersEndpointControllerHelperService usersService
     ) {
         this.userManagementService = userManagementService;
+        this.helper = usersService;
     }
 
     @Override
@@ -64,16 +68,28 @@ public class UsersEndpointController implements UsersEndpoint, UsersPrivateEndpo
     public void setCurrentUserPassword(@RequestBody AcctCurrentUserPasswordSettingRequest passwordSettingRequest) {
         // If the JWT user access token was provided then the process can continue
         if (SecurityContextHolder.getContext().getAuthentication().getCredentials() instanceof Jwt jwt) {
-            // Get the userUUID claim
-            final String userUUID = (String) jwt.getClaims().get("userUUID");
-
-            // If the userUUID claim is not part of the access token then the process cannot continue
-            if (userUUID == null) {
-                throw new IllegalArgumentException("The access token does not contain the [userUUID] claim");
-            }
+            // Read the access token
+            final AcctUserDetails userDetails = helper.findUserDetailsByJwt(jwt, false);
 
             // Once the userUUID of the current user was identified, the password can be reset
-            userManagementService.setUserPassword(userUUID, passwordSettingRequest.userEncryptedPassword());
+            userManagementService.setUserPassword(
+                userDetails.userUUID(),
+                passwordSettingRequest.userEncryptedPassword()
+            );
+        }
+        // If no access token was provided, or if the wrong kind of access token was provided, then fail
+        else {
+            throw new IllegalArgumentException("Wrong access token was provided or no access token was provided at all");
+        }
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_" + USERS_READ_CURRENT + "')")
+    @GetMapping(value = "/currentUser", produces = APPLICATION_JSON_VALUE)
+    public AcctUserDetails getCurrentUser() {
+        // If the JWT user access token was provided then the process can continue
+        if (SecurityContextHolder.getContext().getAuthentication().getCredentials() instanceof Jwt jwt) {
+            return helper.findUserDetailsByJwt(jwt);
         }
         // If no access token was provided, or if the wrong kind of access token was provided, then fail
         else {

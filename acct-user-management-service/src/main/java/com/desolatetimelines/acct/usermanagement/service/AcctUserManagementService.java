@@ -147,7 +147,6 @@ public class AcctUserManagementService {
         return dataService.findGroupsForUser(userUUID);
     }
 
-
     /**
      * Supplies a reference to the "Users" group while making sure the group is created if it doesn't exist
      */

@@ -32,7 +32,7 @@ curl \
 curl \
     --insecure \
     -v \
-    --cookie 'JSESSIONID=7407199BA87F3DFB653F997C13F430E5' \
+    --cookie 'JSESSIONID=9A2F2DCA84DC770F91F01C602767A8B2' \
     -X GET 'http://localhost:9001/service/authorization/v1/oauth2/authorize?response_type=code&client_id=frontend-client'
 
 curl \
@@ -40,7 +40,7 @@ curl \
     -v \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'grant_type=authorization_code' \
-    -d 'code=1qmvR5fyfHLt4yPPj2JBaXCQD__h_bIwT9QFGP_N0Bu10u3L5aJKbPnz_rxpz8lesGuBzFIhowpBioMD8bkfGpZlXznUSJbZrg9KmuL-otkjeU0QVyf8RLI15aAZeUQO' \
+    -d 'code=h_Q4p6COJUmu9p6lD7DnR3uqyqQbG24X-ZK3FTzOcDnPnz0L0FSixgBVEJ6DnFiBE7yrP_be0wAME3tFhj_ZoNp0T-v314g0FyAmXbMSQQSVON9V2UU9T8ecJcXtGimk' \
     -d 'client_id=frontend-client' \
     -d 'client_secret=lkjdwsf23odnwqkld23odfbqweorh23oihd' \
     -X POST 'http://localhost:9001/service/authorization/v1/oauth2/token' \

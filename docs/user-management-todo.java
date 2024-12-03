@@ -1,8 +1,8 @@
-// TODO: USR-01001: Users endpoint: Get current user
+// DONE: USR-01001: Users endpoint: Get current user
 // TODO: USR-01002: Users endpoint: Find sorted page of users by login name pattern or by name pattern
 // DONE: USR-01003: Users endpoint: Save user
 // DONE: USR-01004: Users endpoint: Set password for the current user
-// TODO: USR-01005: Users endpoint: Reset user password
+// DONE: USR-01005: Users endpoint: Reset user password
 // TODO: USR-01006: Users endpoint: Soft delete user
 // TODO: USR-01007: Users endpoint: Undelete user
 // DONE: USR-01008: Users endpoint: Get user by UUID
