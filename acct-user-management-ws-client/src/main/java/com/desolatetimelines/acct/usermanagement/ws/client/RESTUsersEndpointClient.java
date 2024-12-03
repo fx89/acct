@@ -35,4 +35,8 @@ public interface RESTUsersEndpointClient extends UsersEndpoint {
     default AcctUserDetails getCurrentUser() {
         throw new UnsupportedOperationException("This operation is not intended for back-end clients");
     }
+
+    @Override
+    @PutMapping("/undelete")
+    void undelete(@RequestParam("userUUID") String userUUID);
 }

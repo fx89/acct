@@ -46,4 +46,12 @@ public interface UsersEndpoint {
      */
     void deleteUser(String userUUID);
 
+    /**
+     * Sets the {@code softDeleted} flag to {@code false} for the user
+     * identified by the given user UUID
+     *
+     * @param userUUID the given user UUID
+     */
+    void undelete(String userUUID);
+
 }

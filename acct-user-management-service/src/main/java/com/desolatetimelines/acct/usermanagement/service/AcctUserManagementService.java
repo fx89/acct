@@ -155,13 +155,35 @@ public class AcctUserManagementService {
      */
     @Transactional
     public void softDeleteUserByUserUUID(String userUUID) {
+        setSoftDeletedFlagForUserWithUserUUID(userUUID, true);
+    }
+
+    /**
+     * Sets the {@code softDeleted} flag to {@code false} for the user
+     * identified by the given user UUID
+     *
+     * @param userUUID the given user UUID
+     */
+    @Transactional
+    public void undeleteUserByUserUUID(String userUUID) {
+        setSoftDeletedFlagForUserWithUserUUID(userUUID, false);
+    }
+
+    /**
+     * Sets the {@code softDeleted} flag to the given value for the user
+     * identified by the given user UUID
+     *
+     * @param userUUID    the given user UUID
+     * @param softDeleted the given value
+     */
+    private void setSoftDeletedFlagForUserWithUserUUID(String userUUID, boolean softDeleted) {
         // Find the user or throw an exception
         final AcctUser acctUser =
             dataService.findUserByUserUUID(userUUID)
                 .orElseThrow(() -> new AcctUserManagementNotFoundException("User not found"));
 
         // Set the softDeleted flag to true
-        acctUser.setSoftDeleted(true);
+        acctUser.setSoftDeleted(softDeleted);
 
         // Save the user
         dataService.saveUser(acctUser);
