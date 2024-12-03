@@ -107,4 +107,11 @@ public class UsersEndpointController implements UsersEndpoint, UsersPrivateEndpo
                     userManagementService.findUserDetailsByUserLoginName(username)
                 );
     }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend','SCOPE_" + USERS_SOFT_DELETE + "')")
+    @DeleteMapping(value = "")
+    public void deleteUser(@RequestParam("userUUID") String userUUID) {
+        userManagementService.softDeleteUserByUserUUID(userUUID);
+    }
 }

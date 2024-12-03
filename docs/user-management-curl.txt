@@ -80,3 +80,10 @@ curl \
     -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
     -X GET 'http://localhost:8081/service/user-management/v1/users/currentUser' \
     | jq
+
+curl \
+    --insecure \
+    -v \
+    -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
+    -X DELETE 'http://localhost:8081/service/user-management/v1/users?userUUID=3639783f-2d1d-4c4a-a3ef-f243e8cf98da' \
+    | jq

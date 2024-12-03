@@ -38,4 +38,12 @@ public interface UsersEndpoint {
      */
     AcctUserDetails getCurrentUser();
 
+    /**
+     * Sets the {@code softDeleted} flag to {@code true} for the user
+     * identified by the given user UUID
+     *
+     * @param userUUID the given user UUID
+     */
+    void deleteUser(String userUUID);
+
 }

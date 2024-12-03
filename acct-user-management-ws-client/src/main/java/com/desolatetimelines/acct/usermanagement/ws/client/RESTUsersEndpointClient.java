@@ -6,10 +6,7 @@ import com.desolatetimelines.acct.usermanagement.ws.model.AcctUserCreationReques
 import com.desolatetimelines.acct.usermanagement.ws.model.AcctUserDetails;
 import com.desolatetimelines.acct.usermanagement.ws.model.AcctUserUUIDResponse;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @FeignClient(
     contextId = "${USER_MANAGEMENT_APPLICATION_NAME}-users",
@@ -24,6 +21,10 @@ public interface RESTUsersEndpointClient extends UsersEndpoint {
     @Override
     @RequestMapping(value = "", method = RequestMethod.PUT)
     AcctUserUUIDResponse saveUser(@RequestBody AcctUserCreationRequest request);
+
+    @Override
+    @GetMapping(value = "")
+    void deleteUser(@RequestParam("userUUID") String userUUID);
 
     @Override
     default void setCurrentUserPassword(AcctCurrentUserPasswordSettingRequest passwordSettingRequest) {

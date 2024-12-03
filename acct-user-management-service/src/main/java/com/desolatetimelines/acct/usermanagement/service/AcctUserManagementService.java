@@ -148,6 +148,26 @@ public class AcctUserManagementService {
     }
 
     /**
+     * Sets the {@code softDeleted} flag to {@code true} for the user
+     * identified by the given user UUID
+     *
+     * @param userUUID the given user UUID
+     */
+    @Transactional
+    public void softDeleteUserByUserUUID(String userUUID) {
+        // Find the user or throw an exception
+        final AcctUser acctUser =
+            dataService.findUserByUserUUID(userUUID)
+                .orElseThrow(() -> new AcctUserManagementNotFoundException("User not found"));
+
+        // Set the softDeleted flag to true
+        acctUser.setSoftDeleted(true);
+
+        // Save the user
+        dataService.saveUser(acctUser);
+    }
+
+    /**
      * Supplies a reference to the "Users" group while making sure the group is created if it doesn't exist
      */
     private static final class UsersGroupSupplier implements Supplier<AcctUsersGroup> {
