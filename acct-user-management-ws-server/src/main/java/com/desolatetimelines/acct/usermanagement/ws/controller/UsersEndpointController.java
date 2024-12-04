@@ -1,13 +1,14 @@
 package com.desolatetimelines.acct.usermanagement.ws.controller;
 
 import com.desolatetimelines.acct.usermanagement.data.model.AcctUserCreationParameters;
+import com.desolatetimelines.acct.usermanagement.model.AcctUser;
+import com.desolatetimelines.acct.usermanagement.model.Page;
 import com.desolatetimelines.acct.usermanagement.service.AcctUserManagementService;
 import com.desolatetimelines.acct.usermanagement.ws.endpoint.UsersEndpoint;
+import com.desolatetimelines.acct.usermanagement.ws.mapper.AcctPageInfoMapper;
 import com.desolatetimelines.acct.usermanagement.ws.mapper.AcctUserDetailsMapper;
-import com.desolatetimelines.acct.usermanagement.ws.model.AcctCurrentUserPasswordSettingRequest;
-import com.desolatetimelines.acct.usermanagement.ws.model.AcctUserCreationRequest;
-import com.desolatetimelines.acct.usermanagement.ws.model.AcctUserDetails;
-import com.desolatetimelines.acct.usermanagement.ws.model.AcctUserUUIDResponse;
+import com.desolatetimelines.acct.usermanagement.ws.mapper.AcctUserInfoMapper;
+import com.desolatetimelines.acct.usermanagement.ws.model.*;
 import com.desolatetimelines.acct.usermanagement.ws.privateendpoint.UsersPrivateEndpoint;
 import com.desolatetimelines.acct.usermanagement.ws.service.AcctUsersEndpointControllerHelperService;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -120,5 +121,24 @@ public class UsersEndpointController implements UsersEndpoint, UsersPrivateEndpo
     @PutMapping("/undelete")
     public void undelete(@RequestParam("userUUID") String userUUID) {
         userManagementService.undeleteUserByUserUUID(userUUID);
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend','SCOPE_" + USERS_READ + "')")
+    @GetMapping("")
+    public AcctPage<AcctUserInfo> findSortedPageOfUsersByLoginNameOrNamePattern(
+        @RequestParam("pattern") String pattern,
+        @RequestParam("pageNumber") int pageNumber,
+        @RequestParam("pageSize") int pageSize
+    ) {
+        // Get the page
+        final Page<AcctUser> page =
+            userManagementService.findUsersByNameOrLoginNamePattern(pattern, pageNumber, pageSize);
+
+        // Transform the page
+        return new AcctPage<>(
+            page.data().stream().map(AcctUserInfoMapper::fromAcctUser).toList(),
+            AcctPageInfoMapper.fromPage(page, pageNumber)
+        );
     }
 }

@@ -1,6 +1,7 @@
 package com.desolatetimelines.acct.usermanagement.repository;
 
 import com.desolatetimelines.acct.usermanagement.model.AcctUser;
+import com.desolatetimelines.acct.usermanagement.model.Page;
 
 import java.util.Optional;
 
@@ -38,5 +39,16 @@ public interface AcctUsersRepository {
      * @param userLoginName the given user login name
      */
     Optional<AcctUser> findUserAccountByUserLoginName(String userLoginName);
+
+    /**
+     * Returns a page of user with the given number and of the given size,
+     * containing user for which either the login name or human-readable
+     * name contains the given pattern
+     *
+     * @param pattern    the given pattern
+     * @param pageNumber the given number
+     * @param pageSize   the given size
+     */
+    Page<AcctUser> findUsersByUserLoginNameLikeOrUserNameLike(String pattern, int pageNumber, int pageSize);
 
 }

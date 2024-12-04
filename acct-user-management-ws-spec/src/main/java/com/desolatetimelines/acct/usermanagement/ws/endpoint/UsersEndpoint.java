@@ -1,9 +1,6 @@
 package com.desolatetimelines.acct.usermanagement.ws.endpoint;
 
-import com.desolatetimelines.acct.usermanagement.ws.model.AcctCurrentUserPasswordSettingRequest;
-import com.desolatetimelines.acct.usermanagement.ws.model.AcctUserCreationRequest;
-import com.desolatetimelines.acct.usermanagement.ws.model.AcctUserDetails;
-import com.desolatetimelines.acct.usermanagement.ws.model.AcctUserUUIDResponse;
+import com.desolatetimelines.acct.usermanagement.ws.model.*;
 
 /**
  * Specifies users endpoint functionality that can be accessed by both clients and other ACCT services.
@@ -53,5 +50,16 @@ public interface UsersEndpoint {
      * @param userUUID the given user UUID
      */
     void undelete(String userUUID);
+
+    /**
+     * Returns a page of {@link AcctUserInfo user information records} having the given size and number,
+     * for the users for which the {@link AcctUserInfo#userLoginName() login name} or the
+     * {@link AcctUserInfo#userName() human-readable name} matches the given pattern
+     *
+     * @param pattern    the given pattern
+     * @param pageNumber the given number
+     * @param pageSize   the given size
+     */
+    AcctPage<AcctUserInfo> findSortedPageOfUsersByLoginNameOrNamePattern(String pattern, int pageNumber, int pageSize);
 
 }

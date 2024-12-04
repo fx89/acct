@@ -1,10 +1,7 @@
 package com.desolatetimelines.acct.usermanagement.ws.client;
 
 import com.desolatetimelines.acct.usermanagement.ws.endpoint.UsersEndpoint;
-import com.desolatetimelines.acct.usermanagement.ws.model.AcctCurrentUserPasswordSettingRequest;
-import com.desolatetimelines.acct.usermanagement.ws.model.AcctUserCreationRequest;
-import com.desolatetimelines.acct.usermanagement.ws.model.AcctUserDetails;
-import com.desolatetimelines.acct.usermanagement.ws.model.AcctUserUUIDResponse;
+import com.desolatetimelines.acct.usermanagement.ws.model.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,4 +36,12 @@ public interface RESTUsersEndpointClient extends UsersEndpoint {
     @Override
     @PutMapping("/undelete")
     void undelete(@RequestParam("userUUID") String userUUID);
+
+    @Override
+    @GetMapping("")
+    AcctPage<AcctUserInfo> findSortedPageOfUsersByLoginNameOrNamePattern(
+        @RequestParam("pattern") String pattern,
+        @RequestParam("pageNumber") int pageNumber,
+        @RequestParam("pageSize") int pageSize
+    );
 }

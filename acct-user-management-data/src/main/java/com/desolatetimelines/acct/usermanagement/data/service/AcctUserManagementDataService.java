@@ -7,6 +7,7 @@ import com.desolatetimelines.acct.usermanagement.data.model.AcctUserGroupCreatio
 import com.desolatetimelines.acct.usermanagement.model.AcctUser;
 import com.desolatetimelines.acct.usermanagement.model.AcctUserGroupMapping;
 import com.desolatetimelines.acct.usermanagement.model.AcctUsersGroup;
+import com.desolatetimelines.acct.usermanagement.model.Page;
 import com.desolatetimelines.acct.usermanagement.repository.AcctUserGroupMappingsRepository;
 import com.desolatetimelines.acct.usermanagement.repository.AcctUserGroupsRepository;
 import com.desolatetimelines.acct.usermanagement.repository.AcctUsersRepository;
@@ -176,6 +177,19 @@ public class AcctUserManagementDataService {
                 .map(AcctUserGroupMapping::getGroup)
                 .map(AcctUserManagementDataService::mapAcctUsersGroupToAcctGroupDetails)
                 .collect(Collectors.toSet());
+    }
+
+    /**
+     * Returns a page of user with the given number and of the given size,
+     * containing user for which either the login name or human-readable
+     * name contains the given pattern
+     *
+     * @param pattern    the given pattern
+     * @param pageNumber the given number
+     * @param pageSize   the given size
+     */
+    public Page<AcctUser> findUsersByUserLoginNameLikeOrUserNameLike(String pattern, int pageNumber, int pageSize) {
+        return usersRepository.findUsersByUserLoginNameLikeOrUserNameLike(pattern, pageNumber, pageSize);
     }
 
     private AcctUserDetails enrichUserAccountWithUsersGroups(AcctUser userAccount) {
