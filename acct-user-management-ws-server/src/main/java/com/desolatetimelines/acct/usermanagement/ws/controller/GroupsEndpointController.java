@@ -1,8 +1,13 @@
 package com.desolatetimelines.acct.usermanagement.ws.controller;
 
+import com.desolatetimelines.acct.usermanagement.model.AcctUsersGroup;
+import com.desolatetimelines.acct.usermanagement.model.Page;
 import com.desolatetimelines.acct.usermanagement.service.AcctUserManagementService;
 import com.desolatetimelines.acct.usermanagement.ws.endpoint.GroupsEndpoint;
+import com.desolatetimelines.acct.usermanagement.ws.mapper.AcctGroupDetailsMapper;
+import com.desolatetimelines.acct.usermanagement.ws.mapper.AcctPageInfoMapper;
 import com.desolatetimelines.acct.usermanagement.ws.model.AcctGroupDetails;
+import com.desolatetimelines.acct.usermanagement.ws.model.AcctPage;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,6 +45,25 @@ public class GroupsEndpointController implements GroupsEndpoint {
                         .build()
                 )
                 .toList();
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + GROUPS_READ + "')")
+    @GetMapping(value = "", produces = APPLICATION_JSON_VALUE)
+    public AcctPage<AcctGroupDetails> findSortedPageOfGroupsByNamePattern(
+        @RequestParam("pattern") String pattern,
+        @RequestParam("pageNumber") int pageNumber,
+        @RequestParam("pageSize") int pageSize
+    ) {
+        // Get the page
+        final Page<AcctUsersGroup> page =
+            userManagementService.findGroupsByNamePattern(pattern, pageNumber, pageSize);
+
+        // Transform the page
+        return new AcctPage<>(
+            page.data().stream().map(AcctGroupDetailsMapper::fromDataLayerAcctUserDetails).toList(),
+            AcctPageInfoMapper.fromPage(page, pageNumber)
+        );
     }
 
 }

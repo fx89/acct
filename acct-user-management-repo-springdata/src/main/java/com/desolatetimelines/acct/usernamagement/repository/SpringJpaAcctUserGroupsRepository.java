@@ -1,9 +1,11 @@
 package com.desolatetimelines.acct.usernamagement.repository;
 
 import com.desolatetimelines.acct.usermanagement.model.AcctUsersGroup;
+import com.desolatetimelines.acct.usermanagement.model.Page;
 import com.desolatetimelines.acct.usermanagement.repository.AcctUserGroupsRepository;
 import com.desolatetimelines.acct.usernamagement.model.JpaAcctUsersGroup;
 import com.desolatetimelines.acct.usernamagement.springrepository.JpaGroupsRepository;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -43,5 +45,23 @@ public class SpringJpaAcctUserGroupsRepository implements AcctUserGroupsReposito
     @Override
     public AcctUsersGroup save(AcctUsersGroup usersGroup) {
         return doWithJpaAcctUsersGroup(usersGroup, groupsRepository::save);
+    }
+
+    @Override
+    public Page<AcctUsersGroup> findGroupsByGroupNameLike(String pattern, int pageNumber, int pageSize) {
+        // Add the "%" to the pattern
+        final String sqlPattern = "%" + pattern + "%";
+
+        // Get the page
+        final org.springframework.data.domain.Page<JpaAcctUsersGroup> page =
+            groupsRepository.findAllByGroupNameLike(sqlPattern, PageRequest.of(pageNumber, pageSize));
+
+        // Convert the page
+        return
+            new Page<>(
+                page.stream().map(jpaAcctUsersGroup -> (AcctUsersGroup) jpaAcctUsersGroup).toList(),
+                page.getNumberOfElements(),
+                page.getTotalElements()
+            );
     }
 }

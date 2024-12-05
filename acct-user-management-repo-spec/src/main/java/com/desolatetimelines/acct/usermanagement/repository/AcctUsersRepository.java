@@ -42,7 +42,7 @@ public interface AcctUsersRepository {
 
     /**
      * Returns a page of user with the given number and of the given size,
-     * containing user for which either the login name or human-readable
+     * containing users for which either the login name or human-readable
      * name contains the given pattern
      *
      * @param pattern    the given pattern

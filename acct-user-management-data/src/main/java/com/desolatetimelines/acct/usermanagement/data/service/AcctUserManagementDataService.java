@@ -181,7 +181,7 @@ public class AcctUserManagementDataService {
 
     /**
      * Returns a page of user with the given number and of the given size,
-     * containing user for which either the login name or human-readable
+     * containing users for which either the login name or human-readable
      * name contains the given pattern
      *
      * @param pattern    the given pattern
@@ -190,6 +190,18 @@ public class AcctUserManagementDataService {
      */
     public Page<AcctUser> findUsersByUserLoginNameLikeOrUserNameLike(String pattern, int pageNumber, int pageSize) {
         return usersRepository.findUsersByUserLoginNameLikeOrUserNameLike(pattern, pageNumber, pageSize);
+    }
+
+    /**
+     * Returns a page of user groups with the given number and of the given size,
+     * containing groups for which the name contains the given pattern
+     *
+     * @param pattern    the given pattern
+     * @param pageNumber the given number
+     * @param pageSize   the given size
+     */
+    public Page<AcctUsersGroup> findGroupsByGroupNameLike(String pattern, int pageNumber, int pageSize) {
+        return userGroupsRepository.findGroupsByGroupNameLike(pattern, pageNumber, pageSize);
     }
 
     private AcctUserDetails enrichUserAccountWithUsersGroups(AcctUser userAccount) {

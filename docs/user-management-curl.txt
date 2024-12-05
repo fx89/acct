@@ -101,3 +101,10 @@ curl \
     -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
     -X GET 'http://localhost:8081/service/user-management/v1/users?pattern=adm&pageNumber=0&pageSize=5' \
     | jq
+
+curl \
+    --insecure \
+    -v \
+    -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
+    -X GET 'http://localhost:8081/service/user-management/v1/groups?pattern=min&pageNumber=0&pageSize=5' \
+    | jq

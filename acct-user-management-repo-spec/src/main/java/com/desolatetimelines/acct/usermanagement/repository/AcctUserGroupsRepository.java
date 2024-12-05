@@ -2,6 +2,7 @@ package com.desolatetimelines.acct.usermanagement.repository;
 
 import com.desolatetimelines.acct.usermanagement.model.AcctUser;
 import com.desolatetimelines.acct.usermanagement.model.AcctUsersGroup;
+import com.desolatetimelines.acct.usermanagement.model.Page;
 
 import java.util.Optional;
 import java.util.Set;
@@ -40,5 +41,15 @@ public interface AcctUserGroupsRepository {
      * @return a reference to the created entity
      */
     AcctUsersGroup save(AcctUsersGroup usersGroup);
+
+    /**
+     * Returns a page of groups with the given number and of the given size,
+     * containing groups for which the name contains the given pattern
+     *
+     * @param pattern    the given pattern
+     * @param pageNumber the given number
+     * @param pageSize   the given size
+     */
+    Page<AcctUsersGroup> findGroupsByGroupNameLike(String pattern, int pageNumber, int pageSize);
 
 }

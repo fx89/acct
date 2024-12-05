@@ -1,6 +1,7 @@
 package com.desolatetimelines.acct.usermanagement.ws.endpoint;
 
 import com.desolatetimelines.acct.usermanagement.ws.model.AcctGroupDetails;
+import com.desolatetimelines.acct.usermanagement.ws.model.AcctPage;
 
 import java.util.Collection;
 
@@ -16,5 +17,16 @@ public interface GroupsEndpoint {
      * @param userUUID the given UUID
      */
     Collection<AcctGroupDetails> getUserGroups(String userUUID);
+
+    /**
+     * Returns a page of {@link AcctGroupDetails group records} having the given size and number,
+     * for the groups for which the {@link AcctGroupDetails#groupName()}  group name} matches
+     * the given pattern
+     *
+     * @param pattern    the given pattern
+     * @param pageNumber the given number
+     * @param pageSize   the given size
+     */
+    AcctPage<AcctGroupDetails> findSortedPageOfGroupsByNamePattern(String pattern, int pageNumber, int pageSize);
 
 }

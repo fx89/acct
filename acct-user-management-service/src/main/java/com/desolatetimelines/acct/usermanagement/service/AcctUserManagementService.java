@@ -192,6 +192,61 @@ public class AcctUserManagementService {
     }
 
     /**
+     * Returns a page of {@link AcctGroupDetails group records} having the given size and number,
+     * for the groups for which the {@link AcctGroupDetails#groupName()}  group name} matches
+     * the given pattern
+     *
+     * @param pattern    the given pattern
+     * @param pageNumber the given number
+     * @param pageSize   the given size
+     */
+    public Page<AcctUsersGroup> findGroupsByNamePattern(String pattern, int pageNumber, int pageSize) {
+        // Verify the request
+        verifyPageSearchRequest(pattern, pageNumber, pageSize);
+
+        // If the parameters check out, run the operation
+        return dataService.findGroupsByGroupNameLike(pattern, pageNumber, pageSize);
+    }
+
+    /**
+     * Returns a page of user with the given number and of the given size,
+     * containing user for which either the login name or human-readable
+     * name contains the given pattern
+     *
+     * @param pattern    the given pattern
+     * @param pageNumber the given number
+     * @param pageSize   the given size
+     */
+    public Page<AcctUser> findUsersByNameOrLoginNamePattern(String pattern, int pageNumber, int pageSize) {
+        // Verify the request
+        verifyPageSearchRequest(pattern, pageNumber, pageSize);
+
+        // If the parameters check out, run the operation
+        return dataService.findUsersByUserLoginNameLikeOrUserNameLike(pattern, pageNumber, pageSize);
+    }
+
+    private static void verifyPageSearchRequest(String pattern, int pageNumber, int pageSize) {
+        // Don't allow patterns smaller than 3 characters
+        if (pattern == null || pattern.length() < 3) {
+            throw new AcctUserManagementBadParameterException(
+                "The pattern must be at least 3 characters long"
+            );
+        }
+
+        // Don't allow negative page numbers
+        if (pageNumber < 0) {
+            throw new AcctUserManagementBadParameterException("The page number must be positive");
+        }
+
+        // Don't allow negative, empty or ludicrously large page sizes
+        if (pageSize < 1 || pageSize > 200) {
+            throw new AcctUserManagementBadParameterException(
+                "The page size must be between 1 and 200"
+            );
+        }
+    }
+
+    /**
      * Supplies a reference to the "Users" group while making sure the group is created if it doesn't exist
      */
     private static final class UsersGroupSupplier implements Supplier<AcctUsersGroup> {
@@ -250,39 +305,6 @@ public class AcctUserManagementService {
             // In any case, return the users group reference
             return usersGroup;
         }
-    }
-
-    /**
-     * Returns a page of user with the given number and of the given size,
-     * containing user for which either the login name or human-readable
-     * name contains the given pattern
-     *
-     * @param pattern    the given pattern
-     * @param pageNumber the given number
-     * @param pageSize   the given size
-     */
-    public Page<AcctUser> findUsersByNameOrLoginNamePattern(String pattern, int pageNumber, int pageSize) {
-        // Don't allow patterns smaller than 3 characters
-        if (pattern == null || pattern.length() < 3) {
-            throw new AcctUserManagementBadParameterException(
-                "The pattern must be at least 3 characters long"
-            );
-        }
-
-        // Don't allow negative page numbers
-        if (pageNumber < 0) {
-            throw new AcctUserManagementBadParameterException("The page number must be positive");
-        }
-
-        // Don't allow negative, empty or ludicrously large page sizes
-        if (pageSize < 1 || pageSize > 200) {
-            throw new AcctUserManagementBadParameterException(
-                "The page size must be between 1 and 200"
-            );
-        }
-
-        // If the parameters check out, run the operation
-        return dataService.findUsersByUserLoginNameLikeOrUserNameLike(pattern, pageNumber, pageSize);
     }
 
 }

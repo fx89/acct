@@ -187,11 +187,11 @@ Example response body:
 ### Groups endpoint
 
 <br /><br />
-#### `USR-02001` Find sorted page of groups by login name pattern or by name pattern
+#### `USR-02001` Find sorted page of groups by name pattern
 Returns a sorted page of groups for which the group name or description matches the given pattern.
 
 Example request URL:
-- `GET http://acct.desolatetimelines.com/service/user-management/v1/groups?pageNumber=0&pageSize=5`
+- `GET http://acct.desolatetimelines.com/service/user-management/v1/groups?pattern=Adm&pageNumber=0&pageSize=5`
 
 Example response body:
 ```
