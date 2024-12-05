@@ -6,17 +6,18 @@ import com.desolatetimelines.acct.usermanagement.service.AcctUserManagementServi
 import com.desolatetimelines.acct.usermanagement.ws.endpoint.GroupsEndpoint;
 import com.desolatetimelines.acct.usermanagement.ws.mapper.AcctGroupDetailsMapper;
 import com.desolatetimelines.acct.usermanagement.ws.mapper.AcctPageInfoMapper;
+import com.desolatetimelines.acct.usermanagement.ws.mapper.AcctUsersGroupCreationRequestsMapper;
 import com.desolatetimelines.acct.usermanagement.ws.model.AcctGroupDetails;
+import com.desolatetimelines.acct.usermanagement.ws.model.AcctGroupUUIDResponse;
 import com.desolatetimelines.acct.usermanagement.ws.model.AcctPage;
+import com.desolatetimelines.acct.usermanagement.ws.model.AcctUsersGroupCreationRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
 import static com.desolatetimelines.acct.usermanagement.privilegesprovider.model.UserManagementPrivilegeIds.GROUPS_READ;
+import static com.desolatetimelines.acct.usermanagement.privilegesprovider.model.UserManagementPrivilegeIds.GROUPS_SAVE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
@@ -64,6 +65,25 @@ public class GroupsEndpointController implements GroupsEndpoint {
             page.data().stream().map(AcctGroupDetailsMapper::fromDataLayerAcctUserDetails).toList(),
             AcctPageInfoMapper.fromPage(page, pageNumber)
         );
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + GROUPS_SAVE + "')")
+    @PutMapping(value = "", produces = APPLICATION_JSON_VALUE)
+    public AcctGroupUUIDResponse saveUsersGroup(
+        @RequestParam(value = "groupUUID", required = false) String groupUUID,
+        @RequestBody AcctUsersGroupCreationRequest usersGroupCreationRequest
+    ) {
+        return
+            new AcctGroupUUIDResponse(
+                userManagementService
+                    .saveUsersGroup(
+                        AcctUsersGroupCreationRequestsMapper.toAcctUsersGroup(
+                            groupUUID,
+                            usersGroupCreationRequest
+                        )
+                    )
+            );
     }
 
 }

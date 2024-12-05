@@ -137,6 +137,16 @@ public class AcctUserManagementDataService {
     }
 
     /**
+     * Saves the referenced users group
+     *
+     * @param acctUsersGroup the referenced users group
+     * @return a reference to the saved users group
+     */
+    public AcctUsersGroup saveUsersGroup(AcctUsersGroup acctUsersGroup) {
+        return userGroupsRepository.save(acctUsersGroup);
+    }
+
+    /**
      * Creates a user / group mapping for the referenced user and group
      *
      * @param user       the referenced user

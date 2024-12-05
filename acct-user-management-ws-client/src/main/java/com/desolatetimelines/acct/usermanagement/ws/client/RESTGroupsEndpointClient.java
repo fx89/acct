@@ -2,9 +2,13 @@ package com.desolatetimelines.acct.usermanagement.ws.client;
 
 import com.desolatetimelines.acct.usermanagement.ws.endpoint.GroupsEndpoint;
 import com.desolatetimelines.acct.usermanagement.ws.model.AcctGroupDetails;
+import com.desolatetimelines.acct.usermanagement.ws.model.AcctGroupUUIDResponse;
 import com.desolatetimelines.acct.usermanagement.ws.model.AcctPage;
+import com.desolatetimelines.acct.usermanagement.ws.model.AcctUsersGroupCreationRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Collection;
@@ -27,6 +31,13 @@ public interface RESTGroupsEndpointClient extends GroupsEndpoint {
         @RequestParam("pattern") String pattern,
         @RequestParam("pageNumber") int pageNumber,
         @RequestParam("pageSize") int pageSize
+    );
+
+    @Override
+    @PutMapping(value = "", produces = APPLICATION_JSON_VALUE)
+    AcctGroupUUIDResponse saveUsersGroup(
+        @RequestParam(value = "groupUUID", required = false) String groupUUID,
+        @RequestBody AcctUsersGroupCreationRequest usersGroupCreationRequest
     );
 
 }

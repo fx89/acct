@@ -247,6 +247,43 @@ public class AcctUserManagementService {
     }
 
     /**
+     * Saves the given {@link AcctUsersGroup users group} and returns the group's UUID.
+     * If the given users group does not have a {@link AcctUsersGroup#getGroupUUID() UUID},
+     * a new users group is created for the details of the given users group.
+     */
+    public String saveUsersGroup(AcctUsersGroup acctUsersGroup) {
+        // If the Group UUID was not provided, create a new group for the given details
+        if (acctUsersGroup.getGroupUUID() == null) {
+            return
+                dataService.createUsersGroup(
+                    AcctUserGroupCreationParameters.builder()
+                        .withGroupUUID(UUID.randomUUID().toString())
+                        .withGroupName(acctUsersGroup.getGroupName())
+                        .withGroupDescription(acctUsersGroup.getGroupDescription())
+                        .withGroupIconUUID(acctUsersGroup.getGroupIconUUID())
+                        .build()
+                ).getGroupUUID();
+        }
+
+        // If the Group UUID was provided, get the group, update it and save
+        else {
+            final AcctUsersGroup usersGroup =
+                dataService.findUsersGroupByGroupUUID(acctUsersGroup.getGroupUUID())
+                    .orElseThrow(() -> new AcctUserManagementNotFoundException(
+                        "Users group not found"
+                    ));
+
+            usersGroup.setGroupName(acctUsersGroup.getGroupName());
+            usersGroup.setGroupDescription(acctUsersGroup.getGroupDescription());
+            usersGroup.setGroupIconUUID(acctUsersGroup.getGroupIconUUID());
+
+            final AcctUsersGroup savedUsersGroup = dataService.saveUsersGroup(usersGroup);
+
+            return savedUsersGroup.getGroupUUID();
+        }
+    }
+
+    /**
      * Supplies a reference to the "Users" group while making sure the group is created if it doesn't exist
      */
     private static final class UsersGroupSupplier implements Supplier<AcctUsersGroup> {

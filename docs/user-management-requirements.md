@@ -231,13 +231,11 @@ Example request URL:
 
 Example request body:
 ```
-[
-    {
-        "groupName": "My Favorite Group",
-        "groupDescription": "The group of my choice",
-        "groupIconUUID": "efbdf0dd-dbce-4fb5-9145-6c6586db2fdf"
-    }
-]
+{
+    "groupName": "My Favorite Group",
+    "groupDescription": "The group of my choice",
+    "groupIconUUID": "efbdf0dd-dbce-4fb5-9145-6c6586db2fdf"
+}
 ```
 
 Example response body:

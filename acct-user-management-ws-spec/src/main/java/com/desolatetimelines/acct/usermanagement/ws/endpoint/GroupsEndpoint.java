@@ -1,7 +1,9 @@
 package com.desolatetimelines.acct.usermanagement.ws.endpoint;
 
 import com.desolatetimelines.acct.usermanagement.ws.model.AcctGroupDetails;
+import com.desolatetimelines.acct.usermanagement.ws.model.AcctGroupUUIDResponse;
 import com.desolatetimelines.acct.usermanagement.ws.model.AcctPage;
+import com.desolatetimelines.acct.usermanagement.ws.model.AcctUsersGroupCreationRequest;
 
 import java.util.Collection;
 
@@ -28,5 +30,18 @@ public interface GroupsEndpoint {
      * @param pageSize   the given size
      */
     AcctPage<AcctGroupDetails> findSortedPageOfGroupsByNamePattern(String pattern, int pageNumber, int pageSize);
+
+    /**
+     * Updates the group with the given UUID, setting the properties provided in the given creation request.
+     * If a UUID is not given, a new group is created with the given details.
+     *
+     * @param groupUUID                 the given UUID
+     * @param usersGroupCreationRequest the given creation request
+     * @return the UUID of the created or updated group
+     */
+    AcctGroupUUIDResponse saveUsersGroup(
+        String groupUUID,
+        AcctUsersGroupCreationRequest usersGroupCreationRequest
+    );
 
 }

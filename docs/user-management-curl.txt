@@ -108,3 +108,36 @@ curl \
     -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
     -X GET 'http://localhost:8081/service/user-management/v1/groups?pattern=min&pageNumber=0&pageSize=5' \
     | jq
+
+export GROUP_UUID=$(\
+curl \
+    --insecure \
+    -v \
+    -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT 'http://localhost:8081/service/user-management/v1/groups' \
+    --data-raw '
+        {
+            "groupName": "My Favorite Group To Be Edited",
+            "groupDescription": "The group of my choice for creation and subsequent editing",
+            "groupIconUUID": "efbdf0dd-dbce-4fb5-9145-6c6586db2fdf"
+        }
+    ' \
+    | jq -j '.groupUUID'\
+)
+
+curl \
+    --insecure \
+    -v \
+    -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT "http://localhost:8081/service/user-management/v1/groups?groupUUID=$GROUP_UUID" \
+    --data-raw '
+        {
+            "groupName": "My Favorite Group To Be Deleted",
+            "groupDescription": "The group of my choice for creation and subsequent deletion",
+            "groupIconUUID": "efbdf0dd-dbce-4fb5-9145-6c6586db2fdf"
+        }
+    ' \
+    | jq
+
