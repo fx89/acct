@@ -284,6 +284,23 @@ public class AcctUserManagementService {
     }
 
     /**
+     * Deletes the group with the given group UUID
+     *
+     * @param groupUUID the given group UUID
+     */
+    public void deleteUsersGroup(String groupUUID) {
+        // Find the users group or throw an exception
+        final AcctUsersGroup usersGroup =
+            dataService.findUsersGroupByGroupUUID(groupUUID)
+                .orElseThrow(() -> new AcctUserManagementNotFoundException(
+                    "Group not found"
+                ));
+
+        // Delete the users group
+        dataService.deleteUsersGroup(usersGroup);
+    }
+
+    /**
      * Supplies a reference to the "Users" group while making sure the group is created if it doesn't exist
      */
     private static final class UsersGroupSupplier implements Supplier<AcctUsersGroup> {

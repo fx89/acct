@@ -7,6 +7,7 @@ import com.desolatetimelines.acct.usernamagement.model.JpaAcctUser;
 import com.desolatetimelines.acct.usernamagement.model.JpaAcctUserGroupMapping;
 import com.desolatetimelines.acct.usernamagement.model.JpaAcctUsersGroup;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -29,11 +30,21 @@ public abstract class AcctUserManagementRepoSpringDataUtils {
         );
     }
 
+    public static void doWithJpaAcctUsersGroupWithoutReturning(
+        AcctUsersGroup acctUsersGroup,
+        Consumer<JpaAcctUsersGroup> todo
+    ) {
+        doWithJpaAcctUsersGroup(acctUsersGroup, jpaAcctUsersGroup -> {
+            todo.accept(jpaAcctUsersGroup);
+            return jpaAcctUsersGroup;
+        });
+    }
+
     public static JpaAcctUsersGroup doWithJpaAcctUsersGroup(
-        AcctUsersGroup acctService,
+        AcctUsersGroup acctUsersGroup,
         Function<JpaAcctUsersGroup, JpaAcctUsersGroup> todo
     ) {
-        if (acctService instanceof JpaAcctUsersGroup jpaAcctUsersGroup) {
+        if (acctUsersGroup instanceof JpaAcctUsersGroup jpaAcctUsersGroup) {
             return todo.apply(jpaAcctUsersGroup);
         }
 

@@ -13,6 +13,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static com.desolatetimelines.acct.usernamagement.util.AcctUserManagementRepoSpringDataUtils.doWithJpaAcctUsersGroup;
+import static com.desolatetimelines.acct.usernamagement.util.AcctUserManagementRepoSpringDataUtils.doWithJpaAcctUsersGroupWithoutReturning;
 import static java.util.function.Function.identity;
 
 /**
@@ -63,5 +64,10 @@ public class SpringJpaAcctUserGroupsRepository implements AcctUserGroupsReposito
                 page.getNumberOfElements(),
                 page.getTotalElements()
             );
+    }
+
+    @Override
+    public void delete(AcctUsersGroup acctUsersGroup) {
+        doWithJpaAcctUsersGroupWithoutReturning(acctUsersGroup, groupsRepository::delete);
     }
 }

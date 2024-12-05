@@ -6,10 +6,7 @@ import com.desolatetimelines.acct.usermanagement.ws.model.AcctGroupUUIDResponse;
 import com.desolatetimelines.acct.usermanagement.ws.model.AcctPage;
 import com.desolatetimelines.acct.usermanagement.ws.model.AcctUsersGroupCreationRequest;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
@@ -39,5 +36,9 @@ public interface RESTGroupsEndpointClient extends GroupsEndpoint {
         @RequestParam(value = "groupUUID", required = false) String groupUUID,
         @RequestBody AcctUsersGroupCreationRequest usersGroupCreationRequest
     );
+
+    @Override
+    @DeleteMapping("")
+    void deleteUsersGroup(@RequestParam("groupUUID") String groupUUID);
 
 }

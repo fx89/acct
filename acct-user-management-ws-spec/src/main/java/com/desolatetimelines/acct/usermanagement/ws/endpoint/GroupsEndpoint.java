@@ -44,4 +44,11 @@ public interface GroupsEndpoint {
         AcctUsersGroupCreationRequest usersGroupCreationRequest
     );
 
+    /**
+     * Deletes the users group with the given group UUID
+     *
+     * @param groupUUID the given group UUID
+     */
+    void deleteUsersGroup(String groupUUID);
+
 }

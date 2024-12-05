@@ -175,6 +175,15 @@ public class AcctUserManagementDataService {
     }
 
     /**
+     * Deletes the referenced users group
+     *
+     * @param acctUsersGroup the referenced users group
+     */
+    public void deleteUsersGroup(AcctUsersGroup acctUsersGroup) {
+        userGroupsRepository.delete(acctUsersGroup);
+    }
+
+    /**
      * Retrieves a set of {@link AcctGroupDetails groups} mapped to the user
      * identified by the given user UUID
      *

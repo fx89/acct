@@ -141,3 +141,9 @@ curl \
     ' \
     | jq
 
+curl \
+    --insecure \
+    -v \
+    -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
+    -X DELETE "http://localhost:8081/service/user-management/v1/groups?groupUUID=$GROUP_UUID" \
+    | jq

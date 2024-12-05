@@ -52,4 +52,11 @@ public interface AcctUserGroupsRepository {
      */
     Page<AcctUsersGroup> findGroupsByGroupNameLike(String pattern, int pageNumber, int pageSize);
 
+    /**
+     * Deletes the referenced users group
+     *
+     * @param acctUsersGroup the referenced users group
+     */
+    void delete(AcctUsersGroup acctUsersGroup);
+
 }

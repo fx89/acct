@@ -16,8 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
-import static com.desolatetimelines.acct.usermanagement.privilegesprovider.model.UserManagementPrivilegeIds.GROUPS_READ;
-import static com.desolatetimelines.acct.usermanagement.privilegesprovider.model.UserManagementPrivilegeIds.GROUPS_SAVE;
+import static com.desolatetimelines.acct.usermanagement.privilegesprovider.model.UserManagementPrivilegeIds.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
@@ -84,6 +83,13 @@ public class GroupsEndpointController implements GroupsEndpoint {
                         )
                     )
             );
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + GROUPS_DELETE + "')")
+    @DeleteMapping("")
+    public void deleteUsersGroup(@RequestParam("groupUUID") String groupUUID) {
+        userManagementService.deleteUsersGroup(groupUUID);
     }
 
 }
