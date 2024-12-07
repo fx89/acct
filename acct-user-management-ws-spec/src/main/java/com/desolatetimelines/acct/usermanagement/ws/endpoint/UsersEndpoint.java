@@ -62,4 +62,12 @@ public interface UsersEndpoint {
      */
     AcctPage<AcctUserInfo> findSortedPageOfUsersByLoginNameOrNamePattern(String pattern, int pageNumber, int pageSize);
 
+    /**
+     * Sets the default workspace of the user with the given user UUID to the given workspace UUID
+     *
+     * @param userUUID             the given user UUID
+     * @param workspaceUUIDRequest the given workspace UUID
+     */
+    void setUserDefaultWorkspace(String userUUID, AcctWorkspaceUUIDRequest workspaceUUIDRequest);
+
 }

@@ -31,6 +31,11 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/x
             <artifactId>acct-usage-ws-client</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.desolatetimelines</groupId>
+            <artifactId>acct-security-ws-client</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

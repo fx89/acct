@@ -13,7 +13,7 @@
 // DONE: USR-02003: Groups endpoint: Delete group
 // DONE: USR-02004: Groups endpoint: Get user groups
 
-// TODO: USR-03001: Custom operations endpoint: Set default workspace for the current user
+// DONE: USR-03001: Custom operations endpoint: Set default workspace for the current user
 
 // TODO: USR-04001: Used items endpoint: Get items in use of type
 

@@ -141,4 +141,14 @@ public class UsersEndpointController implements UsersEndpoint, UsersPrivateEndpo
             AcctPageInfoMapper.fromPage(page, pageNumber)
         );
     }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend','SCOPE_" + USERS_SAVE + "')")
+    @PutMapping("/defaultWorkspace")
+    public void setUserDefaultWorkspace(
+        @RequestParam("userUUID") String userUUID,
+        @RequestBody AcctWorkspaceUUIDRequest workspaceUUIDRequest
+    ) {
+        userManagementService.setUserDefaultWorkspace(userUUID, workspaceUUIDRequest.workspaceUUID());
+    }
 }

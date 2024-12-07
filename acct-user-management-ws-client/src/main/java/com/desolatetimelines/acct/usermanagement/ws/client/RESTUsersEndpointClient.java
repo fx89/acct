@@ -44,4 +44,11 @@ public interface RESTUsersEndpointClient extends UsersEndpoint {
         @RequestParam("pageNumber") int pageNumber,
         @RequestParam("pageSize") int pageSize
     );
+
+    @Override
+    @PutMapping("/defaultWorkspace")
+    void setUserDefaultWorkspace(
+        @RequestParam("userUUID") String userUUID,
+        @RequestBody AcctWorkspaceUUIDRequest workspaceUUIDRequest
+    );
 }

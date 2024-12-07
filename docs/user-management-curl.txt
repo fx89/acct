@@ -147,3 +147,16 @@ curl \
     -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
     -X DELETE "http://localhost:8081/service/user-management/v1/groups?groupUUID=$GROUP_UUID" \
     | jq
+
+curl \
+    --insecure \
+    -v \
+    -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT "http://localhost:8081/service/user-management/v1/users/defaultWorkspace?userUUID=348835f6-c4dc-4c4c-a454-77d5e1cf5e22" \
+    --data-raw '
+        {
+            "workspaceUUID": "962c6d5e-eb3d-431c-a93e-c9747596d999"
+        }
+    ' \
+    | jq

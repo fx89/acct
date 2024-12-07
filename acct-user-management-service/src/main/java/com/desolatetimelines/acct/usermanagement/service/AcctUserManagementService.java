@@ -1,6 +1,8 @@
 package com.desolatetimelines.acct.usermanagement.service;
 
 import com.desolatetimelines.acct.common.ObjectTypes;
+import com.desolatetimelines.acct.security.ws.client.RESTWorkspaceOwnershipEndpointClient;
+import com.desolatetimelines.acct.security.ws.endpoint.model.WorkspaceAccessibilityReport;
 import com.desolatetimelines.acct.usage.ws.client.RESTUsageEndpointClient;
 import com.desolatetimelines.acct.usage.ws.model.ServiceItemTypesList;
 import com.desolatetimelines.acct.usermanagement.data.model.AcctGroupDetails;
@@ -9,6 +11,7 @@ import com.desolatetimelines.acct.usermanagement.data.model.AcctUserDetails;
 import com.desolatetimelines.acct.usermanagement.data.model.AcctUserGroupCreationParameters;
 import com.desolatetimelines.acct.usermanagement.data.service.AcctUserManagementDataService;
 import com.desolatetimelines.acct.usermanagement.exception.AcctUserManagementBadParameterException;
+import com.desolatetimelines.acct.usermanagement.exception.AcctUserManagementIllegalAccessException;
 import com.desolatetimelines.acct.usermanagement.exception.AcctUserManagementNotFoundException;
 import com.desolatetimelines.acct.usermanagement.model.AcctUser;
 import com.desolatetimelines.acct.usermanagement.model.AcctUsersGroup;
@@ -36,6 +39,8 @@ public class AcctUserManagementService {
 
     private final RESTUsageEndpointClient usageEndpointClient;
 
+    private final RESTWorkspaceOwnershipEndpointClient workspaceOwnershipEndpointClient;
+
     private final String applicationName;
 
     private final String contextPath;
@@ -43,12 +48,14 @@ public class AcctUserManagementService {
     public AcctUserManagementService(
         AcctUserManagementDataService dataService,
         RESTUsageEndpointClient usageEndpointClient,
+        RESTWorkspaceOwnershipEndpointClient workspaceOwnershipEndpointClient,
         @Value("${USER_MANAGEMENT_APPLICATION_NAME}") String applicationName,
         @Value("${USER_MANAGEMENT_SERVER_CONTEXT_PATH}") String contextPath
     ) {
         this.dataService = dataService;
         this.usersGroupSupplier = new UsersGroupSupplier(dataService);
         this.usageEndpointClient = usageEndpointClient;
+        this.workspaceOwnershipEndpointClient = workspaceOwnershipEndpointClient;
         this.applicationName = applicationName;
         this.contextPath = contextPath;
     }
@@ -298,6 +305,36 @@ public class AcctUserManagementService {
 
         // Delete the users group
         dataService.deleteUsersGroup(usersGroup);
+    }
+
+    /**
+     * Sets the default workspace of the user with the given user UUID to the given workspace UUID
+     *
+     * @param userUUID      the given user UUID
+     * @param workspaceUUID the given workspace UUID
+     */
+    public void setUserDefaultWorkspace(String userUUID, String workspaceUUID) {
+        // Get the user or throw an exception
+        final AcctUser user =
+            dataService.findUserByUserUUID(userUUID)
+                .orElseThrow(() -> new AcctUserManagementNotFoundException("User not found"));
+
+        // Check if the workspace is accessible to the user
+        final WorkspaceAccessibilityReport workspaceAccessibilityReport =
+            workspaceOwnershipEndpointClient.isUserAccessibleWorkspace(userUUID, workspaceUUID);
+
+        // If the workspace is not accessible to the user, throw an exception
+        if (!workspaceAccessibilityReport.accessible()) {
+            throw new AcctUserManagementIllegalAccessException(
+                "User does not have access to the workspace"
+            );
+        }
+
+        // Set the new default workspace
+        user.setDefaultWorkspaceUUID(workspaceUUID);
+
+        // Save the user
+        dataService.saveUser(user);
     }
 
     /**
