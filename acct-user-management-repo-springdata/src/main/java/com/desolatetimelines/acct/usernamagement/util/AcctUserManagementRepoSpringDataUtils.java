@@ -17,10 +17,10 @@ import java.util.function.Function;
 public abstract class AcctUserManagementRepoSpringDataUtils {
 
     public static JpaAcctUser doWithJpaAcctUser(
-        AcctUser acctService,
+        AcctUser acctUser,
         Function<JpaAcctUser, JpaAcctUser> todo
     ) {
-        if (acctService instanceof JpaAcctUser jpaAcctUser) {
+        if (acctUser instanceof JpaAcctUser jpaAcctUser) {
             return todo.apply(jpaAcctUser);
         }
 

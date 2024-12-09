@@ -90,6 +90,12 @@
         <module>acct-usage-repo-spec</module>
         <module>acct-usage-repo-springdata</module>
 
+        <!-- Jobs framework -->
+        <module>acct-job-ws-spec</module>
+        <module>acct-job-ws-server</module>
+        <module>acct-job-ws-client</module>
+        <module>acct-job-privileges-provider</module>
+
         <!-- Project-specific reusable dependencies -->
         <module>acct-privileges-provider-spec</module>
         <module>acct-common</module>

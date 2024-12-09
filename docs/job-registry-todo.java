@@ -1,5 +1,5 @@
 // TODO: JOB-01001: Jobs endpoint: Get all registered jobs, for use by administrators
-// TODO: JOB-01002: Jobs endpoint: Register job with the given jobUUID, for use by other services
+// DONE: JOB-01002: Jobs endpoint: Register job with the given jobUUID, for use by other services
 
 // TODO: JOB-02001: Jobs states endpoint: Get state of job by jobUUID, for use by other services
 // TODO: JOB-02002: Jobs states endpoint: Set state of job by jobUUID, for use by other services

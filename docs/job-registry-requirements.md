@@ -32,7 +32,7 @@ Response body example:
 Registers or a job for the given `jobUUID` and with the given details.
 
 Example request URLs:
-- `POST http://acct.desolatetimelines.com/service/job/v1/jobs?jobUUID=fed5b711-3287-4306-9a02-0b6f4b233652`
+- `POST http://acct.desolatetimelines.com/service/jobs-registry/v1/jobs?jobUUID=fed5b711-3287-4306-9a02-0b6f4b233652`
 
 The `jobUUID` parameter is mandatory.
 If there already is a job registered for the given `jobUUID`, an exception is thrown.
