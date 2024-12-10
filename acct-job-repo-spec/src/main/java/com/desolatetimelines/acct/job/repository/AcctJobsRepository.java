@@ -3,6 +3,7 @@ package com.desolatetimelines.acct.job.repository;
 import com.desolatetimelines.acct.job.model.AcctJob;
 
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Specification for the data repository that retrieves and persists {@link AcctJob jobs}
@@ -30,5 +31,7 @@ public interface AcctJobsRepository {
      * @return a referenced to the persisted entity
      */
     AcctJob save(AcctJob job);
+
+    Set<AcctJob> findAll();
 
 }

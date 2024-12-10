@@ -5,6 +5,8 @@ import com.desolatetimelines.acct.job.exception.AcctJobsServiceIllegalArgumentEx
 import com.desolatetimelines.acct.job.model.AcctJob;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 /**
  * Main class of the services layer of the ACCT jobs registry
  */
@@ -45,6 +47,13 @@ public class AcctJobsService {
 
         // Persist the job entity
         dataService.saveJob(newJob);
+    }
+
+    /**
+     * Returns a set of all the jobs registered with the jobs registry
+     */
+    public Set<AcctJob> getAllRegisteredJobs() {
+        return dataService.findAllAcctJobs();
     }
 
 }

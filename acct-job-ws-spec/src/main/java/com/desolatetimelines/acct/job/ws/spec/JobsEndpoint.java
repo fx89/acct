@@ -1,6 +1,9 @@
 package com.desolatetimelines.acct.job.ws.spec;
 
 import com.desolatetimelines.acct.job.ws.spec.model.JobRegistrationRequest;
+import com.desolatetimelines.acct.job.ws.spec.model.JobSummary;
+
+import java.util.Collection;
 
 /**
  * Specification for the jobs endpoint
@@ -15,5 +18,10 @@ public interface JobsEndpoint {
      * @param request the given job registration request
      */
     void registerJob(String jobUUID, JobRegistrationRequest request);
+
+    /**
+     * Returns a list of all jobs registered in the jobs registry
+     */
+    Collection<JobSummary> getAllRegisteredJobs();
 
 }

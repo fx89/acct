@@ -5,6 +5,7 @@ import com.desolatetimelines.acct.job.repository.AcctJobsRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Facade for the data layer of the jobs registry service, allowing for the
@@ -46,6 +47,13 @@ public class AcctJobsDataService {
      */
     public AcctJob saveJob(AcctJob job) {
         return jobsRepository.save(job);
+    }
+
+    /**
+     * Returns a set of all {@link AcctJob jobs} in the database
+     */
+    public Set<AcctJob> findAllAcctJobs() {
+        return jobsRepository.findAll();
     }
 
 }

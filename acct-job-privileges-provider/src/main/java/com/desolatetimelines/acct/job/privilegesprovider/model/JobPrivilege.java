@@ -12,6 +12,14 @@ public enum JobPrivilege {
             .withPrivilegeName("Register a job")
             .withPrivilegeDescription("Allows registering jobs")
             .build()
+    ),
+
+    JOBS_LIST_ALL(
+        AcctPrivilege.builder()
+            .withPrivilegeId(JobPrivilegeIds.JOBS_LIST_ALL)
+            .withPrivilegeName("List all jobs")
+            .withPrivilegeDescription("Allows listing of al the jobs registered in the jobs registry")
+            .build()
     );
 
     private final AcctPrivilege acctPrivilege;

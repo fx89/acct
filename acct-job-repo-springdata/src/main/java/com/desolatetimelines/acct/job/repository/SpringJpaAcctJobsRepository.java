@@ -6,6 +6,9 @@ import com.desolatetimelines.acct.job.springrepository.JpaAcctJobsRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static com.desolatetimelines.acct.job.util.AcctJobRepoSpringDataUtils.doWithJpaAcctJob;
 import static java.util.function.Function.identity;
@@ -32,5 +35,12 @@ public class SpringJpaAcctJobsRepository implements AcctJobsRepository {
     @Override
     public AcctJob save(AcctJob job) {
         return doWithJpaAcctJob(job, jpaAcctJobsRepository::save);
+    }
+
+    @Override
+    public Set<AcctJob> findAll() {
+        return
+            StreamSupport.stream(jpaAcctJobsRepository.findAll().spliterator(), false)
+                .collect(Collectors.toSet());
     }
 }

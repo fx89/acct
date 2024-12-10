@@ -2,10 +2,14 @@ package com.desolatetimelines.accy.job.ws.client;
 
 import com.desolatetimelines.acct.job.ws.spec.JobsEndpoint;
 import com.desolatetimelines.acct.job.ws.spec.model.JobRegistrationRequest;
+import com.desolatetimelines.acct.job.ws.spec.model.JobSummary;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Collection;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -21,5 +25,9 @@ public interface RESTJobsEndpointClient extends JobsEndpoint {
         @RequestParam("jobUUID") String jobUUID,
         @RequestBody JobRegistrationRequest request
     );
+
+    @Override
+    @GetMapping("")
+    Collection<JobSummary> getAllRegisteredJobs();
 
 }
