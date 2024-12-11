@@ -1,6 +1,8 @@
 package com.desolatetimelines.acct.job.data.service;
 
 import com.desolatetimelines.acct.job.model.AcctJob;
+import com.desolatetimelines.acct.job.model.AcctJobStatus;
+import com.desolatetimelines.acct.job.repository.AcctJobStatusesRepository;
 import com.desolatetimelines.acct.job.repository.AcctJobsRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +18,14 @@ public class AcctJobsDataService {
 
     private final AcctJobsRepository jobsRepository;
 
-    public AcctJobsDataService(AcctJobsRepository jobsRepository) {
+    private final AcctJobStatusesRepository jobStatusesRepository;
+
+    public AcctJobsDataService(
+        AcctJobsRepository jobsRepository,
+        AcctJobStatusesRepository jobStatusesRepository
+    ) {
         this.jobsRepository = jobsRepository;
+        this.jobStatusesRepository = jobStatusesRepository;
     }
 
     /**
@@ -54,6 +62,25 @@ public class AcctJobsDataService {
      */
     public Set<AcctJob> findAllAcctJobs() {
         return jobsRepository.findAll();
+    }
+
+    /**
+     * Creates a new {@link AcctJobStatus job status}
+     *
+     * @return a reference to the newly created job status
+     */
+    public AcctJobStatus createNewAcctJobStatus() {
+        return jobStatusesRepository.createNew();
+    }
+
+    /**
+     * Returns the {@link AcctJobStatus status} of the referenced {@link AcctJob job}.
+     * If the job does not a status then an empty optional is returned.
+     *
+     * @param job the referenced job
+     */
+    public Optional<AcctJobStatus> getJobStatus(AcctJob job) {
+        return jobStatusesRepository.findFirstByJob(job);
     }
 
 }

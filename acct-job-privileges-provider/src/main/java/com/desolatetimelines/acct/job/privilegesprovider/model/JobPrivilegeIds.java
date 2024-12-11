@@ -7,5 +7,6 @@ public abstract class JobPrivilegeIds {
 
     public static final String JOBS_REGISTER = "JOBS_REGISTER";
     public static final String JOBS_LIST_ALL = "JOBS_GET_ALL";
+    public static final String JOBS_STATES_GET = "JOBS_STATES_GET";
 
 }

@@ -20,6 +20,14 @@ public enum JobPrivilege {
             .withPrivilegeName("List all jobs")
             .withPrivilegeDescription("Allows listing of al the jobs registered in the jobs registry")
             .build()
+    ),
+
+    JOBS_STATES_GET(
+        AcctPrivilege.builder()
+            .withPrivilegeId(JobPrivilegeIds.JOBS_STATES_GET)
+            .withPrivilegeName("Get the state of a job")
+            .withPrivilegeDescription("Allows the retrieval of the state of a given job")
+            .build()
     );
 
     private final AcctPrivilege acctPrivilege;

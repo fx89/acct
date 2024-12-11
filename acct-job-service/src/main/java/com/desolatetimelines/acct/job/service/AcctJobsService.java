@@ -2,7 +2,10 @@ package com.desolatetimelines.acct.job.service;
 
 import com.desolatetimelines.acct.job.data.service.AcctJobsDataService;
 import com.desolatetimelines.acct.job.exception.AcctJobsServiceIllegalArgumentException;
+import com.desolatetimelines.acct.job.exception.AcctJobsServiceNotFoundException;
 import com.desolatetimelines.acct.job.model.AcctJob;
+import com.desolatetimelines.acct.job.model.AcctJobStatus;
+import com.desolatetimelines.acct.job.model.JobStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -54,6 +57,27 @@ public class AcctJobsService {
      */
     public Set<AcctJob> getAllRegisteredJobs() {
         return dataService.findAllAcctJobs();
+    }
+
+    /**
+     * Returns the {@link AcctJobStatus status} of the job with the given job UUID
+     *
+     * @param jobUUID the given job UUID
+     */
+    public AcctJobStatus getJobStatus(String jobUUID) {
+        // Get the job or fail
+        final AcctJob job =
+            dataService.findAcctJobByJobUUID(jobUUID)
+                .orElseThrow(() -> new AcctJobsServiceNotFoundException("Job not found"));
+
+        // Get the status or, if no status exists yet, return a new IDLE state
+        return
+            dataService.getJobStatus(job)
+                .orElseGet(() -> {
+                    final AcctJobStatus jobStatus = dataService.createNewAcctJobStatus();
+                    jobStatus.setJobStatus(JobStatus.IDLE);
+                    return jobStatus;
+                });
     }
 
 }

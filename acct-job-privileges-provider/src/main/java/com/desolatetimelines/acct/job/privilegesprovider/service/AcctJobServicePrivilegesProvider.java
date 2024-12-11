@@ -6,8 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
-import static com.desolatetimelines.acct.job.privilegesprovider.model.JobPrivilege.JOBS_LIST_ALL;
-import static com.desolatetimelines.acct.job.privilegesprovider.model.JobPrivilege.JOBS_REGISTER;
+import static com.desolatetimelines.acct.job.privilegesprovider.model.JobPrivilege.*;
 
 /**
  * {@link AcctServicePrivilegesProvider privileges provider} for the Jobs Registry service
@@ -19,7 +18,8 @@ public class AcctJobServicePrivilegesProvider implements AcctServicePrivilegesPr
     public Set<AcctPrivilege> getPrivileges() {
         return Set.of(
             JOBS_REGISTER.getAcctPrivilege(),
-            JOBS_LIST_ALL.getAcctPrivilege()
+            JOBS_LIST_ALL.getAcctPrivilege(),
+            JOBS_STATES_GET.getAcctPrivilege()
         );
     }
 
