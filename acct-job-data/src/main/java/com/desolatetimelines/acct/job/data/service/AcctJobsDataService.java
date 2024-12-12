@@ -2,6 +2,8 @@ package com.desolatetimelines.acct.job.data.service;
 
 import com.desolatetimelines.acct.job.model.AcctJob;
 import com.desolatetimelines.acct.job.model.AcctJobStatus;
+import com.desolatetimelines.acct.job.model.AcctJobStatusHistoryRecord;
+import com.desolatetimelines.acct.job.repository.AcctJobStatusHistoryRecordsRepository;
 import com.desolatetimelines.acct.job.repository.AcctJobStatusesRepository;
 import com.desolatetimelines.acct.job.repository.AcctJobsRepository;
 import org.springframework.stereotype.Service;
@@ -20,12 +22,16 @@ public class AcctJobsDataService {
 
     private final AcctJobStatusesRepository jobStatusesRepository;
 
+    private final AcctJobStatusHistoryRecordsRepository jobStatusHistoryRecordsRepository;
+
     public AcctJobsDataService(
         AcctJobsRepository jobsRepository,
-        AcctJobStatusesRepository jobStatusesRepository
+        AcctJobStatusesRepository jobStatusesRepository,
+        AcctJobStatusHistoryRecordsRepository jobStatusHistoryRecordsRepository
     ) {
         this.jobsRepository = jobsRepository;
         this.jobStatusesRepository = jobStatusesRepository;
+        this.jobStatusHistoryRecordsRepository = jobStatusHistoryRecordsRepository;
     }
 
     /**
@@ -65,12 +71,15 @@ public class AcctJobsDataService {
     }
 
     /**
-     * Creates a new {@link AcctJobStatus job status}
+     * Creates a new {@link AcctJobStatus job status} for the referenced {@link AcctJob job}
      *
+     * @param job the referenced job
      * @return a reference to the newly created job status
      */
-    public AcctJobStatus createNewAcctJobStatus() {
-        return jobStatusesRepository.createNew();
+    public AcctJobStatus createNewAcctJobStatus(AcctJob job) {
+        final AcctJobStatus jobStatus = jobStatusesRepository.createNew();
+        jobStatus.setJob(job);
+        return jobStatus;
     }
 
     /**
@@ -81,6 +90,41 @@ public class AcctJobsDataService {
      */
     public Optional<AcctJobStatus> getJobStatus(AcctJob job) {
         return jobStatusesRepository.findFirstByJob(job);
+    }
+
+    /**
+     * Saves the referenced {@link AcctJobStatus job status}
+     *
+     * @param jobStatus the referenced job status
+     * @return a referenced to the saved entity
+     */
+    public AcctJobStatus saveJobStatus(AcctJobStatus jobStatus) {
+        return jobStatusesRepository.save(jobStatus);
+    }
+
+    /**
+     * Creates a new {@link AcctJobStatusHistoryRecord job status history record}
+     * for the referenced {@link AcctJob job}
+     *
+     * @param job the referenced job
+     * @return a reference to the created record
+     */
+    public AcctJobStatusHistoryRecord createNewAcctJobStatusHistoryRecord(AcctJob job) {
+        final AcctJobStatusHistoryRecord historyRecord = jobStatusHistoryRecordsRepository.createNew();
+        historyRecord.setJob(job);
+        return historyRecord;
+    }
+
+    /**
+     * Saves the referenced {@link AcctJobStatusHistoryRecord job status history record}
+     *
+     * @param acctJobStatusHistoryRecord the referenced job status history record
+     * @return a reference to the saved entity
+     */
+    public AcctJobStatusHistoryRecord saveAcctJobStatusHistoryRecord(
+        AcctJobStatusHistoryRecord acctJobStatusHistoryRecord
+    ) {
+        return jobStatusHistoryRecordsRepository.save(acctJobStatusHistoryRecord);
     }
 
 }

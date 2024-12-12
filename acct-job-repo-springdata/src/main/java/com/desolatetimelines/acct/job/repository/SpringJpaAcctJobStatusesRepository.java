@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 import static com.desolatetimelines.acct.job.util.AcctJobRepoSpringDataUtils.doWithJpaAcctJob;
+import static com.desolatetimelines.acct.job.util.AcctJobRepoSpringDataUtils.doWithJpaAcctJobStatus;
 import static java.util.function.Function.identity;
 
 @Service
@@ -30,5 +31,10 @@ public class SpringJpaAcctJobStatusesRepository implements AcctJobStatusesReposi
     @Override
     public AcctJobStatus createNew() {
         return new JpaAcctJobStatus();
+    }
+
+    @Override
+    public AcctJobStatus save(AcctJobStatus jobStatus) {
+        return doWithJpaAcctJobStatus(jobStatus, jpaAcctJobStatusesRepository::save);
     }
 }

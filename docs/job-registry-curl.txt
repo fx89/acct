@@ -44,3 +44,38 @@ curl \
     -H "Content-Type: application/json; charset=utf-8" \
     -X GET "http://localhost:8084/service/jobs-registry/v1/jobs/status?jobUUID=348835f6-c4dc-4c4c-a454-78d5e1cf5e22" \
     | jq
+
+curl \
+    --insecure \
+    -v \
+    -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT "http://localhost:8084/service/jobs-registry/v1/jobs/status/start?jobUUID=348835f6-c4dc-4c4c-a454-78d5e1cf5e22" \
+    | jq
+
+curl \
+    --insecure \
+    -v \
+    -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT "http://localhost:8084/service/jobs-registry/v1/jobs/status/end?jobUUID=348835f6-c4dc-4c4c-a454-78d5e1cf5e22" \
+    --data-raw '
+        {
+            "jobOutcome": "FAILURE",
+            "errorMessage": "An unknown error was encountered while trying to run the job"
+        }
+    ' \
+    | jq
+
+curl \
+    --insecure \
+    -v \
+    -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT "http://localhost:8084/service/jobs-registry/v1/jobs/status/end?jobUUID=348835f6-c4dc-4c4c-a454-78d5e1cf5e22" \
+    --data-raw '
+        {
+            "jobOutcome": "SUCCESS"
+        }
+    ' \
+    | jq

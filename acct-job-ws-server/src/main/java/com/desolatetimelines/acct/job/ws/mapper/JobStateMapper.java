@@ -23,7 +23,7 @@ public abstract class JobStateMapper {
                 .build();
     }
 
-    private static JobStatus mapJobStatus(com.desolatetimelines.acct.job.model.JobStatus jobStatus) {
+    public static JobStatus mapJobStatus(com.desolatetimelines.acct.job.model.JobStatus jobStatus) {
         if (jobStatus == null) {
             return null;
         }
@@ -39,7 +39,7 @@ public abstract class JobStateMapper {
         throw new IllegalArgumentException("Unsupported job status");
     }
 
-    private static JobOutcome mapJobOutcome(com.desolatetimelines.acct.job.model.JobOutcome jobOutcome) {
+    public static JobOutcome mapJobOutcome(com.desolatetimelines.acct.job.model.JobOutcome jobOutcome) {
         if (jobOutcome == null) {
             return null;
         }
@@ -50,6 +50,22 @@ public abstract class JobStateMapper {
 
         if (jobOutcome == com.desolatetimelines.acct.job.model.JobOutcome.FAILURE) {
             return JobOutcome.FAILURE;
+        }
+
+        throw new IllegalArgumentException("Unsupported job outcome");
+    }
+
+    public static com.desolatetimelines.acct.job.model.JobOutcome mapJobOutcome(JobOutcome jobOutcome) {
+        if (jobOutcome == null) {
+            return null;
+        }
+
+        if (jobOutcome == JobOutcome.SUCCESS) {
+            return com.desolatetimelines.acct.job.model.JobOutcome.SUCCESS;
+        }
+
+        if (jobOutcome == JobOutcome.FAILURE) {
+            return com.desolatetimelines.acct.job.model.JobOutcome.FAILURE;
         }
 
         throw new IllegalArgumentException("Unsupported job outcome");

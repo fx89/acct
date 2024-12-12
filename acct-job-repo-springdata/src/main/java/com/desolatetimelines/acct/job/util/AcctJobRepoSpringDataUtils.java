@@ -1,7 +1,6 @@
 package com.desolatetimelines.acct.job.util;
 
-import com.desolatetimelines.acct.job.model.AcctJob;
-import com.desolatetimelines.acct.job.model.JpaAcctJob;
+import com.desolatetimelines.acct.job.model.*;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -34,6 +33,34 @@ public class AcctJobRepoSpringDataUtils {
             todo.accept(jpaAcctJob);
             return jpaAcctJob;
         });
+    }
+
+    public static JpaAcctJobStatus doWithJpaAcctJobStatus(
+        AcctJobStatus acctJobStatus,
+        Function<JpaAcctJobStatus, JpaAcctJobStatus> todo
+    ) {
+        if (acctJobStatus instanceof JpaAcctJobStatus jpaAcctJobStatus) {
+            return todo.apply(jpaAcctJobStatus);
+        }
+
+        throw new IllegalArgumentException(
+            "The referenced " + AcctJobStatus.class.getName() +
+                " is not of type " + JpaAcctJobStatus.class.getCanonicalName()
+        );
+    }
+
+    public static JpaAcctJobStatusHistoryRecord doWithJpaAcctJobStatusHistoryRecord(
+        AcctJobStatusHistoryRecord acctJobStatusHistoryRecord,
+        Function<JpaAcctJobStatusHistoryRecord, JpaAcctJobStatusHistoryRecord> todo
+    ) {
+        if (acctJobStatusHistoryRecord instanceof JpaAcctJobStatusHistoryRecord jpaacctJobStatusHistoryRecord) {
+            return todo.apply(jpaacctJobStatusHistoryRecord);
+        }
+
+        throw new IllegalArgumentException(
+            "The referenced " + AcctJobStatusHistoryRecord.class.getName() +
+                " is not of type " + JpaAcctJobStatusHistoryRecord.class.getCanonicalName()
+        );
     }
 
 }

@@ -25,4 +25,12 @@ public interface AcctJobStatusesRepository {
      */
     AcctJobStatus createNew();
 
+    /**
+     * Saves the referenced {@link AcctJobStatus job status}
+     *
+     * @param jobStatus the referenced job status
+     * @return a reference to the saved entity
+     */
+    AcctJobStatus save(AcctJobStatus jobStatus);
+
 }

@@ -28,6 +28,14 @@ public enum JobPrivilege {
             .withPrivilegeName("Get the state of a job")
             .withPrivilegeDescription("Allows the retrieval of the state of a given job")
             .build()
+    ),
+
+    JOBS_STATES_SET(
+        AcctPrivilege.builder()
+            .withPrivilegeId(JobPrivilegeIds.JOBS_STATES_SET)
+            .withPrivilegeName("Set the state of a job")
+            .withPrivilegeDescription("Allows setting the state of a given job")
+            .build()
     );
 
     private final AcctPrivilege acctPrivilege;

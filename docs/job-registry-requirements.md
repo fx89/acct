@@ -74,66 +74,72 @@ Response body example:
 ```
 
 
+<br /><br />
+#### `JOB-02002` Record started job by jobUUID, for use by other services
+Registers or overwrites the state of the job with the given `jobUUID`.
+The decision to create or update is determined by the existence of a previous database record in the `job_status` table.
+
+The following fields are set in the `job_status` table:
+- Marks the `job_status` as RUNNING.
+- If the `first_start_date` is not set, it is set at this point.
+- The `last_start_date` is also set to the value of the `current_start_date` field.
+- The `current_start_date` is set to the current date and time.
+
+Adds a new record in the `job_status_history` table for the job with the given `jobUUID`. as follows:
+- `job_status_date` is set to the current date and time.
+- `job_status` is set to RUNNING.
+
+Example requestURL:
+- `PUT http://acct.desolatetimelines.com/service/job/v1/jobs/status/start?jobUUID=681b3fc6-0d34-45f5-8b57-82eb121b8ac0`
+
+
 
 <br /><br />
-#### `JOB-02002` Set state of job by jobUUID, for use by other services
+#### `JOB-02003` Record finished job by jobUUID, for use by other services
 Register or overwrites the state of the job with the given `jobUUID`.
 The decision to create or update is determined by the existence of a previous database record in the `job_status` table.
 
+The following fields are set in the `job_status` table:
+- Marks the job status sa IDLE.
+- Sets the value of the `last_start_date` field to the value of the current start date.
+- Sets the `current_start_date` field to null.
+- Sets the `last_end_date` field to the current date and time.
+- Sets the `last_outcome` field to either SUCCESS or FAILURE, according to the given settings.
+- If the outcome was SUCCESS, sets the `number_of_failures_since_the_last_successful_outcome` field to 0.
+  If the outcome was FAILURE, increments the value of the `number_of_failures_since_the_last_successful_outcome` field.
+
+Adds a new record in the `job_status_history` table for the job with the given `jobUUID`. as follows:
+- `job_status_date` is set to the current date and time.
+- `job_status` is set to IDLE.
+- `job_outcome` is set to SUCCESS or FAILURE, according to the given settings.
+- `job_error_message` is set to whatever message is given as input parameter.
+
 Example requestURL:
-- `PUT http://acct.desolatetimelines.com/service/job/v1/jobs/status?jobUUID=681b3fc6-0d34-45f5-8b57-82eb121b8ac0`
+- `PUT http://acct.desolatetimelines.com/service/job/v1/jobs/status/end?jobUUID=681b3fc6-0d34-45f5-8b57-82eb121b8ac0`
 
 Request body example (successful run):
 ```
 {
-    "jobStatus": "SUCCESS"
+    "jobOutcome": "SUCCESS"
 }
 ```
 
 Request body example (failed run):
 ```
 {
-    "jobStatus": "FAILURE"
+    "jobOutcome": "FAILURE",
     "errorMessage": "NullPointerException"
 }
 ```
 
-Possible values for the `jobStatus` property:
-- RUNNING
+Possible values for the `jobOutcome` property:
 - SUCCESS
 - FAILURE
-
-Depending on the value of the `jobStatus` property, the following properties are added or updated
-in the `job_status` table:
-- If `jobStatus` == RUNNING:
-  - The `job_status` field is set to RUNNING
-  - The `current_start_date` field is set to the current date
-  - If this is a new record, the `first_start_date` field is set to the current date
-  - If this is a new record, the `job_uuid` field is set to the value of the `jobUUID` parameter
-- If `jobStatus` == SUCCESS:
-  - The `last_outcome` field is set to the value of the `job_status` field
-  - The `job_status` field is set to SUCCESS
-  - The `last_start_date` field is set to the value of the `current_start_date` field
-  - The `last_end_date` field is set to the current date
-  - The `number_of_failures_since_last_successful_outcome` field is set to 0
-- If `jobStatus` == FAILURE:
-  - The `last_outcome` field is set to the value of the `job_status` field
-  - The `job_status` field is set to FAILURE
-  - The `last_start_date` field is set to the value of the `current_start_date` field
-  - The `last_end_date` field is set to the current date
-  - The `number_of_failures_since_last_successful_outcome` field is incremented
-  - The `last_error_message` field is set to the value of the `errorMessage` parameter
-
-A new record is also added into the `job_status_history` table as follows:
-- The `job_uuid` field is set to the value of the `jobUUID` parameter
-- The `job_status_date` field is set to the current date
-- The `job_outcome` field is set to the value of the `jobStatus` property
-- The `job_error_message` field is set to the value of the `errorMessage` property
 
 
 
 <br /><br />
-#### `JOB-02003` Get the states of all the jobs, for use by administrators
+#### `JOB-02004` Get the states of all the jobs, for use by administrators
 Retrieves a list of all the registered job states.
 
 Example request URL:
@@ -157,7 +163,7 @@ Response body example:
 
 
 <br /><br />
-#### `JOB-02004` Get a sorted page of the status history of the job with the given jobUUID, for use by administrators
+#### `JOB-02005` Get a sorted page of the status history of the job with the given jobUUID, for use by administrators
 Retrieves a sorted page of the given `pageSize` with the given `pageNumber` of status history records
 for the job with the given `jobUUID`.
 
