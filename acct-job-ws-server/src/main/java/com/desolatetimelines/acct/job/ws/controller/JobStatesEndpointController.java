@@ -8,6 +8,8 @@ import com.desolatetimelines.acct.job.ws.spec.model.JobStateSetting;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
+
 import static com.desolatetimelines.acct.job.privilegesprovider.model.JobPrivilegeIds.JOBS_STATES_GET;
 import static com.desolatetimelines.acct.job.privilegesprovider.model.JobPrivilegeIds.JOBS_STATES_SET;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -30,6 +32,17 @@ public class JobStatesEndpointController implements JobStatesEndpoint {
             JobStateMapper.fromAcctJobStatus(
                 jobsService.getJobStatus(jobUUID)
             );
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + JOBS_STATES_GET + "')")
+    @GetMapping(value = "/all", produces = APPLICATION_JSON_VALUE)
+    public Collection<JobState> getAllJobStates() {
+        return
+            jobsService.getAllJobStates()
+                .stream()
+                .map(JobStateMapper::fromAcctJobStatus)
+                .toList();
     }
 
     @Override

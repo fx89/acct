@@ -3,6 +3,8 @@ package com.desolatetimelines.acct.job.ws.spec;
 import com.desolatetimelines.acct.job.ws.spec.model.JobState;
 import com.desolatetimelines.acct.job.ws.spec.model.JobStateSetting;
 
+import java.util.Collection;
+
 /**
  * Specification for the job states endpoint
  */
@@ -14,6 +16,11 @@ public interface JobStatesEndpoint {
      * @param jobUUID the given UUID
      */
     JobState getJobState(String jobUUID);
+
+    /**
+     * Returns a collection of {@link JobState job states} for all the registered jobs
+     */
+    Collection<JobState> getAllJobStates();
 
     /**
      * Sets the {@link JobState state} of the job with the given job UUID to a

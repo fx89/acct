@@ -13,6 +13,7 @@ public abstract class JobStateMapper {
     public static JobState fromAcctJobStatus(AcctJobStatus acctJobStatus) {
         return
             JobState.builder()
+                .withJobUUID(acctJobStatus.getJob().getJobUUID())
                 .withJobStatus(mapJobStatus(acctJobStatus.getJobStatus()))
                 .withCurrentStartDate(acctJobStatus.getCurrentStartDate())
                 .withFirstStartDate(acctJobStatus.getFirstStartDate())

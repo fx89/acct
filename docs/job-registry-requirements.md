@@ -63,6 +63,7 @@ Example request URL:
 Response body example:
 ```
 {
+    "jobUUID": "681b3fc6-0d34-45f5-8b57-82eb121b8ac0",
     "jobStatus": "RUNNING",
     "firstStartDate": "2020-01-01 13:44:18",
     "lastStartDate": "2020-01-01 18:59:42",
@@ -143,7 +144,7 @@ Possible values for the `jobOutcome` property:
 Retrieves a list of all the registered job states.
 
 Example request URL:
-- `GET http://acct.desolatetimelines.com/service/job/v1/jobs/statusAll`
+- `GET http://acct.desolatetimelines.com/service/job/v1/jobs/status/all`
 
 Response body example:
 ```

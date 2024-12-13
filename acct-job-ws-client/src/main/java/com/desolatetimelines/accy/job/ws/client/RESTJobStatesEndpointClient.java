@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Collection;
+
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @FeignClient(
@@ -20,6 +22,10 @@ public interface RESTJobStatesEndpointClient extends JobStatesEndpoint {
     @Override
     @GetMapping(value = "", produces = APPLICATION_JSON_VALUE)
     JobState getJobState(@RequestParam("jobUUID") String jobUUID);
+
+    @Override
+    @GetMapping(value = "/all", produces = APPLICATION_JSON_VALUE)
+    Collection<JobState> getAllJobStates();
 
     @Override
     @PutMapping(value = "/start", produces = APPLICATION_JSON_VALUE)

@@ -15,6 +15,7 @@ import java.time.Instant;
  * @param numberOfFailuresSinceLastSuccessfulOutcome the number of times the job outcome was FAILURE since the last time when the outcome was SUCCESS
  */
 public record JobState(
+    String jobUUID,
     JobStatus jobStatus,
     Instant firstStartDate,
     Instant lastStartDate,
@@ -32,6 +33,7 @@ public record JobState(
      * {@code JobState} builder static inner class.
      */
     public static final class JobStateBuilder {
+        private String jobUUID;
         private JobStatus jobStatus;
         private Instant firstStartDate;
         private Instant lastStartDate;
@@ -41,6 +43,17 @@ public record JobState(
         private Integer numberOfFailuresSinceLastSuccessfulOutcome;
 
         private JobStateBuilder() {
+        }
+
+        /**
+         * Sets the {@code jobUUID} and returns a reference to this Builder enabling method chaining.
+         *
+         * @param jobUUID the {@code jobUUID} to set
+         * @return a reference to this Builder
+         */
+        public JobStateBuilder withJobUUID(String jobUUID) {
+            this.jobUUID = jobUUID;
+            return this;
         }
 
         /**
@@ -127,6 +140,7 @@ public record JobState(
          */
         public JobState build() {
             return new JobState(
+                jobUUID,
                 jobStatus,
                 firstStartDate,
                 lastStartDate,

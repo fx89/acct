@@ -79,3 +79,11 @@ curl \
         }
     ' \
     | jq
+
+curl \
+    --insecure \
+    -v \
+    -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X GET "http://localhost:8084/service/jobs-registry/v1/jobs/status/all" \
+    | jq

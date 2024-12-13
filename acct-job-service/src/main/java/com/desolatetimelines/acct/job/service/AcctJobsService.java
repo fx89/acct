@@ -8,8 +8,10 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Main class of the services layer of the ACCT jobs registry
@@ -73,6 +75,17 @@ public class AcctJobsService {
                 .orElseThrow(() -> new AcctJobsServiceNotFoundException("Job not found"));
 
         // Get the status or, if no status exists yet, return a new IDLE state
+        return getJobStatus(job);
+    }
+
+    /**
+     * Returns the {@link AcctJobStatus status} of the referenced {@link AcctJob job}.
+     * If no status is yet registered for the referenced job, a new IDLE status is
+     * returned.
+     *
+     * @param job the referenced job
+     */
+    private AcctJobStatus getJobStatus(AcctJob job) {
         return
             dataService.getJobStatus(job)
                 .orElseGet(() -> {
@@ -192,6 +205,23 @@ public class AcctJobsService {
 
         // Save the job status history record
         dataService.saveAcctJobStatusHistoryRecord(jobStatusHistoryRecord);
+    }
+
+    /**
+     * Returns a collection of the {@link AcctJobStatus states}
+     * of all the jobs registered in the jobs registry. If there
+     * is no state registered for a given job, a new IDLE state
+     * is returned for that job.
+     */
+    public Collection<AcctJobStatus> getAllJobStates() {
+        // Get all the jobs
+        final Set<AcctJob> allRegisteredJobs = dataService.findAllAcctJobs();
+
+        // Get the state for each job (n+1 queries, but easier to code, plus there shouldn't be too many jobs)
+        return
+            allRegisteredJobs.stream()
+                .map(this::getJobStatus)
+                .collect(Collectors.toSet());
     }
 
 }
