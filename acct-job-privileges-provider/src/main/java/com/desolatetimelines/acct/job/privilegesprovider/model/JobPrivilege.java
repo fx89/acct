@@ -36,6 +36,14 @@ public enum JobPrivilege {
             .withPrivilegeName("Set the state of a job")
             .withPrivilegeDescription("Allows setting the state of a given job")
             .build()
+    ),
+
+    JOBS_STATES_HISTORY_LIST(
+        AcctPrivilege.builder()
+            .withPrivilegeId(JobPrivilegeIds.JOBS_STATES_HISTORY_LIST)
+            .withPrivilegeName("List the state history of a job")
+            .withPrivilegeDescription("Allows retrieving pages of state history records for a referenced job")
+            .build()
     );
 
     private final AcctPrivilege acctPrivilege;

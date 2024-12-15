@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.desolatetimelines.acct.common.Streams.multiConcat;
+import static com.desolatetimelines.acct.common.utils.Streams.multiConcat;
 import static com.desolatetimelines.acct.security.model.AccessibilityReport.*;
 
 /**

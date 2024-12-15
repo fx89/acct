@@ -1,17 +1,22 @@
 package com.desolatetimelines.acct.job.ws.controller;
 
+import com.desolatetimelines.acct.common.model.Page;
+import com.desolatetimelines.acct.common.ws.mapper.AcctPageInfoMapper;
+import com.desolatetimelines.acct.common.ws.model.AcctPage;
+import com.desolatetimelines.acct.job.model.AcctJobStatusHistoryRecord;
 import com.desolatetimelines.acct.job.service.AcctJobsService;
+import com.desolatetimelines.acct.job.ws.mapper.JobStateHistoryRecordMapper;
 import com.desolatetimelines.acct.job.ws.mapper.JobStateMapper;
 import com.desolatetimelines.acct.job.ws.spec.JobStatesEndpoint;
 import com.desolatetimelines.acct.job.ws.spec.model.JobState;
+import com.desolatetimelines.acct.job.ws.spec.model.JobStateHistoryRecord;
 import com.desolatetimelines.acct.job.ws.spec.model.JobStateSetting;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
-import static com.desolatetimelines.acct.job.privilegesprovider.model.JobPrivilegeIds.JOBS_STATES_GET;
-import static com.desolatetimelines.acct.job.privilegesprovider.model.JobPrivilegeIds.JOBS_STATES_SET;
+import static com.desolatetimelines.acct.job.privilegesprovider.model.JobPrivilegeIds.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
@@ -60,6 +65,25 @@ public class JobStatesEndpointController implements JobStatesEndpoint {
             jobUUID,
             JobStateMapper.mapJobOutcome(setting.jobOutcome()),
             setting.errorMessage()
+        );
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + JOBS_STATES_HISTORY_LIST + "')")
+    @GetMapping(value = "/history", produces = APPLICATION_JSON_VALUE)
+    public AcctPage<JobStateHistoryRecord> getJobStateHistoryRecordsPage(
+        @RequestParam(name = "jobUUID") String jobUUID,
+        @RequestParam(name = "pageNumber") int pageNumber,
+        @RequestParam(name = "pageSize") int pageSize
+    ) {
+        // Get the page
+        final Page<AcctJobStatusHistoryRecord> page =
+            jobsService.getJobStateHistoryRecordsPage(jobUUID, pageNumber, pageSize);
+
+        // Transform the page
+        return new AcctPage<>(
+            page.data().stream().map(JobStateHistoryRecordMapper::fromAcctJobStatusHistoryRecord).toList(),
+            AcctPageInfoMapper.fromPage(page, pageNumber)
         );
     }
 

@@ -7,7 +7,7 @@ import com.desolatetimelines.acct.usermanagement.data.model.AcctUserGroupCreatio
 import com.desolatetimelines.acct.usermanagement.model.AcctUser;
 import com.desolatetimelines.acct.usermanagement.model.AcctUserGroupMapping;
 import com.desolatetimelines.acct.usermanagement.model.AcctUsersGroup;
-import com.desolatetimelines.acct.usermanagement.model.Page;
+import com.desolatetimelines.acct.common.model.Page;
 import com.desolatetimelines.acct.usermanagement.repository.AcctUserGroupMappingsRepository;
 import com.desolatetimelines.acct.usermanagement.repository.AcctUserGroupsRepository;
 import com.desolatetimelines.acct.usermanagement.repository.AcctUsersRepository;

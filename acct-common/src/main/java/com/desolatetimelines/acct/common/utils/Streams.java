@@ -1,4 +1,4 @@
-package com.desolatetimelines.acct.common;
+package com.desolatetimelines.acct.common.utils;
 
 import java.util.stream.Stream;
 

@@ -95,11 +95,18 @@
         <module>acct-job-ws-server</module>
         <module>acct-job-ws-client</module>
         <module>acct-job-privileges-provider</module>
+        <module>acct-job-service</module>
+        <module>acct-job-data</module>
+        <module>acct-job-repo-spec</module>
+        <module>acct-job-repo-springdata</module>
 
         <!-- Project-specific reusable dependencies -->
         <module>acct-privileges-provider-spec</module>
         <module>acct-common</module>
         <module>acct-common-rest</module>
+        <module>acct-common-ws-spec</module>
+        <module>acct-common-ws-server</module>
+        <module>acct-common-repo-spec</module>
         <module>acct-usage-ws-redist</module>
     </modules>
 

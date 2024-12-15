@@ -1,9 +1,7 @@
-package com.desolatetimelines.acct.usermanagement.ws.mapper;
+package com.desolatetimelines.acct.common.ws.mapper;
 
-import com.desolatetimelines.acct.usermanagement.model.Page;
-import com.desolatetimelines.acct.usermanagement.ws.model.AcctPageInfo;
-
-import static java.lang.Math.max;
+import com.desolatetimelines.acct.common.model.Page;
+import com.desolatetimelines.acct.common.ws.model.AcctPageInfo;
 
 /**
  * Provides mapping methods to and from the {@link AcctPageInfo} type
@@ -15,7 +13,7 @@ public class AcctPageInfoMapper {
             new AcctPageInfo(
                 page.numElements(),
                 page.maxElements(),
-                (int) (page.maxElements() / (max(page.numElements(), 1))),
+                (int) (page.maxElements() / (Math.max(page.numElements(), 1))),
                 pageNumber
             );
     }

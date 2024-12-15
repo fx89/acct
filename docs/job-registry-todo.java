@@ -5,9 +5,9 @@
 // DONE: JOB-02002: Job states endpoint: Record started job by jobUUID, for use by other services
 // DONE: JOB-02003: Job states endpoint: Record finished job by jobUUID, for use by other services
 // DONE: JOB-02004: Job states endpoint: Get the states of all the jobs, for use by administrators
-// TODO: JOB-02005: Job states endpoint: Get a sorted page of the status history of the job with the given jobUUID, for use by administrators
+// DONE: JOB-02005: Job states endpoint: Get a sorted page of the status history of the job with the given jobUUID, for use by administrators
 
-// TODO: JOB-03001: Job registry client: API client
+// DONE: JOB-03001: Job registry client: API client
 // TODO: JOB-03002: Job registry client: Jobs framework
 
-// TODO: JOB-04002: Privileges
+// DONE: JOB-04002: Privileges

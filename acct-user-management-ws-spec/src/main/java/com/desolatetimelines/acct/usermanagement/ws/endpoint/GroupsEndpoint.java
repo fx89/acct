@@ -2,7 +2,7 @@ package com.desolatetimelines.acct.usermanagement.ws.endpoint;
 
 import com.desolatetimelines.acct.usermanagement.ws.model.AcctGroupDetails;
 import com.desolatetimelines.acct.usermanagement.ws.model.AcctGroupUUIDResponse;
-import com.desolatetimelines.acct.usermanagement.ws.model.AcctPage;
+import com.desolatetimelines.acct.common.ws.model.AcctPage;
 import com.desolatetimelines.acct.usermanagement.ws.model.AcctUsersGroupCreationRequest;
 
 import java.util.Collection;

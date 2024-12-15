@@ -1,11 +1,12 @@
 package com.desolatetimelines.acct.usermanagement.ws.controller;
 
+import com.desolatetimelines.acct.common.ws.model.AcctPage;
 import com.desolatetimelines.acct.usermanagement.data.model.AcctUserCreationParameters;
 import com.desolatetimelines.acct.usermanagement.model.AcctUser;
-import com.desolatetimelines.acct.usermanagement.model.Page;
+import com.desolatetimelines.acct.common.model.Page;
 import com.desolatetimelines.acct.usermanagement.service.AcctUserManagementService;
 import com.desolatetimelines.acct.usermanagement.ws.endpoint.UsersEndpoint;
-import com.desolatetimelines.acct.usermanagement.ws.mapper.AcctPageInfoMapper;
+import com.desolatetimelines.acct.common.ws.mapper.AcctPageInfoMapper;
 import com.desolatetimelines.acct.usermanagement.ws.mapper.AcctUserDetailsMapper;
 import com.desolatetimelines.acct.usermanagement.ws.mapper.AcctUserInfoMapper;
 import com.desolatetimelines.acct.usermanagement.ws.model.*;

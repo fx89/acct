@@ -177,13 +177,15 @@ Response body example:
     "data": [
       {
           "jobStatusDate": "2021-02-01 14:45:37",
-          "jobStatus": "FAILURE",
-          "errorMessage": "Unknwon host: www.bnr.ro"
+          "jobStatus": "IDLE",
+          "JobOutcome", "FAILURE",
+          "jobErrorMessage": "Unknwon host: www.bnr.ro"
       },
       {
           "jobStatusDate": "2021-02-01 14:46:59",
-          "jobStatus": "SUCCESS",
-          "errorMessage": null
+          "jobStatus": "IDLE",
+          "JobOutcome", "SUCCESS",
+          "jobErrorMessage": null
       }
     ],
     "page": {

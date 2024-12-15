@@ -1,6 +1,6 @@
 package com.desolatetimelines.acct.security.service;
 
-import com.desolatetimelines.acct.common.ObjectTypes;
+import com.desolatetimelines.acct.common.model.ObjectTypes;
 import com.desolatetimelines.acct.privilegesprovider.model.AcctPrivilege;
 import com.desolatetimelines.acct.security.data.service.AcctSecurityDataService;
 import com.desolatetimelines.acct.security.data.usermanagement.service.AcctSecurityUserManagementDataService;

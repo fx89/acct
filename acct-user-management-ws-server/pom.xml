@@ -42,6 +42,12 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/x
 
         <dependency>
             <groupId>com.desolatetimelines</groupId>
+            <artifactId>acct-common-ws-server</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.desolatetimelines</groupId>
             <artifactId>acct-usage-ws-redist</artifactId>
             <version>${project.parent.version}</version>
         </dependency>

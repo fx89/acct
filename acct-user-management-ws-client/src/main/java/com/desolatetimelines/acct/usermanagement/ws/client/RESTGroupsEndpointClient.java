@@ -3,7 +3,7 @@ package com.desolatetimelines.acct.usermanagement.ws.client;
 import com.desolatetimelines.acct.usermanagement.ws.endpoint.GroupsEndpoint;
 import com.desolatetimelines.acct.usermanagement.ws.model.AcctGroupDetails;
 import com.desolatetimelines.acct.usermanagement.ws.model.AcctGroupUUIDResponse;
-import com.desolatetimelines.acct.usermanagement.ws.model.AcctPage;
+import com.desolatetimelines.acct.common.ws.model.AcctPage;
 import com.desolatetimelines.acct.usermanagement.ws.model.AcctUsersGroupCreationRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;

@@ -1,6 +1,6 @@
 package com.desolatetimelines.acct.usermanagement.service;
 
-import com.desolatetimelines.acct.common.ObjectTypes;
+import com.desolatetimelines.acct.common.model.ObjectTypes;
 import com.desolatetimelines.acct.security.ws.client.RESTWorkspaceOwnershipEndpointClient;
 import com.desolatetimelines.acct.security.ws.endpoint.model.WorkspaceAccessibilityReport;
 import com.desolatetimelines.acct.usage.ws.client.RESTUsageEndpointClient;
@@ -15,7 +15,7 @@ import com.desolatetimelines.acct.usermanagement.exception.AcctUserManagementIll
 import com.desolatetimelines.acct.usermanagement.exception.AcctUserManagementNotFoundException;
 import com.desolatetimelines.acct.usermanagement.model.AcctUser;
 import com.desolatetimelines.acct.usermanagement.model.AcctUsersGroup;
-import com.desolatetimelines.acct.usermanagement.model.Page;
+import com.desolatetimelines.acct.common.model.Page;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;

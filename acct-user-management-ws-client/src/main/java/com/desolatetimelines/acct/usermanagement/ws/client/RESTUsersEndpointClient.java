@@ -1,5 +1,6 @@
 package com.desolatetimelines.acct.usermanagement.ws.client;
 
+import com.desolatetimelines.acct.common.ws.model.AcctPage;
 import com.desolatetimelines.acct.usermanagement.ws.endpoint.UsersEndpoint;
 import com.desolatetimelines.acct.usermanagement.ws.model.*;
 import org.springframework.cloud.openfeign.FeignClient;

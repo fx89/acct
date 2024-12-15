@@ -1,7 +1,7 @@
 package com.desolatetimelines.acct.usernamagement.repository;
 
 import com.desolatetimelines.acct.usermanagement.model.AcctUsersGroup;
-import com.desolatetimelines.acct.usermanagement.model.Page;
+import com.desolatetimelines.acct.common.model.Page;
 import com.desolatetimelines.acct.usermanagement.repository.AcctUserGroupsRepository;
 import com.desolatetimelines.acct.usernamagement.model.JpaAcctUsersGroup;
 import com.desolatetimelines.acct.usernamagement.springrepository.JpaGroupsRepository;

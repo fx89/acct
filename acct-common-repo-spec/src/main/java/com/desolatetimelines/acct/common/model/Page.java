@@ -1,4 +1,4 @@
-package com.desolatetimelines.acct.usermanagement.model;
+package com.desolatetimelines.acct.common.model;
 
 import java.util.Collection;
 

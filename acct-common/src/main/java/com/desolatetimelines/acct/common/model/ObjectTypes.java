@@ -1,4 +1,4 @@
-package com.desolatetimelines.acct.common;
+package com.desolatetimelines.acct.common.model;
 
 /**
  * Enumerates the object types in the ACCT ecosystem

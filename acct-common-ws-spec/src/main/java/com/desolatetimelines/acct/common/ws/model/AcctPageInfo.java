@@ -1,4 +1,4 @@
-package com.desolatetimelines.acct.usermanagement.ws.model;
+package com.desolatetimelines.acct.common.ws.model;
 
 /**
  * Contains information about the current page and the entirety of the data set

@@ -1,6 +1,8 @@
 package com.desolatetimelines.acct.job.ws.spec;
 
+import com.desolatetimelines.acct.common.ws.model.AcctPage;
 import com.desolatetimelines.acct.job.ws.spec.model.JobState;
+import com.desolatetimelines.acct.job.ws.spec.model.JobStateHistoryRecord;
 import com.desolatetimelines.acct.job.ws.spec.model.JobStateSetting;
 
 import java.util.Collection;
@@ -39,5 +41,17 @@ public interface JobStatesEndpoint {
      * @param setting the provided settings
      */
     void recordJobFinished(String jobUUID, JobStateSetting setting);
+
+    /**
+     * Returns a {@link AcctPage page} of {@link JobStateHistoryRecord job state history records}
+     * of the requested size and having the requested page number for the job with the given job
+     * UUID. The data set is sorted by {@link JobStateHistoryRecord#jobStatusDate() status date}
+     * in descending order.
+     *
+     * @param jobUUID    the given job UUID
+     * @param pageNumber the requested page number
+     * @param pageSize   the requested size
+     */
+    AcctPage<JobStateHistoryRecord> getJobStateHistoryRecordsPage(String jobUUID, int pageNumber, int pageSize);
 
 }

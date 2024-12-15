@@ -2,7 +2,7 @@ package com.desolatetimelines.acct.usermanagement.repository;
 
 import com.desolatetimelines.acct.usermanagement.model.AcctUser;
 import com.desolatetimelines.acct.usermanagement.model.AcctUsersGroup;
-import com.desolatetimelines.acct.usermanagement.model.Page;
+import com.desolatetimelines.acct.common.model.Page;
 
 import java.util.Optional;
 import java.util.Set;
