@@ -38,10 +38,13 @@ public class JpaAcctUser implements AcctUser {
     @Column(name = "soft_deleted")
     private Boolean softDeleted;
 
+    @Column(name = "soft_deleted_date")
+    private Instant softDeletedDate;
+
     public JpaAcctUser() {
     }
 
-    public JpaAcctUser(Long userId, String userUUID, String userLoginName, String userEncryptedPassword, Instant userPasswordExpiryDate, String userName, String userIconUUID, String defaultWorkspaceUUID, Boolean softDeleted) {
+    public JpaAcctUser(Long userId, String userUUID, String userLoginName, String userEncryptedPassword, Instant userPasswordExpiryDate, String userName, String userIconUUID, String defaultWorkspaceUUID, Boolean softDeleted, Instant softDeletedDate) {
         this.userId = userId;
         this.userUUID = userUUID;
         this.userLoginName = userLoginName;
@@ -51,6 +54,7 @@ public class JpaAcctUser implements AcctUser {
         this.userIconUUID = userIconUUID;
         this.defaultWorkspaceUUID = defaultWorkspaceUUID;
         this.softDeleted = softDeleted;
+        this.softDeletedDate = softDeletedDate;
     }
 
     private JpaAcctUser(JpaAcctUserBuilder builder) {
@@ -63,6 +67,7 @@ public class JpaAcctUser implements AcctUser {
         setUserIconUUID(builder.userIconUUID);
         setDefaultWorkspaceUUID(builder.defaultWorkspaceUUID);
         setSoftDeleted(builder.softDeleted);
+        setSoftDeletedDate(builder.softDeletedDate);
     }
 
     public static JpaAcctUserBuilder builder() {
@@ -158,6 +163,16 @@ public class JpaAcctUser implements AcctUser {
     }
 
     @Override
+    public Instant getSoftDeletedDate() {
+        return softDeletedDate;
+    }
+
+    @Override
+    public void setSoftDeletedDate(Instant softDeletedDate) {
+        this.softDeletedDate = softDeletedDate;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -184,6 +199,7 @@ public class JpaAcctUser implements AcctUser {
         private String userIconUUID;
         private String defaultWorkspaceUUID;
         private Boolean softDeleted;
+        private Instant softDeletedDate;
 
         private JpaAcctUserBuilder() {
         }
@@ -284,6 +300,17 @@ public class JpaAcctUser implements AcctUser {
          */
         public JpaAcctUserBuilder withSoftDeleted(Boolean softDeleted) {
             this.softDeleted = softDeleted;
+            return this;
+        }
+
+        /**
+         * Sets the {@code softDeletedDate} and returns a reference to this Builder enabling method chaining.
+         *
+         * @param softDeletedDate the {@code softDeletedDate} to set
+         * @return a reference to this Builder
+         */
+        public JpaAcctUserBuilder withSoftDeletedDate(Instant softDeletedDate) {
+            this.softDeletedDate = softDeletedDate;
             return this;
         }
 

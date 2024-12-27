@@ -5,6 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 
+import java.time.Instant;
+import java.util.Collection;
 import java.util.Optional;
 
 public interface JpaUsersRepository extends CrudRepository<JpaAcctUser, Long> {
@@ -18,5 +20,11 @@ public interface JpaUsersRepository extends CrudRepository<JpaAcctUser, Long> {
         String userNamePattern,
         Pageable page
     );
+
+    Collection<JpaAcctUser> findUsersBySoftDeletedAndSoftDeletedDateLessThan(boolean softDeleted, Instant referenceDate);
+
+    Collection<JpaAcctUser> findAllByUserIconUUIDIn(Collection<String> userIconUUIDs);
+
+    Collection<JpaAcctUser> findAllByDefaultWorkspaceUUIDIn(Collection<String> workspaceUUID);
 
 }

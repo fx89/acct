@@ -1,13 +1,15 @@
 package com.desolatetimelines.acct.usernamagement.repository;
 
-import com.desolatetimelines.acct.usermanagement.model.AcctUser;
 import com.desolatetimelines.acct.common.model.Page;
+import com.desolatetimelines.acct.usermanagement.model.AcctUser;
 import com.desolatetimelines.acct.usermanagement.repository.AcctUsersRepository;
 import com.desolatetimelines.acct.usernamagement.model.JpaAcctUser;
 import com.desolatetimelines.acct.usernamagement.springrepository.JpaUsersRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.util.Collection;
 import java.util.Optional;
 
 import static com.desolatetimelines.acct.usernamagement.util.AcctUserManagementRepoSpringDataUtils.doWithJpaAcctUser;
@@ -64,5 +66,41 @@ public class SpringJpaAcctUsersRepository implements AcctUsersRepository {
                 page.getNumberOfElements(),
                 page.getTotalElements()
             );
+    }
+
+    @Override
+    public Collection<AcctUser> findUsersBySoftDeletedTrueAndSoftDeletedDateLessThan(Instant referenceDate) {
+        return
+            usersRepository.findUsersBySoftDeletedAndSoftDeletedDateLessThan(true, referenceDate)
+                .stream()
+                .map(jpaAcctUser -> (AcctUser) jpaAcctUser)
+                .toList();
+    }
+
+    @Override
+    public void deleteUsers(Collection<AcctUser> users) {
+        usersRepository.deleteAll(
+            users.stream()
+                .map(user -> doWithJpaAcctUser(user, identity()))
+                .toList()
+        );
+    }
+
+    @Override
+    public Collection<AcctUser> findUsersByUserIconUUIDIn(Collection<String> userIconUUIDs) {
+        return
+            usersRepository.findAllByUserIconUUIDIn(userIconUUIDs)
+                .stream()
+                .map(jpaAcctUser -> (AcctUser) jpaAcctUser)
+                .toList();
+    }
+
+    @Override
+    public Collection<AcctUser> findUsersByWorkspaceUUIDIn(Collection<String> workspaceUUID) {
+        return
+            usersRepository.findAllByDefaultWorkspaceUUIDIn(workspaceUUID)
+                .stream()
+                .map(jpaAcctUser -> (AcctUser) jpaAcctUser)
+                .toList();
     }
 }

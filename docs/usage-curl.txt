@@ -24,7 +24,16 @@ curl \
     --insecure \
     -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
     -H "Content-Type: application/json" \
-    -d '["test 1", "test 2", "test 3"]'\
+    -d '["7519dd8b-9ef1-4238-adcc-b091949e5eb2", "962c6d5e-eb3d-431c-a93e-c9747596d999", "test 3"]'\
     -X POST 'http://localhost:8083/service/usage/v1/itemsInUse?objectType=WORKSPACE' \
     | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json" \
+    -d '["9c0ddfbc-cb04-4ae0-a9a9-105d4ecfee86", "962c6d5e-eb3d-431c-a93e-c9747596d999", "06f916c8-97c8-4c59-ac17-f858b8e3a187"]'\
+    -X POST 'http://localhost:8083/service/usage/v1/itemsInUse?objectType=ICON' \
+    | jq
+
 

@@ -62,6 +62,7 @@
         <module>acct-user-management-ws-client</module>
         <module>acct-user-management-privileges-provider</module>
         <module>acct-user-management-service</module>
+        <module>acct-user-management-job</module>
         <module>acct-user-management-data</module>
         <module>acct-user-management-repo-spec</module>
         <module>acct-user-management-repo-springdata</module>
@@ -99,10 +100,12 @@
         <module>acct-job-data</module>
         <module>acct-job-repo-spec</module>
         <module>acct-job-repo-springdata</module>
+        <module>acct-job-framework</module>
 
         <!-- Project-specific reusable dependencies -->
         <module>acct-privileges-provider-spec</module>
         <module>acct-common</module>
+        <module>acct-service</module>
         <module>acct-common-rest</module>
         <module>acct-common-ws-spec</module>
         <module>acct-common-ws-server</module>

@@ -1,5 +1,6 @@
 package com.desolatetimelines.acct.usermanagement.data.service;
 
+import com.desolatetimelines.acct.common.model.Page;
 import com.desolatetimelines.acct.usermanagement.data.model.AcctGroupDetails;
 import com.desolatetimelines.acct.usermanagement.data.model.AcctUserCreationParameters;
 import com.desolatetimelines.acct.usermanagement.data.model.AcctUserDetails;
@@ -7,12 +8,13 @@ import com.desolatetimelines.acct.usermanagement.data.model.AcctUserGroupCreatio
 import com.desolatetimelines.acct.usermanagement.model.AcctUser;
 import com.desolatetimelines.acct.usermanagement.model.AcctUserGroupMapping;
 import com.desolatetimelines.acct.usermanagement.model.AcctUsersGroup;
-import com.desolatetimelines.acct.common.model.Page;
 import com.desolatetimelines.acct.usermanagement.repository.AcctUserGroupMappingsRepository;
 import com.desolatetimelines.acct.usermanagement.repository.AcctUserGroupsRepository;
 import com.desolatetimelines.acct.usermanagement.repository.AcctUsersRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -212,6 +214,33 @@ public class AcctUserManagementDataService {
     }
 
     /**
+     * Returns the list of {@link AcctUser users} that are using one of the icon UUIDs from the given list
+     *
+     * @param userIconUUIDs the given list
+     */
+    public Collection<AcctUser> findUsersByUserIconUUIDIn(Collection<String> userIconUUIDs) {
+        return usersRepository.findUsersByUserIconUUIDIn(userIconUUIDs);
+    }
+
+    /**
+     * Returns a list of {@link AcctUser users} that are using one of the workspace UUIDs from the given list
+     *
+     * @param workspaceUUID the given list
+     */
+    public Collection<AcctUser> findUsersByWorkspaceUUIDIn(Collection<String> workspaceUUID) {
+        return usersRepository.findUsersByWorkspaceUUIDIn(workspaceUUID);
+    }
+
+    /**
+     * Returns a list of {@link AcctUsersGroup user groups} that are using one of the icon UUIDs from the given list
+     *
+     * @param groupIconUUIDs the given list
+     */
+    public Collection<AcctUsersGroup> findUserGroupsByGroupIconUUIDIn(Collection<String> groupIconUUIDs) {
+        return userGroupsRepository.findUserGroupsByGroupIconUUIDIn(groupIconUUIDs);
+    }
+
+    /**
      * Returns a page of user groups with the given number and of the given size,
      * containing groups for which the name contains the given pattern
      *
@@ -221,6 +250,27 @@ public class AcctUserManagementDataService {
      */
     public Page<AcctUsersGroup> findGroupsByGroupNameLike(String pattern, int pageNumber, int pageSize) {
         return userGroupsRepository.findGroupsByGroupNameLike(pattern, pageNumber, pageSize);
+    }
+
+    /**
+     * Returns a collection of {@link AcctUser users} that have the
+     * {@link AcctUser#getSoftDeleted() softDeleted flag} set to true and the
+     * {@link AcctUser#getSoftDeletedDate() softDeletedDate} older than the given
+     * reference date
+     *
+     * @param referenceDate the given reference date
+     */
+    public Collection<AcctUser> findUsersBySoftDeletedTrueAndSoftDeletedDateLessThan(Instant referenceDate) {
+        return usersRepository.findUsersBySoftDeletedTrueAndSoftDeletedDateLessThan(referenceDate);
+    }
+
+    /**
+     * Removes the users in the referenced list from the database
+     *
+     * @param users the referenced list
+     */
+    public void deleteUsers(Collection<AcctUser> users) {
+        usersRepository.deleteUsers(users);
     }
 
     private AcctUserDetails enrichUserAccountWithUsersGroups(AcctUser userAccount) {

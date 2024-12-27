@@ -1,6 +1,8 @@
 package com.desolatetimelines.acct.usermanagement.service;
 
 import com.desolatetimelines.acct.common.model.ObjectTypes;
+import com.desolatetimelines.acct.common.model.Page;
+import com.desolatetimelines.acct.common.utils.Streams;
 import com.desolatetimelines.acct.security.ws.client.RESTWorkspaceOwnershipEndpointClient;
 import com.desolatetimelines.acct.security.ws.endpoint.model.WorkspaceAccessibilityReport;
 import com.desolatetimelines.acct.usage.ws.client.RESTUsageEndpointClient;
@@ -15,16 +17,15 @@ import com.desolatetimelines.acct.usermanagement.exception.AcctUserManagementIll
 import com.desolatetimelines.acct.usermanagement.exception.AcctUserManagementNotFoundException;
 import com.desolatetimelines.acct.usermanagement.model.AcctUser;
 import com.desolatetimelines.acct.usermanagement.model.AcctUsersGroup;
-import com.desolatetimelines.acct.common.model.Page;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.*;
 import java.util.function.Supplier;
 
 /**
@@ -76,6 +77,37 @@ public class AcctUserManagementService {
                 ))
                 .build()
         );
+    }
+
+    /**
+     * Returns the UUIDs of any used items of the given type and that can be found in the given list
+     *
+     * @param objectType the given type
+     * @param itemUUIDs  the given list
+     */
+    public Collection<String> getInUseItemUUIDs(String objectType, Collection<String> itemUUIDs) {
+        // If the object type is ICON then search users and groups for used icons
+        if (Objects.equals(objectType, ObjectTypes.ICON.name())) {
+            return
+                Streams.multiConcat(
+                    dataService.findUsersByUserIconUUIDIn(itemUUIDs).stream().map(AcctUser::getUserIconUUID),
+                    dataService.findUserGroupsByGroupIconUUIDIn(itemUUIDs).stream().map(AcctUsersGroup::getGroupIconUUID)
+                ).toList();
+
+        }
+
+        // If the object type is WORKSPACE then search users used workspaces
+        if (Objects.equals(objectType, ObjectTypes.WORKSPACE.name())) {
+            return
+                dataService.findUsersByWorkspaceUUIDIn(itemUUIDs)
+                    .stream()
+                    .map(AcctUser::getDefaultWorkspaceUUID)
+                    .toList();
+        }
+
+        // If this point has been reached, it means that either the item type is not supported
+        // or the code for handling the object type is missing from above
+        throw new IllegalArgumentException("Object type [" + objectType + "] not supported");
     }
 
     /**
@@ -335,6 +367,32 @@ public class AcctUserManagementService {
 
         // Save the user
         dataService.saveUser(user);
+    }
+
+    /**
+     * Returns a collection of {@link AcctUser users} that have been
+     * {@link AcctUserManagementService#softDeleteUserByUserUUID(String) soft-deleted}
+     * more than a given number of days ago
+     *
+     * @param nbrDaysAgo the given number of days
+     */
+    public Collection<AcctUser> findSoftDeletedUsersDeletedDaysAgo(int nbrDaysAgo) {
+        // Compute the reference date
+        final Instant referenceDate = Instant.now().minus(Duration.ofDays(nbrDaysAgo));
+
+        // Get the users that have been soft-deleted before the reference date
+        return dataService.findUsersBySoftDeletedTrueAndSoftDeletedDateLessThan(referenceDate);
+    }
+
+    /**
+     * Deletes the users in the given collection. This differs from the
+     * {@link AcctUserManagementService#softDeleteUserByUserUUID(String) soft-deletion}
+     * in that, in this case, the users are actually removed from the database
+     *
+     * @param users the given collection
+     */
+    public void permanentlyDeleteUsers(Collection<AcctUser> users) {
+        dataService.deleteUsers(users);
     }
 
     /**

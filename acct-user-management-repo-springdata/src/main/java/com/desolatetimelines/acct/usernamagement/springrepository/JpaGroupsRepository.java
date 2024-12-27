@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 
@@ -15,5 +16,7 @@ public interface JpaGroupsRepository extends CrudRepository<JpaAcctUsersGroup, L
     Optional<JpaAcctUsersGroup> findFirstByGroupUUID(String groupUUID);
 
     Page<JpaAcctUsersGroup> findAllByGroupNameLike(String groupNamePattern, Pageable page);
+
+    Collection<JpaAcctUsersGroup> findAllByGroupIconUUIDIn(Collection<String> groupIconUUIDs);
 
 }

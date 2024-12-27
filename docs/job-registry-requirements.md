@@ -29,13 +29,34 @@ Response body example:
 
 <br /><br />
 #### `JOB-01002` Register job with the given jobUUID, for use by other services
-Registers or a job for the given `jobUUID` and with the given details.
+Registers a job for the given `jobUUID` and with the given details.
 
 Example request URLs:
 - `POST http://acct.desolatetimelines.com/service/jobs-registry/v1/jobs?jobUUID=fed5b711-3287-4306-9a02-0b6f4b233652`
 
 The `jobUUID` parameter is mandatory.
 If there already is a job registered for the given `jobUUID`, an exception is thrown.
+
+Request body example:
+```
+{
+    "jobServiceName": "Currency",
+    "jobName": "Currency history collector",
+    "jobDescription": "Collects the history of all the monitored currencies by means of the configured currency collectors"
+}
+```
+
+
+
+<br /><br />
+#### `JOB-01003` Update job with the given jobUUID, for use by other services
+Updates an already registered job for the given `jobUUID` and with the given details.
+
+Example request URLs:
+- `PUT http://acct.desolatetimelines.com/service/jobs-registry/v1/jobs?jobUUID=fed5b711-3287-4306-9a02-0b6f4b233652`
+
+The `jobUUID` parameter is mandatory.
+If there is no job registered for the given `jobUUID`, an exception is thrown.
 
 Request body example:
 ```

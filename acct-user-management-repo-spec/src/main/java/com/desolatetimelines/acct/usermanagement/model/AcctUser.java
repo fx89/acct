@@ -38,6 +38,10 @@ public interface AcctUser {
     Boolean getSoftDeleted();
 
     void setSoftDeleted(Boolean softDeleted);
+
+    Instant getSoftDeletedDate();
+
+    void setSoftDeletedDate(Instant softDeletedDate);
 }
 
 

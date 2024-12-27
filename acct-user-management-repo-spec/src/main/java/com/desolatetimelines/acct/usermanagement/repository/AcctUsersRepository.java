@@ -1,8 +1,10 @@
 package com.desolatetimelines.acct.usermanagement.repository;
 
-import com.desolatetimelines.acct.usermanagement.model.AcctUser;
 import com.desolatetimelines.acct.common.model.Page;
+import com.desolatetimelines.acct.usermanagement.model.AcctUser;
 
+import java.time.Instant;
+import java.util.Collection;
 import java.util.Optional;
 
 /**
@@ -51,4 +53,34 @@ public interface AcctUsersRepository {
      */
     Page<AcctUser> findUsersByUserLoginNameLikeOrUserNameLike(String pattern, int pageNumber, int pageSize);
 
+    /**
+     * Returns a collection of {@link AcctUser users} that have the
+     * {@link AcctUser#getSoftDeleted() softDeleted flag} set to true and the
+     * {@link AcctUser#getSoftDeletedDate() softDeletedDate} older than the given
+     * reference date
+     *
+     * @param referenceDate the given reference date
+     */
+    Collection<AcctUser> findUsersBySoftDeletedTrueAndSoftDeletedDateLessThan(Instant referenceDate);
+
+    /**
+     * Deletes all the users in the referenced list
+     *
+     * @param users the referenced list
+     */
+    void deleteUsers(Collection<AcctUser> users);
+
+    /**
+     * Returns the list of {@link AcctUser users} that are using one of the icon UUIDs from the given list
+     *
+     * @param userIconUUIDs the given list
+     */
+    Collection<AcctUser> findUsersByUserIconUUIDIn(Collection<String> userIconUUIDs);
+
+    /**
+     * Returns a list of {@link AcctUser users} that are using one of the workspace UUIDs from the given list
+     *
+     * @param workspaceUUID the given list
+     */
+    Collection<AcctUser> findUsersByWorkspaceUUIDIn(Collection<String> workspaceUUID);
 }

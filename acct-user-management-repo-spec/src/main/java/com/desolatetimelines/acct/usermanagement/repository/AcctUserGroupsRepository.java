@@ -1,9 +1,10 @@
 package com.desolatetimelines.acct.usermanagement.repository;
 
+import com.desolatetimelines.acct.common.model.Page;
 import com.desolatetimelines.acct.usermanagement.model.AcctUser;
 import com.desolatetimelines.acct.usermanagement.model.AcctUsersGroup;
-import com.desolatetimelines.acct.common.model.Page;
 
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 
@@ -58,5 +59,12 @@ public interface AcctUserGroupsRepository {
      * @param acctUsersGroup the referenced users group
      */
     void delete(AcctUsersGroup acctUsersGroup);
+
+    /**
+     * Returns a list of {@link AcctUsersGroup user groups} that are using one of the icon UUIDs from the given list
+     *
+     * @param groupIconUUIDs the given list
+     */
+    Collection<AcctUsersGroup> findUserGroupsByGroupIconUUIDIn(Collection<String> groupIconUUIDs);
 
 }

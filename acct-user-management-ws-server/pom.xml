@@ -63,6 +63,11 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/x
             <artifactId>acct-user-management-service</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.desolatetimelines</groupId>
+            <artifactId>acct-user-management-job</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

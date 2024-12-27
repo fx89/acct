@@ -29,6 +29,23 @@ curl \
     ' \
     | jq
 
+
+curl \
+    --insecure \
+    -v \
+    -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT "http://localhost:8084/service/jobs-registry/v1/jobs?jobUUID=348835f6-c4dc-4c4c-a454-78d5e1cf5e22" \
+    --data-raw '
+        {
+            "jobServiceName": "Currency",
+            "jobName": "Currency history collector",
+            "jobDescription": "x Collects the history of all the monitored currencies by means of the configured currency collectors"
+        }
+    ' \
+    | jq
+
+
 curl \
     --insecure \
     -v \
@@ -94,4 +111,12 @@ curl \
     -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
     -H "Content-Type: application/json; charset=utf-8" \
     -X GET "http://localhost:8084/service/jobs-registry/v1/jobs/status/history?pageNumber=0&pageSize=5&jobUUID=348835f6-c4dc-4c4c-a454-78d5e1cf5e22" \
+    | jq
+
+curl \
+    --insecure \
+    -v \
+    -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X GET "http://localhost:8084/service/jobs-registry/v1/errors" \
     | jq

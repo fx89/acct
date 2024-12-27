@@ -60,7 +60,9 @@ public class JobStatesEndpointController implements JobStatesEndpoint {
     @Override
     @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + JOBS_STATES_SET + "')")
     @PutMapping(value = "/end", produces = APPLICATION_JSON_VALUE)
-    public void recordJobFinished(@RequestParam("jobUUID") String jobUUID, @RequestBody JobStateSetting setting) {
+    public void recordJobFinished(
+        @RequestParam("jobUUID") String jobUUID,
+        @RequestBody JobStateSetting setting) {
         jobsService.recordJobFinished(
             jobUUID,
             JobStateMapper.mapJobOutcome(setting.jobOutcome()),

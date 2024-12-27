@@ -15,11 +15,11 @@
 
 // DONE: USR-03001: Custom operations endpoint: Set default workspace for the current user
 
-// TODO: USR-04001: Used items endpoint: Get items in use of type
+// DONE: USR-04001: Used items endpoint: Get items in use of type
 
-// TODO: USR-05001: User management client: API client
+// DONE: USR-05001: User management client: API client
 
-// TODO: USR-06001: Default users: The service account
+// DONE: USR-06001: Default users: The service account
 
 // TODO: USR-07001: Jobs: Delete soft deleted users
 

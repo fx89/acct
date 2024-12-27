@@ -1,4 +1,4 @@
-package com.desolatetimelines.accy.job.ws.client;
+package com.desolatetimelines.acct.job.ws.client;
 
 import com.desolatetimelines.acct.common.ws.model.AcctPage;
 import com.desolatetimelines.acct.job.ws.spec.JobStatesEndpoint;
@@ -16,7 +16,7 @@ import java.util.Collection;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @FeignClient(
-    contextId = "${JOBS_REGISTRY_APPLICATION_NAME}-groups",
+    contextId = "${JOBS_REGISTRY_APPLICATION_NAME}-jobStates",
     name = "${JOBS_REGISTRY_APPLICATION_NAME}/${JOBS_REGISTRY_SERVER_CONTEXT_PATH}/jobs/status"
 )
 public interface RESTJobStatesEndpointClient extends JobStatesEndpoint {

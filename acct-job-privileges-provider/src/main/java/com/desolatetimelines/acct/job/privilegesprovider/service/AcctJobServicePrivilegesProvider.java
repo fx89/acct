@@ -18,6 +18,7 @@ public class AcctJobServicePrivilegesProvider implements AcctServicePrivilegesPr
     public Set<AcctPrivilege> getPrivileges() {
         return Set.of(
             JOBS_REGISTER.getAcctPrivilege(),
+            JOBS_UPDATE.getAcctPrivilege(),
             JOBS_LIST_ALL.getAcctPrivilege(),
             JOBS_STATES_GET.getAcctPrivilege(),
             JOBS_STATES_SET.getAcctPrivilege(),

@@ -11,8 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-import static com.desolatetimelines.acct.job.privilegesprovider.model.JobPrivilegeIds.JOBS_LIST_ALL;
-import static com.desolatetimelines.acct.job.privilegesprovider.model.JobPrivilegeIds.JOBS_REGISTER;
+import static com.desolatetimelines.acct.job.privilegesprovider.model.JobPrivilegeIds.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
@@ -33,6 +32,16 @@ public class JobsEndpointController implements JobsEndpoint {
         @RequestBody JobRegistrationRequest request
     ) {
         jobsService.registerJob(jobUUID, request.jobServiceName(), request.jobName(), request.jobDescription());
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + JOBS_UPDATE + "')")
+    @PutMapping(value = "", produces = APPLICATION_JSON_VALUE)
+    public void updateJob(
+        @RequestParam("jobUUID") String jobUUID,
+        @RequestBody JobRegistrationRequest request
+    ) {
+        jobsService.updateJob(jobUUID, request.jobServiceName(), request.jobName(), request.jobDescription());
     }
 
     @Override

@@ -17,6 +17,12 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/x
     <dependencies>
         <dependency>
             <groupId>com.desolatetimelines</groupId>
+            <artifactId>acct-common-service</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.desolatetimelines</groupId>
             <artifactId>acct-job-data</artifactId>
             <version>${project.parent.version}</version>
         </dependency>

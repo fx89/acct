@@ -1,13 +1,14 @@
 package com.desolatetimelines.acct.usernamagement.repository;
 
-import com.desolatetimelines.acct.usermanagement.model.AcctUsersGroup;
 import com.desolatetimelines.acct.common.model.Page;
+import com.desolatetimelines.acct.usermanagement.model.AcctUsersGroup;
 import com.desolatetimelines.acct.usermanagement.repository.AcctUserGroupsRepository;
 import com.desolatetimelines.acct.usernamagement.model.JpaAcctUsersGroup;
 import com.desolatetimelines.acct.usernamagement.springrepository.JpaGroupsRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -69,5 +70,14 @@ public class SpringJpaAcctUserGroupsRepository implements AcctUserGroupsReposito
     @Override
     public void delete(AcctUsersGroup acctUsersGroup) {
         doWithJpaAcctUsersGroupWithoutReturning(acctUsersGroup, groupsRepository::delete);
+    }
+
+    @Override
+    public Collection<AcctUsersGroup> findUserGroupsByGroupIconUUIDIn(Collection<String> groupIconUUIDs) {
+        return
+            groupsRepository.findAllByGroupIconUUIDIn(groupIconUUIDs)
+                .stream()
+                .map(jpaAcctUsersGroup -> (AcctUsersGroup) jpaAcctUsersGroup)
+                .toList();
     }
 }

@@ -4,6 +4,8 @@ import com.desolatetimelines.acct.common.ws.model.AcctPage;
 import com.desolatetimelines.acct.job.ws.spec.model.JobState;
 import com.desolatetimelines.acct.job.ws.spec.model.JobStateHistoryRecord;
 import com.desolatetimelines.acct.job.ws.spec.model.JobStateSetting;
+import jakarta.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.UUID;
 
 import java.util.Collection;
 
@@ -17,7 +19,7 @@ public interface JobStatesEndpoint {
      *
      * @param jobUUID the given UUID
      */
-    JobState getJobState(String jobUUID);
+    JobState getJobState(@NotNull @UUID String jobUUID);
 
     /**
      * Returns a collection of {@link JobState job states} for all the registered jobs
@@ -31,7 +33,7 @@ public interface JobStatesEndpoint {
      *
      * @param jobUUID the given job UUID
      */
-    void recordJobStarted(String jobUUID);
+    void recordJobStarted(@NotNull @UUID String jobUUID);
 
     /**
      * Sets the {@link JobState state} of the job with the given job UUID
@@ -40,7 +42,7 @@ public interface JobStatesEndpoint {
      * @param jobUUID the given job UUID
      * @param setting the provided settings
      */
-    void recordJobFinished(String jobUUID, JobStateSetting setting);
+    void recordJobFinished(@NotNull @UUID String jobUUID, JobStateSetting setting);
 
     /**
      * Returns a {@link AcctPage page} of {@link JobStateHistoryRecord job state history records}
@@ -52,6 +54,6 @@ public interface JobStatesEndpoint {
      * @param pageNumber the requested page number
      * @param pageSize   the requested size
      */
-    AcctPage<JobStateHistoryRecord> getJobStateHistoryRecordsPage(String jobUUID, int pageNumber, int pageSize);
+    AcctPage<JobStateHistoryRecord> getJobStateHistoryRecordsPage(@NotNull @UUID String jobUUID, int pageNumber, int pageSize);
 
 }

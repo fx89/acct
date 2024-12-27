@@ -14,6 +14,14 @@ public enum JobPrivilege {
             .build()
     ),
 
+    JOBS_UPDATE(
+        AcctPrivilege.builder()
+            .withPrivilegeId(JobPrivilegeIds.JOBS_UPDATE)
+            .withPrivilegeName("Update a job")
+            .withPrivilegeDescription("Allows updating jobs")
+            .build()
+    ),
+
     JOBS_LIST_ALL(
         AcctPrivilege.builder()
             .withPrivilegeId(JobPrivilegeIds.JOBS_LIST_ALL)

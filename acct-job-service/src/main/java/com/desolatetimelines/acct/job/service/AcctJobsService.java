@@ -3,6 +3,7 @@ package com.desolatetimelines.acct.job.service;
 import com.desolatetimelines.acct.common.model.Page;
 import com.desolatetimelines.acct.job.data.service.AcctJobsDataService;
 import com.desolatetimelines.acct.job.exception.AcctJobsServiceIllegalArgumentException;
+import com.desolatetimelines.acct.job.exception.AcctJobsServiceJobAlreadyRunningException;
 import com.desolatetimelines.acct.job.exception.AcctJobsServiceNotFoundException;
 import com.desolatetimelines.acct.job.model.*;
 import jakarta.transaction.Transactional;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -20,9 +22,12 @@ import java.util.stream.Collectors;
 @Service
 public class AcctJobsService {
 
+    private final AcctJobsErrorCodesRegistryService errors;
+
     private final AcctJobsDataService dataService;
 
-    public AcctJobsService(AcctJobsDataService dataService) {
+    public AcctJobsService(AcctJobsErrorCodesRegistryService errors, AcctJobsDataService dataService) {
+        this.errors = errors;
         this.dataService = dataService;
     }
 
@@ -39,9 +44,7 @@ public class AcctJobsService {
         // If a job with the given UUID already exists, throw an exception
         dataService.findAcctJobByJobUUID(jobUUID)
             .ifPresent(job -> {
-                throw new AcctJobsServiceIllegalArgumentException(
-                    "There already is a job registered for the given job UUID"
-                );
+                throw new AcctJobsServiceIllegalArgumentException(errors, "jobUUID", jobUUID);
             });
 
         // Create a new job entity
@@ -55,6 +58,31 @@ public class AcctJobsService {
 
         // Persist the job entity
         dataService.saveJob(newJob);
+    }
+
+    /**
+     * Updates an existing job
+     *
+     * @param jobUUID        a V4 UUID that uniquely identifies the job in the ACCT ecosystem
+     * @param jobServiceName the name of the service that registered the job
+     * @param jobName        the name of the job
+     * @param jobDescription a human-readable description of what the job does
+     */
+    @Transactional
+    public void updateJob(String jobUUID, String jobServiceName, String jobName, String jobDescription) {
+        // Find the job or throw an exception
+        final AcctJob existingJob =
+            dataService.findAcctJobByJobUUID(jobUUID)
+                .orElseThrow(() -> new AcctJobsServiceNotFoundException(errors, Map.of("jobUUID", jobUUID)));
+
+
+        // Update the job attributes
+        existingJob.setJobServiceName(jobServiceName);
+        existingJob.setJobName(jobName);
+        existingJob.setJobDescription(jobDescription);
+
+        // Persist the job entity
+        dataService.saveJob(existingJob);
     }
 
     /**
@@ -73,7 +101,11 @@ public class AcctJobsService {
         // Get the job or fail
         final AcctJob job =
             dataService.findAcctJobByJobUUID(jobUUID)
-                .orElseThrow(() -> new AcctJobsServiceNotFoundException("Job not found"));
+                .orElseThrow(() -> new AcctJobsServiceNotFoundException(
+                        errors,
+                        Map.of("jobUUID", jobUUID)
+                    )
+                );
 
         // Get the status or, if no status exists yet, return a new IDLE state
         return getJobStatus(job);
@@ -105,6 +137,14 @@ public class AcctJobsService {
     public void recordJobStarted(String jobUUID) {
         // Find the state of the job with the given uuid
         final AcctJobStatus jobStatus = getJobStatus(jobUUID);
+
+        // If the job is already running, throw an exception
+        if (JobStatus.RUNNING == jobStatus.getJobStatus()) {
+            throw new AcctJobsServiceJobAlreadyRunningException(
+                errors.JOB_ALREADY_RUNNING,
+                Map.of("jobUUID", jobUUID)
+            );
+        }
 
         // Get the current date and time
         final Instant currentDateAndTime = Instant.now();
