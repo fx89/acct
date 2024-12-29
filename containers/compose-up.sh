@@ -7,6 +7,8 @@ export DOCKER_CLI_EXPERIMENTAL=enabled
 mkdir data
 mkdir data/security
 mkdir data/user_management
+mkdir data/jobs
+mkdir data/workspace
 
 # Start the services
 docker-compose \

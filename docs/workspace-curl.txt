@@ -1,0 +1,101 @@
+# Use https://www.browserling.com/tools/bcrypt for hashing the password
+# Use the default strength of 10, as the BCryptPasswordEncoder does if the strength is not specified, which it isn't
+export ACCT_BACKEND_CLIENT_ACCESS_TOKEN=$(\
+curl \
+    --insecure \
+    -v \
+    -H 'Content-Type: application/x-www-form-urlencoded' \
+    -d 'grant_type=client_credentials' \
+    -d 'client_id=backend-client' \
+    -d 'client_secret=34if3fj134-f1309fWEFhqweifEWFhew9fh314-frhF13-8fh341WEF2f43h23iSp413pr1h3Wrh130rh13EH19dhF143d03d023yh9eF20jdfcnWdsfherc' \
+    -d 'scope=openid backend' \
+    -X POST 'http://localhost:9001/service/authorization/v1/oauth2/token' \
+    | jq -j '.access_token'\
+)
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
+    -X GET 'http://localhost:8085/service/workspace/v1/errors' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT 'http://localhost:8085/service/workspace/v1/workspaces' \
+    --data-raw '
+        {
+            "workspaceName": "My Personal Workspace",
+            "workspaceDescription": "Just for me and no one else",
+            "workspaceIconUUID": "4c602ecb-7ddc-45d3-805f-f56409001093",
+            "defaultCurrencyUUID": "f477662a-63d7-4e0d-85c4-6f7c451dd993"
+        }
+    ' \
+    | jq
+
+curl \
+    --insecure \
+    -v \
+    --cookie 'JSESSIONID=EB1B3E82AFABBBFAD13B1EE25D988375' \
+    -X GET 'http://localhost:9001/service/authorization/v1/oauth2/authorize?response_type=code&client_id=frontend-client'
+
+
+
+export ACCT_USER_ACCESS_TOKEN=$(\
+curl \
+    --insecure \
+    -v \
+    -H 'Content-Type: application/x-www-form-urlencoded' \
+    -d 'grant_type=authorization_code' \
+    -d 'code=Pc6gGNVdpqRkhJAnixaRXXTigwcDU_-VTm-0VP1e6RCHTvtUmk8aA6jvT3wxuaYS0MyFrac4Jgc_-zt8B3ic7EeE-tZergefWnqZqRgtt5ID_3zg1UexCWy6Y8SxkRsY' \
+    -d 'client_id=frontend-client' \
+    -d 'client_secret=lkjdwsf23odnwqkld23odfbqweorh23oihd' \
+    -X POST 'http://localhost:9001/service/authorization/v1/oauth2/token' \
+    | jq -j '.access_token'\
+)
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT 'http://localhost:8085/service/workspace/v1/workspaces' \
+    --data-raw '
+        {
+            "workspaceName": "My Very Personal Workspace",
+            "workspaceDescription": "Just for me and no one else",
+            "workspaceIconUUID": "4c602ecb-7ddc-45d3-805f-f56409001093",
+            "defaultCurrencyUUID": "f477662a-63d7-4e0d-85c4-6f7c451dd993"
+        }
+    ' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT 'http://localhost:8085/service/workspace/v1/workspaces?workspaceUUID=251923f5-7ac4-4954-b6ba-2a0ef0276eb6' \
+    --data-raw '
+        {
+            "workspaceName": "My Personal Workspace",
+            "workspaceDescription": "Just for me and no one else",
+            "workspaceIconUUID": "4c602ecb-7ddc-45d3-805f-f56409001093",
+            "defaultCurrencyUUID": "f477662a-63d7-4e0d-85c4-6f7c451dd993"
+        }
+    ' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT 'http://localhost:8085/service/workspace/v1/workspaces?workspaceUUID=2d4ca15c-c0c7-4306-a390-3dbaa98a9802' \
+    --data-raw '
+        {
+            "workspaceName": "My Very Updated Personal Workspace",
+            "workspaceDescription": "Just for me and no one else - updated",
+            "workspaceIconUUID": "4c602ecb-7ddc-45d3-805f-f56409001094",
+            "defaultCurrencyUUID": "f477662a-63d7-4e0d-85c4-6f7c451dd994"
+        }
+    ' \
+    | jq

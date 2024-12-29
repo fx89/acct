@@ -2,13 +2,17 @@ package com.desolatetimelines.acct.common.ws.controlleradvice;
 
 import com.desolatetimelines.acct.common.exception.AcctException;
 import com.desolatetimelines.acct.common.service.AbstractErrorCodesRegistryService;
+import com.desolatetimelines.acct.common.ws.exception.AcctJwtException;
 import com.desolatetimelines.acct.common.ws.mapper.AcctErrorMapper;
 import com.desolatetimelines.acct.common.ws.model.AcctError;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -24,6 +28,8 @@ import java.util.Collections;
 @SuppressWarnings("unused")
 public class AcctHttpErrorHandler {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     private final AbstractErrorCodesRegistryService errors;
 
     public AcctHttpErrorHandler(AbstractErrorCodesRegistryService errors) {
@@ -32,6 +38,9 @@ public class AcctHttpErrorHandler {
 
     @ExceptionHandler
     public ResponseEntity<Object> mapExceptionToHttpResponse(Exception e, HttpServletResponse response) {
+        // Write the error to the debug log
+        logger.debug("An exception has occurred", e);
+
         // Map the exception to an HTTP status code
         final HttpStatusCode statusCode =
             HttpStatusCode.valueOf(mapExceptionToHttpStatusCode(e, response.getStatus()));
@@ -64,6 +73,16 @@ public class AcctHttpErrorHandler {
         // If this is a Jakarta validation exception then map to illegal argument
         if (e instanceof HandlerMethodValidationException) {
             return HttpStatus.BAD_REQUEST.value();
+        }
+
+        // If this is an AcctJwtException then map to forbidden
+        if (e instanceof AcctJwtException) {
+            return HttpStatus.FORBIDDEN.value();
+        }
+
+        // If this is an AuthorizationDeniedException then map to forbidden
+        if (e instanceof AuthorizationDeniedException) {
+            return HttpStatus.FORBIDDEN.value();
         }
 
         // If none of the above then map to the fallback code
@@ -100,6 +119,24 @@ public class AcctHttpErrorHandler {
         // invalid input error code and the message of the Jakarta exception
         if (e instanceof HandlerMethodValidationException validationException) {
             return AcctErrorMapper.fromHandlerMethodValidationException(validationException, errors.VALIDATION_BAD_PARAM);
+        }
+
+        // If this is an AcctJwtException then return the "missing credentials" security error code
+        if (e instanceof AcctJwtException) {
+            return
+                new AcctError(
+                    errors.MISSING_CREDENTIALS,
+                    Collections.emptyMap()
+                );
+        }
+
+        // If this is an AuthorizationDeniedException then return the "missing grants" security error code
+        if (e instanceof AuthorizationDeniedException) {
+            return
+                new AcctError(
+                    errors.MISSING_GRANTS,
+                    Collections.emptyMap()
+                );
         }
 
         // If nothing else, map to the unknown error

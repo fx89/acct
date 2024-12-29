@@ -15,6 +15,7 @@ public enum ObjectTypes {
 
     BANK,
     CURRENCY,
+    INCOME_OR_EXPENSE_ITEM,
     ICON,
     ICON_CATEGORY,
 

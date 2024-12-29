@@ -1,0 +1,33 @@
+package com.desolatetimelines.acct.workspace.repository;
+
+import com.desolatetimelines.acct.workspace.model.AcctWorkspace;
+
+import java.util.Optional;
+
+/**
+ * Repository for loading and persisting {@link AcctWorkspace workspaces}
+ */
+public interface AcctWorkspacesRepository {
+
+    /**
+     * Returns a new instance of {@link AcctWorkspace}
+     */
+    AcctWorkspace createNew();
+
+    /**
+     * Saves the referenced {@link AcctWorkspace workspace}
+     *
+     * @param workspace the referenced workspace
+     * @return a reference to the saved entity
+     */
+    AcctWorkspace save(AcctWorkspace workspace);
+
+    /**
+     * Returns a reference to the {@link AcctWorkspace workspace} entity with the given
+     * workspace UUID or an empty optional if such an entity does not exist
+     *
+     * @param workspaceUUID the given workspace UUID
+     */
+    Optional<AcctWorkspace> findFirstByWorkspaceUUID(String workspaceUUID);
+
+}

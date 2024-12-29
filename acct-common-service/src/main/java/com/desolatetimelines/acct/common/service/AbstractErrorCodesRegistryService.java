@@ -14,10 +14,12 @@ import static java.util.Objects.requireNonNull;
  * Base class for services that create and stores error codes for all the required situations
  */
 public abstract class AbstractErrorCodesRegistryService {
-
     public String GENERIC_UNKNOWN;
 
     public String VALIDATION_BAD_PARAM;
+
+    public String MISSING_CREDENTIALS;
+    public String MISSING_GRANTS;
 
     /**
      * Unique identifier for the service across the ecosystem
@@ -51,10 +53,12 @@ public abstract class AbstractErrorCodesRegistryService {
         // Declare reserved category names
         final String CAT_NAME_GENERIC = "Generic";
         final String CAT_NAME_REQUEST_VALIDATION = "Request validation";
+        final String CAT_NAME_SECURITY = "Generic security exceptions";
 
         // Register categories for the declared category names
         resolveErrorCategory(CAT_NAME_GENERIC);
         resolveErrorCategory(CAT_NAME_REQUEST_VALIDATION);
+        resolveErrorCategory(CAT_NAME_SECURITY);
 
         // Increase the category number up to 10 to reserve slots for future error categories
         errorCategoryNumbersSequence.incrementAndGet();
@@ -81,6 +85,17 @@ public abstract class AbstractErrorCodesRegistryService {
             "A validation error that occurs when one or more parameters are set incorrectly"
         );
 
+        MISSING_CREDENTIALS = resolveErrorCode(
+            CAT_NAME_SECURITY,
+            "Missing credentials",
+            "The provided access token is either missing some required claims or is itself missing"
+        );
+
+        MISSING_GRANTS = resolveErrorCode(
+            CAT_NAME_SECURITY,
+            "Missing grants",
+            "The user has successfully logged in but is missing the grants required for the operation"
+        );
     }
 
     /**

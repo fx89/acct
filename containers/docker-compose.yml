@@ -93,3 +93,23 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+
+  workspace-postgres:
+    image: postgres:${DOCKER_POSTGRES_IMAGE_VERSION}
+    restart: always
+    profiles:
+      - everything
+      - databases
+    networks:
+      - primary
+    ports:
+      - ${WORKSPACE_DB_PORT}:5432
+    volumes:
+      - ./data/workspace:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=${WORKSPACE_DB_PASSWORD}
+      - POSTGRES_USER=${WORKSPACE_DB_USERNAME}
+      - POSTGRES_DB=${WORKSPACE_DB_NAME}
+    deploy:
+      mode: replicated
+      replicas: 1

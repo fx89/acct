@@ -102,10 +102,20 @@
         <module>acct-job-repo-springdata</module>
         <module>acct-job-framework</module>
 
+        <!-- Workspace -->
+        <module>acct-workspace-ws-spec</module>
+        <module>acct-workspace-ws-server</module>
+        <module>acct-workspace-ws-client</module>
+        <module>acct-workspace-privileges-provider</module>
+        <module>acct-workspace-service</module>
+        <module>acct-workspace-data</module>
+        <module>acct-workspace-repo-spec</module>
+        <module>acct-workspace-repo-springdata</module>
+
         <!-- Project-specific reusable dependencies -->
         <module>acct-privileges-provider-spec</module>
         <module>acct-common</module>
-        <module>acct-service</module>
+        <module>acct-common-service</module>
         <module>acct-common-rest</module>
         <module>acct-common-ws-spec</module>
         <module>acct-common-ws-server</module>

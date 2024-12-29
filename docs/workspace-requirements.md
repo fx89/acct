@@ -88,7 +88,11 @@ Example response body:
 
 <br /><br />
 #### `WKS-01004` Save workspace
-Saves the workspace with the given `workspaceUUID`. If there is on `workspaceUUID` given, a new workspace is created.
+Saves the workspace with the given `workspaceUUID`. If there is no `workspaceUUID` given, a new workspace is created.
+
+Newly created workspaces are owned by the current user. SEC-01003 is called to register the workspace owner.
+
+For existing workspace, ownership is verified first. SEC-01001 is called to verify direct ownership of the workspace.
 
 Example request URLs:
 - `PUT http://acct.desolatetimelines.com/service/workspace/v1/workspaces?workspaceUUID=dd7617bf-9030-4f78-9991-c39923273d42`

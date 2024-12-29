@@ -1,7 +1,7 @@
 // TODO: WKS-01001: Workspaces endpoint: Get workspaces accessible to the current user or to the user with the given userUUID - calls SEC-01002
 // TODO: WKS-01002: Workspaces endpoint: Get workspaces accessible to user with the given userUUID - calls SEC-01001
 // TODO: WKS-01003: Workspaces endpoint: Get workspaces accessible to group with the given groupUUID - calls SEC-01001
-// TODO: WKS-01004: Workspaces endpoint: Save workspace
+// DONE: WKS-01004: Workspaces endpoint: Save workspace
 // TODO: WKS-01005: Workspaces endpoint: Delete workspace
 
 // TODO: WKS-02001: Accounts endpoint: Get accounts in workspace
