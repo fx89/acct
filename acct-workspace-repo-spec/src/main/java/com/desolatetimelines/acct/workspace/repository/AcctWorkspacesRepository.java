@@ -30,4 +30,9 @@ public interface AcctWorkspacesRepository {
      */
     Optional<AcctWorkspace> findFirstByWorkspaceUUID(String workspaceUUID);
 
+    /**
+     * Deletes the referenced {@link AcctWorkspace workspace}
+     */
+    void delete(AcctWorkspace workspace);
+
 }

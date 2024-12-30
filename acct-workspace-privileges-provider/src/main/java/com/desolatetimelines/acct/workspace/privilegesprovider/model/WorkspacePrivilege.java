@@ -7,13 +7,78 @@ import com.desolatetimelines.acct.privilegesprovider.model.AcctPrivilege;
  */
 public enum WorkspacePrivilege {
 
-    WORKSPACES_SAVE(
+    WORKSPACES_SAVE_OWN(
         AcctPrivilege.builder()
-            .withPrivilegeId(WorkspacePrivilegeIds.WORKSPACES_SAVE)
+            .withPrivilegeId(WorkspacePrivilegeIds.WORKSPACES_SAVE_OWN)
             .withPrivilegeName("Create or update a workspace")
-            .withPrivilegeDescription("Allows creating new workspaces or updating owned workspaces")
+            .withPrivilegeDescription("Allows creating new workspaces or updating workspaces that a user owns directly")
+            .build()
+    ),
+
+    WORKSPACES_SAVE_GROUP(
+        AcctPrivilege.builder()
+            .withPrivilegeId(WorkspacePrivilegeIds.WORKSPACES_SAVE_GROUP)
+            .withPrivilegeName("Update a group workspace")
+            .withPrivilegeDescription("Allows updating workspaces owned by groups that the user is part of")
+            .build()
+    ),
+
+    WORKSPACES_SAVE_ANY(
+        AcctPrivilege.builder()
+            .withPrivilegeId(WorkspacePrivilegeIds.WORKSPACES_SAVE_ANY)
+            .withPrivilegeName("Update any workspace")
+            .withPrivilegeDescription("Allows updating workspaces owned by anyone")
+            .build()
+    ),
+
+    WORKSPACES_READ_OWN(
+        AcctPrivilege.builder()
+            .withPrivilegeId(WorkspacePrivilegeIds.WORKSPACES_READ_OWN)
+            .withPrivilegeName("Get the details of a directly-owned workspace")
+            .withPrivilegeDescription("Allows reading the details of workspaces that a user owns directly")
+            .build()
+    ),
+
+    WORKSPACES_READ_GROUP(
+        AcctPrivilege.builder()
+            .withPrivilegeId(WorkspacePrivilegeIds.WORKSPACES_READ_GROUP)
+            .withPrivilegeName("Read the details of a group workspace")
+            .withPrivilegeDescription("Allows reading the details of workspaces owned by groups that the user is part of")
+            .build()
+    ),
+
+    WORKSPACES_READ_ANY(
+        AcctPrivilege.builder()
+            .withPrivilegeId(WorkspacePrivilegeIds.WORKSPACES_READ_ANY)
+            .withPrivilegeName("Read the details of any workspace")
+            .withPrivilegeDescription("Allows reading the details of workspaces owned by anyone")
+            .build()
+    ),
+
+    WORKSPACES_DELETE_OWN(
+        AcctPrivilege.builder()
+            .withPrivilegeId(WorkspacePrivilegeIds.WORKSPACES_DELETE_OWN)
+            .withPrivilegeName("Delete own workspaces")
+            .withPrivilegeDescription("Allows deleting workspaces that a user owns directly")
+            .build()
+    ),
+
+    WORKSPACES_DELETE_GROUP(
+        AcctPrivilege.builder()
+            .withPrivilegeId(WorkspacePrivilegeIds.WORKSPACES_DELETE_GROUP)
+            .withPrivilegeName("Delete group workspaces")
+            .withPrivilegeDescription("Allows deleting workspaces that are owned by a group that the user is part of")
+            .build()
+    ),
+
+    WORKSPACES_DELETE_ANY(
+        AcctPrivilege.builder()
+            .withPrivilegeId(WorkspacePrivilegeIds.WORKSPACES_DELETE_ANY)
+            .withPrivilegeName("Delete any workspaces")
+            .withPrivilegeDescription("Allows deleting any workspace, no matter the ownership")
             .build()
     );
+
 
     private final AcctPrivilege acctPrivilege;
 

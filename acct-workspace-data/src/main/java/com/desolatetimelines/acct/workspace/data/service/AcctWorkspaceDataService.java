@@ -47,5 +47,12 @@ public class AcctWorkspaceDataService {
         return workspacesRepository.findFirstByWorkspaceUUID(workspaceUUID);
     }
 
+    /**
+     * Deletes the referenced {@link AcctWorkspace workspace}
+     */
+    public void deleteWorkspace(AcctWorkspace workspace) {
+        workspacesRepository.delete(workspace);
+    }
+
 
 }

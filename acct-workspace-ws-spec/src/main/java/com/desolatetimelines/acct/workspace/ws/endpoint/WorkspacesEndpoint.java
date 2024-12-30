@@ -11,4 +11,6 @@ public interface WorkspacesEndpoint {
 
     WorkspaceUUIDResponse saveWorkspace(String workspaceUUID, WorkspaceProperties workspaceProperties);
 
+    void deleteWorkspace(String workspaceUUID);
+
 }

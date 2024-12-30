@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+import static com.desolatetimelines.acct.workspace.util.AcctWorkspaceRepoSpringDataUtils.doWithJpaAcctWorkspace;
 import static com.desolatetimelines.acct.workspace.util.AcctWorkspaceRepoSpringDataUtils.doWithJpaAcctWorkspaceReturning;
 import static java.util.function.Function.identity;
 
@@ -36,4 +37,11 @@ public class SpringJpaAcctWorkspacesRepository implements AcctWorkspacesReposito
     public Optional<AcctWorkspace> findFirstByWorkspaceUUID(String workspaceUUID) {
         return jpaAcctWorkspacesRepository.findFirstByWorkspaceUUID(workspaceUUID).map(identity());
     }
+
+    @Override
+    public void delete(AcctWorkspace workspace) {
+        doWithJpaAcctWorkspace(workspace, jpaAcctWorkspacesRepository::delete);
+    }
+
+
 }

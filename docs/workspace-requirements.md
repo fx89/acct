@@ -124,7 +124,7 @@ Users can delete user workspaces that belong to them and nobody else.
 
 Users can delete group workspaces owned by the group that they are part of, provided they have privileges.
 
-Users who pare part of groups that have privileges to delete any workspace (i.e. admins) may delete any worksapce.
+Users who are part of groups that have privileges to delete any workspace (i.e. admins) may delete any workspace.
 
 Example request URL:
 - `DELETE http://acct.desolatetimelines.com/service/workspace/v1/workspaces?workspaceUUID=dd7617bf-9030-4f78-9991-c39923273d42`

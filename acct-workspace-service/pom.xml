@@ -28,6 +28,11 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/x
 
         <dependency>
             <groupId>com.desolatetimelines</groupId>
+            <artifactId>acct-workspace-privileges-provider</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.desolatetimelines</groupId>
             <artifactId>acct-workspace-data</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
@@ -39,7 +44,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/x
         </dependency>
         <dependency>
             <groupId>com.desolatetimelines</groupId>
-            <artifactId>acct-security-ws-client</artifactId>
+            <artifactId>acct-security-client-framework</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
 

@@ -1,5 +1,6 @@
 package com.desolatetimelines.acct.workspace.ws.controller;
 
+import com.desolatetimelines.acct.common.ws.model.AcctUserClaims;
 import com.desolatetimelines.acct.workspace.service.AcctWorkspaceService;
 import com.desolatetimelines.acct.workspace.ws.endpoint.WorkspacesEndpoint;
 import com.desolatetimelines.acct.workspace.ws.mapper.WorkspacePropertiesMapper;
@@ -9,8 +10,8 @@ import com.desolatetimelines.acct.workspace.ws.model.WorkspaceUUIDResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import static com.desolatetimelines.acct.common.ws.util.AcctJwtUtils.extractCurrentUserUUID;
-import static com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspacePrivilegeIds.WORKSPACES_SAVE;
+import static com.desolatetimelines.acct.common.ws.util.AcctJwtUtils.extractCurrentUserClaims;
+import static com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspacePrivilegeIds.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
@@ -24,19 +25,43 @@ public class WorkspacesEndpointController implements WorkspacesEndpoint {
     }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + WORKSPACES_SAVE + "')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + WORKSPACES_SAVE_OWN + "')")
     @PutMapping(value = "", produces = APPLICATION_JSON_VALUE)
     public WorkspaceUUIDResponse saveWorkspace(
         @RequestParam(name = "workspaceUUID", required = false) String workspaceUUID,
         @RequestBody WorkspaceProperties workspaceProperties
     ) {
+        // Get the user claims
+        final AcctUserClaims userClaims = extractCurrentUserClaims();
+
+        // Run the save operation
         return
             WorkspaceUUIDResponseMapper.fromAcctWorkspace(
                 workspaceService.saveWorkspace(
-                    extractCurrentUserUUID(),
-                    WorkspacePropertiesMapper.toWorkspaceDetails(workspaceUUID, workspaceProperties)
+                    userClaims.userUUID(),
+                    WorkspacePropertiesMapper.toWorkspaceDetails(workspaceUUID, workspaceProperties),
+                    userClaims.privilegeNames()
                 )
             );
     }
+
+    @Override
+    @PreAuthorize(
+        "hasAnyAuthority(" +
+            "'SCOPE_backend', " +
+            "'SCOPE_" + WORKSPACES_DELETE_OWN + "', " +
+            "'SCOPE_" + WORKSPACES_DELETE_GROUP + "', " +
+            "'SCOPE_" + WORKSPACES_DELETE_ANY + "'" +
+            ")"
+    )
+    @DeleteMapping(value = "", produces = APPLICATION_JSON_VALUE)
+    public void deleteWorkspace(@RequestParam(name = "workspaceUUID") String workspaceUUID) {
+        // Get the user claims
+        final AcctUserClaims userClaims = extractCurrentUserClaims();
+
+        // Run the delete operation for the userUUID, privilege names and workspaceUUID
+        workspaceService.deleteWorkspace(userClaims.userUUID(), userClaims.privilegeNames(), workspaceUUID);
+    }
+
 
 }

@@ -74,6 +74,7 @@
         <module>acct-security-ws-spec</module>
         <module>acct-security-ws-server</module>
         <module>acct-security-ws-client</module>
+        <module>acct-security-client-framework</module>
         <module>acct-security-privileges-provider</module>
         <module>acct-security-service</module>
         <module>acct-security-data-privilegesprovider</module>

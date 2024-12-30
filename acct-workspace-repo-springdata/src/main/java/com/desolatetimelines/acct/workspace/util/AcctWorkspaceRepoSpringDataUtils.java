@@ -3,6 +3,7 @@ package com.desolatetimelines.acct.workspace.util;
 import com.desolatetimelines.acct.workspace.model.AcctWorkspace;
 import com.desolatetimelines.acct.workspace.model.JpaAcctWorkspace;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -16,6 +17,21 @@ public abstract class AcctWorkspaceRepoSpringDataUtils {
     ) {
         if (acctWorkspace instanceof JpaAcctWorkspace jpaAcctWorkspace) {
             return todo.apply(jpaAcctWorkspace);
+        }
+
+        throw new IllegalArgumentException(
+            "The referenced " + AcctWorkspace.class.getName() +
+                " is not of type " + JpaAcctWorkspace.class.getCanonicalName()
+        );
+    }
+
+    public static void doWithJpaAcctWorkspace(
+        AcctWorkspace acctWorkspace,
+        Consumer<JpaAcctWorkspace> todo
+    ) {
+        if (acctWorkspace instanceof JpaAcctWorkspace jpaAcctWorkspace) {
+            todo.accept(jpaAcctWorkspace);
+            return;
         }
 
         throw new IllegalArgumentException(

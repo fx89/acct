@@ -1,11 +1,13 @@
 package com.desolatetimelines.acct.common.ws.util;
 
 import com.desolatetimelines.acct.common.ws.exception.AcctJwtException;
+import com.desolatetimelines.acct.common.ws.model.AcctUserClaims;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,9 +25,9 @@ public abstract class AcctJwtUtils {
      * @throws AcctJwtException in case the userUUID claim cannot be extracted
      *                          for whatever reason
      */
-    public static String extractCurrentUserUUID() {
+    public static AcctUserClaims extractCurrentUserClaims() {
         final Jwt jwt = extractJwtFromSecurityContextHolder();
-        return extractUserUUIDClaimFromJwt(jwt);
+        return extractUserClaimsFromJwt(jwt);
     }
 
     private static Jwt extractJwtFromSecurityContextHolder() {
@@ -57,26 +59,41 @@ public abstract class AcctJwtUtils {
 
     }
 
-    private static String extractUserUUIDClaimFromJwt(Jwt jwt) {
+    private static AcctUserClaims extractUserClaimsFromJwt(Jwt jwt) {
         // Get the claims from the jwt or throw na exception
         final Map<String, Object> claims = jwt.getClaims();
         if (claims == null || claims.isEmpty()) {
             throw new AcctJwtException("The provided Jwt does not contain any claims");
         }
 
-        // Get the userUUID claim from the claims contained inside the Jwt or throw an exception
-        final Object userUUID = claims.get("userUUID");
-        if (userUUID == null) {
-            throw new AcctJwtException("The Jwt token is missing the userUUID claim");
+        // Get the userUUID claim
+        final String userUUID = extractClaim(claims, "userUUID");
+
+        // Get the scp claim
+        final List<String> scp = extractClaim(claims, "scp");
+
+        // Build the user claims object and return a reference
+        return
+            AcctUserClaims.builder()
+                .withUserUUID(userUUID)
+                .withPrivilegeNames(scp)
+                .build();
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> T extractClaim(Map<String, Object> claims, String claimKey) {
+        // Get the claim object from the claims contained inside the Jwt or throw an exception
+        final Object claimObject = claims.get(claimKey);
+        if (claimObject == null) {
+            throw new AcctJwtException("The Jwt token is missing the " + claimKey + " claim");
         }
 
-        // Attempt to cast the userUUID claim to a string and return it.
-        // If the attempt fails, throw an exception.
+        // Attempt to cast the claim object to the target type. If the attempt fails, throw an exception.
         try {
-            return (String) userUUID;
+            return (T) claimObject;
         } catch (ClassCastException cce) {
             throw new AcctJwtException(
-                "The provided userUUID claim cannot be cast to a string: " + cce.getMessage(), cce
+                "The provided " + claimKey + " claim cannot be cast to the target type: " + cce.getMessage(), cce
             );
         }
     }

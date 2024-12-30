@@ -1,9 +1,9 @@
 package com.desolatetimelines.acct.workspace.service;
 
 import com.desolatetimelines.acct.common.model.ObjectTypes;
-import com.desolatetimelines.acct.security.ws.client.RESTWorkspaceOwnershipEndpointClient;
+import com.desolatetimelines.acct.security.client.data.AcctSecurityClientService;
+import com.desolatetimelines.acct.security.client.model.UserResourceAccessRights;
 import com.desolatetimelines.acct.security.ws.endpoint.model.OwnerType;
-import com.desolatetimelines.acct.security.ws.endpoint.model.WorkspaceAccessibilityReport;
 import com.desolatetimelines.acct.security.ws.endpoint.model.WorkspaceOwner;
 import com.desolatetimelines.acct.usage.ws.client.RESTUsageEndpointClient;
 import com.desolatetimelines.acct.usage.ws.model.ServiceItemTypesList;
@@ -12,12 +12,19 @@ import com.desolatetimelines.acct.workspace.exception.AcctWorkspaceServiceNotFou
 import com.desolatetimelines.acct.workspace.exception.AcctWorkspaceServiceSecurityException;
 import com.desolatetimelines.acct.workspace.model.AcctWorkspace;
 import com.desolatetimelines.acct.workspace.model.WorkspaceDetails;
+import com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspaceServiceOperation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+
+import static com.desolatetimelines.acct.security.client.model.ResourceType.WORKSPACE;
+import static com.desolatetimelines.acct.workspace.privilegesprovider.model.ResourceOwnership.*;
+import static com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspacePrivilegeIds.getWorkspacePrivilegeId;
+import static com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspaceServiceOperation.DELETE;
+import static com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspaceServiceOperation.SAVE;
 
 /**
  * Workspace services layer
@@ -27,7 +34,7 @@ public class AcctWorkspaceService {
 
     private final RESTUsageEndpointClient usageEndpointClient;
 
-    private final RESTWorkspaceOwnershipEndpointClient workspaceOwnershipEndpointClient;
+    private final AcctSecurityClientService securityClientService;
 
     private final AcctWorkspaceErrorCodesRegistryService errors;
 
@@ -39,14 +46,14 @@ public class AcctWorkspaceService {
 
     public AcctWorkspaceService(
         RESTUsageEndpointClient usageEndpointClient,
-        RESTWorkspaceOwnershipEndpointClient workspaceOwnershipEndpointClient,
+        AcctSecurityClientService securityClientService,
         AcctWorkspaceErrorCodesRegistryService errors,
         AcctWorkspaceDataService dataService,
         @Value("${WORKSPACE_APPLICATION_NAME}") String applicationName,
         @Value("${WORKSPACE_SERVER_CONTEXT_PATH}") String contextPath
     ) {
         this.usageEndpointClient = usageEndpointClient;
-        this.workspaceOwnershipEndpointClient = workspaceOwnershipEndpointClient;
+        this.securityClientService = securityClientService;
         this.errors = errors;
         this.dataService = dataService;
         this.applicationName = applicationName;
@@ -122,12 +129,20 @@ public class AcctWorkspaceService {
      * @param userUUID         the given user UUID
      * @return a reference to the created or updated workspace entity
      */
-    public AcctWorkspace saveWorkspace(String userUUID, WorkspaceDetails workspaceDetails) {
+    public AcctWorkspace saveWorkspace(
+        String userUUID,
+        WorkspaceDetails workspaceDetails,
+        Collection<String> assignedPrivilegeNames
+    ) {
         // If the workspace UUID was provided then get the workspace for the user
         // If the workspace UUID was not provided then create a new workspace
         final AcctWorkspace workspace =
             Optional.ofNullable(workspaceDetails.workspaceUUID())
-                .map(workspaceUUID -> findWorkspaceForUser(userUUID, workspaceDetails.workspaceUUID()))
+                .map(workspaceUUID ->
+                    findWorkspaceForUserAndOperation(
+                        SAVE, userUUID, workspaceDetails.workspaceUUID(), assignedPrivilegeNames
+                    )
+                )
                 .orElseGet(this::createNewWorkspace);
 
         // Update the workspace details
@@ -141,7 +156,7 @@ public class AcctWorkspaceService {
 
         // If this is a new workspace, set the workspace ownership
         if (workspaceDetails.workspaceUUID() == null) {
-            workspaceOwnershipEndpointClient.addWorkspaceOwner(
+            securityClientService.addWorkspaceOwner(
                 WorkspaceOwner.builder()
                     .withOwnerType(OwnerType.USER)
                     .withOwnerUUID(userUUID)
@@ -152,6 +167,70 @@ public class AcctWorkspaceService {
 
         // Return a reference to the saved workspace
         return savedWorkspace;
+    }
+
+    /**
+     * Deletes the workspace with the given workspace UUID, as long as it is accessible for deletion
+     * by the user with the given user UUID, which is determined in part by the given privileges
+     *
+     * @param userUUID               the given user UUID
+     * @param assignedPrivilegeNames the given privileges
+     * @param workspaceUUID          the given workspace UUID
+     */
+    public void deleteWorkspace(String userUUID, Collection<String> assignedPrivilegeNames, String workspaceUUID) {
+        // Find the workspace. Throw an exception if the workspace is not accessible to the uer for the delete operation
+        // or if the workspace is not found.
+        final AcctWorkspace workspace =
+            findWorkspaceForUserAndOperation(DELETE, userUUID, workspaceUUID, assignedPrivilegeNames);
+
+        // Delete the workspace
+        dataService.deleteWorkspace(workspace);
+
+        // Remove the ownership record
+        securityClientService.deleteWorkspaceOwner(
+            WorkspaceOwner.builder()
+                .withOwnerType(OwnerType.USER)
+                .withOwnerUUID(userUUID)
+                .withWorkspaceUUID(workspaceUUID)
+                .build()
+        );
+    }
+
+    /**
+     * Determines if the workspace with the given workspace UUID is accessible for the given operation
+     * by the user with the given user UUID, based on the accessibility report fetched from the security
+     * service and the provided collection of assigned user privileges.
+     *
+     * @param operation              the given operation
+     * @param userUUID               the given user UUID
+     * @param workspaceUUID          the given workspace UUID
+     * @param assignedPrivilegeNames the provided collection of assigned user privileges
+     */
+    private boolean workspaceIsAccessibleToUserForOperation(
+        WorkspaceServiceOperation operation,
+        String userUUID,
+        String workspaceUUID,
+        Collection<String> assignedPrivilegeNames
+    ) {
+        return
+            securityClientService.resourceIsAccessibleToUser(
+                WORKSPACE,
+                userUUID,
+                workspaceUUID,
+                createUserAccessRights(operation, assignedPrivilegeNames)
+            );
+    }
+
+    private static UserResourceAccessRights createUserAccessRights(
+        WorkspaceServiceOperation operation,
+        Collection<String> assignedPrivilegeNames
+    ) {
+        return
+            UserResourceAccessRights.builder()
+                .withOwnResources(assignedPrivilegeNames.contains(getWorkspacePrivilegeId(operation, OWN_RESOURCES)))
+                .withGroupResources(assignedPrivilegeNames.contains(getWorkspacePrivilegeId(operation, GROUP_RESOURCES)))
+                .withAnyResources(assignedPrivilegeNames.contains(getWorkspacePrivilegeId(operation, ANY_RESOURCES)))
+                .build();
     }
 
     /**
@@ -173,13 +252,14 @@ public class AcctWorkspaceService {
      * @param userUUID      the given userUUID
      * @param workspaceUUID the given workspaceUUID
      */
-    private AcctWorkspace findWorkspaceForUser(String userUUID, String workspaceUUID) {
-        // Get the accessibility report for the referenced user and workspace
-        final WorkspaceAccessibilityReport accessibilityReport =
-            workspaceOwnershipEndpointClient.isUserAccessibleWorkspace(userUUID, workspaceUUID);
-
-        // If the workspace is not directly accessible to the user then throw an exception
-        if (!accessibilityReport.accessible() || accessibilityReport.isGroupWorkspace()) {
+    private AcctWorkspace findWorkspaceForUserAndOperation(
+        WorkspaceServiceOperation operation,
+        String userUUID,
+        String workspaceUUID,
+        Collection<String> assignedPrivilegeNames
+    ) {
+        // If the user does not have access to perform the operation on the workspace then throw an exception
+        if (!workspaceIsAccessibleToUserForOperation(operation, userUUID, workspaceUUID, assignedPrivilegeNames)) {
             throw new AcctWorkspaceServiceSecurityException(errors, ObjectTypes.WORKSPACE, workspaceUUID);
         }
 
