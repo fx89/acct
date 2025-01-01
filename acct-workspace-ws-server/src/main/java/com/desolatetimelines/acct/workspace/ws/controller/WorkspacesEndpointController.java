@@ -105,5 +105,19 @@ public class WorkspacesEndpointController implements WorkspacesEndpoint {
             );
     }
 
+    @Override
+    @PreAuthorize(
+        "hasAnyAuthority(" +
+            "'SCOPE_backend', " +
+            "'SCOPE_" + WORKSPACES_READ_ANY + "', " +
+            ")"
+    )
+    @GetMapping("/group")
+    public Collection<WorkspaceDetails> getGroupWorkspaces(@RequestParam(name = "groupUUID") String groupUUID) {
+        return
+            WorkspaceDetailsMapper.fromAcctWorkspacesCollection(
+                workspaceService.retrieveWorkspacesOwnedByGroup(groupUUID)
+            );
+    }
 
 }

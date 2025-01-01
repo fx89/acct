@@ -41,4 +41,10 @@ public interface WorkspacesEndpoint {
      */
     Collection<WorkspaceDetails> getUserWorkspaces(String userUUID);
 
+    /**
+     * Retrieves the details of all workspaces that are owned by the group with the given group UUID
+     *
+     * @param groupUUID the given group UUID
+     */
+    Collection<WorkspaceDetails> getGroupWorkspaces(String groupUUID);
 }

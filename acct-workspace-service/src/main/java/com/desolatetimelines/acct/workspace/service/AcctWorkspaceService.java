@@ -283,6 +283,20 @@ public class AcctWorkspaceService {
     }
 
     /**
+     * Retrieves a collection of workspaces that are owned by the group with the given group UUID
+     *
+     * @param groupUUID the given group UUID
+     */
+    public Collection<AcctWorkspace> retrieveWorkspacesOwnedByGroup(String groupUUID) {
+        // Get a collection of UUIDs for the workspaces owned by the group from the security service
+        final Collection<String> workspaceUUIDs =
+            securityClientService.getWorkspacesOwnedByOwnerOfType(OwnerType.GROUP, groupUUID);
+
+        // Retrieve and return the workspaces with the aforementioned UUIDs from the data store
+        return dataService.findWorkspacesByWorkspaceUUIDIn(workspaceUUIDs);
+    }
+
+    /**
      * Determines if the workspace with the given workspace UUID is accessible for the given operation
      * by the user with the given user UUID, based on the accessibility report fetched from the security
      * service and the provided collection of assigned user privileges.
