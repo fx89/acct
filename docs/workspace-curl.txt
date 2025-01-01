@@ -113,3 +113,10 @@ curl \
     -H "Content-Type: application/json; charset=utf-8" \
     -X GET 'http://localhost:8085/service/workspace/v1/workspaces/currentUser' \
     | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X GET 'http://localhost:8085/service/workspace/v1/workspaces/user?userUUID=348835f6-c4dc-4c4c-a454-77d5e1cf5e22' \
+    | jq

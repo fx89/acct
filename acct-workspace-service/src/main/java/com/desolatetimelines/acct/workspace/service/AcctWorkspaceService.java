@@ -268,6 +268,19 @@ public class AcctWorkspaceService {
                 .build();
     }
 
+    /**
+     * Retrieves a collection of workspaces that are directly owned by the user with the given user UUID
+     *
+     * @param userUUID the given user UUID
+     */
+    public Collection<AcctWorkspace> retrieveWorkspacesOwnedByUser(String userUUID) {
+        // Get a collection of UUIDs for the workspaces owned by the user from the security service
+        final Collection<String> workspaceUUIDs =
+            securityClientService.getWorkspacesOwnedByOwnerOfType(OwnerType.USER, userUUID);
+
+        // Retrieve and return the workspaces with the aforementioned UUIDs from the data store
+        return dataService.findWorkspacesByWorkspaceUUIDIn(workspaceUUIDs);
+    }
 
     /**
      * Determines if the workspace with the given workspace UUID is accessible for the given operation

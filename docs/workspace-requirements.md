@@ -56,7 +56,9 @@ Example response body:
     {
         "workspaceUUID": "36b32889-d4d8-4e9b-bcb4-78d4563bbf6c",
         "workspaceName": "My Personal Workspace",
-        "workspaceDescription": "A workspace for my personal finances"
+        "workspaceDescription": "A workspace for my personal finances",
+        "workspaceIconUUID": "80125c7d-f32c-472e-8aac-4a5aa5936297",
+        "defaultCurrencyUUID": "e092ef00-a1b9-4e3b-8d5d-bf6a88b933e2"
     }
 ]
 ```
@@ -80,7 +82,9 @@ Example response body:
     {
         "workspaceUUID": "36b32889-d4d8-4e9b-bcb4-78d4563bbf6c",
         "workspaceName": "My Personal Workspace",
-        "workspaceDescription": "A workspace for my personal finances"
+        "workspaceDescription": "A workspace for my personal finances",
+        "workspaceIconUUID": "80125c7d-f32c-472e-8aac-4a5aa5936297",
+        "defaultCurrencyUUID": "e092ef00-a1b9-4e3b-8d5d-bf6a88b933e2"
     }
 ]
 ```

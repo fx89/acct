@@ -8,6 +8,8 @@ import com.desolatetimelines.acct.security.ws.client.RESTWorkspaceOwnershipEndpo
 import com.desolatetimelines.acct.security.ws.endpoint.model.*;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+
 /**
  * Provides data access operations based on the REST Security client,
  * along with dedicated functionality to help ascertain access rights
@@ -52,8 +54,25 @@ public class AcctSecurityClientService {
         );
     }
 
+    /**
+     * Returns the UUIDs of the workspaces accessible to the user with the given user UUID,
+     * grouped by accessibility method.
+     *
+     * @param userUUID the given user UUID
+     */
     public OwnedWorkspacesGroup getUserAccessibleWorkspaces(String userUUID) {
         return workspaceOwnershipEndpointClient.getUserAccessibleWorkspaces(userUUID);
+    }
+
+    /**
+     * Retrieves a collection of UUIDs for the workspace that are directly owned by
+     * the owner of the given owner type and with the given owner UUID
+     *
+     * @param ownerType the given owner type
+     * @param ownerUUID the given owner UUID
+     */
+    public Collection<String> getWorkspacesOwnedByOwnerOfType(OwnerType ownerType, String ownerUUID) {
+        return workspaceOwnershipEndpointClient.getWorkspacesOwnedByOwnerOfType(ownerType, ownerUUID);
     }
 
     /**

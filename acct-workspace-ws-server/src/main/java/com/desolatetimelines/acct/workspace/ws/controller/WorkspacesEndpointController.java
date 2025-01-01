@@ -4,13 +4,17 @@ import com.desolatetimelines.acct.common.ws.model.AcctUserClaims;
 import com.desolatetimelines.acct.workspace.service.AcctWorkspaceService;
 import com.desolatetimelines.acct.workspace.ws.endpoint.WorkspacesEndpoint;
 import com.desolatetimelines.acct.workspace.ws.mapper.WorkspaceCollectionsResponseMapper;
+import com.desolatetimelines.acct.workspace.ws.mapper.WorkspaceDetailsMapper;
 import com.desolatetimelines.acct.workspace.ws.mapper.WorkspacePropertiesMapper;
 import com.desolatetimelines.acct.workspace.ws.mapper.WorkspaceUUIDResponseMapper;
 import com.desolatetimelines.acct.workspace.ws.model.WorkspaceCollectionsResponse;
+import com.desolatetimelines.acct.workspace.ws.model.WorkspaceDetails;
 import com.desolatetimelines.acct.workspace.ws.model.WorkspaceProperties;
 import com.desolatetimelines.acct.workspace.ws.model.WorkspaceUUIDResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collection;
 
 import static com.desolatetimelines.acct.common.ws.util.AcctJwtUtils.extractCurrentUserClaims;
 import static com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspacePrivilegeIds.*;
@@ -69,9 +73,9 @@ public class WorkspacesEndpointController implements WorkspacesEndpoint {
     @PreAuthorize(
         "hasAnyAuthority(" +
             "'SCOPE_backend', " +
-            "'SCOPE_" + WORKSPACES_DELETE_OWN + "', " +
-            "'SCOPE_" + WORKSPACES_DELETE_GROUP + "', " +
-            "'SCOPE_" + WORKSPACES_DELETE_ANY + "'" +
+            "'SCOPE_" + WORKSPACES_READ_OWN + "', " +
+            "'SCOPE_" + WORKSPACES_READ_GROUP + "', " +
+            "'SCOPE_" + WORKSPACES_READ_ANY + "'" +
             ")"
     )
     @GetMapping("/currentUser")
@@ -83,6 +87,21 @@ public class WorkspacesEndpointController implements WorkspacesEndpoint {
         return
             WorkspaceCollectionsResponseMapper.fromAcctWorkspacesByOwnership(
                 workspaceService.retrieveUserAccessibleWorkspaces(userClaims.userUUID(), userClaims.privilegeNames())
+            );
+    }
+
+    @Override
+    @PreAuthorize(
+        "hasAnyAuthority(" +
+            "'SCOPE_backend', " +
+            "'SCOPE_" + WORKSPACES_READ_ANY + "', " +
+            ")"
+    )
+    @GetMapping("/user")
+    public Collection<WorkspaceDetails> getUserWorkspaces(@RequestParam(name = "userUUID") String userUUID) {
+        return
+            WorkspaceDetailsMapper.fromAcctWorkspacesCollection(
+                workspaceService.retrieveWorkspacesOwnedByUser(userUUID)
             );
     }
 

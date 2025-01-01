@@ -1,8 +1,11 @@
 package com.desolatetimelines.acct.workspace.ws.endpoint;
 
 import com.desolatetimelines.acct.workspace.ws.model.WorkspaceCollectionsResponse;
+import com.desolatetimelines.acct.workspace.ws.model.WorkspaceDetails;
 import com.desolatetimelines.acct.workspace.ws.model.WorkspaceProperties;
 import com.desolatetimelines.acct.workspace.ws.model.WorkspaceUUIDResponse;
+
+import java.util.Collection;
 
 /**
  * Specifies workspaces endpoint functionality that can be accessed by both clients and other ACCT services.
@@ -30,5 +33,12 @@ public interface WorkspacesEndpoint {
      * Retrieves the details of all the workspaces accessible to the current user.
      */
     WorkspaceCollectionsResponse getUserAccessibleWorkspaces();
+
+    /**
+     * Retrieves the details of all workspaces that are directly accessible to the user with the given user UUID
+     *
+     * @param userUUID the given user UUID
+     */
+    Collection<WorkspaceDetails> getUserWorkspaces(String userUUID);
 
 }
