@@ -3,8 +3,10 @@ package com.desolatetimelines.acct.workspace.ws.controller;
 import com.desolatetimelines.acct.common.ws.model.AcctUserClaims;
 import com.desolatetimelines.acct.workspace.service.AcctWorkspaceService;
 import com.desolatetimelines.acct.workspace.ws.endpoint.WorkspacesEndpoint;
+import com.desolatetimelines.acct.workspace.ws.mapper.WorkspaceCollectionsResponseMapper;
 import com.desolatetimelines.acct.workspace.ws.mapper.WorkspacePropertiesMapper;
 import com.desolatetimelines.acct.workspace.ws.mapper.WorkspaceUUIDResponseMapper;
+import com.desolatetimelines.acct.workspace.ws.model.WorkspaceCollectionsResponse;
 import com.desolatetimelines.acct.workspace.ws.model.WorkspaceProperties;
 import com.desolatetimelines.acct.workspace.ws.model.WorkspaceUUIDResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -61,6 +63,27 @@ public class WorkspacesEndpointController implements WorkspacesEndpoint {
 
         // Run the delete operation for the userUUID, privilege names and workspaceUUID
         workspaceService.deleteWorkspace(userClaims.userUUID(), userClaims.privilegeNames(), workspaceUUID);
+    }
+
+    @Override
+    @PreAuthorize(
+        "hasAnyAuthority(" +
+            "'SCOPE_backend', " +
+            "'SCOPE_" + WORKSPACES_DELETE_OWN + "', " +
+            "'SCOPE_" + WORKSPACES_DELETE_GROUP + "', " +
+            "'SCOPE_" + WORKSPACES_DELETE_ANY + "'" +
+            ")"
+    )
+    @GetMapping("/currentUser")
+    public WorkspaceCollectionsResponse getUserAccessibleWorkspaces() {
+        // Get the user claims
+        final AcctUserClaims userClaims = extractCurrentUserClaims();
+
+        // Retrieve, map and return
+        return
+            WorkspaceCollectionsResponseMapper.fromAcctWorkspacesByOwnership(
+                workspaceService.retrieveUserAccessibleWorkspaces(userClaims.userUUID(), userClaims.privilegeNames())
+            );
     }
 
 

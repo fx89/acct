@@ -2,6 +2,7 @@ package com.desolatetimelines.acct.workspace.repository;
 
 import com.desolatetimelines.acct.workspace.model.AcctWorkspace;
 
+import java.util.Collection;
 import java.util.Optional;
 
 /**
@@ -29,6 +30,14 @@ public interface AcctWorkspacesRepository {
      * @param workspaceUUID the given workspace UUID
      */
     Optional<AcctWorkspace> findFirstByWorkspaceUUID(String workspaceUUID);
+
+    /**
+     * Retrieves a collection of {@link AcctWorkspace workspaces} for the UUIDs
+     * in the given collection of workspace UUIDs
+     *
+     * @param workspaceUUIDs the given collection of workspace UUIDs
+     */
+    Collection<AcctWorkspace> findAllByWorkspaceUUIDIn(Collection<String> workspaceUUIDs);
 
     /**
      * Deletes the referenced {@link AcctWorkspace workspace}

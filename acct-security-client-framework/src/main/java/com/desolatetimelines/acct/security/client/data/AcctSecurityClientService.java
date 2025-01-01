@@ -5,10 +5,7 @@ import com.desolatetimelines.acct.security.client.model.UserResourceAccessRights
 import com.desolatetimelines.acct.security.ws.client.RESTDashboardOwnershipEndpointClient;
 import com.desolatetimelines.acct.security.ws.client.RESTReportOwnershipEndpointClient;
 import com.desolatetimelines.acct.security.ws.client.RESTWorkspaceOwnershipEndpointClient;
-import com.desolatetimelines.acct.security.ws.endpoint.model.DashboardAccessibilityReport;
-import com.desolatetimelines.acct.security.ws.endpoint.model.ReportAccessibilityReport;
-import com.desolatetimelines.acct.security.ws.endpoint.model.WorkspaceAccessibilityReport;
-import com.desolatetimelines.acct.security.ws.endpoint.model.WorkspaceOwner;
+import com.desolatetimelines.acct.security.ws.endpoint.model.*;
 import org.springframework.stereotype.Service;
 
 /**
@@ -53,6 +50,10 @@ public class AcctSecurityClientService {
             workspaceOwner.ownerUUID(),
             workspaceOwner.workspaceUUID()
         );
+    }
+
+    public OwnedWorkspacesGroup getUserAccessibleWorkspaces(String userUUID) {
+        return workspaceOwnershipEndpointClient.getUserAccessibleWorkspaces(userUUID);
     }
 
     /**

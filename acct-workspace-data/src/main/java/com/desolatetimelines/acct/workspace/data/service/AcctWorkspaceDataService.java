@@ -4,6 +4,7 @@ import com.desolatetimelines.acct.workspace.model.AcctWorkspace;
 import com.desolatetimelines.acct.workspace.repository.AcctWorkspacesRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.Optional;
 
 /**
@@ -45,6 +46,16 @@ public class AcctWorkspaceDataService {
      */
     public Optional<AcctWorkspace> findWorkspaceByWorkspaceUUID(String workspaceUUID) {
         return workspacesRepository.findFirstByWorkspaceUUID(workspaceUUID);
+    }
+
+    /**
+     * Retrieves a collection of {@link AcctWorkspace workspaces} for the UUIDs
+     * in the given collection of workspace UUIDs
+     *
+     * @param workspaceUUIDs the given collection of workspace UUIDs
+     */
+    public Collection<AcctWorkspace> findWorkspacesByWorkspaceUUIDIn(Collection<String> workspaceUUIDs) {
+        return workspacesRepository.findAllByWorkspaceUUIDIn(workspaceUUIDs);
     }
 
     /**

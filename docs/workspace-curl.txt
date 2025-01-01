@@ -37,7 +37,7 @@ curl \
 curl \
     --insecure \
     -v \
-    --cookie 'JSESSIONID=DCE75A42062B57BC67966CBA9E9DE29B' \
+    --cookie 'JSESSIONID=C0746B0178B4A4FB64861C94C482F9D3' \
     -X GET 'http://localhost:9001/service/authorization/v1/oauth2/authorize?response_type=code&client_id=frontend-client'
 
 
@@ -48,7 +48,7 @@ curl \
     -v \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'grant_type=authorization_code' \
-    -d 'code=J8mdR2CnTjPda6fj4s9luBz7lBhhaubDFDV8iNtG5oPHxvSqciQrKaU9xW2YnlIt9r7lLPjw0o-OQq4sO384YWqU114JSaHy9-d0-yQVbl_DTe4d-2lSike5nHNxXrXZ' \
+    -d 'code=bYlgCjHIRGo0NN6RuKuqaex4DEZkEQZV8VSsOuAdvqzrbWSMnSRx-WsmsOwSEr9xGDIbD04-aeWrdSM7j2VsHF09qjUoCLxZs2It2msn9S1Usc6xDE8iSkPlhGvAUofV' \
     -d 'client_id=frontend-client' \
     -d 'client_secret=lkjdwsf23odnwqkld23odfbqweorh23oihd' \
     -X POST 'http://localhost:9001/service/authorization/v1/oauth2/token' \
@@ -105,4 +105,11 @@ curl \
     -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
     -H "Content-Type: application/json; charset=utf-8" \
     -X DELETE 'http://localhost:8085/service/workspace/v1/workspaces?workspaceUUID=554cbece-8f0d-4b15-acda-6bc335a90ce4' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X GET 'http://localhost:8085/service/workspace/v1/workspaces/currentUser' \
     | jq

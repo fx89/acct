@@ -5,6 +5,7 @@ import com.desolatetimelines.acct.workspace.model.JpaAcctWorkspace;
 import com.desolatetimelines.acct.workspace.springrepository.JpaAcctWorkspacesRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.Optional;
 
 import static com.desolatetimelines.acct.workspace.util.AcctWorkspaceRepoSpringDataUtils.doWithJpaAcctWorkspace;
@@ -36,6 +37,15 @@ public class SpringJpaAcctWorkspacesRepository implements AcctWorkspacesReposito
     @Override
     public Optional<AcctWorkspace> findFirstByWorkspaceUUID(String workspaceUUID) {
         return jpaAcctWorkspacesRepository.findFirstByWorkspaceUUID(workspaceUUID).map(identity());
+    }
+
+    @Override
+    public Collection<AcctWorkspace> findAllByWorkspaceUUIDIn(Collection<String> workspaceUUIDs) {
+        return
+            jpaAcctWorkspacesRepository.findAllByWorkspaceUUIDIn(workspaceUUIDs)
+                .stream()
+                .map(jpaAcctWorkspace -> (AcctWorkspace) jpaAcctWorkspace)
+                .toList();
     }
 
     @Override

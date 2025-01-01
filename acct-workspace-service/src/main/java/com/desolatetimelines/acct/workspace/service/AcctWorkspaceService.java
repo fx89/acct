@@ -3,6 +3,7 @@ package com.desolatetimelines.acct.workspace.service;
 import com.desolatetimelines.acct.common.model.ObjectTypes;
 import com.desolatetimelines.acct.security.client.data.AcctSecurityClientService;
 import com.desolatetimelines.acct.security.client.model.UserResourceAccessRights;
+import com.desolatetimelines.acct.security.ws.endpoint.model.OwnedWorkspacesGroup;
 import com.desolatetimelines.acct.security.ws.endpoint.model.OwnerType;
 import com.desolatetimelines.acct.security.ws.endpoint.model.WorkspaceOwner;
 import com.desolatetimelines.acct.usage.ws.client.RESTUsageEndpointClient;
@@ -11,6 +12,7 @@ import com.desolatetimelines.acct.workspace.data.service.AcctWorkspaceDataServic
 import com.desolatetimelines.acct.workspace.exception.AcctWorkspaceServiceNotFoundException;
 import com.desolatetimelines.acct.workspace.exception.AcctWorkspaceServiceSecurityException;
 import com.desolatetimelines.acct.workspace.model.AcctWorkspace;
+import com.desolatetimelines.acct.workspace.model.AcctWorkspacesByOwnership;
 import com.desolatetimelines.acct.workspace.model.WorkspaceDetails;
 import com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspaceServiceOperation;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,7 +24,7 @@ import java.util.*;
 
 import static com.desolatetimelines.acct.security.client.model.ResourceType.WORKSPACE;
 import static com.desolatetimelines.acct.workspace.privilegesprovider.model.ResourceOwnership.*;
-import static com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspacePrivilegeIds.getWorkspacePrivilegeId;
+import static com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspacePrivilegeIds.*;
 import static com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspaceServiceOperation.DELETE;
 import static com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspaceServiceOperation.SAVE;
 
@@ -195,6 +197,77 @@ public class AcctWorkspaceService {
                 .build()
         );
     }
+
+    /**
+     * Returns the details of the workspaces accessible to the user with the given user UUID,
+     * grouped by the accessibility mode. If the given list of user privilege names is missing
+     * the privilege required for a given accessibility mode then the collection of workspaces
+     * for that accessibility mode will be empty, even if there are user-reachable workspaces
+     * within that group.
+     *
+     * @param userUUID               the given user UUID
+     * @param assignedPrivilegeNames the given list of user privilege names
+     */
+    public AcctWorkspacesByOwnership retrieveUserAccessibleWorkspaces(
+        String userUUID,
+        Collection<String> assignedPrivilegeNames
+    ) {
+        // Get user-accessible workspace UUIDs
+        final OwnedWorkspacesGroup workspaceUUIDs = securityClientService.getUserAccessibleWorkspaces(userUUID);
+
+        // Combine the workspace UUID lists into one, while also taking the user's privileges into account...
+
+        // Initialize the resulting collection
+        final Collection<String> accessibleWorkspaceUUIDs =
+            new ArrayList<>(
+                workspaceUUIDs.userWorkspaces().size() +
+                    workspaceUUIDs.groupWorkspaces().size() +
+                    workspaceUUIDs.publicWorkspaces().size()
+            );
+
+        // Add workspace UUIDs to the list based on the user's privileges
+
+        // The user must have the right to read own workspaces for the user workspaces to be returned
+        if (assignedPrivilegeNames.contains(WORKSPACES_READ_OWN)) {
+            accessibleWorkspaceUUIDs.addAll(workspaceUUIDs.userWorkspaces());
+        }
+
+        // The user must have the right to read group workspaces for the group workspaces to be returned
+        if (assignedPrivilegeNames.contains(WORKSPACES_READ_GROUP)) {
+            accessibleWorkspaceUUIDs.addAll(workspaceUUIDs.groupWorkspaces());
+        }
+
+        // The user may read public workspaces even without any special rights
+        accessibleWorkspaceUUIDs.addAll(workspaceUUIDs.publicWorkspaces());
+
+        // Retrieve the details of the workspaces in the previously-compiled list
+        final Collection<AcctWorkspace> workspaces =
+            dataService.findWorkspacesByWorkspaceUUIDIn(accessibleWorkspaceUUIDs);
+
+        // Create response object, retrieve the workspaces, map and return
+        return
+            AcctWorkspacesByOwnership.builder()
+                // User workspaces are the ones whose UUIDs are contained in the user workspace UUIDs list
+                .withUserWorkspaces(
+                    workspaces.stream()
+                        .filter(workspace -> workspaceUUIDs.userWorkspaces().contains(workspace.getWorkspaceUUID()))
+                        .toList()
+                )
+                // Group workspaces are the ones whose UUIDs are contained in the group workspace UUIDs list
+                .withGroupWorkspaces(
+                    workspaces.stream()
+                        .filter(workspace -> workspaceUUIDs.groupWorkspaces().contains(workspace.getWorkspaceUUID()))
+                        .toList()
+                )
+                // Public workspaces are the ones whose UUIDs are contained in the public workspace UUIDs list
+                .withPublicWorkspaces(
+                    workspaces.stream()
+                        .filter(workspace -> workspaceUUIDs.publicWorkspaces().contains(workspace.getWorkspaceUUID()))
+                        .toList()
+                )
+                .build();
+    }
+
 
     /**
      * Determines if the workspace with the given workspace UUID is accessible for the given operation
