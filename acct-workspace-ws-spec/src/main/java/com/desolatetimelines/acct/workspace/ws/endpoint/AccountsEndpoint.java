@@ -36,4 +36,12 @@ public interface AccountsEndpoint {
      */
     Collection<AccountExtendedProperties> getAccountsInWorkspace(@NotNull String workspaceUUID);
 
+    /**
+     * Deletes the account with the given account UUID from the workspace with the given workspace UUID
+     *
+     * @param workspaceUUID the given account UUID
+     * @param accountUUID   the given workspace UUID
+     */
+    void deleteAccountFromWorkspace(@NotNull String workspaceUUID, @NotNull String accountUUID);
+
 }

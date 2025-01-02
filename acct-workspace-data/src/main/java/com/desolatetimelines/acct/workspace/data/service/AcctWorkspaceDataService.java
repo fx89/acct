@@ -112,4 +112,11 @@ public class AcctWorkspaceDataService {
         return accountsRepository.findAllByWorkspace(workspace);
     }
 
+    /**
+     * Deletes the referenced {@link AcctAccount account}
+     */
+    public void deleteAccount(AcctAccount account) {
+        accountsRepository.deleteAccount(account);
+    }
+
 }

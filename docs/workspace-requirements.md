@@ -200,7 +200,7 @@ Deletes the account with the given `accountUUID`.
 Raises an exception if the account is not part of a workspace accessible by the user.
 
 Example request URL:
-- `DELETE http://acct.desolatetimelines.com/service/workspace/v1/accounts?accountUUID=eae46ade-1ce8-4fb3-ab6b-cc36f78d35e9`
+- `DELETE http://acct.desolatetimelines.com/service/workspace/v1/accounts?workspaceUUID=dd7617bf-9030-4f78-9991-c39923273d42&accountUUID=eae46ade-1ce8-4fb3-ab6b-cc36f78d35e9`
 
 
 

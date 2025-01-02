@@ -56,5 +56,20 @@ public abstract class AcctWorkspaceRepoSpringDataUtils {
         );
     }
 
+    public static void doWithJpaAcctAccount(
+        AcctAccount acctAccount,
+        Consumer<JpaAcctAccount> todo
+    ) {
+        if (acctAccount instanceof JpaAcctAccount jpaAcctAccount) {
+            todo.accept(jpaAcctAccount);
+            return;
+        }
+
+        throw new IllegalArgumentException(
+            "The referenced " + AcctAccount.class.getName() +
+                " is not of type " + JpaAcctAccount.class.getCanonicalName()
+        );
+    }
+
 
 }

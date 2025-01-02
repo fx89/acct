@@ -9,8 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.Optional;
 
-import static com.desolatetimelines.acct.workspace.util.AcctWorkspaceRepoSpringDataUtils.doWithJpaAcctAccountReturning;
-import static com.desolatetimelines.acct.workspace.util.AcctWorkspaceRepoSpringDataUtils.doWithJpaAcctWorkspaceReturning;
+import static com.desolatetimelines.acct.workspace.util.AcctWorkspaceRepoSpringDataUtils.*;
 import static java.util.function.Function.identity;
 
 /**
@@ -50,5 +49,10 @@ public class SpringJpaAccountsRepository implements AccountsRepository {
                 .stream()
                 .map(jpaAcctAccount -> (AcctAccount) jpaAcctAccount)
                 .toList();
+    }
+
+    @Override
+    public void deleteAccount(AcctAccount account) {
+        doWithJpaAcctAccount(account, jpaAcctAccountsRepository::delete);
     }
 }

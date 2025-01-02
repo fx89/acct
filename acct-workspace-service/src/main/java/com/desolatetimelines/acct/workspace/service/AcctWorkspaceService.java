@@ -359,6 +359,37 @@ public class AcctWorkspaceService {
     }
 
     /**
+     * Deletes the {@link AcctAccount account} with the given account UUID
+     * from the {@link AcctWorkspace workspace} with the given workspace UUID.
+     * Raises exceptions if the user with the given user UUID does not have
+     * access to the workspace or does not have the privilege to update own
+     * and / or group workspaces, which is determined from the given list
+     * of privilege names.
+     *
+     * @param userUUID               the given user UUID
+     * @param workspaceUUID          the given workspace UUID
+     * @param accountUUID            the given account UUID
+     * @param assignedPrivilegeNames the given list of privilege names
+     */
+    public void deleteAccountFromWorkspace(
+        String userUUID,
+        String workspaceUUID,
+        String accountUUID,
+        Collection<String> assignedPrivilegeNames
+    ) {
+        // Retrieve the workspace for the save operation
+        final AcctWorkspace workspace =
+            findWorkspaceForUserAndOperation(SAVE, userUUID, workspaceUUID, assignedPrivilegeNames);
+
+        // Retrieve the account from the workspace
+        final AcctAccount account =
+            findAccountByAccountUUIDForWorkspace(workspaceUUID, accountUUID);
+
+        // Delete the account
+        dataService.deleteAccount(account);
+    }
+
+    /**
      * Retrieves the account with the given account UUID or throws an exception if the
      * account is not found.
      *

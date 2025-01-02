@@ -40,4 +40,9 @@ public interface AccountsRepository {
      */
     Collection<AcctAccount> findAllByWorkspace(AcctWorkspace workspace);
 
+    /**
+     * Deletes the referenced {@link AcctAccount account}
+     */
+    void deleteAccount(AcctAccount account);
+
 }

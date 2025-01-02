@@ -6,10 +6,7 @@ import com.desolatetimelines.acct.workspace.ws.model.AccountProperties;
 import com.desolatetimelines.acct.workspace.ws.model.AccountUUIDResponse;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
@@ -34,5 +31,9 @@ public interface RESTAccountsEndpointClient extends AccountsEndpoint {
     Collection<AccountExtendedProperties> getAccountsInWorkspace(
         @NotNull @RequestParam(name = "workspaceUUID") String workspaceUUID
     );
+
+    @Override
+    @DeleteMapping(value = "", produces = APPLICATION_JSON_VALUE)
+    void deleteAccountFromWorkspace(@NotNull String workspaceUUID, @NotNull String accountUUID);
 
 }

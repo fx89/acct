@@ -6,7 +6,7 @@
 
 // DONE: WKS-02001: Accounts endpoint: Get accounts in workspace
 // DONE: WKS-02002: Accounts endpoint: Save account into workspace
-// TODO: WKS-02003: Accounts endpoint: Delete account from workspace
+// DONE: WKS-02003: Accounts endpoint: Delete account from workspace
 // TODO: WKS-02004: Accounts endpoint: Get account balance
 
 // TODO: WKS-03001: Account records endpoint: Find sorted page of account records by account and text content

@@ -15,8 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 
 import static com.desolatetimelines.acct.common.ws.util.AcctJwtUtils.extractCurrentUserClaims;
-import static com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspacePrivilegeIds.ACCOUNT_READ;
-import static com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspacePrivilegeIds.ACCOUNT_SAVE;
+import static com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspacePrivilegeIds.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
@@ -70,5 +69,21 @@ public class AccountsEndpointController implements AccountsEndpoint {
                     userClaims.privilegeNames()
                 )
             );
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + ACCOUNT_DELETE + "')")
+    @DeleteMapping(value = "", produces = APPLICATION_JSON_VALUE)
+    public void deleteAccountFromWorkspace(@NotNull String workspaceUUID, @NotNull String accountUUID) {
+        // Get the user claims
+        final AcctUserClaims userClaims = extractCurrentUserClaims();
+
+        // Call the delete operations
+        workspaceService.deleteAccountFromWorkspace(
+            userClaims.userUUID(),
+            workspaceUUID,
+            accountUUID,
+            userClaims.privilegeNames()
+        );
     }
 }
