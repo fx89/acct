@@ -27,7 +27,11 @@ public class AcctWorkspaceServicePrivilegesProvider implements AcctServicePrivil
 
                 WORKSPACES_DELETE_OWN.getAcctPrivilege(),
                 WORKSPACES_DELETE_GROUP.getAcctPrivilege(),
-                WORKSPACES_DELETE_ANY.getAcctPrivilege()
+                WORKSPACES_DELETE_ANY.getAcctPrivilege(),
+
+                ACCOUNT_SAVE.getAcctPrivilege(),
+                ACCOUNT_READ.getAcctPrivilege(),
+                ACCOUNT_DELETE.getAcctPrivilege()
             );
     }
 }

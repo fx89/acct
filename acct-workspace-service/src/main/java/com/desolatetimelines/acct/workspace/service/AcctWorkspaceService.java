@@ -11,9 +11,7 @@ import com.desolatetimelines.acct.usage.ws.model.ServiceItemTypesList;
 import com.desolatetimelines.acct.workspace.data.service.AcctWorkspaceDataService;
 import com.desolatetimelines.acct.workspace.exception.AcctWorkspaceServiceNotFoundException;
 import com.desolatetimelines.acct.workspace.exception.AcctWorkspaceServiceSecurityException;
-import com.desolatetimelines.acct.workspace.model.AcctWorkspace;
-import com.desolatetimelines.acct.workspace.model.AcctWorkspacesByOwnership;
-import com.desolatetimelines.acct.workspace.model.WorkspaceDetails;
+import com.desolatetimelines.acct.workspace.model.*;
 import com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspaceServiceOperation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -294,6 +292,85 @@ public class AcctWorkspaceService {
 
         // Retrieve and return the workspaces with the aforementioned UUIDs from the data store
         return dataService.findWorkspacesByWorkspaceUUIDIn(workspaceUUIDs);
+    }
+
+    /**
+     * Persists the given {@link AccountDetails account details} in the workspace with the give workspace
+     * UUID. If the given account details do not contain an {@link AccountDetails#accountUUID() account UUID}
+     * then a new account is created for the given details. If the UUID is not missing then the account that's
+     * identified by the given account UUID is updated. Workspace accessibility is decided based on the given
+     * user UUID and the given collection of privileges.
+     *
+     * @param userUUID               the given user UUID
+     * @param workspaceUUID          the given workspace UUID
+     * @param accountDetails         the given account details
+     * @param assignedPrivilegeNames the given collection of privileges
+     * @return the UUID of the account for which the details have been persisted
+     */
+    public String saveAccount(
+        String userUUID,
+        String workspaceUUID,
+        AccountDetails accountDetails,
+        Collection<String> assignedPrivilegeNames
+    ) {
+        // Retrieve the workspace for writing (altering accounts within the workspace means modifying the workspace)
+        final AcctWorkspace workspace =
+            findWorkspaceForUserAndOperation(SAVE, userUUID, workspaceUUID, assignedPrivilegeNames);
+
+        // Get a reference to the account (either an existing account, if the account UUID was provided,
+        // or a new account, if the account UUID was not provided)
+        final AcctAccount account =
+            Optional.ofNullable(accountDetails.accountUUID())
+                .map(accountUUID -> findAccountByAccountUUIDForWorkspace(workspaceUUID, accountUUID))
+                .orElseGet(() -> createNewAccountWithinWorkspace(workspace));
+
+        // Set the account's properties
+        account.setAccountName(accountDetails.accountName());
+        account.setAccountNumber(accountDetails.accountNumber());
+        account.setAccountIconUUID(accountDetails.accountIconUUID());
+        account.setBankUUID(accountDetails.bankUUID());
+        account.setCurrencyUUID(accountDetails.currencyUUID());
+
+        // Persist the account and return its uuid
+        return dataService.saveAccount(account).getAccountUUID();
+    }
+
+    /**
+     * Retrieves the account with the given account UUID or throws an exception if the
+     * account is not found.
+     *
+     * @param accountUUID the given account UUID
+     */
+    private AcctAccount findAccountByAccountUUIDForWorkspace(String workspaceUUID, String accountUUID) {
+        // Find the account or throw a not found exception
+        final AcctAccount account =
+            dataService.findAccountByAccountUUID(accountUUID)
+                .orElseThrow(() -> new AcctWorkspaceServiceNotFoundException(errors, ObjectTypes.ACCOUNT, accountUUID));
+
+        // If the account is found and the workspace UUID of the workspace within which the account
+        // exists does not match the given one then throw a ot found exception (no special exception
+        // is thrown to minimize the chance of successful hacking)
+        if (!Objects.equals(account.getWorkspace().getWorkspaceUUID(), workspaceUUID)) {
+            throw new AcctWorkspaceServiceNotFoundException(errors, ObjectTypes.ACCOUNT, accountUUID);
+        }
+
+        // If everything is well, return a reference to the retrieved account entity
+        return account;
+    }
+
+    /**
+     * Creates a new {@link AcctAccount account} within the referenced {@link AcctWorkspace workspace}
+     * and gives it a random account UUID. The entity is not persisted.
+     *
+     * @param workspace the referenced workspace
+     */
+    private AcctAccount createNewAccountWithinWorkspace(AcctWorkspace workspace) {
+        final AcctAccount account = dataService.createNewAccount();
+
+        account.setWorkspace(workspace);
+        account.setAccountUUID(UUID.randomUUID().toString());
+
+        return account;
     }
 
     /**

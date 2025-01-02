@@ -77,6 +77,31 @@ public enum WorkspacePrivilege {
             .withPrivilegeName("Delete any workspaces")
             .withPrivilegeDescription("Allows deleting any workspace, no matter the ownership")
             .build()
+    ),
+
+    ACCOUNT_SAVE(
+        AcctPrivilege.builder()
+            .withPrivilegeId(WorkspacePrivilegeIds.ACCOUNT_SAVE)
+            .withPrivilegeName("Create or update an account")
+            .withPrivilegeDescription("Allows creating or updating accounts, " +
+                "provided that the user has the right to update the account's parent workspace")
+            .build()
+    ),
+    ACCOUNT_READ(
+        AcctPrivilege.builder()
+            .withPrivilegeId(WorkspacePrivilegeIds.ACCOUNT_READ)
+            .withPrivilegeName("Read an account's properties")
+            .withPrivilegeDescription("Allows reading an account's properties, " +
+                "provided that the user has the right to read the account's parent workspace")
+            .build()
+    ),
+    ACCOUNT_DELETE(
+        AcctPrivilege.builder()
+            .withPrivilegeId(WorkspacePrivilegeIds.ACCOUNT_DELETE)
+            .withPrivilegeName("Delete an account")
+            .withPrivilegeDescription("Allows deleting an account, " +
+                "provided that the user has the right to update the account's parent workspace")
+            .build()
     );
 
 

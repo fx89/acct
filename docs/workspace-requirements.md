@@ -178,7 +178,7 @@ Example request body:
 {
     "accountName": "ING RON",
     "accountIconUUID": "5985fb54-fa5a-4479-8075-650cc0d15b30",
-    "accountNUmber": "RO 00 INGB 1029 3829 3839 8483",
+    "accountNumber": "RO 00 INGB 1029 3829 3839 8483",
     "currencyUUID": "cd4583a8-781a-4aac-90c5-dec57dcad3e6",
     "bankUUID": "acd9cc68-d0bb-4156-9ef5-0bb42d9edcb8"
 }

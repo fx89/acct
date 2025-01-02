@@ -1,6 +1,8 @@
 package com.desolatetimelines.acct.workspace.data.service;
 
+import com.desolatetimelines.acct.workspace.model.AcctAccount;
 import com.desolatetimelines.acct.workspace.model.AcctWorkspace;
+import com.desolatetimelines.acct.workspace.repository.AccountsRepository;
 import com.desolatetimelines.acct.workspace.repository.AcctWorkspacesRepository;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +17,14 @@ public class AcctWorkspaceDataService {
 
     private final AcctWorkspacesRepository workspacesRepository;
 
-    public AcctWorkspaceDataService(AcctWorkspacesRepository workspacesRepository) {
+    private final AccountsRepository accountsRepository;
+
+    public AcctWorkspaceDataService(
+        AcctWorkspacesRepository workspacesRepository,
+        AccountsRepository accountsRepository
+    ) {
         this.workspacesRepository = workspacesRepository;
+        this.accountsRepository = accountsRepository;
     }
 
     /**
@@ -65,5 +73,33 @@ public class AcctWorkspaceDataService {
         workspacesRepository.delete(workspace);
     }
 
+    /**
+     * Creates a new {@link AcctAccount account}
+     *
+     * @return a reference to the newly created entity
+     */
+    public AcctAccount createNewAccount() {
+        return accountsRepository.createNew();
+    }
+
+    /**
+     * Retrieves the account having the given account UUID or an empty optional
+     * if such an account does not exist
+     *
+     * @param accountUUID the given account UUID
+     */
+    public Optional<AcctAccount> findAccountByAccountUUID(String accountUUID) {
+        return accountsRepository.findFirstByAccountUUID(accountUUID);
+    }
+
+    /**
+     * Persists the referenced {@link AcctAccount account}
+     *
+     * @param account the referenced account
+     * @return a reference to the persisted entity
+     */
+    public AcctAccount saveAccount(AcctAccount account) {
+        return accountsRepository.saveAccount(account);
+    }
 
 }

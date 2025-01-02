@@ -1,7 +1,7 @@
 package com.desolatetimelines.acct.workspace.ws.model;
 
 /**
- * Describes the properties accepted by REST APIs
+ * Describes the workspace properties accepted by REST APIs
  *
  * @param workspaceName        The human-readable name of the workspace
  * @param workspaceDescription The human-readable description of the workspace

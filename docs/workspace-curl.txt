@@ -37,7 +37,7 @@ curl \
 curl \
     --insecure \
     -v \
-    --cookie 'JSESSIONID=C0746B0178B4A4FB64861C94C482F9D3' \
+    --cookie 'JSESSIONID=8B7A7BC293DA196585784D66BB06AEFF' \
     -X GET 'http://localhost:9001/service/authorization/v1/oauth2/authorize?response_type=code&client_id=frontend-client'
 
 
@@ -48,7 +48,7 @@ curl \
     -v \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'grant_type=authorization_code' \
-    -d 'code=bYlgCjHIRGo0NN6RuKuqaex4DEZkEQZV8VSsOuAdvqzrbWSMnSRx-WsmsOwSEr9xGDIbD04-aeWrdSM7j2VsHF09qjUoCLxZs2It2msn9S1Usc6xDE8iSkPlhGvAUofV' \
+    -d 'code=25hbEO-xBCPiPHBbGDMQDIfpKEDxOPtEiCjPXG2PL_IZI8_rQ1f_qMPQpb5T_6KaKuk6-CpupHAn9CIaHqGN1wFT8dcrsGdmCCnhkLOjvcowVYWTFWJp3GgYkXMFS2hZ' \
     -d 'client_id=frontend-client' \
     -d 'client_secret=lkjdwsf23odnwqkld23odfbqweorh23oihd' \
     -X POST 'http://localhost:9001/service/authorization/v1/oauth2/token' \
@@ -126,4 +126,36 @@ curl \
     -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
     -H "Content-Type: application/json; charset=utf-8" \
     -X GET 'http://localhost:8085/service/workspace/v1/workspaces/group?groupUUID=6f3b4a48-24eb-49b2-934b-5a80198cf316' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT 'http://localhost:8085/service/workspace/v1/accounts?workspaceUUID=2d4ca15c-c0c7-4306-a390-3dbaa98a9802' \
+    --data-raw '
+        {
+            "accountName": "ING RON",
+            "accountIconUUID": "5985fb54-fa5a-4479-8075-650cc0d15b30",
+            "accountNumber": "RO 00 INGB 1029 3829 3839 8483",
+            "currencyUUID": "cd4583a8-781a-4aac-90c5-dec57dcad3e6",
+            "bankUUID": "acd9cc68-d0bb-4156-9ef5-0bb42d9edcb8"
+        }
+    ' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT 'http://localhost:8085/service/workspace/v1/accounts?workspaceUUID=2d4ca15c-c0c7-4306-a390-3dbaa98a9802&accountUUID=ece67a54-837e-4d36-8271-77024bc18183' \
+    --data-raw '
+        {
+            "accountName": "ING RON up",
+            "accountIconUUID": "5985fb54-fa5a-4479-8075-650cc0d15b31",
+            "accountNumber": "RO 00 INGB 1029 3829 3839 8483  up",
+            "currencyUUID": "cd4583a8-781a-4aac-90c5-dec57dcad3e7",
+            "bankUUID": "acd9cc68-d0bb-4156-9ef5-0bb42d9edcb9"
+        }
+    ' \
     | jq
