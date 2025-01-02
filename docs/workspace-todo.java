@@ -4,7 +4,7 @@
 // DONE: WKS-01004: Workspaces endpoint: Save workspace
 // DONE: WKS-01005: Workspaces endpoint: Delete workspace
 
-// TODO: WKS-02001: Accounts endpoint: Get accounts in workspace
+// DONE: WKS-02001: Accounts endpoint: Get accounts in workspace
 // DONE: WKS-02002: Accounts endpoint: Save account into workspace
 // TODO: WKS-02003: Accounts endpoint: Delete account from workspace
 // TODO: WKS-02004: Accounts endpoint: Get account balance

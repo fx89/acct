@@ -23,8 +23,7 @@ import java.util.*;
 import static com.desolatetimelines.acct.security.client.model.ResourceType.WORKSPACE;
 import static com.desolatetimelines.acct.workspace.privilegesprovider.model.ResourceOwnership.*;
 import static com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspacePrivilegeIds.*;
-import static com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspaceServiceOperation.DELETE;
-import static com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspaceServiceOperation.SAVE;
+import static com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspaceServiceOperation.*;
 
 /**
  * Workspace services layer
@@ -333,6 +332,30 @@ public class AcctWorkspaceService {
 
         // Persist the account and return its uuid
         return dataService.saveAccount(account).getAccountUUID();
+    }
+
+    /**
+     * Retrieves a collection of {@link AcctAccount accounts} contained by the
+     * {@link AcctWorkspace workspace} having the given workspace UUID. If the
+     * user with the given user UUID cannot reach the workspace, or if the
+     * permissions stated in the given collection of privilege names are not
+     * sufficient, then exceptions are thrown.
+     *
+     * @param userUUID               the given user UUID
+     * @param workspaceUUID          the given workspace UUID
+     * @param assignedPrivilegeNames the given collection of privilege names
+     */
+    public Collection<AcctAccount> getAccountsInWorkspace(
+        String userUUID,
+        String workspaceUUID,
+        Collection<String> assignedPrivilegeNames
+    ) {
+        // Retrieve the workspace for writing (altering accounts within the workspace means modifying the workspace)
+        final AcctWorkspace workspace =
+            findWorkspaceForUserAndOperation(READ, userUUID, workspaceUUID, assignedPrivilegeNames);
+
+        // Retrieve and return a reference to the collection of accounts in the workspace
+        return dataService.findAllAccountsInWorkspace(workspace);
     }
 
     /**

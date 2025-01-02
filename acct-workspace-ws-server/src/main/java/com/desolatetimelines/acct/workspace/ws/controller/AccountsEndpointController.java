@@ -4,13 +4,18 @@ import com.desolatetimelines.acct.common.ws.model.AcctUserClaims;
 import com.desolatetimelines.acct.workspace.service.AcctWorkspaceService;
 import com.desolatetimelines.acct.workspace.ws.endpoint.AccountsEndpoint;
 import com.desolatetimelines.acct.workspace.ws.mapper.AccountDetailsMapper;
+import com.desolatetimelines.acct.workspace.ws.mapper.AccountExtendedPropertiesMapper;
+import com.desolatetimelines.acct.workspace.ws.model.AccountExtendedProperties;
 import com.desolatetimelines.acct.workspace.ws.model.AccountProperties;
 import com.desolatetimelines.acct.workspace.ws.model.AccountUUIDResponse;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
+
 import static com.desolatetimelines.acct.common.ws.util.AcctJwtUtils.extractCurrentUserClaims;
+import static com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspacePrivilegeIds.ACCOUNT_READ;
 import static com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspacePrivilegeIds.ACCOUNT_SAVE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -42,6 +47,26 @@ public class AccountsEndpointController implements AccountsEndpoint {
                     userClaims.userUUID(),
                     workspaceUUID,
                     AccountDetailsMapper.fromAccountProperties(accountUUID, accountProperties),
+                    userClaims.privilegeNames()
+                )
+            );
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + ACCOUNT_READ + "')")
+    @GetMapping(value = "", produces = APPLICATION_JSON_VALUE)
+    public Collection<AccountExtendedProperties> getAccountsInWorkspace(
+        @NotNull @RequestParam(name = "workspaceUUID") String workspaceUUID
+    ) {
+        // Get the user claims
+        final AcctUserClaims userClaims = extractCurrentUserClaims();
+
+        // Run, map and return
+        return
+            AccountExtendedPropertiesMapper.fromAcctAccountsCollection(
+                workspaceService.getAccountsInWorkspace(
+                    userClaims.userUUID(),
+                    workspaceUUID,
                     userClaims.privilegeNames()
                 )
             );

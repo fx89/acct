@@ -1,7 +1,9 @@
 package com.desolatetimelines.acct.workspace.repository;
 
 import com.desolatetimelines.acct.workspace.model.AcctAccount;
+import com.desolatetimelines.acct.workspace.model.AcctWorkspace;
 
+import java.util.Collection;
 import java.util.Optional;
 
 /**
@@ -29,5 +31,13 @@ public interface AccountsRepository {
      * @return a reference to the persisted entity
      */
     AcctAccount saveAccount(AcctAccount account);
+
+    /**
+     * Retrieves a collection of {@link AcctAccount accounts} that are
+     * contained by the referenced {@link AcctWorkspace workspace}
+     *
+     * @param workspace the referenced workspace
+     */
+    Collection<AcctAccount> findAllByWorkspace(AcctWorkspace workspace);
 
 }

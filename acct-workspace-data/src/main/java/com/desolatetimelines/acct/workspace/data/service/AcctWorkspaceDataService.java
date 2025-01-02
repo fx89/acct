@@ -102,4 +102,14 @@ public class AcctWorkspaceDataService {
         return accountsRepository.saveAccount(account);
     }
 
+    /**
+     * Retrieves a collection of {@link AcctAccount accounts} that are
+     * contained by the referenced {@link AcctWorkspace workspace}
+     *
+     * @param workspace the referenced workspace
+     */
+    public Collection<AcctAccount> findAllAccountsInWorkspace(AcctWorkspace workspace) {
+        return accountsRepository.findAllByWorkspace(workspace);
+    }
+
 }

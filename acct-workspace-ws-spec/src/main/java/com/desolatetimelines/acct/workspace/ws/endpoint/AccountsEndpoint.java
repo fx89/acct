@@ -1,8 +1,11 @@
 package com.desolatetimelines.acct.workspace.ws.endpoint;
 
+import com.desolatetimelines.acct.workspace.ws.model.AccountExtendedProperties;
 import com.desolatetimelines.acct.workspace.ws.model.AccountProperties;
 import com.desolatetimelines.acct.workspace.ws.model.AccountUUIDResponse;
 import jakarta.validation.constraints.NotNull;
+
+import java.util.Collection;
 
 /**
  * Specifies accounts endpoint functionality that can be accessed by both clients and other ACCT services.
@@ -24,5 +27,13 @@ public interface AccountsEndpoint {
         String accountUUID,
         @NotNull AccountProperties accountProperties
     );
+
+    /**
+     * Retrieves a collection of all the accounts that belong to the workspace
+     * with the given workspace UUID
+     *
+     * @param workspaceUUID the given workspace UUID
+     */
+    Collection<AccountExtendedProperties> getAccountsInWorkspace(@NotNull String workspaceUUID);
 
 }

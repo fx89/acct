@@ -37,7 +37,7 @@ curl \
 curl \
     --insecure \
     -v \
-    --cookie 'JSESSIONID=8B7A7BC293DA196585784D66BB06AEFF' \
+    --cookie 'JSESSIONID=E5E7E550B5F43F851439E44865B4656F' \
     -X GET 'http://localhost:9001/service/authorization/v1/oauth2/authorize?response_type=code&client_id=frontend-client'
 
 
@@ -48,7 +48,7 @@ curl \
     -v \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'grant_type=authorization_code' \
-    -d 'code=25hbEO-xBCPiPHBbGDMQDIfpKEDxOPtEiCjPXG2PL_IZI8_rQ1f_qMPQpb5T_6KaKuk6-CpupHAn9CIaHqGN1wFT8dcrsGdmCCnhkLOjvcowVYWTFWJp3GgYkXMFS2hZ' \
+    -d 'code=kdaTh5Gkt6aGDT6hMALg-JnX8IR7VPO-nqqMd-9d21iIWudXrCjq1bS2EyLah7jVGJeTd4NzmRNRYjp-j3lr78uU1ZoSfudU6j9BLHuzpWBEZZqp4ntLCEPGj1oz5FMy' \
     -d 'client_id=frontend-client' \
     -d 'client_secret=lkjdwsf23odnwqkld23odfbqweorh23oihd' \
     -X POST 'http://localhost:9001/service/authorization/v1/oauth2/token' \
@@ -158,4 +158,11 @@ curl \
             "bankUUID": "acd9cc68-d0bb-4156-9ef5-0bb42d9edcb9"
         }
     ' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X GET 'http://localhost:8085/service/workspace/v1/accounts?workspaceUUID=2d4ca15c-c0c7-4306-a390-3dbaa98a9802' \
     | jq

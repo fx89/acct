@@ -162,6 +162,7 @@ Example response body:
 ]
 ```
 
+
 <br /><br />
 #### `WKS-02002` Save account into workspace
 Saves the account with the given `accountUUID`. If there is no `accountUUID` given then a new account is created
