@@ -13,11 +13,13 @@ import com.desolatetimelines.acct.workspace.exception.AcctWorkspaceServiceNotFou
 import com.desolatetimelines.acct.workspace.exception.AcctWorkspaceServiceSecurityException;
 import com.desolatetimelines.acct.workspace.model.*;
 import com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspaceServiceOperation;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.*;
 
 import static com.desolatetimelines.acct.security.client.model.ResourceType.WORKSPACE;
@@ -128,6 +130,7 @@ public class AcctWorkspaceService {
      * @param userUUID         the given user UUID
      * @return a reference to the created or updated workspace entity
      */
+    @Transactional
     public AcctWorkspace saveWorkspace(
         String userUUID,
         WorkspaceDetails workspaceDetails,
@@ -176,6 +179,7 @@ public class AcctWorkspaceService {
      * @param assignedPrivilegeNames the given privileges
      * @param workspaceUUID          the given workspace UUID
      */
+    @Transactional
     public void deleteWorkspace(String userUUID, Collection<String> assignedPrivilegeNames, String workspaceUUID) {
         // Find the workspace. Throw an exception if the workspace is not accessible to the uer for the delete operation
         // or if the workspace is not found.
@@ -306,6 +310,7 @@ public class AcctWorkspaceService {
      * @param assignedPrivilegeNames the given collection of privileges
      * @return the UUID of the account for which the details have been persisted
      */
+    @Transactional
     public String saveAccount(
         String userUUID,
         String workspaceUUID,
@@ -320,7 +325,7 @@ public class AcctWorkspaceService {
         // or a new account, if the account UUID was not provided)
         final AcctAccount account =
             Optional.ofNullable(accountDetails.accountUUID())
-                .map(accountUUID -> findAccountByAccountUUIDForWorkspace(workspaceUUID, accountUUID))
+                .map(accountUUID -> findAccountByAccountUUIDForWorkspace(workspace, accountUUID))
                 .orElseGet(() -> createNewAccountWithinWorkspace(workspace));
 
         // Set the account's properties
@@ -371,6 +376,7 @@ public class AcctWorkspaceService {
      * @param accountUUID            the given account UUID
      * @param assignedPrivilegeNames the given list of privilege names
      */
+    @Transactional
     public void deleteAccountFromWorkspace(
         String userUUID,
         String workspaceUUID,
@@ -383,10 +389,103 @@ public class AcctWorkspaceService {
 
         // Retrieve the account from the workspace
         final AcctAccount account =
-            findAccountByAccountUUIDForWorkspace(workspaceUUID, accountUUID);
+            findAccountByAccountUUIDForWorkspace(workspace, accountUUID);
 
         // Delete the account
         dataService.deleteAccount(account);
+    }
+
+    /**
+     * Creates or updates an {@link AcctAccountRecord account record} for the given
+     * account record details, belonging to the {@link AcctAccount account} wit the
+     * given account UUID, residing in the workspace with the given workspace UUID.
+     * If the user with the given user UUID does not have access to the workspace,
+     * or if the proper privileges are not contained by the given privilege names
+     * collection, then an exception is thrown.
+     *
+     * @param userUUID               the given user UUID
+     * @param workspaceUUID          the given workspace UUID
+     * @param accountUUID            the given account UUID
+     * @param accountRecordDetails   the given account record details
+     * @param assignedPrivilegeNames the given privilege names collection
+     * @return the {@link AcctAccountRecord#getAccountRecordId() account record ID}
+     * of the created or updated entity
+     */
+    @Transactional
+    public Long saveAccountRecord(
+        String userUUID,
+        String workspaceUUID,
+        String accountUUID,
+        AccountRecordDetails accountRecordDetails,
+        Collection<String> assignedPrivilegeNames
+    ) {
+        // Retrieve the workspace for the save operation
+        final AcctWorkspace workspace =
+            findWorkspaceForUserAndOperation(SAVE, userUUID, workspaceUUID, assignedPrivilegeNames);
+
+        // Retrieve the account from the workspace
+        final AcctAccount account =
+            findAccountByAccountUUIDForWorkspace(workspace, accountUUID);
+
+        // Get a reference to the record to be updated (either a new record or existing record,
+        // based on the existence of the account record ID)
+        final AcctAccountRecord record =
+            accountRecordDetails.accountRecordId() == null
+                ? createNewAccountRecordWithinAccount(account, userUUID)
+                : retrieveAccountRecord(accountRecordDetails.accountRecordId());
+
+        // Populate the account record
+        record.setIncomeOrExpenseItemUUID(accountRecordDetails.incomeOrExpenseItemUUID());
+        record.setAccountRecordText(accountRecordDetails.accountRecordText());
+        record.setAccountRecordValue(accountRecordDetails.accountRecordValue());
+
+        // Set the workflow-related properties
+        record.setLastModifiedDate(Instant.now());
+        record.setLastModifiedByUserUUID(userUUID);
+
+        // Persist the account record and return the account record id
+        return dataService.saveAccountRecord(record).getAccountRecordId();
+    }
+
+    /**
+     * Creates a new instance of {@link AcctAccountRecord} and populates it with the
+     * referenced parent account, while also setting the workflow-related properties
+     * that include the given user UUID. The entity is created in-memory and not
+     * persisted.
+     *
+     * @param account            the referenced parent account
+     * @param recordedByUserUUID the given user UUID
+     * @return a reference to the newly created entity
+     */
+    private AcctAccountRecord createNewAccountRecordWithinAccount(AcctAccount account, String recordedByUserUUID) {
+        // Create a new account record entity
+        final AcctAccountRecord newRecord = dataService.createNewAccountRecord();
+
+        // Set the parent account of the new account record entity
+        newRecord.setAccount(account);
+
+        // Populate the workflow-related properties
+        newRecord.setAccountRecordDate(Instant.now());
+        newRecord.setRecordedByUserUUID(recordedByUserUUID);
+
+        // Return a reference to the newly created entity
+        return newRecord;
+    }
+
+    /**
+     * Retrieves the {@link AcctAccountRecord account record} with the given
+     * {@link AcctAccountRecord#getAccountRecordId() account record id} or
+     * throws an exception.
+     *
+     * @param accountRecordId the given account record id
+     * @return a reference to the retrieved entity
+     */
+    private AcctAccountRecord retrieveAccountRecord(Long accountRecordId) {
+        return
+            dataService.findAccountRecordByAccountRecordId(accountRecordId)
+                .orElseThrow(() -> new AcctWorkspaceServiceNotFoundException(
+                    errors, ObjectTypes.ACCOUNT_RECORD, Long.toString(accountRecordId))
+                );
     }
 
     /**
@@ -395,7 +494,7 @@ public class AcctWorkspaceService {
      *
      * @param accountUUID the given account UUID
      */
-    private AcctAccount findAccountByAccountUUIDForWorkspace(String workspaceUUID, String accountUUID) {
+    private AcctAccount findAccountByAccountUUIDForWorkspace(AcctWorkspace workspace, String accountUUID) {
         // Find the account or throw a not found exception
         final AcctAccount account =
             dataService.findAccountByAccountUUID(accountUUID)
@@ -404,7 +503,7 @@ public class AcctWorkspaceService {
         // If the account is found and the workspace UUID of the workspace within which the account
         // exists does not match the given one then throw a ot found exception (no special exception
         // is thrown to minimize the chance of successful hacking)
-        if (!Objects.equals(account.getWorkspace().getWorkspaceUUID(), workspaceUUID)) {
+        if (!Objects.equals(account.getWorkspace().getWorkspaceUUID(), workspace.getWorkspaceUUID())) {
             throw new AcctWorkspaceServiceNotFoundException(errors, ObjectTypes.ACCOUNT, accountUUID);
         }
 

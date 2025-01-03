@@ -4,6 +4,10 @@ import java.time.Instant;
 
 public interface AcctAccountRecord {
 
+    Long getAccountRecordId();
+
+    void setAccountRecordId(Long accountRecordId);
+
     AcctAccount getAccount();
 
     void setAccount(AcctAccount account);
@@ -26,7 +30,7 @@ public interface AcctAccountRecord {
 
     Double getAccountRecordValue();
 
-    void setAccountRecordValue();
+    void setAccountRecordValue(Double accountRecordValue);
 
     Instant getLastModifiedDate();
 

@@ -1,7 +1,9 @@
 package com.desolatetimelines.acct.workspace.data.service;
 
 import com.desolatetimelines.acct.workspace.model.AcctAccount;
+import com.desolatetimelines.acct.workspace.model.AcctAccountRecord;
 import com.desolatetimelines.acct.workspace.model.AcctWorkspace;
+import com.desolatetimelines.acct.workspace.repository.AccountRecordsRepository;
 import com.desolatetimelines.acct.workspace.repository.AccountsRepository;
 import com.desolatetimelines.acct.workspace.repository.AcctWorkspacesRepository;
 import org.springframework.stereotype.Service;
@@ -19,12 +21,16 @@ public class AcctWorkspaceDataService {
 
     private final AccountsRepository accountsRepository;
 
+    private final AccountRecordsRepository accountRecordsRepository;
+
     public AcctWorkspaceDataService(
         AcctWorkspacesRepository workspacesRepository,
-        AccountsRepository accountsRepository
+        AccountsRepository accountsRepository,
+        AccountRecordsRepository accountRecordsRepository
     ) {
         this.workspacesRepository = workspacesRepository;
         this.accountsRepository = accountsRepository;
+        this.accountRecordsRepository = accountRecordsRepository;
     }
 
     /**
@@ -117,6 +123,35 @@ public class AcctWorkspaceDataService {
      */
     public void deleteAccount(AcctAccount account) {
         accountsRepository.deleteAccount(account);
+    }
+
+    /**
+     * Creates a new instance of {@link AcctAccountRecord}
+     */
+    public AcctAccountRecord createNewAccountRecord() {
+        return accountRecordsRepository.createNew();
+    }
+
+    /**
+     * Persists the referenced {@link AcctAccountRecord account record}
+     *
+     * @param accountRecord the referenced account record
+     * @return a reference to the persisted entity
+     */
+    public AcctAccountRecord saveAccountRecord(AcctAccountRecord accountRecord) {
+        return accountRecordsRepository.save(accountRecord);
+    }
+
+    /**
+     * Retrieves the {@link AcctAccountRecord account record} with the given
+     * {@link AcctAccountRecord#getAccountRecordId() account record ID} or an
+     * empty optional in case the account record is not found
+     *
+     * @param accountRecordId the given account record ID
+     * @return a reference to the retrieved entity
+     */
+    public Optional<AcctAccountRecord> findAccountRecordByAccountRecordId(Long accountRecordId) {
+        return accountRecordsRepository.findFirstByAccountRecordId(accountRecordId);
     }
 
 }

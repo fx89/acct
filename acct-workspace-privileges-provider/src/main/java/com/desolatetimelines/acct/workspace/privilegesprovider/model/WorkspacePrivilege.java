@@ -81,7 +81,7 @@ public enum WorkspacePrivilege {
 
     ACCOUNT_SAVE(
         AcctPrivilege.builder()
-            .withPrivilegeId(WorkspacePrivilegeIds.ACCOUNT_SAVE)
+            .withPrivilegeId(WorkspacePrivilegeIds.ACCOUNTS_SAVE)
             .withPrivilegeName("Create or update an account")
             .withPrivilegeDescription("Allows creating or updating accounts, " +
                 "provided that the user has the right to update the account's parent workspace")
@@ -89,7 +89,7 @@ public enum WorkspacePrivilege {
     ),
     ACCOUNT_READ(
         AcctPrivilege.builder()
-            .withPrivilegeId(WorkspacePrivilegeIds.ACCOUNT_READ)
+            .withPrivilegeId(WorkspacePrivilegeIds.ACCOUNTS_READ)
             .withPrivilegeName("Read an account's properties")
             .withPrivilegeDescription("Allows reading an account's properties, " +
                 "provided that the user has the right to read the account's parent workspace")
@@ -97,9 +97,36 @@ public enum WorkspacePrivilege {
     ),
     ACCOUNT_DELETE(
         AcctPrivilege.builder()
-            .withPrivilegeId(WorkspacePrivilegeIds.ACCOUNT_DELETE)
+            .withPrivilegeId(WorkspacePrivilegeIds.ACCOUNTS_DELETE)
             .withPrivilegeName("Delete an account")
             .withPrivilegeDescription("Allows deleting an account, " +
+                "provided that the user has the right to update the account's parent workspace")
+            .build()
+    ),
+
+    ACCOUNT_RECORDS_SAVE(
+        AcctPrivilege.builder()
+            .withPrivilegeId(WorkspacePrivilegeIds.ACCOUNT_RECORDS_SAVE)
+            .withPrivilegeName("Create or update account records")
+            .withPrivilegeDescription("Allows adding or modifying account records, " +
+                "provided that the user has the right to update the account's parent workspace")
+            .build()
+    ),
+
+    ACCOUNT_RECORDS_READ(
+        AcctPrivilege.builder()
+            .withPrivilegeId(WorkspacePrivilegeIds.ACCOUNT_RECORDS_READ)
+            .withPrivilegeName("Read account records")
+            .withPrivilegeDescription("Allows listing and reading the details of account records, " +
+                "provided that the user has the right to update the account's parent workspace")
+            .build()
+    ),
+
+    ACCOUNT_RECORDS_DELETE(
+        AcctPrivilege.builder()
+            .withPrivilegeId(WorkspacePrivilegeIds.ACCOUNT_RECORDS_DELETE)
+            .withPrivilegeName("Delete account records")
+            .withPrivilegeDescription("Allows deleting account records, " +
                 "provided that the user has the right to update the account's parent workspace")
             .build()
     );

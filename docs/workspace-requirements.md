@@ -265,14 +265,14 @@ is returned. The value is taken from the currency exchange record related to the
 <br /><br />
 #### `WKS-03002` Save account record
 Saves the account record with the given `accountRecordId`. If there is no `accountRecordId` given then a new account
-record is created in the account with the given `accountUUID`.
+record is created in the account with the given `accountUUID` within the workspace with the given workspaceUUID.
 
-Raises an exception if the account represented by the given `accountUUID` is not part of a workspace that's accessible
-to the current user.
+Raises an exception if the workspace with the given `workspaceUUID` is not accessible to the user or if the account
+represented by the given `accountUUID` is not part of the workspace with the given `workspaceUUID`.
 
 Example request URLs:
-- `PUT http://acct.desolatetimelines.com/service/workspace/v1/accountRecords?accountUUID=eae46ade-1ce8-4fb3-ab6b-cc36f78d35e9&accountRecordId=13`
-- `PUT http://acct.desolatetimelines.com/service/workspace/v1/accountRecords?accountUUID=eae46ade-1ce8-4fb3-ab6b-cc36f78d35e9`
+- `PUT http://acct.desolatetimelines.com/service/workspace/v1/accountRecords?workspaceUUID=2d4ca15c-c0c7-4306-a390-3dbaa98a9802&accountUUID=eae46ade-1ce8-4fb3-ab6b-cc36f78d35e9&accountRecordId=13`
+- `PUT http://acct.desolatetimelines.com/service/workspace/v1/accountRecords?workspaceUUID=2d4ca15c-c0c7-4306-a390-3dbaa98a9802&accountUUID=eae46ade-1ce8-4fb3-ab6b-cc36f78d35e9`
 
 Example request body:
 ```
@@ -292,10 +292,6 @@ If this is a new account record then:
 If this is an existing record then:
 - the `lastModifiedDate` is set to the current date
 - the `lastModifiedByUserId` is set to the current user's `userUUID`
-
-If the currency of the account is not the same as the workspace default currency then a currency exchange record is
-created. If the amount is negative then the record related to the positive amount is identified and the two records
-are made to reference each other through the `optionalReverseCurrencyExchangeId` field.
 
 Example response body:
 ```

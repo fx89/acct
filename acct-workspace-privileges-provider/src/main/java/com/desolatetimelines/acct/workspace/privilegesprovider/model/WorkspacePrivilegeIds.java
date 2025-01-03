@@ -19,9 +19,13 @@ public abstract class WorkspacePrivilegeIds {
     public static final String WORKSPACES_DELETE_GROUP = "WORKSPACES_DELETE_GROUP";
     public static final String WORKSPACES_DELETE_ANY = "WORKSPACES_DELETE_ANY";
 
-    public static final String ACCOUNT_SAVE = "ACCOUNT_SAVE";
-    public static final String ACCOUNT_READ = "ACCOUNT_READ";
-    public static final String ACCOUNT_DELETE = "ACCOUNT_DELETE";
+    public static final String ACCOUNTS_SAVE = "ACCOUNTS_SAVE";
+    public static final String ACCOUNTS_READ = "ACCOUNTS_READ";
+    public static final String ACCOUNTS_DELETE = "ACCOUNTS_DELETE";
+
+    public static final String ACCOUNT_RECORDS_SAVE = "ACCOUNT_RECORDS_SAVE";
+    public static final String ACCOUNT_RECORDS_READ = "ACCOUNT_RECORDS_READ";
+    public static final String ACCOUNT_RECORDS_DELETE = "ACCOUNT_RECORDS_DELETE";
 
 
     private static final Map<WorkspaceServiceOperation, Map<ResourceOwnership, String>>

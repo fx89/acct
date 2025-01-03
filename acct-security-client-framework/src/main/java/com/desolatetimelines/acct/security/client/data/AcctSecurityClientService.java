@@ -135,6 +135,7 @@ public class AcctSecurityClientService {
      * @param userUUID     the given user UUID
      * @param resourceUUID the given resource UUID
      */
+    // TODO: cache this (needs to be put into a new service) - cache should be short lived (5 minutes maybe)
     private AccessibilityReport fetchAccessibilityReport(
         ResourceType resourceType,
         String userUUID,

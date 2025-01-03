@@ -29,7 +29,7 @@ public class AccountsEndpointController implements AccountsEndpoint {
     }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + ACCOUNT_SAVE + "')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + ACCOUNTS_SAVE + "')")
     @PutMapping(value = "", produces = APPLICATION_JSON_VALUE)
     public AccountUUIDResponse saveAccount(
         @NotNull @RequestParam(name = "workspaceUUID") String workspaceUUID,
@@ -52,7 +52,7 @@ public class AccountsEndpointController implements AccountsEndpoint {
     }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + ACCOUNT_READ + "')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + ACCOUNTS_READ + "')")
     @GetMapping(value = "", produces = APPLICATION_JSON_VALUE)
     public Collection<AccountExtendedProperties> getAccountsInWorkspace(
         @NotNull @RequestParam(name = "workspaceUUID") String workspaceUUID
@@ -72,7 +72,7 @@ public class AccountsEndpointController implements AccountsEndpoint {
     }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + ACCOUNT_DELETE + "')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + ACCOUNTS_DELETE + "')")
     @DeleteMapping(value = "", produces = APPLICATION_JSON_VALUE)
     public void deleteAccountFromWorkspace(@NotNull String workspaceUUID, @NotNull String accountUUID) {
         // Get the user claims

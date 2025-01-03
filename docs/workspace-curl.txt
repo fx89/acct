@@ -37,7 +37,7 @@ curl \
 curl \
     --insecure \
     -v \
-    --cookie 'JSESSIONID=5563B39B43BD87D7EE7B8F91856E4436' \
+    --cookie 'JSESSIONID=9D67C05950BD9013E3B5D8E8497F1B45' \
     -X GET 'http://localhost:9001/service/authorization/v1/oauth2/authorize?response_type=code&client_id=frontend-client'
 
 
@@ -48,7 +48,7 @@ curl \
     -v \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'grant_type=authorization_code' \
-    -d 'code=OJ45flkYtjDkdTL2-Y0-sVx_wmZl1nrzw3wKgOjmFUEKXFpG9e2YLHMyogbtYwWZshWWngE1gKVZdvOq-0wQwyR3EBtlrCw1Ri82Ac2-DFc72n4NXsl9AOZ19VkADWtV' \
+    -d 'code=qcSAZRK4QcFEFBAvgKFYOGT2Kl1JyiFdjTwbxniVdEESkfB_z9-tozM7uUekEv5LpeGVC3nXYt3HYXkFFOhWanFHevphP0isMn2CjHIGNhMY2DOIpZjA8Kcnn0xh3a8B' \
     -d 'client_id=frontend-client' \
     -d 'client_secret=lkjdwsf23odnwqkld23odfbqweorh23oihd' \
     -X POST 'http://localhost:9001/service/authorization/v1/oauth2/token' \
@@ -172,4 +172,32 @@ curl \
     -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
     -H "Content-Type: application/json; charset=utf-8" \
     -X DELETE 'http://localhost:8085/service/workspace/v1/accounts?workspaceUUID=2d4ca15c-c0c7-4306-a390-3dbaa98a9802&accountUUID=ece67a54-837e-4d36-8271-77024bc18185' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT 'http://localhost:8085/service/workspace/v1/accountRecords?workspaceUUID=2d4ca15c-c0c7-4306-a390-3dbaa98a9802&accountUUID=ece67a54-837e-4d36-8271-77024bc18183' \
+    --data-raw '
+        {
+            "incomeOrExpenseItemUUID": "3ec9f1e4-4d06-4529-9f77-f638b34b9134",
+            "accountRecordText": "Beer",
+            "accountRecordValue": 50.73
+        }
+    ' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT 'http://localhost:8085/service/workspace/v1/accountRecords?workspaceUUID=2d4ca15c-c0c7-4306-a390-3dbaa98a9802&accountUUID=ece67a54-837e-4d36-8271-77024bc18183&accountRecordId=1' \
+    --data-raw '
+        {
+            "incomeOrExpenseItemUUID": "5ec9f1e4-4d06-4529-9f77-f638b34b9134",
+            "accountRecordText": "Beer 5",
+            "accountRecordValue": 55.73
+        }
+    ' \
     | jq
