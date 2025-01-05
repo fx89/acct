@@ -211,7 +211,7 @@ Returns the balance of the account with the given `accountUUID`.
 Raises an exception if the account is not part of a workspace accessible by the user.
 
 Example request URL:
-- `GET http://acct.desolatetimelines.com/service/workspace/v1/accounts/balance?accountUUID=eae46ade-1ce8-4fb3-ab6b-cc36f78d35e9`
+- `GET http://acct.desolatetimelines.com/service/workspace/v1/accounts/balance?workspaceUUID=dd7617bf-9030-4f78-9991-c39923273d42&accountUUID=eae46ade-1ce8-4fb3-ab6b-cc36f78d35e9`
 
 Example response body:
 ```
@@ -305,7 +305,7 @@ Example response body:
 
 
 <br /><br />
-#### `WKS-03003` Transfer amount between accounts
+#### `WKS-03003` Transfer amount between accounts with the same currency
 Transfers a given amount of money from one account to another.
 
 Raises an exception if the accounts are not in the same workspace.
@@ -315,7 +315,7 @@ Raises an exception if any of the two accounts is not part of a workspace access
 Raises an exception if the source account does not have enough money.
 
 Raises an exception if the transfer is attempted between accounts with different currencies. This kind of transfer
-is made by manually adding the records in the two accounts.
+is made by through `WKS-03004`
 
 Example request URL:
 - `POST http://acct.desolatetimelines.com/service/workspace/v1/accountRecords/transfer`

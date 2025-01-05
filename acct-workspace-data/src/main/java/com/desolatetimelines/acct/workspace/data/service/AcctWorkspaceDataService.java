@@ -215,4 +215,17 @@ public class AcctWorkspaceDataService {
         return currencyExchangesRepository.findAllByTargetAccountRecordIn(accountRecords);
     }
 
+    /**
+     * Returns the sum of the {@link AcctAccountRecord#getAccountRecordValue()} property of all
+     * {@link AcctAccountRecord records} belonging to the referenced {@link AcctAccount account}
+     *
+     * @param account the referenced account
+     */
+    public Double sumAccountRecordValuesByAccount(AcctAccount account) {
+        return
+            Optional
+                .ofNullable(accountRecordsRepository.sumAccountRecordValueByAccount(account))
+                .orElse(0d); // In case there are no records and the response is null
+    }
+
 }

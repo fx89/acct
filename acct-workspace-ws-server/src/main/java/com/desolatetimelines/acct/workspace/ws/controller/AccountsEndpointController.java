@@ -5,6 +5,7 @@ import com.desolatetimelines.acct.workspace.service.AcctWorkspaceService;
 import com.desolatetimelines.acct.workspace.ws.endpoint.AccountsEndpoint;
 import com.desolatetimelines.acct.workspace.ws.mapper.AccountDetailsMapper;
 import com.desolatetimelines.acct.workspace.ws.mapper.AccountExtendedPropertiesMapper;
+import com.desolatetimelines.acct.workspace.ws.model.AccountBalanceResponse;
 import com.desolatetimelines.acct.workspace.ws.model.AccountExtendedProperties;
 import com.desolatetimelines.acct.workspace.ws.model.AccountProperties;
 import com.desolatetimelines.acct.workspace.ws.model.AccountUUIDResponse;
@@ -85,5 +86,27 @@ public class AccountsEndpointController implements AccountsEndpoint {
             accountUUID,
             userClaims.privilegeNames()
         );
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + ACCOUNT_RECORDS_READ + "')")
+    @GetMapping(value = "/balance")
+    public AccountBalanceResponse computeAccountBalance(
+        @NotNull @RequestParam(value = "workspaceUUID") String workspaceUUID,
+        @NotNull @RequestParam(value = "accountUUID") String accountUUID
+    ) {
+        // Get the user claims
+        final AcctUserClaims userClaims = extractCurrentUserClaims();
+
+        // Run, wrap and return
+        return
+            new AccountBalanceResponse(
+                workspaceService.computeAccountBalance(
+                    userClaims.userUUID(),
+                    workspaceUUID,
+                    accountUUID,
+                    userClaims.privilegeNames()
+                )
+            );
     }
 }

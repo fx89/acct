@@ -1,9 +1,7 @@
 package com.desolatetimelines.acct.workspace.ws.endpoint;
 
 import com.desolatetimelines.acct.common.ws.model.AcctPage;
-import com.desolatetimelines.acct.workspace.ws.model.AccountRecordEnhancedDetails;
-import com.desolatetimelines.acct.workspace.ws.model.AccountRecordIdResponse;
-import com.desolatetimelines.acct.workspace.ws.model.AccountRecordProperties;
+import com.desolatetimelines.acct.workspace.ws.model.*;
 import jakarta.validation.constraints.NotNull;
 
 /**
@@ -52,4 +50,14 @@ public interface AccountRecordsEndpoint {
         @NotNull int pageSize
     );
 
+    /**
+     * Transfers a given amount from a source account to a target account of the same currency.
+     * The transfer parameters are contained by the given currency transfer record.
+     *
+     * @param currencyTransfer the given currency transfer record
+     */
+    void transferAmountBetweenAccountsWithSameCurrency(
+        @NotNull String workspaceUUID,
+        CurrencyTransfer currencyTransfer
+    );
 }

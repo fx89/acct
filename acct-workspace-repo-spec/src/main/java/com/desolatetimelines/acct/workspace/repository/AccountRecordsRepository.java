@@ -63,4 +63,12 @@ public interface AccountRecordsRepository {
         int pageNumber,
         int pageSize
     );
+
+    /**
+     * Returns the sum of the {@link AcctAccountRecord#getAccountRecordValue()} property of all
+     * {@link AcctAccountRecord records} belonging to the referenced {@link AcctAccount account}
+     *
+     * @param account the referenced account
+     */
+    Double sumAccountRecordValueByAccount(AcctAccount account);
 }

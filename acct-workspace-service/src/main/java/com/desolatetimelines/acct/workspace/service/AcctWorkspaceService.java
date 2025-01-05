@@ -11,6 +11,8 @@ import com.desolatetimelines.acct.usage.ws.client.RESTUsageEndpointClient;
 import com.desolatetimelines.acct.usage.ws.model.ServiceItemTypesList;
 import com.desolatetimelines.acct.workspace.AccountRecordExtendedDetailsMapper;
 import com.desolatetimelines.acct.workspace.data.service.AcctWorkspaceDataService;
+import com.desolatetimelines.acct.workspace.exception.AcctWorkspaceServiceInsufficientFundsException;
+import com.desolatetimelines.acct.workspace.exception.AcctWorkspaceServiceMismatchedCurrenciesException;
 import com.desolatetimelines.acct.workspace.exception.AcctWorkspaceServiceNotFoundException;
 import com.desolatetimelines.acct.workspace.exception.AcctWorkspaceServiceSecurityException;
 import com.desolatetimelines.acct.workspace.model.*;
@@ -24,6 +26,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.*;
 
+import static com.desolatetimelines.acct.common.model.CommonUUIDs.INCOME_OR_EXPENSE_ITEM_UUID_FOR_TRANSFER;
 import static com.desolatetimelines.acct.security.client.model.ResourceType.WORKSPACE;
 import static com.desolatetimelines.acct.workspace.privilegesprovider.model.ResourceOwnership.*;
 import static com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspacePrivilegeIds.*;
@@ -35,6 +38,8 @@ import static java.util.Collections.emptyList;
  */
 @Service
 public class AcctWorkspaceService {
+
+    private static final String ACCT_REC_TEXT_TRANSFER = "Transfer";
 
     private final RESTUsageEndpointClient usageEndpointClient;
 
@@ -442,12 +447,8 @@ public class AcctWorkspaceService {
         record.setAccountRecordText(accountRecordDetails.accountRecordText());
         record.setAccountRecordValue(accountRecordDetails.accountRecordValue());
 
-        // Set the workflow-related properties
-        record.setLastModifiedDate(Instant.now());
-        record.setLastModifiedByUserUUID(userUUID);
-
         // Persist the account record and return the account record id
-        return dataService.saveAccountRecord(record).getAccountRecordId();
+        return saveAccountRecord(userUUID, record).getAccountRecordId();
     }
 
     /**
@@ -510,6 +511,113 @@ public class AcctWorkspaceService {
     }
 
     /**
+     * Transfers the given amount from the account referenced by the given source account UUID
+     * into the account referenced by the given target account UUID, provided that both accounts
+     * are part of the same workspace, referenced by the given workspace UUID, and have the same
+     * currency. To secure the operation, the user referenced by the given user UUID has to have
+     * access to the workspace and the given collection of privileges must contain the proper
+     * privileges for to allow the user to update the workspace.
+     *
+     * @param userUUID               the given user UUID
+     * @param workspaceUUID          the given workspace UUID
+     * @param sourceAccountUUID      the given source account UUID
+     * @param targetAccountUUID      the given target account UUID
+     * @param amount                 the given amount
+     * @param assignedPrivilegeNames the given collection of privileges
+     */
+    @Transactional
+    public void transferAmountBetweenAccountsWithSameCurrency(
+        String userUUID,
+        String workspaceUUID,
+        String sourceAccountUUID,
+        String targetAccountUUID,
+        Double amount,
+        Collection<String> assignedPrivilegeNames
+    ) {
+        // Retrieve the workspace for the save operation
+        final AcctWorkspace workspace =
+            findWorkspaceForUserAndOperation(SAVE, userUUID, workspaceUUID, assignedPrivilegeNames);
+
+        // Retrieve the source account from the workspace
+        final AcctAccount sourceAccount =
+            findAccountByAccountUUIDForWorkspace(workspace, sourceAccountUUID);
+
+        // Retrieve the target account from the workspace
+        final AcctAccount targetAccount =
+            findAccountByAccountUUIDForWorkspace(workspace, targetAccountUUID);
+
+        // Make sure the source and target accounts have the same currency
+        if (!Objects.equals(sourceAccount.getCurrencyUUID(), targetAccount.getCurrencyUUID())) {
+            throw new AcctWorkspaceServiceMismatchedCurrenciesException(
+                errors,
+                sourceAccount.getCurrencyUUID(),
+                targetAccount.getCurrencyUUID()
+            );
+        }
+
+        // Make sure the source account has enough currency for the transfer
+        if (computeAccountBalance(sourceAccount) < amount) {
+            throw new AcctWorkspaceServiceInsufficientFundsException(errors, sourceAccount.getAccountUUID());
+        }
+
+        // Get the current date
+        final Instant currentDate = Instant.now();
+
+        // Add a record for subtracting the amount from the source account
+        final AcctAccountRecord sourceAccountRecord = createNewAccountRecordWithinAccount(sourceAccount, userUUID);
+        sourceAccountRecord.setAccountRecordText(ACCT_REC_TEXT_TRANSFER);
+        sourceAccountRecord.setAccountRecordValue(-amount);
+        sourceAccountRecord.setIncomeOrExpenseItemUUID(INCOME_OR_EXPENSE_ITEM_UUID_FOR_TRANSFER);
+        saveAccountRecord(userUUID, currentDate, sourceAccountRecord);
+
+        // Add a record for adding the amount to the target account
+        final AcctAccountRecord targetAccountRecord = createNewAccountRecordWithinAccount(targetAccount, userUUID);
+        targetAccountRecord.setAccountRecordText(ACCT_REC_TEXT_TRANSFER);
+        targetAccountRecord.setAccountRecordValue(amount);
+        targetAccountRecord.setIncomeOrExpenseItemUUID(INCOME_OR_EXPENSE_ITEM_UUID_FOR_TRANSFER);
+        saveAccountRecord(userUUID, currentDate, targetAccountRecord);
+    }
+
+    /**
+     * Computes the balance of the account referenced by the given account UUID,
+     * within the workspace with the given workspace UUID. Raises exceptions if
+     * the workspace is not accessible to the user with the given user UUID given
+     * the referenced collection of user privileges.
+     *
+     * @param userUUID               the given user UUID
+     * @param workspaceUUID          the given workspace UUID
+     * @param accountUUID            the given account UUID
+     * @param assignedPrivilegeNames the referenced collection of user privileges
+     */
+    public double computeAccountBalance(
+        String userUUID,
+        String workspaceUUID,
+        String accountUUID,
+        Collection<String> assignedPrivilegeNames
+    ) {
+        // Retrieve the workspace for the save operation
+        final AcctWorkspace workspace =
+            findWorkspaceForUserAndOperation(SAVE, userUUID, workspaceUUID, assignedPrivilegeNames);
+
+        // Retrieve the account from the workspace
+        final AcctAccount account =
+            findAccountByAccountUUIDForWorkspace(workspace, accountUUID);
+
+        // Compute the balance and return the result
+        return computeAccountBalance(account);
+    }
+
+    /**
+     * Computes the balance of the referenced {@link AcctAccount account}
+     *
+     * @param account the referenced account
+     * @return the computed balance
+     */
+    private Double computeAccountBalance(AcctAccount account) {
+        return dataService.sumAccountRecordValuesByAccount(account);
+    }
+
+    /**
      * Creates a new instance of {@link AcctAccountRecord} and populates it with the
      * referenced parent account, while also setting the workflow-related properties
      * that include the given user UUID. The entity is created in-memory and not
@@ -548,6 +656,40 @@ public class AcctWorkspaceService {
                 .orElseThrow(() -> new AcctWorkspaceServiceNotFoundException(
                     errors, ObjectTypes.ACCOUNT_RECORD, Long.toString(accountRecordId))
                 );
+    }
+
+    /**
+     * Persists the referenced {@link AcctAccountRecord account record} while also setting
+     * the {@link AcctAccountRecord#getLastModifiedDate() last modified date} to the current
+     * date and the {@link AcctAccountRecord#getLastModifiedByUserUUID() last modified by user UUID}
+     * to the given user UUID
+     *
+     * @param userUUID the given user UUID
+     * @param record   the referenced account record
+     * @return a reference to the persisted entity
+     */
+    private AcctAccountRecord saveAccountRecord(String userUUID, AcctAccountRecord record) {
+        return saveAccountRecord(userUUID, Instant.now(), record);
+    }
+
+    /**
+     * Persists the referenced {@link AcctAccountRecord account record} while also setting
+     * the {@link AcctAccountRecord#getLastModifiedDate() last modified date} to the given
+     * date and the {@link AcctAccountRecord#getLastModifiedByUserUUID() last modified by user UUID}
+     * to the given user UUID
+     *
+     * @param userUUID    the given user UUID
+     * @param currentDate the given date
+     * @param record      the referenced account record
+     * @return a reference to the persisted entity
+     */
+    private AcctAccountRecord saveAccountRecord(String userUUID, Instant currentDate, AcctAccountRecord record) {
+        // Set the workflow-related properties
+        record.setLastModifiedDate(currentDate);
+        record.setLastModifiedByUserUUID(userUUID);
+
+        // Persist the account record and return
+        return dataService.saveAccountRecord(record);
     }
 
     /**

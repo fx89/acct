@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 import static com.desolatetimelines.acct.workspace.util.AcctWorkspaceRepoSpringDataUtils.doWithJpaAcctAccountRecordReturning;
+import static com.desolatetimelines.acct.workspace.util.AcctWorkspaceRepoSpringDataUtils.doWithJpaAcctAccountReturning;
 import static java.util.function.Function.identity;
 
 /**
@@ -90,6 +91,14 @@ public class SpringJpaAccountRecordsRepository implements AccountRecordsReposito
                 page.stream().toList(),
                 page.getNumberOfElements(),
                 page.getTotalElements()
+            );
+    }
+
+    @Override
+    public Double sumAccountRecordValueByAccount(AcctAccount account) {
+        return
+            jpaAccountRecordsRepository.sumAccountRecordValueByAccount(
+                doWithJpaAcctAccountReturning(account, identity())
             );
     }
 }

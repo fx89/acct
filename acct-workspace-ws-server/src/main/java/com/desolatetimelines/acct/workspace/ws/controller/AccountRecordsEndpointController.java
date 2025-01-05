@@ -9,13 +9,13 @@ import com.desolatetimelines.acct.workspace.ws.mapper.AccountRecordEnhancedDetai
 import com.desolatetimelines.acct.workspace.ws.model.AccountRecordEnhancedDetails;
 import com.desolatetimelines.acct.workspace.ws.model.AccountRecordIdResponse;
 import com.desolatetimelines.acct.workspace.ws.model.AccountRecordProperties;
+import com.desolatetimelines.acct.workspace.ws.model.CurrencyTransfer;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import static com.desolatetimelines.acct.common.ws.util.AcctJwtUtils.extractCurrentUserClaims;
-import static com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspacePrivilegeIds.ACCOUNT_RECORDS_READ;
-import static com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspacePrivilegeIds.ACCOUNT_RECORDS_SAVE;
+import static com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspacePrivilegeIds.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
@@ -83,4 +83,24 @@ public class AccountRecordsEndpointController implements AccountRecordsEndpoint 
             );
     }
 
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + ACCOUNT_RECORDS_TRANSFER + "')")
+    @PostMapping(value = "transfer")
+    public void transferAmountBetweenAccountsWithSameCurrency(
+        @NotNull @RequestParam String workspaceUUID,
+        @RequestBody CurrencyTransfer currencyTransfer
+    ) {
+        // Get the user claims
+        final AcctUserClaims userClaims = extractCurrentUserClaims();
+
+        // Run the operation
+        workspaceService.transferAmountBetweenAccountsWithSameCurrency(
+            userClaims.userUUID(),
+            workspaceUUID,
+            currencyTransfer.sourceAccountUUID(),
+            currencyTransfer.targetAccountUUID(),
+            currencyTransfer.amount(),
+            userClaims.privilegeNames()
+        );
+    }
 }

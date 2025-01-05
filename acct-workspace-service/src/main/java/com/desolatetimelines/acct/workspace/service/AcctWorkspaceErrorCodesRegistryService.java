@@ -12,6 +12,8 @@ public class AcctWorkspaceErrorCodesRegistryService extends AbstractErrorCodesRe
     public String RESOURCE_NOT_FOUND_ACCOUNT;
     public String RESOURCE_NOT_FOUND_ACCOUNT_RECORD;
     public String RESOURCE_NOT_FOUND_DEPOSIT;
+    public String MISMATCHED_CURRENCIES;
+    public String INSUFFICIENT_FUNDS;
 
     protected AcctWorkspaceErrorCodesRegistryService() {
         super(Integer.parseInt(System.getenv("WORKSPACE_SERVICE_NUMBER")));
@@ -22,6 +24,8 @@ public class AcctWorkspaceErrorCodesRegistryService extends AbstractErrorCodesRe
         final String CAT_NAME_SECURITY = "Service-specific security exceptions";
 
         final String CAT_NAME_DATA_ACCESS = "Data access exceptions";
+
+        final String CAT_NAME_BUSINESS_RULES_VALIDATION = "Business rules validation exceptions";
 
         RESOURCE_NOT_ACCESSIBLE =
             resolveErrorCode(
@@ -57,6 +61,20 @@ public class AcctWorkspaceErrorCodesRegistryService extends AbstractErrorCodesRe
                 CAT_NAME_DATA_ACCESS,
                 "Deposit not found",
                 "The service was requested to run operations invoking a deposit that does not exist"
+            );
+
+        MISMATCHED_CURRENCIES =
+            resolveErrorCode(
+                CAT_NAME_BUSINESS_RULES_VALIDATION,
+                "Mismatched currencies",
+                "An illegal operation was attempted on two accounts with different currencies"
+            );
+
+        INSUFFICIENT_FUNDS =
+            resolveErrorCode(
+                CAT_NAME_BUSINESS_RULES_VALIDATION,
+                "Insufficient funds",
+                "An operation cannot be performed because an account does not sufficient funds"
             );
     }
 

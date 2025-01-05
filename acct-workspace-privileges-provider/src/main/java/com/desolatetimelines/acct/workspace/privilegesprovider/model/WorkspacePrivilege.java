@@ -129,6 +129,15 @@ public enum WorkspacePrivilege {
             .withPrivilegeDescription("Allows deleting account records, " +
                 "provided that the user has the right to update the account's parent workspace")
             .build()
+    ),
+
+    ACCOUNT_RECORDS_TRANSFER(
+        AcctPrivilege.builder()
+            .withPrivilegeId(WorkspacePrivilegeIds.ACCOUNT_RECORDS_TRANSFER)
+            .withPrivilegeName("Transfer amounts between accounts")
+            .withPrivilegeDescription("Allows transferring various amounts between different accounts, " +
+                "provided that the user has the right to the parent workspace of the aforementioned accounts")
+            .build()
     );
 
 

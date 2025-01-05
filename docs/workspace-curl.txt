@@ -37,7 +37,7 @@ curl \
 curl \
     --insecure \
     -v \
-    --cookie 'JSESSIONID=EE3A9966996A9767F61E494CB20224E9' \
+    --cookie 'JSESSIONID=C6CACF4EDC2892BD082C886B5ACA7A28' \
     -X GET 'http://localhost:9001/service/authorization/v1/oauth2/authorize?response_type=code&client_id=frontend-client'
 
 
@@ -48,7 +48,7 @@ curl \
     -v \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'grant_type=authorization_code' \
-    -d 'code=ioDi_E0ODK2N5lcY5F_-wM_5tpDfeyzs3ZmSPkSWy7gZlhS--gAM9AnaPsYwz6rb1iQSo-thGVaWBKu9DOnbscG3iXg-D9fM4YsY8bYCsixCNBxEL5ZfnGdpPci2YzKA' \
+    -d 'code=u45dhHdYUKsW0aMoUl0eEPndNWslFQFWtKwgNe6ThKugYdIxgtcP--5_tU2DGuF5xrK5oNmlrprWceBRjC14JZQSdTSt2BZXZNUUEfnRmgabTrFfhm_Mydy7pxuDSmp5' \
     -d 'client_id=frontend-client' \
     -d 'client_secret=lkjdwsf23odnwqkld23odfbqweorh23oihd' \
     -X POST 'http://localhost:9001/service/authorization/v1/oauth2/token' \
@@ -176,6 +176,14 @@ curl \
 
 curl \
     --insecure \
+    -v \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X GET 'http://localhost:8085/service/workspace/v1/accounts/balance?workspaceUUID=2d4ca15c-c0c7-4306-a390-3dbaa98a9802&accountUUID=ece67a54-837e-4d36-8271-77024bc18183' \
+    | jq
+
+curl \
+    --insecure \
     -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
     -H "Content-Type: application/json; charset=utf-8" \
     -X PUT 'http://localhost:8085/service/workspace/v1/accountRecords?workspaceUUID=2d4ca15c-c0c7-4306-a390-3dbaa98a9802&accountUUID=ece67a54-837e-4d36-8271-77024bc18183' \
@@ -207,4 +215,47 @@ curl \
     -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
     -H "Content-Type: application/json; charset=utf-8" \
     -X GET 'http://localhost:8085/service/workspace/v1/accountRecords?workspaceUUID=2d4ca15c-c0c7-4306-a390-3dbaa98a9802&accountUUID=ece67a54-837e-4d36-8271-77024bc18183&pageNumber=0&pageSize=5' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X POST 'http://localhost:8085/service/workspace/v1/accountRecords/transfer?workspaceUUID=2d4ca15c-c0c7-4306-a390-3dbaa98a9802' \
+    --data-raw '
+        {
+            "sourceAccountUUID": "ace67a54-837e-4d36-8271-77024bc18183",
+            "targetAccountUUID": "ece67a54-837e-4d36-8271-77024bc18183",
+            "amount": 10.03
+        }
+    ' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X POST 'http://localhost:8085/service/workspace/v1/accountRecords/transfer?workspaceUUID=2d4ca15c-c0c7-4306-a390-3dbaa98a9802' \
+    --data-raw '
+        {
+            "sourceAccountUUID": "bce67a54-837e-4d36-8271-77024bc18183",
+            "targetAccountUUID": "ece67a54-837e-4d36-8271-77024bc18183",
+            "amount": 10.03
+        }
+    ' \
+    | jq
+
+curl \
+    --insecure \
+    -v \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X POST 'http://localhost:8085/service/workspace/v1/accountRecords/transfer?workspaceUUID=2d4ca15c-c0c7-4306-a390-3dbaa98a9802' \
+    --data-raw '
+        {
+            "sourceAccountUUID": "ece67a54-837e-4d36-8271-77024bc18183",
+            "targetAccountUUID": "bce67a54-837e-4d36-8271-77024bc18183",
+            "amount": 10.03
+        }
+    ' \
     | jq

@@ -1,5 +1,6 @@
 package com.desolatetimelines.acct.workspace.ws.endpoint;
 
+import com.desolatetimelines.acct.workspace.ws.model.AccountBalanceResponse;
 import com.desolatetimelines.acct.workspace.ws.model.AccountExtendedProperties;
 import com.desolatetimelines.acct.workspace.ws.model.AccountProperties;
 import com.desolatetimelines.acct.workspace.ws.model.AccountUUIDResponse;
@@ -43,5 +44,15 @@ public interface AccountsEndpoint {
      * @param accountUUID   the given workspace UUID
      */
     void deleteAccountFromWorkspace(@NotNull String workspaceUUID, @NotNull String accountUUID);
+
+    /**
+     * Computes the balance of the account with the specified account UUID
+     * within the workspace with the specified workspace UUID
+     *
+     * @param workspaceUUID the specified workspace UUID
+     * @param accountUUID   the specified account UUID
+     * @return the computed account balance, expressed in the account's currency
+     */
+    AccountBalanceResponse computeAccountBalance(@NotNull String workspaceUUID, @NotNull String accountUUID);
 
 }

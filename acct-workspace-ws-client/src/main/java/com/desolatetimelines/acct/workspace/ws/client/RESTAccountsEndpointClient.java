@@ -1,6 +1,7 @@
 package com.desolatetimelines.acct.workspace.ws.client;
 
 import com.desolatetimelines.acct.workspace.ws.endpoint.AccountsEndpoint;
+import com.desolatetimelines.acct.workspace.ws.model.AccountBalanceResponse;
 import com.desolatetimelines.acct.workspace.ws.model.AccountExtendedProperties;
 import com.desolatetimelines.acct.workspace.ws.model.AccountProperties;
 import com.desolatetimelines.acct.workspace.ws.model.AccountUUIDResponse;
@@ -35,5 +36,12 @@ public interface RESTAccountsEndpointClient extends AccountsEndpoint {
     @Override
     @DeleteMapping(value = "", produces = APPLICATION_JSON_VALUE)
     void deleteAccountFromWorkspace(@NotNull String workspaceUUID, @NotNull String accountUUID);
+
+    @Override
+    @GetMapping(value = "/balance")
+    AccountBalanceResponse computeAccountBalance(
+        @NotNull @RequestParam(value = "workspaceUUID") String workspaceUUID,
+        @NotNull @RequestParam(value = "accountUUID") String accountUUID
+    );
 
 }

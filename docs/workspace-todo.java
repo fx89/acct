@@ -7,11 +7,11 @@
 // DONE: WKS-02001: Accounts endpoint: Get accounts in workspace
 // DONE: WKS-02002: Accounts endpoint: Save account into workspace
 // DONE: WKS-02003: Accounts endpoint: Delete account from workspace
-// TODO: WKS-02004: Accounts endpoint: Get account balance
+// DONE: WKS-02004: Accounts endpoint: Get account balance
 
 // DONE: WKS-03001: Account records endpoint: Find sorted page of account records by account and text content
 // DONE: WKS-03002: Account records endpoint: Save account record
-// TODO: WKS-03003: Account records endpoint: Transfer amount between accounts with the same currency
+// DONE: WKS-03003: Account records endpoint: Transfer amount between accounts with the same currency
 // TODO: WKS-03004: Account records endpoint: Currency exchange
 
 // TODO: WKS-04001: Deposits endpoint: Get sorted page of deposits by workspace and bank (optionally including capitalized ones)
