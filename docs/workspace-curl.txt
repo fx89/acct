@@ -37,7 +37,7 @@ curl \
 curl \
     --insecure \
     -v \
-    --cookie 'JSESSIONID=9D67C05950BD9013E3B5D8E8497F1B45' \
+    --cookie 'JSESSIONID=EE3A9966996A9767F61E494CB20224E9' \
     -X GET 'http://localhost:9001/service/authorization/v1/oauth2/authorize?response_type=code&client_id=frontend-client'
 
 
@@ -48,7 +48,7 @@ curl \
     -v \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'grant_type=authorization_code' \
-    -d 'code=qcSAZRK4QcFEFBAvgKFYOGT2Kl1JyiFdjTwbxniVdEESkfB_z9-tozM7uUekEv5LpeGVC3nXYt3HYXkFFOhWanFHevphP0isMn2CjHIGNhMY2DOIpZjA8Kcnn0xh3a8B' \
+    -d 'code=ioDi_E0ODK2N5lcY5F_-wM_5tpDfeyzs3ZmSPkSWy7gZlhS--gAM9AnaPsYwz6rb1iQSo-thGVaWBKu9DOnbscG3iXg-D9fM4YsY8bYCsixCNBxEL5ZfnGdpPci2YzKA' \
     -d 'client_id=frontend-client' \
     -d 'client_secret=lkjdwsf23odnwqkld23odfbqweorh23oihd' \
     -X POST 'http://localhost:9001/service/authorization/v1/oauth2/token' \
@@ -200,4 +200,11 @@ curl \
             "accountRecordValue": 55.73
         }
     ' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X GET 'http://localhost:8085/service/workspace/v1/accountRecords?workspaceUUID=2d4ca15c-c0c7-4306-a390-3dbaa98a9802&accountUUID=ece67a54-837e-4d36-8271-77024bc18183&pageNumber=0&pageSize=5' \
     | jq

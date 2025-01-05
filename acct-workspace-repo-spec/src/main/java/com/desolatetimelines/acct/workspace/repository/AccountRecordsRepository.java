@@ -1,5 +1,7 @@
 package com.desolatetimelines.acct.workspace.repository;
 
+import com.desolatetimelines.acct.common.model.Page;
+import com.desolatetimelines.acct.workspace.model.AcctAccount;
 import com.desolatetimelines.acct.workspace.model.AcctAccountRecord;
 
 import java.util.Optional;
@@ -32,4 +34,33 @@ public interface AccountRecordsRepository {
      */
     Optional<AcctAccountRecord> findFirstByAccountRecordId(Long accountRecordId);
 
+    /**
+     * Retrieves a page of the given page size and with the given page number
+     * of {@link AcctAccountRecord account records} belonging to the referenced
+     * {@link AcctAccount account}
+     *
+     * @param account    the referenced account
+     * @param pageNumber the given page number
+     * @param pageSize   the given page size
+     */
+    Page<AcctAccountRecord> findAllByAccount(AcctAccount account, int pageNumber, int pageSize);
+
+    /**
+     * Retrieves a page of the given page size and with the given page number
+     * of {@link AcctAccountRecord account records} belonging to the referenced
+     * {@link AcctAccount account} and for which the
+     * {@link AcctAccountRecord#getAccountRecordText() text} matches the given
+     * pattern
+     *
+     * @param account     the referenced account
+     * @param textPattern the given pattern
+     * @param pageNumber  the given page number
+     * @param pageSize    the given page size
+     */
+    Page<AcctAccountRecord> findAllByAccountAndTextLike(
+        AcctAccount account,
+        String textPattern,
+        int pageNumber,
+        int pageSize
+    );
 }

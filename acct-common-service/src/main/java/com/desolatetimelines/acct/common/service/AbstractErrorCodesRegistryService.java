@@ -68,7 +68,6 @@ public abstract class AbstractErrorCodesRegistryService {
         errorCategoryNumbersSequence.incrementAndGet();
         errorCategoryNumbersSequence.incrementAndGet();
         errorCategoryNumbersSequence.incrementAndGet();
-        errorCategoryNumbersSequence.incrementAndGet();
 
         // Register error codes for the reserved categories ...
 

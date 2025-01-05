@@ -1,0 +1,1 @@
+alter table "currency_exchange" alter column "optional_reverse_currency_exchange_id" drop not null;

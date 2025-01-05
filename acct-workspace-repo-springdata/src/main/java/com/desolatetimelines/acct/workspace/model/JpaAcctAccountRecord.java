@@ -3,6 +3,7 @@ package com.desolatetimelines.acct.workspace.model;
 import jakarta.persistence.*;
 
 import java.time.Instant;
+import java.util.Objects;
 
 import static com.desolatetimelines.acct.workspace.util.AcctWorkspaceRepoSpringDataUtils.doWithJpaAcctAccountReturning;
 import static java.util.function.Function.identity;
@@ -128,5 +129,18 @@ public class JpaAcctAccountRecord implements AcctAccountRecord {
     @Override
     public void setLastModifiedByUserUUID(String lastModifiedByUserUUID) {
         this.lastModifiedByUserUUID = lastModifiedByUserUUID;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        JpaAcctAccountRecord that = (JpaAcctAccountRecord) o;
+        return Objects.equals(accountRecordId, that.accountRecordId) && Objects.equals(account, that.account);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(accountRecordId, account);
     }
 }

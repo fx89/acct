@@ -1,6 +1,7 @@
 package com.desolatetimelines.acct.workspace.service;
 
 import com.desolatetimelines.acct.common.model.ObjectTypes;
+import com.desolatetimelines.acct.common.model.Page;
 import com.desolatetimelines.acct.security.client.data.AcctSecurityClientService;
 import com.desolatetimelines.acct.security.client.model.UserResourceAccessRights;
 import com.desolatetimelines.acct.security.ws.endpoint.model.OwnedWorkspacesGroup;
@@ -8,6 +9,7 @@ import com.desolatetimelines.acct.security.ws.endpoint.model.OwnerType;
 import com.desolatetimelines.acct.security.ws.endpoint.model.WorkspaceOwner;
 import com.desolatetimelines.acct.usage.ws.client.RESTUsageEndpointClient;
 import com.desolatetimelines.acct.usage.ws.model.ServiceItemTypesList;
+import com.desolatetimelines.acct.workspace.AccountRecordExtendedDetailsMapper;
 import com.desolatetimelines.acct.workspace.data.service.AcctWorkspaceDataService;
 import com.desolatetimelines.acct.workspace.exception.AcctWorkspaceServiceNotFoundException;
 import com.desolatetimelines.acct.workspace.exception.AcctWorkspaceServiceSecurityException;
@@ -26,6 +28,7 @@ import static com.desolatetimelines.acct.security.client.model.ResourceType.WORK
 import static com.desolatetimelines.acct.workspace.privilegesprovider.model.ResourceOwnership.*;
 import static com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspacePrivilegeIds.*;
 import static com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspaceServiceOperation.*;
+import static java.util.Collections.emptyList;
 
 /**
  * Workspace services layer
@@ -445,6 +448,65 @@ public class AcctWorkspaceService {
 
         // Persist the account record and return the account record id
         return dataService.saveAccountRecord(record).getAccountRecordId();
+    }
+
+    /**
+     * Retrieves a page of {@link AccountRecordExtendedDetails extended account records},
+     * which include all the properties an {@link AcctAccountRecord account record} has
+     * and add some more additional information such as the purchase price for foreign
+     * currencies when it comes to currency exchange records. The page of records is taken
+     * from the account with the given account UUID within the workspace with the given
+     * workspace UUID, as seen by the user with the given user UUID and the given collection
+     * of assigned privileges. If the pattern is provided then a filter on the record's
+     * {@link AcctAccountRecord#getAccountRecordText() text} applies. The returned page
+     * is of the given page number and page size and the data set is sorted in ascending
+     * order by {@link AcctAccountRecord#getAccountRecordDate() account record date}.
+     *
+     * @param userUUID               the given user UUID
+     * @param workspaceUUID          the given workspace UUID
+     * @param accountUUID            the given account UUID
+     * @param pattern                the pattern
+     * @param pageNumber             the given page number
+     * @param pageSize               the given page size
+     * @param assignedPrivilegeNames the given collection of assigned privileges
+     */
+    public Page<AccountRecordExtendedDetails> findSortedPageOfAccountRecordsByTextPattern(
+        String userUUID,
+        String workspaceUUID,
+        String accountUUID,
+        String pattern,
+        int pageNumber,
+        int pageSize,
+        Collection<String> assignedPrivilegeNames
+    ) {
+        // Retrieve the workspace for the save operation
+        final AcctWorkspace workspace =
+            findWorkspaceForUserAndOperation(SAVE, userUUID, workspaceUUID, assignedPrivilegeNames);
+
+        // Retrieve the account from the workspace
+        final AcctAccount account =
+            findAccountByAccountUUIDForWorkspace(workspace, accountUUID);
+
+        // Retrieve the page of account records using the proper method, which is
+        // chosen based on the existence of the pattern
+        final Page<AcctAccountRecord> accountRecordsPage =
+            (pattern == null || pattern.isBlank())
+                ? dataService.findAccountRecordsByAccount(account, pageNumber, pageSize)
+                : dataService.findAccountRecordsByAccountAndTextLike(account, pattern, pageNumber, pageSize);
+
+        // If this is a foreign currency account then fetch currency exchange records for the page
+        final Collection<AcctCurrencyExchange> currencyExchangeRecords =
+            Objects.equals(account.getCurrencyUUID(), workspace.getDefaultCurrencyUUID())
+                ? emptyList()
+                : dataService.findCurrencyExchangesByTargetAccountRecordIn(accountRecordsPage.data());
+
+        // Turn the retrieved page into a page of AccountRecordExtendedDetails
+        // and return a reference
+        return
+            AccountRecordExtendedDetailsMapper.fromPageOfAcctAccountRecords(
+                accountRecordsPage,
+                currencyExchangeRecords
+            );
     }
 
     /**

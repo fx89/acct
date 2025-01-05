@@ -225,14 +225,14 @@ Example response body:
 
 <br /><br />
 #### `WKS-03001` Find sorted page of account records by account and text content
-Returns a sorted page of account records belonging to the account with the given `accountUUID` and for which the
-account record text matches the optional `pattern` (if given).
+Returns a sorted page of account records belonging to the account with the given `accountUUID`, within the workspace
+with the given `workspaceUUID`, and for which the  account record text matches the optional `pattern` (if given).
 
 Raises an exception if the account is not part of a workspace accessible by the user.
 
 Example request URLs:
-- `GET http://acct.desolatetimelines.com/service/workspace/v1/accountRecords?accountUUID=eae46ade-1ce8-4fb3-ab6b-cc36f78d35e9&pageNumber=0&pageSize=5`
-- `GET http://acct.desolatetimelines.com/service/workspace/v1/accountRecords?accountUUID=eae46ade-1ce8-4fb3-ab6b-cc36f78d35e9&pageNumber=0&pageSize=5&pattern=Cond`
+- `GET http://acct.desolatetimelines.com/service/workspace/v1/accountRecords?workspaceUUID=dd7617bf-9030-4f78-9991-c39923273d42&accountUUID=eae46ade-1ce8-4fb3-ab6b-cc36f78d35e9&pageNumber=0&pageSize=5`
+- `GET http://acct.desolatetimelines.com/service/workspace/v1/accountRecords?workspaceUUID=dd7617bf-9030-4f78-9991-c39923273d42&accountUUID=eae46ade-1ce8-4fb3-ab6b-cc36f78d35e9&pageNumber=0&pageSize=5&pattern=Cond`
 
 Example response body:
 ```
@@ -245,7 +245,8 @@ Example response body:
             "accountRecordText": "Beer",
             "accountRecordValue": 50.73,
             "lastModifiedDate": "2020-01-01",
-            "lastModifiedByUserId": "8246a0ba-56de-4878-b48c-fdc167739911",
+            "lastModifiedByUserUUID": "8246a0ba-56de-4878-b48c-fdc167739911",
+            "exchangeRate": 300.19,
             "purchasePrice": 300.19
         }
     ],
@@ -258,7 +259,8 @@ Example response body:
 ```
 
 If the currency of the account is not the same as the workspace default currency then the optional `purchasePrice` field
-is returned. The value is taken from the currency exchange record related to the account record.
+is returned. The value is taken from the currency exchange record related to the account record. Note that it isn't
+mandatory to have a currency exchange record for each record in a foreign currency account, so do not inner join.
 
 
 

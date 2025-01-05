@@ -1,5 +1,7 @@
 package com.desolatetimelines.acct.workspace.ws.endpoint;
 
+import com.desolatetimelines.acct.common.ws.model.AcctPage;
+import com.desolatetimelines.acct.workspace.ws.model.AccountRecordEnhancedDetails;
 import com.desolatetimelines.acct.workspace.ws.model.AccountRecordIdResponse;
 import com.desolatetimelines.acct.workspace.ws.model.AccountRecordProperties;
 import jakarta.validation.constraints.NotNull;
@@ -28,6 +30,26 @@ public interface AccountRecordsEndpoint {
         @NotNull String accountUUID,
         Long accountRecordId,
         AccountRecordProperties accountRecordProperties
+    );
+
+    /**
+     * Returns a page of account records, filtered by the given {@link AccountRecordEnhancedDetails#accountRecordText() text}
+     * pattern and sorted by {@link AccountRecordEnhancedDetails#accountRecordDate() record date} in ascending order. The page
+     * of records is taken from the account with the given account UUID, which must be part of the workspace with the
+     * given workspace UUID. The returned page is as large as the given page size and has the given page number.
+     *
+     * @param workspaceUUID the given workspaceUUID
+     * @param accountUUID   the given account UUID
+     * @param pattern       the given text pattern
+     * @param pageNumber    the given page number
+     * @param pageSize      the given page size
+     */
+    AcctPage<AccountRecordEnhancedDetails> findSortedPageOfAccountRecordsByTextPattern(
+        @NotNull String workspaceUUID,
+        @NotNull String accountUUID,
+        String pattern,
+        @NotNull int pageNumber,
+        @NotNull int pageSize
     );
 
 }

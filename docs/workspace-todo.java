@@ -9,7 +9,7 @@
 // DONE: WKS-02003: Accounts endpoint: Delete account from workspace
 // TODO: WKS-02004: Accounts endpoint: Get account balance
 
-// TODO: WKS-03001: Account records endpoint: Find sorted page of account records by account and text content
+// DONE: WKS-03001: Account records endpoint: Find sorted page of account records by account and text content
 // DONE: WKS-03002: Account records endpoint: Save account record
 // TODO: WKS-03003: Account records endpoint: Transfer amount between accounts with the same currency
 // TODO: WKS-03004: Account records endpoint: Currency exchange

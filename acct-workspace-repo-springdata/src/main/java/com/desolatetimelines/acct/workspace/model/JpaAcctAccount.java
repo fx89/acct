@@ -2,6 +2,8 @@ package com.desolatetimelines.acct.workspace.model;
 
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 import static com.desolatetimelines.acct.workspace.util.AcctWorkspaceRepoSpringDataUtils.doWithJpaAcctWorkspaceReturning;
 import static java.util.function.Function.identity;
 
@@ -115,5 +117,18 @@ public class JpaAcctAccount implements AcctAccount {
     @Override
     public void setBankUUID(String bankUUID) {
         this.bankUUID = bankUUID;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        JpaAcctAccount that = (JpaAcctAccount) o;
+        return Objects.equals(workspace, that.workspace) && Objects.equals(accountUUID, that.accountUUID);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(workspace, accountUUID);
     }
 }

@@ -36,7 +36,7 @@ public class AbstractErrorCodesRegistryServiceTest {
         assertEquals(10, serviceDescription.errorThrowingServiceNumber());
 
         // The categories should be set correctly
-        assertEquals(5, serviceDescription.errorCategories().size());
+        assertEquals(6, serviceDescription.errorCategories().size());
         final List<String> categoryNames = serviceDescription.errorCategories().stream().map(ErrorCategory::errorCategoryName).toList();
         assertTrue(categoryNames.contains("Cat 1"));
         assertTrue(categoryNames.contains("Cat 2"));
@@ -46,7 +46,7 @@ public class AbstractErrorCodesRegistryServiceTest {
         final Set<String> foundCategoryNames = errorCodesRegistry.findAllCategoryNames();
 
         // Make sure the category names are retrieved correctly
-        assertEquals(5, foundCategoryNames.size());
+        assertEquals(6, foundCategoryNames.size());
         assertTrue(foundCategoryNames.contains("Cat 1"));
         assertTrue(foundCategoryNames.contains("Cat 2"));
         assertTrue(foundCategoryNames.contains("Cat 3"));

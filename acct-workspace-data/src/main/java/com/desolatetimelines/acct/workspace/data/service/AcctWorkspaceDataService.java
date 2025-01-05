@@ -1,10 +1,13 @@
 package com.desolatetimelines.acct.workspace.data.service;
 
+import com.desolatetimelines.acct.common.model.Page;
 import com.desolatetimelines.acct.workspace.model.AcctAccount;
 import com.desolatetimelines.acct.workspace.model.AcctAccountRecord;
+import com.desolatetimelines.acct.workspace.model.AcctCurrencyExchange;
 import com.desolatetimelines.acct.workspace.model.AcctWorkspace;
 import com.desolatetimelines.acct.workspace.repository.AccountRecordsRepository;
 import com.desolatetimelines.acct.workspace.repository.AccountsRepository;
+import com.desolatetimelines.acct.workspace.repository.AcctCurrencyExchangesRepository;
 import com.desolatetimelines.acct.workspace.repository.AcctWorkspacesRepository;
 import org.springframework.stereotype.Service;
 
@@ -23,14 +26,18 @@ public class AcctWorkspaceDataService {
 
     private final AccountRecordsRepository accountRecordsRepository;
 
+    private final AcctCurrencyExchangesRepository currencyExchangesRepository;
+
     public AcctWorkspaceDataService(
         AcctWorkspacesRepository workspacesRepository,
         AccountsRepository accountsRepository,
-        AccountRecordsRepository accountRecordsRepository
+        AccountRecordsRepository accountRecordsRepository,
+        AcctCurrencyExchangesRepository currencyExchangesRepository
     ) {
         this.workspacesRepository = workspacesRepository;
         this.accountsRepository = accountsRepository;
         this.accountRecordsRepository = accountRecordsRepository;
+        this.currencyExchangesRepository = currencyExchangesRepository;
     }
 
     /**
@@ -152,6 +159,60 @@ public class AcctWorkspaceDataService {
      */
     public Optional<AcctAccountRecord> findAccountRecordByAccountRecordId(Long accountRecordId) {
         return accountRecordsRepository.findFirstByAccountRecordId(accountRecordId);
+    }
+
+    /**
+     * Retrieves a page of the given page size and with the given page number
+     * of {@link AcctAccountRecord account records} belonging to the referenced
+     * {@link AcctAccount account} and for which the
+     * {@link AcctAccountRecord#getAccountRecordText() text} matches the given
+     * pattern
+     *
+     * @param account     the referenced account
+     * @param textPattern the given pattern
+     * @param pageNumber  the given page number
+     * @param pageSize    the given page size
+     */
+    public Page<AcctAccountRecord> findAccountRecordsByAccountAndTextLike(
+        AcctAccount account,
+        String textPattern,
+        int pageNumber,
+        int pageSize
+    ) {
+        return
+            accountRecordsRepository.findAllByAccountAndTextLike(
+                account, textPattern, pageNumber, pageSize
+            );
+    }
+
+    /**
+     * Retrieves a page of the given page size and with the given page number
+     * of {@link AcctAccountRecord account records} belonging to the referenced
+     * {@link AcctAccount account}
+     *
+     * @param account    the referenced account
+     * @param pageNumber the given page number
+     * @param pageSize   the given page size
+     */
+    public Page<AcctAccountRecord> findAccountRecordsByAccount(
+        AcctAccount account,
+        int pageNumber,
+        int pageSize
+    ) {
+        return accountRecordsRepository.findAllByAccount(account, pageNumber, pageSize);
+    }
+
+    /**
+     * Retrieves a collection of {@link AcctCurrencyExchange currency exchange records} for which the
+     * {@link AcctCurrencyExchange#getCurrencyExchangeTargetAccountRecord() target account record} is
+     * one of the {@link AcctAccountRecord account records} in the given collection
+     *
+     * @param accountRecords the given collection
+     */
+    public Collection<AcctCurrencyExchange> findCurrencyExchangesByTargetAccountRecordIn(
+        Collection<AcctAccountRecord> accountRecords
+    ) {
+        return currencyExchangesRepository.findAllByTargetAccountRecordIn(accountRecords);
     }
 
 }
