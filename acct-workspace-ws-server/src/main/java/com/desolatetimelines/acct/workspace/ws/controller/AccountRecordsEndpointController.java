@@ -6,10 +6,7 @@ import com.desolatetimelines.acct.workspace.service.AcctWorkspaceService;
 import com.desolatetimelines.acct.workspace.ws.endpoint.AccountRecordsEndpoint;
 import com.desolatetimelines.acct.workspace.ws.mapper.AccountRecordDetailsMapper;
 import com.desolatetimelines.acct.workspace.ws.mapper.AccountRecordEnhancedDetailsMapper;
-import com.desolatetimelines.acct.workspace.ws.model.AccountRecordEnhancedDetails;
-import com.desolatetimelines.acct.workspace.ws.model.AccountRecordIdResponse;
-import com.desolatetimelines.acct.workspace.ws.model.AccountRecordProperties;
-import com.desolatetimelines.acct.workspace.ws.model.CurrencyTransfer;
+import com.desolatetimelines.acct.workspace.ws.model.*;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -100,6 +97,29 @@ public class AccountRecordsEndpointController implements AccountRecordsEndpoint 
             currencyTransfer.sourceAccountUUID(),
             currencyTransfer.targetAccountUUID(),
             currencyTransfer.amount(),
+            userClaims.privilegeNames()
+        );
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + ACCOUNT_RECORDS_TRANSFER + "')")
+    @PostMapping(value = "exchange")
+    public void currencyExchange(
+        @NotNull @RequestParam(value = "workspaceUUID") String workspaceUUID,
+        @RequestBody CurrencyExchange currencyExchange
+    ) {
+        // Get the user claims
+        final AcctUserClaims userClaims = extractCurrentUserClaims();
+
+        // Run the operation
+        workspaceService.currencyExchange(
+            userClaims.userUUID(),
+            workspaceUUID,
+            currencyExchange.currencyTransfer().sourceAccountUUID(),
+            currencyExchange.currencyTransfer().targetAccountUUID(),
+            currencyExchange.currencyTransfer().amount(),
+            currencyExchange.exchangeRate(),
+            currencyExchange.originalAccountRecordId(),
             userClaims.privilegeNames()
         );
     }

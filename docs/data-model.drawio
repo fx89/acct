@@ -1,6 +1,6 @@
-<mxfile host="Electron" modified="2024-12-28T20:27:09.751Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.1.15 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="KHcjTHgdgVw8kjfAUqAx" version="22.1.15" type="device">
+<mxfile host="Electron" modified="2025-01-06T13:13:20.675Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.1.15 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="gSULgsMoabWD780d1q63" version="22.1.15" type="device">
   <diagram name="Page-1" id="hEhjSLRuFoLcvZEl_DyT">
-    <mxGraphModel dx="926" dy="544" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1111" dy="653" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -385,7 +385,7 @@
         <mxCell id="4KuFwU9Ypt60_TynTrX2-79" value="purchase_price" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="CWZ8HQogGbBSWKQR_5Hk-10" vertex="1">
           <mxGeometry y="130" width="429.06" height="26" as="geometry" />
         </mxCell>
-        <mxCell id="CWZ8HQogGbBSWKQR_5Hk-22" value="optional_reverse_currency_exchange_id (manually chosen to correlate buy / sell records to compute gains or losses)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="CWZ8HQogGbBSWKQR_5Hk-10" vertex="1">
+        <mxCell id="CWZ8HQogGbBSWKQR_5Hk-22" value="optional_original_currency_exchange_id (manually chosen to correlate buy / sell records to compute gains or losses)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="CWZ8HQogGbBSWKQR_5Hk-10" vertex="1">
           <mxGeometry y="156" width="429.06" height="40" as="geometry" />
         </mxCell>
         <mxCell id="WsphOJlDrfm0Pp1tGp1G-2" value="Basic users and groups repository." style="rounded=0;whiteSpace=wrap;html=1;align=left;spacingLeft=5" parent="1" vertex="1">
@@ -592,7 +592,7 @@
         <mxCell id="YiQUuHxbq1xA9KVsuhwn-80" value="account_record_autocomplete_data_id" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="YiQUuHxbq1xA9KVsuhwn-79" vertex="1">
           <mxGeometry y="26" width="220.38" height="26" as="geometry" />
         </mxCell>
-        <mxCell id="tKttqulkxcOVSrBQlZ0J-80" value="account_id" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="YiQUuHxbq1xA9KVsuhwn-79">
+        <mxCell id="tKttqulkxcOVSrBQlZ0J-80" value="account_id" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="YiQUuHxbq1xA9KVsuhwn-79" vertex="1">
           <mxGeometry y="52" width="220.38" height="26" as="geometry" />
         </mxCell>
         <mxCell id="YiQUuHxbq1xA9KVsuhwn-81" value="income_or_expense_item_uuid" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="YiQUuHxbq1xA9KVsuhwn-79" vertex="1">

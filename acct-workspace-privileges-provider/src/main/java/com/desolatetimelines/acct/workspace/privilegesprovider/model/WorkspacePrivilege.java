@@ -138,6 +138,15 @@ public enum WorkspacePrivilege {
             .withPrivilegeDescription("Allows transferring various amounts between different accounts, " +
                 "provided that the user has the right to the parent workspace of the aforementioned accounts")
             .build()
+    ),
+
+    ACCOUNT_RECORDS_EXCHANGE(
+        AcctPrivilege.builder()
+            .withPrivilegeId(WorkspacePrivilegeIds.ACCOUNT_RECORDS_EXCHANGE)
+            .withPrivilegeName("Currency exchange")
+            .withPrivilegeDescription("Allows exchanging currency from a source account for currency in a target account, " +
+                "provided that the user has the right to the parent workspace of the aforementioned accounts")
+            .build()
     );
 
 

@@ -12,8 +12,9 @@ public class AcctWorkspaceErrorCodesRegistryService extends AbstractErrorCodesRe
     public String RESOURCE_NOT_FOUND_ACCOUNT;
     public String RESOURCE_NOT_FOUND_ACCOUNT_RECORD;
     public String RESOURCE_NOT_FOUND_DEPOSIT;
-    public String MISMATCHED_CURRENCIES;
     public String INSUFFICIENT_FUNDS;
+    public String MISMATCHED_CURRENCIES;
+    public String SAME_CURRENCY;
 
     protected AcctWorkspaceErrorCodesRegistryService() {
         super(Integer.parseInt(System.getenv("WORKSPACE_SERVICE_NUMBER")));
@@ -68,6 +69,14 @@ public class AcctWorkspaceErrorCodesRegistryService extends AbstractErrorCodesRe
                 CAT_NAME_BUSINESS_RULES_VALIDATION,
                 "Mismatched currencies",
                 "An illegal operation was attempted on two accounts with different currencies"
+            );
+
+        SAME_CURRENCY =
+            resolveErrorCode(
+                CAT_NAME_BUSINESS_RULES_VALIDATION,
+                "Same currency",
+                "An operation was attempted on two accounts which were expected to have different " +
+                    "currencies and yet they have been found to have the same currency"
             );
 
         INSUFFICIENT_FUNDS =

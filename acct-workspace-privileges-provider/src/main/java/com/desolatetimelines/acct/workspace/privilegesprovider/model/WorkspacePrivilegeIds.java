@@ -27,6 +27,7 @@ public abstract class WorkspacePrivilegeIds {
     public static final String ACCOUNT_RECORDS_READ = "ACCOUNT_RECORDS_READ";
     public static final String ACCOUNT_RECORDS_DELETE = "ACCOUNT_RECORDS_DELETE";
     public static final String ACCOUNT_RECORDS_TRANSFER = "ACCOUNT_RECORDS_TRANSFER";
+    public static final String ACCOUNT_RECORDS_EXCHANGE = "ACCOUNT_RECORDS_EXCHANGE";
 
 
     private static final Map<WorkspaceServiceOperation, Map<ResourceOwnership, String>>

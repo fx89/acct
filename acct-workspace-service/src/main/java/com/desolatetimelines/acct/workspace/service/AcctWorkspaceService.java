@@ -11,10 +11,7 @@ import com.desolatetimelines.acct.usage.ws.client.RESTUsageEndpointClient;
 import com.desolatetimelines.acct.usage.ws.model.ServiceItemTypesList;
 import com.desolatetimelines.acct.workspace.AccountRecordExtendedDetailsMapper;
 import com.desolatetimelines.acct.workspace.data.service.AcctWorkspaceDataService;
-import com.desolatetimelines.acct.workspace.exception.AcctWorkspaceServiceInsufficientFundsException;
-import com.desolatetimelines.acct.workspace.exception.AcctWorkspaceServiceMismatchedCurrenciesException;
-import com.desolatetimelines.acct.workspace.exception.AcctWorkspaceServiceNotFoundException;
-import com.desolatetimelines.acct.workspace.exception.AcctWorkspaceServiceSecurityException;
+import com.desolatetimelines.acct.workspace.exception.*;
 import com.desolatetimelines.acct.workspace.model.*;
 import com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspaceServiceOperation;
 import jakarta.transaction.Transactional;
@@ -576,6 +573,88 @@ public class AcctWorkspaceService {
         targetAccountRecord.setAccountRecordValue(amount);
         targetAccountRecord.setIncomeOrExpenseItemUUID(INCOME_OR_EXPENSE_ITEM_UUID_FOR_TRANSFER);
         saveAccountRecord(userUUID, currentDate, targetAccountRecord);
+    }
+
+    @Transactional
+    public void currencyExchange(
+        String userUUID,
+        String workspaceUUID,
+        String sourceAccountUUID,
+        String targetAccountUUID,
+        Double amount,
+        Double exchangeRate,
+        Long originalAccountRecordId,
+        Collection<String> assignedPrivilegeNames
+    ) {
+        // Retrieve the workspace for the save operation
+        final AcctWorkspace workspace =
+            findWorkspaceForUserAndOperation(SAVE, userUUID, workspaceUUID, assignedPrivilegeNames);
+
+        // Retrieve the source account from the workspace
+        final AcctAccount sourceAccount =
+            findAccountByAccountUUIDForWorkspace(workspace, sourceAccountUUID);
+
+        // Retrieve the target account from the workspace
+        final AcctAccount targetAccount =
+            findAccountByAccountUUIDForWorkspace(workspace, targetAccountUUID);
+
+        // Make sure the source and target accounts have different currencies
+        if (Objects.equals(sourceAccount.getCurrencyUUID(), targetAccount.getCurrencyUUID())) {
+            throw new AcctWorkspaceServiceSameCurrencyException(
+                errors,
+                sourceAccount.getAccountUUID(),
+                targetAccount.getAccountUUID()
+            );
+        }
+
+        // Compute the amount required to be available in the source account
+        // for the transfer to take place
+        final Double sourceAmount = amount * exchangeRate;
+
+        // Make sure the source account has enough currency for the transfer
+        if (computeAccountBalance(sourceAccount) < sourceAmount) {
+            throw new AcctWorkspaceServiceInsufficientFundsException(errors, sourceAccount.getAccountUUID());
+        }
+
+        // Get the current date
+        final Instant currentDate = Instant.now();
+
+        // Add a record for subtracting the amount from the source account
+        final AcctAccountRecord sourceAccountRecord = createNewAccountRecordWithinAccount(sourceAccount, userUUID);
+        sourceAccountRecord.setAccountRecordText(ACCT_REC_TEXT_TRANSFER);
+        sourceAccountRecord.setAccountRecordValue(-sourceAmount);
+        sourceAccountRecord.setIncomeOrExpenseItemUUID(INCOME_OR_EXPENSE_ITEM_UUID_FOR_TRANSFER);
+        final AcctAccountRecord savedSourceAccountRecord = saveAccountRecord(userUUID, currentDate, sourceAccountRecord);
+
+        // Add a record for adding the amount to the target account
+        final AcctAccountRecord targetAccountRecord = createNewAccountRecordWithinAccount(targetAccount, userUUID);
+        targetAccountRecord.setAccountRecordText(ACCT_REC_TEXT_TRANSFER);
+        targetAccountRecord.setAccountRecordValue(amount);
+        targetAccountRecord.setIncomeOrExpenseItemUUID(INCOME_OR_EXPENSE_ITEM_UUID_FOR_TRANSFER);
+        final AcctAccountRecord savedTargetAccountRecord = saveAccountRecord(userUUID, currentDate, targetAccountRecord);
+
+        // Create a currency exchange record
+        final AcctCurrencyExchange currencyExchange = dataService.createNewCurrencyExchange();
+        currencyExchange.setCurrencyExchangeRate(exchangeRate);
+        currencyExchange.setPurchasePrice(sourceAmount);
+        currencyExchange.setCurrencyExchangeSourceAccountRecord(savedSourceAccountRecord);
+        currencyExchange.setCurrencyExchangeTargetAccountRecord(savedTargetAccountRecord);
+
+        // If an original exchange record was referenced then find the reverse
+        // currency exchange record and add it to the previously-created currency
+        // exchange record
+        if (originalAccountRecordId != null) {
+            // Find the currency exchange record that has the source account as target
+            final Optional<AcctCurrencyExchange> optionalOriginalCurrencyExchangeRecord =
+                dataService.findCurrencyExchangeByTargetAccountRecordId(originalAccountRecordId);
+
+            // If an original currency exchange record is found then reference it from the
+            // newly created currency e4xchange record
+            optionalOriginalCurrencyExchangeRecord.ifPresent(currencyExchange::setOptionalOriginalCurrencyExchange);
+        }
+
+        // Persist the currency exchange record
+        dataService.saveCurrencyExchange(currencyExchange);
     }
 
     /**

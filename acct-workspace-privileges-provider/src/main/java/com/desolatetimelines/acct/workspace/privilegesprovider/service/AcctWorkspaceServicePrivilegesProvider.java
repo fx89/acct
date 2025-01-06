@@ -36,7 +36,8 @@ public class AcctWorkspaceServicePrivilegesProvider implements AcctServicePrivil
                 ACCOUNT_RECORDS_SAVE.getAcctPrivilege(),
                 ACCOUNT_RECORDS_READ.getAcctPrivilege(),
                 ACCOUNT_RECORDS_DELETE.getAcctPrivilege(),
-                ACCOUNT_RECORDS_TRANSFER.getAcctPrivilege()
+                ACCOUNT_RECORDS_TRANSFER.getAcctPrivilege(),
+                ACCOUNT_RECORDS_EXCHANGE.getAcctPrivilege()
             );
     }
 }

@@ -318,7 +318,7 @@ Raises an exception if the transfer is attempted between accounts with different
 is made by through `WKS-03004`
 
 Example request URL:
-- `POST http://acct.desolatetimelines.com/service/workspace/v1/accountRecords/transfer`
+- `POST http://acct.desolatetimelines.com/service/workspace/v1/accountRecords/transfer?workspaceUUID=2d4ca15c-c0c7-4306-a390-3dbaa98a9802`
 
 Example request body:
 ```
@@ -328,6 +328,51 @@ Example request body:
     "amount": 100.54
 }
 ```
+
+
+<br /><br />
+#### `WKS-03004` Currency exchange
+
+This operation occurs between two accounts with different currencies:
+- a source account
+- a target account
+
+If the currencies are not different, an exception is thrown.
+
+To perform the transfer, an exchange rate parameter is required. The exchange rate specifies how many units of
+currency from the source account are required to purchase one unit of currency in the target account. The `amount`
+parameter refers to the amount of units to be purchased in the target account. The value to be subtracted from
+the source account is computed based on the given amount and exchange rate.
+
+If, after the aforementioned computation, there's not enough currency available in the source account then
+an exception is thrown.
+
+Exceptions are also thrown if the source and target accounts are not part of the same workspace or if the user
+does not have the proper access rights to the workspace, accounts, etc.
+
+A currency exchange record is automatically created for the exchange. If the optional original account record ID
+is provided then the currency exchange record created for the original exchange is found and the newly created
+currency exchange record is linked to it. This helps identify gains or losses in buy-back scenarios (i.e. original
+record is created when 1000 EUR are bought for 900 USD and current record is created when 1000 USD are bought
+with 1000 EUR - correlating the current record with the original record allows reporting a gain of 100 USD).
+
+Example request URL:
+- `POST http://acct.desolatetimelines.com/service/workspace/v1/accountRecords/exchange?workspaceUUID=2d4ca15c-c0c7-4306-a390-3dbaa98a9802`
+
+Example request body:
+```
+{
+    "currencyTransfer": {
+        "sourceAccountUUID": "99cabb35-0c17-4174-88ca-2319514b0eeb",
+        "targetAccountUUID": "9c16496a-9d95-47ce-bb63-3c25d0a9e17d",
+        "amount": 100.54
+    },
+
+    "exchangeRate": 4.5,
+    "originalAccountRecordId": 10
+}
+```
+
 
 
 <br /><br />

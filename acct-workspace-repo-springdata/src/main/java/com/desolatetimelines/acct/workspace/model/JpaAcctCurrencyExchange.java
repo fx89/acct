@@ -31,8 +31,8 @@ public class JpaAcctCurrencyExchange implements AcctCurrencyExchange {
     private Double purchasePrice;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "optional_reverse_currency_exchange_id")
-    private JpaAcctCurrencyExchange optionalReverseCurrencyExchange;
+    @JoinColumn(name = "optional_original_currency_exchange_id")
+    private JpaAcctCurrencyExchange optionalOriginalCurrencyExchange;
 
     public Long getCurrencyExchangeId() {
         return currencyExchangeId;
@@ -93,17 +93,17 @@ public class JpaAcctCurrencyExchange implements AcctCurrencyExchange {
     }
 
     @Override
-    public Optional<AcctCurrencyExchange> getOptionalReverseCurrencyExchange() {
-        return Optional.ofNullable(optionalReverseCurrencyExchange);
+    public Optional<AcctCurrencyExchange> getOptionalOriginalCurrencyExchange() {
+        return Optional.ofNullable(optionalOriginalCurrencyExchange);
     }
 
     @Override
-    public void setOptionalReverseCurrencyExchange(AcctCurrencyExchange optionalReverseCurrencyExchange) {
-        this.optionalReverseCurrencyExchange =
-            doWithJpaAcctCurrencyExchangeReturning(optionalReverseCurrencyExchange, identity());
+    public void setOptionalOriginalCurrencyExchange(AcctCurrencyExchange optionalOriginalCurrencyExchange) {
+        this.optionalOriginalCurrencyExchange =
+            doWithJpaAcctCurrencyExchangeReturning(optionalOriginalCurrencyExchange, identity());
     }
 
-    public void setOptionalReverseCurrencyExchange(JpaAcctCurrencyExchange optionalReverseCurrencyExchange) {
-        this.optionalReverseCurrencyExchange = optionalReverseCurrencyExchange;
+    public void setOptionalOriginalCurrencyExchange(JpaAcctCurrencyExchange optionalOriginalCurrencyExchange) {
+        this.optionalOriginalCurrencyExchange = optionalOriginalCurrencyExchange;
     }
 }

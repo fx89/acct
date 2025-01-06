@@ -216,6 +216,18 @@ public class AcctWorkspaceDataService {
     }
 
     /**
+     * Retrieves the {@link AcctCurrencyExchange currency exchange record} for which the
+     * {@link AcctCurrencyExchange#getCurrencyExchangeTargetAccountRecord() target account record}
+     * has the given {@link AcctAccountRecord#getAccountRecordId() account record id}.
+     * If such a currency exchange record does not exist, an empty optional is returned.
+     *
+     * @param accountRecordId the given account record id
+     */
+    public Optional<AcctCurrencyExchange> findCurrencyExchangeByTargetAccountRecordId(Long accountRecordId) {
+        return currencyExchangesRepository.findFirstByTargetAccountRecordId(accountRecordId);
+    }
+
+    /**
      * Returns the sum of the {@link AcctAccountRecord#getAccountRecordValue()} property of all
      * {@link AcctAccountRecord records} belonging to the referenced {@link AcctAccount account}
      *
@@ -226,6 +238,24 @@ public class AcctWorkspaceDataService {
             Optional
                 .ofNullable(accountRecordsRepository.sumAccountRecordValueByAccount(account))
                 .orElse(0d); // In case there are no records and the response is null
+    }
+
+    /**
+     * Creates a new instance of {@link AcctCurrencyExchange}
+     *
+     * @return the newly created instance
+     */
+    public AcctCurrencyExchange createNewCurrencyExchange() {
+        return currencyExchangesRepository.createNew();
+    }
+
+    /**
+     * Persists the referenced {@link AcctCurrencyExchange currency exchange record}
+     *
+     * @return a reference to the persisted entity
+     */
+    public AcctCurrencyExchange saveCurrencyExchange(AcctCurrencyExchange currencyExchange) {
+        return currencyExchangesRepository.save(currencyExchange);
     }
 
 }

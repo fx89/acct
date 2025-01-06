@@ -60,4 +60,16 @@ public interface AccountRecordsEndpoint {
         @NotNull String workspaceUUID,
         CurrencyTransfer currencyTransfer
     );
+
+    /**
+     * Registers a purchase of a given amount of currency in the target account with a
+     * computed amount of currency from the source account. The source account amount is
+     * computed based on the amount purchased in the target account and the given exchange
+     * rate. Both accounts must be part of the workspace referenced by the given workspace
+     * UUID.
+     *
+     * @param workspaceUUID    the given workspace UUID
+     * @param currencyExchange the given exchange rate
+     */
+    void currencyExchange(@NotNull String workspaceUUID, CurrencyExchange currencyExchange);
 }

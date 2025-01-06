@@ -12,7 +12,7 @@
 // DONE: WKS-03001: Account records endpoint: Find sorted page of account records by account and text content
 // DONE: WKS-03002: Account records endpoint: Save account record
 // DONE: WKS-03003: Account records endpoint: Transfer amount between accounts with the same currency
-// TODO: WKS-03004: Account records endpoint: Currency exchange
+// DONE: WKS-03004: Account records endpoint: Currency exchange
 
 // TODO: WKS-04001: Deposits endpoint: Get sorted page of deposits by workspace and bank (optionally including capitalized ones)
 // TODO: WKS-04002: Deposits endpoint: Create new deposit from source bank account

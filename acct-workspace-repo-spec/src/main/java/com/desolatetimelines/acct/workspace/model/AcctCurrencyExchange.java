@@ -20,7 +20,7 @@ public interface AcctCurrencyExchange {
 
     void setPurchasePrice(Double purchasePrice);
 
-    Optional<AcctCurrencyExchange> getOptionalReverseCurrencyExchange();
+    Optional<AcctCurrencyExchange> getOptionalOriginalCurrencyExchange();
 
-    void setOptionalReverseCurrencyExchange(AcctCurrencyExchange optionalReverseCurrencyExchange);
+    void setOptionalOriginalCurrencyExchange(AcctCurrencyExchange optionalOriginalCurrencyExchange);
 }
