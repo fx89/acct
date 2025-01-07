@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.*;
 
+import static com.desolatetimelines.acct.common.model.CommonUUIDs.INCOME_OR_EXPENSE_ITEM_UUID_FOR_DEPOSIT;
 import static com.desolatetimelines.acct.common.model.CommonUUIDs.INCOME_OR_EXPENSE_ITEM_UUID_FOR_TRANSFER;
 import static com.desolatetimelines.acct.security.client.model.ResourceType.WORKSPACE;
 import static com.desolatetimelines.acct.workspace.privilegesprovider.model.ResourceOwnership.*;
@@ -37,6 +38,8 @@ import static java.util.Collections.emptyList;
 public class AcctWorkspaceService {
 
     private static final String ACCT_REC_TEXT_TRANSFER = "Transfer";
+
+    private static final String ACCT_REC_TEXT_DEPOSIT_CREATION = "Deposit creation";
 
     private final RESTUsageEndpointClient usageEndpointClient;
 
@@ -388,13 +391,11 @@ public class AcctWorkspaceService {
         String accountUUID,
         Collection<String> assignedPrivilegeNames
     ) {
-        // Retrieve the workspace for the save operation
-        final AcctWorkspace workspace =
-            findWorkspaceForUserAndOperation(SAVE, userUUID, workspaceUUID, assignedPrivilegeNames);
-
         // Retrieve the account from the workspace
         final AcctAccount account =
-            findAccountByAccountUUIDForWorkspace(workspace, accountUUID);
+            retrieveAccountFromWorkspaceForWorkspaceOperation(
+                SAVE, userUUID, workspaceUUID, assignedPrivilegeNames, accountUUID
+            );
 
         // Delete the account
         dataService.deleteAccount(account);
@@ -424,13 +425,11 @@ public class AcctWorkspaceService {
         AccountRecordDetails accountRecordDetails,
         Collection<String> assignedPrivilegeNames
     ) {
-        // Retrieve the workspace for the save operation
-        final AcctWorkspace workspace =
-            findWorkspaceForUserAndOperation(SAVE, userUUID, workspaceUUID, assignedPrivilegeNames);
-
         // Retrieve the account from the workspace
         final AcctAccount account =
-            findAccountByAccountUUIDForWorkspace(workspace, accountUUID);
+            retrieveAccountFromWorkspaceForWorkspaceOperation(
+                SAVE, userUUID, workspaceUUID, assignedPrivilegeNames, accountUUID
+            );
 
         // Get a reference to the record to be updated (either a new record or existing record,
         // based on the existence of the account record ID)
@@ -477,13 +476,11 @@ public class AcctWorkspaceService {
         int pageSize,
         Collection<String> assignedPrivilegeNames
     ) {
-        // Retrieve the workspace for the save operation
-        final AcctWorkspace workspace =
-            findWorkspaceForUserAndOperation(SAVE, userUUID, workspaceUUID, assignedPrivilegeNames);
-
         // Retrieve the account from the workspace
         final AcctAccount account =
-            findAccountByAccountUUIDForWorkspace(workspace, accountUUID);
+            retrieveAccountFromWorkspaceForWorkspaceOperation(
+                SAVE, userUUID, workspaceUUID, assignedPrivilegeNames, accountUUID
+            );
 
         // Retrieve the page of account records using the proper method, which is
         // chosen based on the existence of the pattern
@@ -494,7 +491,7 @@ public class AcctWorkspaceService {
 
         // If this is a foreign currency account then fetch currency exchange records for the page
         final Collection<AcctCurrencyExchange> currencyExchangeRecords =
-            Objects.equals(account.getCurrencyUUID(), workspace.getDefaultCurrencyUUID())
+            Objects.equals(account.getCurrencyUUID(), account.getWorkspace().getDefaultCurrencyUUID())
                 ? emptyList()
                 : dataService.findCurrencyExchangesByTargetAccountRecordIn(accountRecordsPage.data());
 
@@ -553,9 +550,7 @@ public class AcctWorkspaceService {
         }
 
         // Make sure the source account has enough currency for the transfer
-        if (computeAccountBalance(sourceAccount) < amount) {
-            throw new AcctWorkspaceServiceInsufficientFundsException(errors, sourceAccount.getAccountUUID());
-        }
+        verifyMinimumAccountBalance(sourceAccount, amount);
 
         // Get the current date
         final Instant currentDate = Instant.now();
@@ -612,9 +607,7 @@ public class AcctWorkspaceService {
         final Double sourceAmount = amount * exchangeRate;
 
         // Make sure the source account has enough currency for the transfer
-        if (computeAccountBalance(sourceAccount) < sourceAmount) {
-            throw new AcctWorkspaceServiceInsufficientFundsException(errors, sourceAccount.getAccountUUID());
-        }
+        verifyMinimumAccountBalance(sourceAccount, sourceAmount);
 
         // Get the current date
         final Instant currentDate = Instant.now();
@@ -674,16 +667,112 @@ public class AcctWorkspaceService {
         String accountUUID,
         Collection<String> assignedPrivilegeNames
     ) {
-        // Retrieve the workspace for the save operation
-        final AcctWorkspace workspace =
-            findWorkspaceForUserAndOperation(SAVE, userUUID, workspaceUUID, assignedPrivilegeNames);
-
         // Retrieve the account from the workspace
         final AcctAccount account =
-            findAccountByAccountUUIDForWorkspace(workspace, accountUUID);
+            retrieveAccountFromWorkspaceForWorkspaceOperation(
+                READ, userUUID, workspaceUUID, assignedPrivilegeNames, accountUUID
+            );
 
         // Compute the balance and return the result
         return computeAccountBalance(account);
+    }
+
+    /**
+     * Creates a new {@link AcctDeposit deposit} with the given amount of currency from the
+     * source account referenced by the given source account UUID that can be found in the
+     * workspace with the given workspace UUID. The following properties are set on the newly
+     * created deposit: <ul>
+     * <li>{@link AcctDeposit#getDepositAccountNumber() account number} =  the given deposit account number</li>
+     * <li>{@link AcctDeposit#getDepositProjectedEndDate() projected end date} = the given projected end date</li>
+     * <li>{@link AcctDeposit#getDepositInterestPercent() interest percent} = the given interest percent</li>
+     * </ul>
+     * The operation mail not be allowed if the user with the given user UUID does not have
+     * access to the workspace or if the given collection of privileges does not contain the
+     * proper access rights.
+     *
+     * @param userUUID               the given user UUID
+     * @param workspaceUUID          the given workspace UUID
+     * @param sourceAccountUUID      the given source account UUID
+     * @param depositAccountNumber   the given deposit account number
+     * @param amount                 the given amount of currency
+     * @param projectedEndDate       the given projected end date
+     * @param interestPct            the given interest percent
+     * @param assignedPrivilegeNames the given collection of privileges
+     * @return the {@link AcctDeposit#getDepositUUID() UUID} of the newly created deposit
+     */
+    public String createDeposit(
+        String userUUID,
+        String workspaceUUID,
+        String sourceAccountUUID,
+        String depositAccountNumber,
+        Double amount,
+        Instant projectedEndDate,
+        Double interestPct,
+        Collection<String> assignedPrivilegeNames
+    ) {
+        // Retrieve the source account from the workspace
+        final AcctAccount sourceAccount =
+            retrieveAccountFromWorkspaceForWorkspaceOperation(
+                SAVE, userUUID, workspaceUUID, assignedPrivilegeNames, sourceAccountUUID
+            );
+
+        // Make sure the source account has enough currency for the transfer
+        verifyMinimumAccountBalance(sourceAccount, amount);
+
+        // Create a new account record for subtracting the amount for the deposit from the source account
+        final AcctAccountRecord depositCreationRecord = createNewAccountRecordWithinAccount(sourceAccount, userUUID);
+        depositCreationRecord.setAccountRecordText(ACCT_REC_TEXT_DEPOSIT_CREATION);
+        depositCreationRecord.setAccountRecordValue(-amount);
+        depositCreationRecord.setIncomeOrExpenseItemUUID(INCOME_OR_EXPENSE_ITEM_UUID_FOR_DEPOSIT);
+        final AcctAccountRecord savedDepositCreationRecord = saveAccountRecord(userUUID, depositCreationRecord);
+
+        // Create the new deposit
+        final AcctDeposit deposit = dataService.createNewDeposit();
+
+        // Populate the newly created deposit with the properties inherited from the source account
+        deposit.setBankUUID(sourceAccount.getBankUUID());
+        deposit.setCurrencyUUID(sourceAccount.getCurrencyUUID());
+
+        // Populate the newly created deposit with the properties received as input
+        deposit.setDepositAccountNumber(depositAccountNumber);
+        deposit.setDepositInterestPercent(interestPct);
+        deposit.setDepositProjectedEndDate(projectedEndDate);
+        deposit.setDepositValue(amount);
+
+        // Populate the workflow-related properties of the newly created deposit
+        deposit.setDepositCreationAccountRecord(savedDepositCreationRecord);
+        deposit.setDepositUUID(UUID.randomUUID().toString());
+
+        // Save and return the UUID
+        return dataService.saveDeposit(deposit).getDepositUUID();
+    }
+
+    private AcctAccount retrieveAccountFromWorkspaceForWorkspaceOperation(
+        WorkspaceServiceOperation operation,
+        String userUUID,
+        String workspaceUUID,
+        Collection<String> assignedPrivilegeNames,
+        String accountUUID
+    ) {
+        // Retrieve the workspace for the save operation
+        final AcctWorkspace workspace =
+            findWorkspaceForUserAndOperation(operation, userUUID, workspaceUUID, assignedPrivilegeNames);
+
+        // Retrieve the source account from the workspace
+        return findAccountByAccountUUIDForWorkspace(workspace, accountUUID);
+    }
+
+    /**
+     * Throws an exception if the balance of the referenced {@link AcctAccount account}
+     * is lower than the given required amount
+     *
+     * @param account        the referenced account
+     * @param requiredAmount the given required amount
+     */
+    private void verifyMinimumAccountBalance(AcctAccount account, Double requiredAmount) {
+        if (computeAccountBalance(account) < requiredAmount) {
+            throw new AcctWorkspaceServiceInsufficientFundsException(errors, account.getAccountUUID());
+        }
     }
 
     /**

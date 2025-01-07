@@ -1,14 +1,8 @@
 package com.desolatetimelines.acct.workspace.data.service;
 
 import com.desolatetimelines.acct.common.model.Page;
-import com.desolatetimelines.acct.workspace.model.AcctAccount;
-import com.desolatetimelines.acct.workspace.model.AcctAccountRecord;
-import com.desolatetimelines.acct.workspace.model.AcctCurrencyExchange;
-import com.desolatetimelines.acct.workspace.model.AcctWorkspace;
-import com.desolatetimelines.acct.workspace.repository.AccountRecordsRepository;
-import com.desolatetimelines.acct.workspace.repository.AccountsRepository;
-import com.desolatetimelines.acct.workspace.repository.AcctCurrencyExchangesRepository;
-import com.desolatetimelines.acct.workspace.repository.AcctWorkspacesRepository;
+import com.desolatetimelines.acct.workspace.model.*;
+import com.desolatetimelines.acct.workspace.repository.*;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -28,16 +22,20 @@ public class AcctWorkspaceDataService {
 
     private final AcctCurrencyExchangesRepository currencyExchangesRepository;
 
+    private final AcctDepositsRepository depositsRepository;
+
     public AcctWorkspaceDataService(
         AcctWorkspacesRepository workspacesRepository,
         AccountsRepository accountsRepository,
         AccountRecordsRepository accountRecordsRepository,
-        AcctCurrencyExchangesRepository currencyExchangesRepository
+        AcctCurrencyExchangesRepository currencyExchangesRepository,
+        AcctDepositsRepository depositsRepository
     ) {
         this.workspacesRepository = workspacesRepository;
         this.accountsRepository = accountsRepository;
         this.accountRecordsRepository = accountRecordsRepository;
         this.currencyExchangesRepository = currencyExchangesRepository;
+        this.depositsRepository = depositsRepository;
     }
 
     /**
@@ -256,6 +254,25 @@ public class AcctWorkspaceDataService {
      */
     public AcctCurrencyExchange saveCurrencyExchange(AcctCurrencyExchange currencyExchange) {
         return currencyExchangesRepository.save(currencyExchange);
+    }
+
+    /**
+     * Creates a new {@link AcctDeposit deposit}
+     *
+     * @return a referenced to the newly created entity
+     */
+    public AcctDeposit createNewDeposit() {
+        return depositsRepository.createNew();
+    }
+
+    /**
+     * Persists the referenced {@link AcctDeposit deposit}
+     *
+     * @param deposit the referenced deposit
+     * @return a reference to the persisted entity
+     */
+    public AcctDeposit saveDeposit(AcctDeposit deposit) {
+        return depositsRepository.save(deposit);
     }
 
 }

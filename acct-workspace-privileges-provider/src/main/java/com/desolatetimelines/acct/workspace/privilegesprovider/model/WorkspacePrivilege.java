@@ -147,6 +147,34 @@ public enum WorkspacePrivilege {
             .withPrivilegeDescription("Allows exchanging currency from a source account for currency in a target account, " +
                 "provided that the user has the right to the parent workspace of the aforementioned accounts")
             .build()
+    ),
+
+    DEPOSITS_SAVE(
+        AcctPrivilege.builder()
+            .withPrivilegeId(WorkspacePrivilegeIds.DEPOSITS_SAVE)
+            .withPrivilegeName("Save deposits")
+            .withPrivilegeDescription("Allows creating deposits from a source account within a given workspace " +
+                "or to edit existing deposits within the workspace, " +
+                "provided that the user has the correct access rights and can reach the workspace")
+            .build()
+    ),
+
+    DEPOSITS_READ(
+        AcctPrivilege.builder()
+            .withPrivilegeId(WorkspacePrivilegeIds.DEPOSITS_READ)
+            .withPrivilegeName("Create deposits")
+            .withPrivilegeDescription("Allows listing and viewing the details of deposits within a given workspace, " +
+                "provided the user has the correct access rights and can reach the workspace")
+            .build()
+    ),
+
+    DEPOSITS_CAPITALIZE(
+        AcctPrivilege.builder()
+            .withPrivilegeId(WorkspacePrivilegeIds.DEPOSITS_CAPITALIZE)
+            .withPrivilegeName("Capitalize deposits")
+            .withPrivilegeDescription("Allows capitalizing deposits within a given workspace, " +
+                "provided the user has the correct access rights and can reach the workspace")
+            .build()
     );
 
 

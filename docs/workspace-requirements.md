@@ -426,7 +426,7 @@ If the source account is not part of a workspace that is accessible by the curre
 If the source account does not have sufficient funds, an error is thrown.
 
 Example request URL:
-- `PUT http://acct.desolatetimelines.com/service/workspace/v1/deposits`
+- `PUT http://acct.desolatetimelines.com/service/workspace/v1/deposits?workspaceUUID=dd7617bf-9030-4f78-9991-c39923273d42`
 
 Example request body:
 ```
@@ -434,12 +434,14 @@ Example request body:
     "sourceAccountUUID": "6b862cfd-184f-4012-aeeb-2a4144885a31",
     "depositAccountNumber": "0399 3929 3039 393",
     "amount": 2000,
-    "projectedEndDate": "2020-01-01"
+    "projectedEndDate": "2020-01-01",
     "interestPct": 5.2
 }
 ```
 
 The `currency_uuid` of the deposit is that of the source account.
+
+The `bank_uuid` of the deposit is that of the source account.
 
 A new account record is created in the source account for the deposit creation transaction and ahe `deposit_creation_account_record` of the deposit is set to point to that record.
 

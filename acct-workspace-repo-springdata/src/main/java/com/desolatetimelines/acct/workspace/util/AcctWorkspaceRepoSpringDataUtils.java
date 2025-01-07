@@ -96,4 +96,18 @@ public abstract class AcctWorkspaceRepoSpringDataUtils {
         );
     }
 
+    public static JpaAcctDeposit doWithJpaAcctDepositReturning(
+        AcctDeposit acctDeposit,
+        Function<JpaAcctDeposit, JpaAcctDeposit> todo
+    ) {
+        if (acctDeposit instanceof JpaAcctDeposit jpaAcctDeposit) {
+            return todo.apply(jpaAcctDeposit);
+        }
+
+        throw new IllegalArgumentException(
+            "The referenced " + AcctDeposit.class.getName() +
+                " is not of type " + JpaAcctDeposit.class.getCanonicalName()
+        );
+    }
+
 }
