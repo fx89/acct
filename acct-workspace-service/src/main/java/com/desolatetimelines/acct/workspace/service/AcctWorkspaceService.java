@@ -747,6 +747,42 @@ public class AcctWorkspaceService {
         return dataService.saveDeposit(deposit).getDepositUUID();
     }
 
+    /**
+     * Updates the modifiable properties of the {@link AcctDeposit deposit} referenced
+     * via the given deposit UUID that resides in the workspace with the given workspace
+     * UUID. The modifiable properties are the given deposit account number and the given
+     * projected end date. The operation is secured for the user with the given user UUID
+     * and for the given collection of assigned privileges.
+     *
+     * @param userUUID               the given user UUID
+     * @param workspaceUUID          the given workspace UUID
+     * @param depositUUID            the given deposit UUID
+     * @param depositAccountNumber   the given account number
+     * @param projectedEndDate       the given projected end date
+     * @param assignedPrivilegeNames the given collection of assigned privileges
+     */
+    public void updateDepositModifiableProperties(
+        String userUUID,
+        String workspaceUUID,
+        String depositUUID,
+        String depositAccountNumber,
+        Instant projectedEndDate,
+        Collection<String> assignedPrivilegeNames
+    ) {
+        // Retrieve the deposit while performing all the security checks
+        final AcctDeposit deposit =
+            retrieveDepositFromWorkspaceForWorkspaceOperation(
+                SAVE, userUUID, workspaceUUID, assignedPrivilegeNames, depositUUID
+            );
+
+        // Update the deposit properties
+        deposit.setDepositAccountNumber(depositAccountNumber);
+        deposit.setDepositProjectedEndDate(projectedEndDate);
+
+        // Save the deposit
+        dataService.saveDeposit(deposit);
+    }
+
     private AcctAccount retrieveAccountFromWorkspaceForWorkspaceOperation(
         WorkspaceServiceOperation operation,
         String userUUID,
@@ -758,8 +794,23 @@ public class AcctWorkspaceService {
         final AcctWorkspace workspace =
             findWorkspaceForUserAndOperation(operation, userUUID, workspaceUUID, assignedPrivilegeNames);
 
-        // Retrieve the source account from the workspace
+        // Retrieve the account from the workspace
         return findAccountByAccountUUIDForWorkspace(workspace, accountUUID);
+    }
+
+    private AcctDeposit retrieveDepositFromWorkspaceForWorkspaceOperation(
+        WorkspaceServiceOperation operation,
+        String userUUID,
+        String workspaceUUID,
+        Collection<String> assignedPrivilegeNames,
+        String depositUUID
+    ) {
+        // Retrieve the workspace for the save operation
+        final AcctWorkspace workspace =
+            findWorkspaceForUserAndOperation(operation, userUUID, workspaceUUID, assignedPrivilegeNames);
+
+        // Retrieve the deposit from the workspace
+        return findDepositByDepositUUIDForWorkspace(workspace, depositUUID);
     }
 
     /**
@@ -873,7 +924,7 @@ public class AcctWorkspaceService {
                 .orElseThrow(() -> new AcctWorkspaceServiceNotFoundException(errors, ObjectTypes.ACCOUNT, accountUUID));
 
         // If the account is found and the workspace UUID of the workspace within which the account
-        // exists does not match the given one then throw a ot found exception (no special exception
+        // exists does not match the given one then throw a not found exception (no special exception
         // is thrown to minimize the chance of successful hacking)
         if (!Objects.equals(account.getWorkspace().getWorkspaceUUID(), workspace.getWorkspaceUUID())) {
             throw new AcctWorkspaceServiceNotFoundException(errors, ObjectTypes.ACCOUNT, accountUUID);
@@ -881,6 +932,32 @@ public class AcctWorkspaceService {
 
         // If everything is well, return a reference to the retrieved account entity
         return account;
+    }
+
+    /**
+     * Retrieves the deposit with the given deposit UUID or throws an exception if the
+     * deposit is not found.
+     *
+     * @param depositUUID the given deposit UUID
+     */
+    private AcctDeposit findDepositByDepositUUIDForWorkspace(AcctWorkspace workspace, String depositUUID) {
+        // Find the deposit or throw a not found exception
+        final AcctDeposit deposit =
+            dataService.findDepositByDepositUUID(depositUUID)
+                .orElseThrow(() -> new AcctWorkspaceServiceNotFoundException(errors, ObjectTypes.DEPOSIT, depositUUID));
+
+        // If the deposit is found and the workspace UUID of the workspace within which the deposit
+        // exists does not match the given one then throw a not found exception (no special exception
+        // is thrown to minimize the chance of successful hacking)
+        if (!Objects.equals(
+            deposit.getDepositCreationAccountRecord().getAccount().getWorkspace().getWorkspaceUUID(),
+            workspace.getWorkspaceUUID())
+        ) {
+            throw new AcctWorkspaceServiceNotFoundException(errors, ObjectTypes.DEPOSIT, depositUUID);
+        }
+
+        // If everything is well, return a reference to the retrieved deposit entity
+        return deposit;
     }
 
     /**

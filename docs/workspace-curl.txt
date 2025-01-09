@@ -37,7 +37,7 @@ curl \
 curl \
     --insecure \
     -v \
-    --cookie 'JSESSIONID=9013C1266AAD67AFD9739ABEA05B50C0' \
+    --cookie 'JSESSIONID=21FD4F7B2463528608C13B9C93C6C167' \
     -X GET 'http://localhost:9001/service/authorization/v1/oauth2/authorize?response_type=code&client_id=frontend-client'
 
 
@@ -48,7 +48,7 @@ curl \
     -v \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'grant_type=authorization_code' \
-    -d 'code=uDlpAKGv_aeNHNKAEYWtGAP1AbVq748jWX-mAlY2kPRwT9ZbBmYGXeDm_D3OuiHdrdf0pmtwM4-2XIdtp6mGJoFG_eAi_dMDw_4CFr43vqfBDiMQKXyKHbpY8RArXmOV' \
+    -d 'code=4yVM8kDRhVwireDg024kMbEpVzpyPgZaCg8LK7lqUicFeC7HkObFsCvqyTC0tswSdt9xkdZFXuBs8jT2rH35q5tZhQZStHrSnrwbgqjINxeH669noXHEDkw4L8ZMcpwV' \
     -d 'client_id=frontend-client' \
     -d 'client_secret=lkjdwsf23odnwqkld23odfbqweorh23oihd' \
     -X POST 'http://localhost:9001/service/authorization/v1/oauth2/token' \
@@ -315,3 +315,19 @@ curl \
         }
     ' \
     | jq
+
+
+curl \
+    --insecure \
+    -v \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X POST 'http://localhost:8085/service/workspace/v1/deposits?workspaceUUID=2d4ca15c-c0c7-4306-a390-3dbaa98a9802&depositUUID=09c38c16-a6fe-4993-b428-1cbbe4dbdf89' \
+    --data-raw '
+        {
+            "depositAccountNumber": "1399 3929 3039 393",
+            "projectedEndDate": "2026-01-07T00:00:00.000000Z"
+        }
+    ' \
+    | jq
+

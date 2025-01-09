@@ -1,5 +1,6 @@
 package com.desolatetimelines.acct.workspace.ws.endpoint;
 
+import com.desolatetimelines.acct.workspace.ws.model.DepositModifiableAttributes;
 import com.desolatetimelines.acct.workspace.ws.model.DepositProperties;
 import com.desolatetimelines.acct.workspace.ws.model.DepositUUIDResponse;
 import jakarta.validation.constraints.NotNull;
@@ -21,6 +22,21 @@ public interface DepositsEndpoint {
     DepositUUIDResponse createDepositFromSourceAccount(
         @NotNull String workspaceUUID,
         DepositProperties depositProperties
+    );
+
+    /**
+     * Updates the modifiable properties of the deposit referenced by the given
+     * deposit UUID within the workspace with the given workspace UUID based on
+     * the given deposit modifiable attributes record
+     *
+     * @param workspaceUUID        the given workspace UUID
+     * @param depositUUID          the given deposit UUID
+     * @param modifiableAttributes the given deposit modifiable attributes record
+     */
+    void updateDepositAttributes(
+        @NotNull String workspaceUUID,
+        @NotNull String depositUUID,
+        DepositModifiableAttributes modifiableAttributes
     );
 
 }

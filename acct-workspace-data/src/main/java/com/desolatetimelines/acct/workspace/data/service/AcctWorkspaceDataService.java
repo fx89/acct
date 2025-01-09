@@ -275,4 +275,14 @@ public class AcctWorkspaceDataService {
         return depositsRepository.save(deposit);
     }
 
+    /**
+     * Returns the {@link AcctDeposit deposit} with the given deposit UUID
+     * or an empty optional if such a deposit does not exist
+     *
+     * @param depositUUID the given deposit UUID
+     */
+    public Optional<AcctDeposit> findDepositByDepositUUID(String depositUUID) {
+        return depositsRepository.findFirstByDepositUUID(depositUUID);
+    }
+
 }

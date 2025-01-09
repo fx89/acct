@@ -16,7 +16,7 @@
 
 // TODO: WKS-04001: Deposits endpoint: Get sorted page of deposits by workspace and bank (optionally including capitalized ones)
 // DONE: WKS-04002: Deposits endpoint: Create new deposit from source bank account
-// TODO: WKS-04003: Deposits endpoint: Edit existing deposit (deposit value is not modified)
+// DONE: WKS-04003: Deposits endpoint: Edit existing deposit (deposit value is not modified)
 // TODO: WKS-04004: Deposits endpoint: Get sorted page of deposits to capitalize
 // TODO: WKS-04005: Deposits endpoint: Capitalize deposit
 

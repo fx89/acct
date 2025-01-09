@@ -461,7 +461,7 @@ Allows editing the `deposit_account_number` and/or the `projected_end_date` of t
 Raises an exception if the deposit is not part of a workspace that's accessible to the current user.
 
 Example request URL:
-- `POST http://acct.desolatetimelines.com/service/workspace/v1/deposits?depositUUID=0870fe21-8868-4175-b57c-ca7d5547ed16`
+- `POST http://acct.desolatetimelines.com/service/workspace/v1/deposits?workspaceUUID=dd7617bf-9030-4f78-9991-c39923273d42&depositUUID=0870fe21-8868-4175-b57c-ca7d5547ed16`
 
 Example request body:
 ```
