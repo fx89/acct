@@ -285,4 +285,32 @@ public class AcctWorkspaceDataService {
         return depositsRepository.findFirstByDepositUUID(depositUUID);
     }
 
+    /**
+     * Returns a {@link Page page} with the given page number and page size of {@link AcctDeposit deposits}
+     * that belong to the {@link AcctWorkspace workspace} with the given workspace UUID
+     *
+     * @param workspaceUUID the given workspace UUID
+     * @param pageNumber    the given page number
+     * @param pageSize      the given page size
+     */
+    public Page<AcctDeposit> findDepositsByWorkspaceUUID(String workspaceUUID, int pageNumber, int pageSize) {
+        return depositsRepository.findDepositsByWorkspaceUUID(workspaceUUID, pageNumber, pageSize);
+    }
+
+    /**
+     * Returns a {@link Page page} with the given page number and page size of {@link AcctDeposit deposits}
+     * that belong to the {@link AcctWorkspace workspace} with the given workspace UUID and have been opened
+     * at the bank with the given bank UUID
+     *
+     * @param workspaceUUID the given workspace UUID
+     * @param bankUUID      the given bank UUID
+     * @param pageNumber    the given page number
+     * @param pageSize      the given page size
+     */
+    public Page<AcctDeposit> findDepositsByWorkspaceUUIDAndBankUUID(
+        String workspaceUUID, String bankUUID, int pageNumber, int pageSize
+    ) {
+        return depositsRepository.findDepositsByWorkspaceUUIDAndBankUUID(workspaceUUID, bankUUID, pageNumber, pageSize);
+    }
+
 }

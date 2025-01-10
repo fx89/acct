@@ -783,6 +783,46 @@ public class AcctWorkspaceService {
         dataService.saveDeposit(deposit);
     }
 
+    /**
+     * Returns a {@link Page page} of {@link AcctDeposit deposits} contained by the
+     * {@link AcctWorkspace workspace} with the given workspace UUID. The page will
+     * have the given page number and the given page size and the page content will
+     * be sorted by {@link AcctDeposit#getDepositProjectedEndDate() projected end date}
+     * in ascending order. If the optional bank UUID is provided then only the deposits
+     * that have been opened at the referenced bank are returned. If the user with
+     * the given user UUID does not have access to the workspace then an exception
+     * is thrown. The given collection of assigned privileges also helps determine
+     * if the user has the required access.
+     *
+     * @param userUUID               the given user UUID
+     * @param workspaceUUID          the given workspace UUID
+     * @param bankUUID               the optional bank UUID
+     * @param pageNumber             the given page number
+     * @param pageSize               the given page size
+     * @param assignedPrivilegeNames the given collection of assigned privileges
+     */
+    public Page<AcctDeposit> getSortedPageOfDepositsByWorkspaceUUIDAndOptionalBankUUID(
+        String userUUID,
+        String workspaceUUID,
+        String bankUUID,
+        int pageNumber,
+        int pageSize,
+        Collection<String> assignedPrivilegeNames
+    ) {
+        // Retrieve the workspace for the save operation
+        final AcctWorkspace workspace =
+            findWorkspaceForUserAndOperation(READ, userUUID, workspaceUUID, assignedPrivilegeNames);
+
+        // If the bank UUID was not given then return the unfiltered sorted page of deposits
+        if (bankUUID == null) {
+            return dataService.findDepositsByWorkspaceUUID(workspaceUUID, pageNumber, pageSize);
+        }
+        // If the bank UUID was given then return the sorted page of deposits filtered by bank
+        else {
+            return dataService.findDepositsByWorkspaceUUIDAndBankUUID(workspaceUUID, bankUUID, pageNumber, pageSize);
+        }
+    }
+
     private AcctAccount retrieveAccountFromWorkspaceForWorkspaceOperation(
         WorkspaceServiceOperation operation,
         String userUUID,

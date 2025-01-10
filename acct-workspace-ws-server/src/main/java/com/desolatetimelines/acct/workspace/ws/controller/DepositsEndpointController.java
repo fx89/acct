@@ -1,8 +1,11 @@
 package com.desolatetimelines.acct.workspace.ws.controller;
 
+import com.desolatetimelines.acct.common.ws.model.AcctPage;
 import com.desolatetimelines.acct.common.ws.model.AcctUserClaims;
 import com.desolatetimelines.acct.workspace.service.AcctWorkspaceService;
 import com.desolatetimelines.acct.workspace.ws.endpoint.DepositsEndpoint;
+import com.desolatetimelines.acct.workspace.ws.mapper.DepositDetailsMapper;
+import com.desolatetimelines.acct.workspace.ws.model.DepositDetails;
 import com.desolatetimelines.acct.workspace.ws.model.DepositModifiableAttributes;
 import com.desolatetimelines.acct.workspace.ws.model.DepositProperties;
 import com.desolatetimelines.acct.workspace.ws.model.DepositUUIDResponse;
@@ -11,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import static com.desolatetimelines.acct.common.ws.util.AcctJwtUtils.extractCurrentUserClaims;
+import static com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspacePrivilegeIds.DEPOSITS_READ;
 import static com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspacePrivilegeIds.DEPOSITS_SAVE;
 
 @RestController
@@ -69,6 +73,34 @@ public class DepositsEndpointController implements DepositsEndpoint {
             modifiableAttributes.projectedEndDate(),
             userClaims.privilegeNames()
         );
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + DEPOSITS_READ + "')")
+    @GetMapping(value = "")
+    public AcctPage<DepositDetails> getSortedPageOfDepositsByWorkspaceUUIDAndOptionalBankUUID(
+        @NotNull @RequestParam(name = "workspaceUUID") String workspaceUUID,
+        @RequestParam(name = "bankUUID", required = false) String bankUUID,
+        @RequestParam(name = "pageNumber") int pageNumber,
+        @RequestParam(name = "pageSize") int pageSize
+    ) {
+        // Get the user claims
+        final AcctUserClaims userClaims = extractCurrentUserClaims();
+
+        // Get, map and return
+        return
+            DepositDetailsMapper.fromPageOfAcctDeposit(
+                workspaceService.getSortedPageOfDepositsByWorkspaceUUIDAndOptionalBankUUID(
+                    userClaims.userUUID(),
+                    workspaceUUID,
+                    bankUUID,
+                    pageNumber,
+                    pageSize,
+                    userClaims.privilegeNames()
+                ),
+                pageNumber,
+                pageSize
+            );
     }
 
 }

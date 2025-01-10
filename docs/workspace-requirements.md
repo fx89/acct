@@ -386,8 +386,9 @@ then the query also filters for the referenced bank.
 
 Raises an exception if the referenced workspace is not accessible by the current user.
 
-Example request URL:
-- `GET http://acct.desolatetimelines.com/service/workspace/v1/deposits/transfer`
+Example request URLs:
+- `GET http://acct.desolatetimelines.com/service/workspace/v1/deposits?workspaceUUID=dd7617bf-9030-4f78-9991-c39923273d42?pageNumber=0&pageSize=5`
+- `GET http://acct.desolatetimelines.com/service/workspace/v1/deposits?workspaceUUID=dd7617bf-9030-4f78-9991-c39923273d42&bankUUID=838d5032-94bc-44a7-ae30-8bc979c98eef?pageNumber=0&pageSize=5`
 
 Example response body:
 ```
