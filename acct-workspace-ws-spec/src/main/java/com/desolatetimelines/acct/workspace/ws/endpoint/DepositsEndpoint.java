@@ -1,10 +1,7 @@
 package com.desolatetimelines.acct.workspace.ws.endpoint;
 
 import com.desolatetimelines.acct.common.ws.model.AcctPage;
-import com.desolatetimelines.acct.workspace.ws.model.DepositDetails;
-import com.desolatetimelines.acct.workspace.ws.model.DepositModifiableAttributes;
-import com.desolatetimelines.acct.workspace.ws.model.DepositProperties;
-import com.desolatetimelines.acct.workspace.ws.model.DepositUUIDResponse;
+import com.desolatetimelines.acct.workspace.ws.model.*;
 import jakarta.validation.constraints.NotNull;
 
 /**
@@ -73,6 +70,22 @@ public interface DepositsEndpoint {
         @NotNull String workspaceUUID,
         int pageNumber,
         int pageSize
+    );
+
+    /**
+     * Returns the value of the deposit with the given deposit UUID, plus interest, into the
+     * source account from the workspace with given workspace UUID. The interest is computed
+     * by subtracting the deposit amount from the value contained in the given deposit return
+     * value object.
+     *
+     * @param workspaceUUID      the given deposit UUID
+     * @param depositUUID        the given workspace UUID
+     * @param depositReturnValue the given deposit return value object
+     */
+    void capitalizeDeposit(
+        @NotNull String workspaceUUID,
+        @NotNull String depositUUID,
+        DepositReturnValue depositReturnValue
     );
 
 }

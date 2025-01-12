@@ -15,6 +15,7 @@ public class AcctWorkspaceErrorCodesRegistryService extends AbstractErrorCodesRe
     public String INSUFFICIENT_FUNDS;
     public String MISMATCHED_CURRENCIES;
     public String SAME_CURRENCY;
+    public String ALREADY_CAPITALIZED;
 
     protected AcctWorkspaceErrorCodesRegistryService() {
         super(Integer.parseInt(System.getenv("WORKSPACE_SERVICE_NUMBER")));
@@ -84,6 +85,13 @@ public class AcctWorkspaceErrorCodesRegistryService extends AbstractErrorCodesRe
                 CAT_NAME_BUSINESS_RULES_VALIDATION,
                 "Insufficient funds",
                 "An operation cannot be performed because an account does not sufficient funds"
+            );
+
+        ALREADY_CAPITALIZED =
+            resolveErrorCode(
+                CAT_NAME_BUSINESS_RULES_VALIDATION,
+                "Deposit already capitalized",
+                "An attempt was made to capitalize a deposit that has already been capitalized"
             );
     }
 

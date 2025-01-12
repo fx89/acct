@@ -5,17 +5,13 @@ import com.desolatetimelines.acct.common.ws.model.AcctUserClaims;
 import com.desolatetimelines.acct.workspace.service.AcctWorkspaceService;
 import com.desolatetimelines.acct.workspace.ws.endpoint.DepositsEndpoint;
 import com.desolatetimelines.acct.workspace.ws.mapper.DepositDetailsMapper;
-import com.desolatetimelines.acct.workspace.ws.model.DepositDetails;
-import com.desolatetimelines.acct.workspace.ws.model.DepositModifiableAttributes;
-import com.desolatetimelines.acct.workspace.ws.model.DepositProperties;
-import com.desolatetimelines.acct.workspace.ws.model.DepositUUIDResponse;
+import com.desolatetimelines.acct.workspace.ws.model.*;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import static com.desolatetimelines.acct.common.ws.util.AcctJwtUtils.extractCurrentUserClaims;
-import static com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspacePrivilegeIds.DEPOSITS_READ;
-import static com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspacePrivilegeIds.DEPOSITS_SAVE;
+import static com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspacePrivilegeIds.*;
 
 @RestController
 @RequestMapping("/deposits")
@@ -127,6 +123,27 @@ public class DepositsEndpointController implements DepositsEndpoint {
                 pageNumber,
                 pageSize
             );
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + DEPOSITS_CAPITALIZE + "')")
+    @PostMapping(value = "/capitalize")
+    public void capitalizeDeposit(
+        @NotNull @RequestParam(name = "workspaceUUID") String workspaceUUID,
+        @NotNull @RequestParam(name = "depositUUID") String depositUUID,
+        @RequestBody DepositReturnValue depositReturnValue
+    ) {
+        // Get the user claims
+        final AcctUserClaims userClaims = extractCurrentUserClaims();
+
+        // Capitalize the deposit
+        workspaceService.capitalizeDeposit(
+            userClaims.userUUID(),
+            workspaceUUID,
+            depositUUID,
+            depositReturnValue.returnValue(),
+            userClaims.privilegeNames()
+        );
     }
 
 }

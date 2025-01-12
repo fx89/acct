@@ -41,6 +41,10 @@ public class AcctWorkspaceService {
 
     private static final String ACCT_REC_TEXT_DEPOSIT_CREATION = "Deposit creation";
 
+    private static final String ACCT_REC_TEXT_DEPOSIT_RETURN = "Deposit return";
+
+    private static final String ACCT_REC_TEXT_DEPOSIT_INTEREST = "Deposit interest";
+
     private final RESTUsageEndpointClient usageEndpointClient;
 
     private final AcctSecurityClientService securityClientService;
@@ -809,9 +813,8 @@ public class AcctWorkspaceService {
         int pageSize,
         Collection<String> assignedPrivilegeNames
     ) {
-        // Retrieve the workspace for the save operation
-        final AcctWorkspace workspace =
-            findWorkspaceForUserAndOperation(READ, userUUID, workspaceUUID, assignedPrivilegeNames);
+        // Retrieve the workspace to make sure the user has access
+        findWorkspaceForUserAndOperation(READ, userUUID, workspaceUUID, assignedPrivilegeNames);
 
         // If the bank UUID was not given then return the unfiltered sorted page of deposits
         if (bankUUID == null) {
@@ -855,6 +858,79 @@ public class AcctWorkspaceService {
                     workspaceUUID, Instant.now(), pageNumber, pageSize
                 );
 
+    }
+
+    /**
+     * Capitalizes the {@link AcctDeposit deposit} with the given deposit UUID, inside the
+     * {@link AcctWorkspace workspace} with the given workspace UUID by returning the
+     * {@link AcctDeposit#getDepositValue() deposited value} plus the computed interest
+     * into the source account. To mark the operation, two new {@link AcctAccountRecord records}
+     * are created in the source account: <ul>
+     * <li>the {@link AcctDeposit#getDepositReturnAccountRecord() return record} marks that the
+     * deposited amount has returned to the source account</li>
+     * <li>the {@link AcctDeposit#getDepositInterestAccountRecord() interest record} marks that
+     * the interest has been added to the source account</li>
+     * </ul>
+     * The linking of the deposit to the interest record marks that the deposit has been capitalized.
+     * While the deposited value is known, the interest is computed by subtracting the deposited
+     * value from the given return value.<br />
+     * <br />
+     * If the given return value is smaller than the deposited value, negative interest is assumed.<br />
+     * <br />
+     * If the deposit deposit is capitalized before the
+     * {@link AcctDeposit#getDepositProjectedEndDate() projected end date} it's considered early
+     * capitalization and no checks are done. <br />
+     * <br />
+     * To execute this operation, the user with the given user UUID and the given collection of
+     * privileges must have the proper access to the referenced workspace.
+     *
+     * @param userUUID               the given user UUID
+     * @param workspaceUUID          the given workspace UUID
+     * @param depositUUID            the given deposit UUID
+     * @param returnValue            the given return value
+     * @param assignedPrivilegeNames the given collection of privileges
+     */
+    public void capitalizeDeposit(
+        String userUUID,
+        String workspaceUUID,
+        String depositUUID,
+        Double returnValue,
+        Collection<String> assignedPrivilegeNames
+    ) {
+        // Retrieve the deposit while performing all the security checks
+        final AcctDeposit deposit =
+            retrieveDepositFromWorkspaceForWorkspaceOperation(
+                SAVE, userUUID, workspaceUUID, assignedPrivilegeNames, depositUUID
+            );
+
+        // If the deposit is already capitalized, throw an exception
+        if (deposit.getDepositInterestAccountRecord() != null) {
+            throw new AcctWorkspaceServiceAlreadyCapitalizedException(errors, depositUUID);
+        }
+
+        // Get the source account
+        final AcctAccount sourceAccount = deposit.getDepositCreationAccountRecord().getAccount();
+
+        // Create the return record
+        final AcctAccountRecord returnRecord = createNewAccountRecordWithinAccount(sourceAccount, userUUID);
+        returnRecord.setIncomeOrExpenseItemUUID(INCOME_OR_EXPENSE_ITEM_UUID_FOR_DEPOSIT);
+        returnRecord.setAccountRecordText(ACCT_REC_TEXT_DEPOSIT_RETURN);
+        returnRecord.setAccountRecordValue(deposit.getDepositValue());
+        final AcctAccountRecord savedReturnRecord = saveAccountRecord(userUUID, returnRecord);
+
+        // Create the interest record
+        final AcctAccountRecord interestRecord = createNewAccountRecordWithinAccount(sourceAccount, userUUID);
+        interestRecord.setIncomeOrExpenseItemUUID(INCOME_OR_EXPENSE_ITEM_UUID_FOR_DEPOSIT);
+        interestRecord.setAccountRecordText(ACCT_REC_TEXT_DEPOSIT_INTEREST);
+        interestRecord.setAccountRecordValue(returnValue - deposit.getDepositValue());
+        final AcctAccountRecord savedInterestRecord = saveAccountRecord(userUUID, interestRecord);
+
+        // Update the deposit with the return and interest record references
+        deposit.setDepositReturnAccountRecord(savedReturnRecord);
+        deposit.setDepositInterestAccountRecord(savedInterestRecord);
+
+        // Persist the deposit
+        dataService.saveDeposit(deposit);
     }
 
     private AcctAccount retrieveAccountFromWorkspaceForWorkspaceOperation(

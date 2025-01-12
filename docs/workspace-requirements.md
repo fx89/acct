@@ -513,12 +513,12 @@ Example response body:
 
 <br /><br />
 #### `WKS-04005` Capitalize deposit
-Capitalizes the deposit with the given `depositUUID` with the given return value.
+Capitalizes the deposit with the given `depositUUID` with the given return value. This only happens if the referenced deposit has not yet been capitalized. If it has then an exception is thrown.
 
 Example request URL:
-- `POST http://acct.desolatetimelines.com/service/workspace/v1/deposits/capitalize?depositUUID=b61072cd-6929-4817-a071-d33c290f27ac`
+- `POST http://acct.desolatetimelines.com/service/workspace/v1/deposits/capitalize?workspaceUUID=4507b837-8a31-49b6-b440-391dc8ac4cfd&depositUUID=b61072cd-6929-4817-a071-d33c290f27ac`
 
-Request body example:
+    Request body example:
 ```
 {
     "returnValue": 2500
@@ -528,7 +528,6 @@ Request body example:
 Capitalization involves the following actions:
 - Create a record in the source account of the deposit where the value of the record pointed to by the `deposit_creation_account_record_id` is returned and set the `deposit_return_account_record_id` to point to this new record.
 - Create a record in the source account with the interest amount (the given `returnValue` minus the value of the record pointed to by `deposit_creation_account_record_id`) and set the `deposit_interest_account_record_id` to point to this new record.
-
 
 
 <br /><br />

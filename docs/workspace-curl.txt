@@ -37,7 +37,7 @@ curl \
 curl \
     --insecure \
     -v \
-    --cookie 'JSESSIONID=C8827193D2AFC27FDA4A7A87CECB44FD' \
+    --cookie 'JSESSIONID=558F7759C95EDE855B0486EC6623E320' \
     -X GET 'http://localhost:9001/service/authorization/v1/oauth2/authorize?response_type=code&client_id=frontend-client'
 
 
@@ -48,7 +48,7 @@ curl \
     -v \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'grant_type=authorization_code' \
-    -d 'code=Bi8V07_oIg25AGvdH1WHS_euVeGpo1VjPsROAVYEjgSKtXawMBmwHWZDUPLqoIcaL5fOrsdVsDfb8AHEOnzmyckuD8zmCTVl6RjjnYXFCnVvKHXOMHO7zeh7tfidWiR4' \
+    -d 'code=omSIeH3ur1MEhR2zFU0ezuXMQjohs8g6dUPpmFxipAjsOt9XVqnusYChNr80_RqpUBWR0q5MRsnzgIWfWTIRVjRV15kcbUQHQIH8pdTAyJ1ayTWDODw8EK8-56G2ZCaR' \
     -d 'client_id=frontend-client' \
     -d 'client_secret=lkjdwsf23odnwqkld23odfbqweorh23oihd' \
     -X POST 'http://localhost:9001/service/authorization/v1/oauth2/token' \
@@ -361,4 +361,17 @@ curl \
     -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
     -H "Content-Type: application/json; charset=utf-8" \
     -X GET 'http://localhost:8085/service/workspace/v1/deposits/toCapitalize?workspaceUUID=2d4ca15c-c0c7-4306-a390-3dbaa98a9802&pageNumber=0&pageSize=5' \
+    | jq
+
+curl \
+    --insecure \
+    -v \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X POST 'http://localhost:8085/service/workspace/v1/deposits/capitalize?workspaceUUID=2d4ca15c-c0c7-4306-a390-3dbaa98a9802&depositUUID=09c38c16-a6fe-4993-b428-1cbbe4dbdf89' \
+    --data-raw '
+        {
+            "returnValue": 2500.0
+        }
+    ' \
     | jq

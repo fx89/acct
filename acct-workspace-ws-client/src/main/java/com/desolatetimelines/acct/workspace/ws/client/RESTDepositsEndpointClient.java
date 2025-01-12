@@ -2,10 +2,7 @@ package com.desolatetimelines.acct.workspace.ws.client;
 
 import com.desolatetimelines.acct.common.ws.model.AcctPage;
 import com.desolatetimelines.acct.workspace.ws.endpoint.DepositsEndpoint;
-import com.desolatetimelines.acct.workspace.ws.model.DepositDetails;
-import com.desolatetimelines.acct.workspace.ws.model.DepositModifiableAttributes;
-import com.desolatetimelines.acct.workspace.ws.model.DepositProperties;
-import com.desolatetimelines.acct.workspace.ws.model.DepositUUIDResponse;
+import com.desolatetimelines.acct.workspace.ws.model.*;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
@@ -46,6 +43,14 @@ public interface RESTDepositsEndpointClient extends DepositsEndpoint {
         @NotNull @RequestParam(name = "workspaceUUID") String workspaceUUID,
         @RequestParam(name = "pageNumber") int pageNumber,
         @RequestParam(name = "pageSize") int pageSize
+    );
+
+    @Override
+    @PostMapping(value = "/capitalize")
+    void capitalizeDeposit(
+        @NotNull @RequestParam(name = "workspaceUUID") String workspaceUUID,
+        @NotNull @RequestParam(name = "depositUUID") String depositUUID,
+        @RequestBody DepositReturnValue depositReturnValue
     );
 
 }

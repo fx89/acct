@@ -18,7 +18,7 @@
 // DONE: WKS-04002: Deposits endpoint: Create new deposit from source bank account
 // DONE: WKS-04003: Deposits endpoint: Edit existing deposit (deposit value is not modified)
 // DONE: WKS-04004: Deposits endpoint: Get sorted page of deposits to capitalize
-// TODO: WKS-04005: Deposits endpoint: Capitalize deposit
+// DONE: WKS-04005: Deposits endpoint: Capitalize deposit
 
 // TODO: WKS-05001: Autocomplete endpoint: Get the account record autocomplete data for workspace, income or expense item and account record text pattern
 
