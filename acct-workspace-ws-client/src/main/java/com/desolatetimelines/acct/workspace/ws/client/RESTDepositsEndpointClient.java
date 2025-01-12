@@ -40,4 +40,12 @@ public interface RESTDepositsEndpointClient extends DepositsEndpoint {
         @RequestParam(name = "pageSize") int pageSize
     );
 
+    @Override
+    @GetMapping(value = "/toCapitalize")
+    AcctPage<DepositDetails> getSortedPageOfDepositsToCapitalize(
+        @NotNull @RequestParam(name = "workspaceUUID") String workspaceUUID,
+        @RequestParam(name = "pageNumber") int pageNumber,
+        @RequestParam(name = "pageSize") int pageSize
+    );
+
 }

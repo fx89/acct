@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.Optional;
 
 import static com.desolatetimelines.acct.workspace.util.AcctWorkspaceRepoSpringDataUtils.doWithJpaAcctDepositReturning;
@@ -73,6 +74,35 @@ public class SpringJpaAcctDepositsRepository implements AcctDepositsRepository {
                 .findByDepositCreationAccountRecordAccountWorkspaceWorkspaceUUIDAndBankUUID(
                     workspaceUUID,
                     bankUUID,
+                    PageRequest.of(
+                        pageNumber,
+                        pageSize,
+                        Sort.by("depositProjectedEndDate")
+                    )
+                );
+
+        // Map the page
+        return
+            new Page<>(
+                page.get().map(rec -> (AcctDeposit) rec).toList(),
+                page.getNumberOfElements(),
+                page.getTotalElements()
+            );
+    }
+
+    @Override
+    public Page<AcctDeposit> findDepositsByWorkspaceUUIDAndDepositInterestAccountRecordNullAndDepositProjectedEndDateLessThan(
+        String workspaceUUID,
+        Instant projectedEndDate,
+        int pageNumber,
+        int pageSize
+    ) {
+        // Get the page
+        final org.springframework.data.domain.Page<JpaAcctDeposit> page =
+            jpaAcctDepositsRepository
+                .findByDepositCreationAccountRecordAccountWorkspaceWorkspaceUUIDAndDepositInterestAccountRecordNullAndDepositProjectedEndDateBefore(
+                    workspaceUUID,
+                    projectedEndDate,
                     PageRequest.of(
                         pageNumber,
                         pageSize,

@@ -823,6 +823,40 @@ public class AcctWorkspaceService {
         }
     }
 
+    /**
+     * Returns a {@link Page page} of {@link AcctDeposit deposits} that belong to the
+     * {@link AcctWorkspace workspace} with the given workspace UUID and for which the
+     * {@link AcctDeposit#getDepositProjectedEndDate() projected end date} is before
+     * the current date while the {@link AcctDeposit#getDepositInterestAccountRecord() interest record}
+     * is yet to be set. Security applies for the user with the given user UUID and the
+     * given collection of assigned privileges.
+     *
+     * @param userUUID               the given user UUID
+     * @param workspaceUUID          the given workspace UUID
+     * @param pageNumber             the zero-based index of the page to be returned
+     * @param pageSize               the number of elements to be contained by any given page
+     * @param assignedPrivilegeNames the given collection of assigned privileges
+     */
+    public Page<AcctDeposit> getSortedPageOfDepositsToCapitalize(
+        String userUUID,
+        String workspaceUUID,
+        int pageNumber,
+        int pageSize,
+        Collection<String> assignedPrivilegeNames
+    ) {
+        // Retrieve the workspace for the save operation
+        final AcctWorkspace workspace =
+            findWorkspaceForUserAndOperation(READ, userUUID, workspaceUUID, assignedPrivilegeNames);
+
+        // Retrieve and return the requested page
+        return
+            dataService
+                .findDepositsByWorkspaceUUIDAndDepositInterestAccountRecordNullAndDepositProjectedEndDateLessThan(
+                    workspaceUUID, Instant.now(), pageNumber, pageSize
+                );
+
+    }
+
     private AcctAccount retrieveAccountFromWorkspaceForWorkspaceOperation(
         WorkspaceServiceOperation operation,
         String userUUID,

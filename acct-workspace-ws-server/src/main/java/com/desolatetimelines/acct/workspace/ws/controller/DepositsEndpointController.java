@@ -103,4 +103,30 @@ public class DepositsEndpointController implements DepositsEndpoint {
             );
     }
 
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + DEPOSITS_READ + "')")
+    @GetMapping(value = "/toCapitalize")
+    public AcctPage<DepositDetails> getSortedPageOfDepositsToCapitalize(
+        @NotNull @RequestParam(name = "workspaceUUID") String workspaceUUID,
+        @RequestParam(name = "pageNumber") int pageNumber,
+        @RequestParam(name = "pageSize") int pageSize
+    ) {
+        // Get the user claims
+        final AcctUserClaims userClaims = extractCurrentUserClaims();
+
+        // Get, map and return
+        return
+            DepositDetailsMapper.fromPageOfAcctDeposit(
+                workspaceService.getSortedPageOfDepositsToCapitalize(
+                    userClaims.userUUID(),
+                    workspaceUUID,
+                    pageNumber,
+                    pageSize,
+                    userClaims.privilegeNames()
+                ),
+                pageNumber,
+                pageSize
+            );
+    }
+
 }

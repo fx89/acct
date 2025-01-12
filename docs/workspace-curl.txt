@@ -37,7 +37,7 @@ curl \
 curl \
     --insecure \
     -v \
-    --cookie 'JSESSIONID=39CF66C401BB58DB30F027C6C15096C9' \
+    --cookie 'JSESSIONID=C8827193D2AFC27FDA4A7A87CECB44FD' \
     -X GET 'http://localhost:9001/service/authorization/v1/oauth2/authorize?response_type=code&client_id=frontend-client'
 
 
@@ -48,7 +48,7 @@ curl \
     -v \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'grant_type=authorization_code' \
-    -d 'code=wzRgOMy8adlcsNY4qK8TAwMiV8qXnSpKM8vWqnlgtK1b__bp_Ko-P_3vYdKfZkJzK8NRKqLvXC_-bq0V_54wxO6nBAFFRqaRLri-JH-GZ-21GRyo2j1rwP7kHbETrWlG' \
+    -d 'code=Bi8V07_oIg25AGvdH1WHS_euVeGpo1VjPsROAVYEjgSKtXawMBmwHWZDUPLqoIcaL5fOrsdVsDfb8AHEOnzmyckuD8zmCTVl6RjjnYXFCnVvKHXOMHO7zeh7tfidWiR4' \
     -d 'client_id=frontend-client' \
     -d 'client_secret=lkjdwsf23odnwqkld23odfbqweorh23oihd' \
     -X POST 'http://localhost:9001/service/authorization/v1/oauth2/token' \
@@ -355,3 +355,10 @@ curl \
     -X GET 'http://localhost:8085/service/workspace/v1/deposits?workspaceUUID=2d4ca15c-c0c7-4306-a390-3dbaa98a9802&bankUUID=acd9cc68-d0bb-4156-9ef5-0bb42d9edcb9&pageNumber=0&pageSize=1' \
     | jq
 
+curl \
+    --insecure \
+    -v \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X GET 'http://localhost:8085/service/workspace/v1/deposits/toCapitalize?workspaceUUID=2d4ca15c-c0c7-4306-a390-3dbaa98a9802&pageNumber=0&pageSize=5' \
+    | jq

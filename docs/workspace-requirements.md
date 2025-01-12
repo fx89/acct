@@ -483,7 +483,7 @@ for which the `deposit_projected_end_date` is before the current date
 and which do not have the `deposit_interest_account_record_id` set.
 
 Example request URL:
-- `GET http://acct.desolatetimelines.com/service/workspace/v1/deposits?workspaceUUID=4507b837-8a31-49b6-b440-391dc8ac4cfd&pageNUmber=0&pageSize=5`
+- `GET http://acct.desolatetimelines.com/service/workspace/v1/deposits/toCapitalize?workspaceUUID=4507b837-8a31-49b6-b440-391dc8ac4cfd&pageNUmber=0&pageSize=5`
 
 Example response body:
 ```

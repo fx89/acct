@@ -59,4 +59,20 @@ public interface DepositsEndpoint {
         int pageSize
     );
 
+    /**
+     * Returns a page of deposits within the workspace referenced by the given workspace UUID
+     * and for which the {@link DepositDetails#depositProjectedEndDate() projected end date}
+     * is after the current date. The page is sorted by
+     * {@link DepositDetails#depositProjectedEndDate() projected end date} in ascending order.
+     *
+     * @param workspaceUUID the given workspace UUID
+     * @param pageNumber    the zero-based index of the page to be returned
+     * @param pageSize      the number of elements to be contained by any given page
+     */
+    AcctPage<DepositDetails> getSortedPageOfDepositsToCapitalize(
+        @NotNull String workspaceUUID,
+        int pageNumber,
+        int pageSize
+    );
+
 }

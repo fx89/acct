@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 
+import java.time.Instant;
 import java.util.Optional;
 
 public interface JpaAcctDepositsRepository extends CrudRepository<JpaAcctDeposit, Long> {
@@ -17,6 +18,10 @@ public interface JpaAcctDepositsRepository extends CrudRepository<JpaAcctDeposit
 
     Page<JpaAcctDeposit> findByDepositCreationAccountRecordAccountWorkspaceWorkspaceUUIDAndBankUUID(
         String workspaceUUID, String bankUUID, Pageable pageable
+    );
+
+    Page<JpaAcctDeposit> findByDepositCreationAccountRecordAccountWorkspaceWorkspaceUUIDAndDepositInterestAccountRecordNullAndDepositProjectedEndDateBefore(
+        String workspaceUUID, Instant depositProjectedEndDate, Pageable pageable
     );
 
 }
