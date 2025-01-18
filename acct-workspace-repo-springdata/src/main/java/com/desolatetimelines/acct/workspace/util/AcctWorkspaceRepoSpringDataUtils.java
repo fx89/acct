@@ -110,4 +110,18 @@ public abstract class AcctWorkspaceRepoSpringDataUtils {
         );
     }
 
+    public static JpaAcctAccountRecordAutocompleteData doWithJpaAcctAccountRecordAutocompleteDataReturning(
+        AcctAccountRecordAutocompleteData acctAccountRecordAutocompleteData,
+        Function<JpaAcctAccountRecordAutocompleteData, JpaAcctAccountRecordAutocompleteData> todo
+    ) {
+        if (acctAccountRecordAutocompleteData instanceof JpaAcctAccountRecordAutocompleteData jpaAcctAccountRecordAutocompleteData) {
+            return todo.apply(jpaAcctAccountRecordAutocompleteData);
+        }
+
+        throw new IllegalArgumentException(
+            "The referenced " + AcctAccountRecordAutocompleteData.class.getName() +
+                " is not of type " + JpaAcctAccountRecordAutocompleteData.class.getCanonicalName()
+        );
+    }
+
 }

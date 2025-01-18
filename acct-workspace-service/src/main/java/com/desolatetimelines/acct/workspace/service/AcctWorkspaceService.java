@@ -169,7 +169,7 @@ public class AcctWorkspaceService {
         final AcctWorkspace savedWorkspace = dataService.saveWorkspace(workspace);
 
         // If this is a new workspace, set the workspace ownership
-        if (workspaceDetails.workspaceUUID() == null) {
+        if (workspaceDetails.workspaceUUID() == null && userUUID != null) {
             securityClientService.addWorkspaceOwner(
                 WorkspaceOwner.builder()
                     .withOwnerType(OwnerType.USER)
@@ -447,8 +447,14 @@ public class AcctWorkspaceService {
         record.setAccountRecordText(accountRecordDetails.accountRecordText());
         record.setAccountRecordValue(accountRecordDetails.accountRecordValue());
 
-        // Persist the account record and return the account record id
-        return saveAccountRecord(userUUID, record).getAccountRecordId();
+        // Persist the account record
+        final AcctAccountRecord persistedAccountRecord = saveAccountRecord(userUUID, record);
+
+        // Create or update the autocomplete data for the persisted record
+        updateAccountRecordAutocompleteData(persistedAccountRecord);
+
+        // Return the account record id of the persisted record
+        return persistedAccountRecord.getAccountRecordId();
     }
 
     /**
@@ -931,6 +937,86 @@ public class AcctWorkspaceService {
 
         // Persist the deposit
         dataService.saveDeposit(deposit);
+    }
+
+    /**
+     * Returns a list of the first 10 {@link AcctAccountRecord#getAccountRecordText() account record texts}
+     * that match the given text pattern and the given {@link AcctAccountRecord#getIncomeOrExpenseItemUUID()
+     * income or expense item UUID} within the {@link AcctAccount account} referenced by the given account
+     * UUID within the workspace with the given workspace UUID. If the given text pattern is shorter than 3
+     * letters then an empty collection is returned. If the user with the given user UUID and the given
+     * collection of access rights does not have read access to the workspace then an exception is thrown.
+     *
+     * @param userUUID                the given user UUID
+     * @param workspaceUUID           the given workspace UUID
+     * @param accountUUID             the given account UUID
+     * @param incomeOrExpenseItemUUID the given income or expense item UUID
+     * @param textPattern             the given text pattern
+     * @param assignedPrivilegeNames  the given collection of access rights
+     */
+    public Collection<AcctAccountRecordAutocompleteData> getAutocompleteData(
+        String userUUID,
+        String workspaceUUID,
+        String accountUUID,
+        String incomeOrExpenseItemUUID,
+        String textPattern,
+        Collection<String> assignedPrivilegeNames
+    ) {
+        // If the text pattern is missing or not long enough, return an empty collection
+        if (textPattern == null || textPattern.length() < 3) {
+            return emptyList();
+        }
+
+        // Get the account while minding the access rights
+        final AcctAccount account =
+            retrieveAccountFromWorkspaceForWorkspaceOperation(
+                READ,
+                userUUID,
+                workspaceUUID,
+                assignedPrivilegeNames,
+                accountUUID
+            );
+
+        // Get the first ten records matching the pattern for the income or expense item UUID
+        final Page<AcctAccountRecordAutocompleteData> page =
+            dataService.findAccountRecordAutocompleteDataByAccountAndIncomeOrExpenseItemUUIDAndAccountRecordTextLike(
+                account,
+                incomeOrExpenseItemUUID,
+                textPattern,
+                0,
+                10
+            );
+
+        // Return the page data
+        return page.data();
+
+    }
+
+    private void updateAccountRecordAutocompleteData(AcctAccountRecord accountRecord) {
+        // Attempt to find an already existing autocomplete data record for the account record specification
+        // and, if one doesn't exist, create a new one
+        final AcctAccountRecordAutocompleteData autocompleteData =
+            dataService.findAccountRecordAutocompleteDataByAccountAndIncomeOrExpenseItemUUIDAndAccountRecordText(
+                accountRecord.getAccount(),
+                accountRecord.getIncomeOrExpenseItemUUID(),
+                accountRecord.getAccountRecordText()
+            ).orElseGet(dataService::createNewAccountRecordAutocompleteData);
+
+        // If autocomplete data record identified above has the same value as the incoming one
+        // then there's no need to continue since there is no need to update the last used value
+        // of the existing autocomplete data record
+        if (Objects.equals(accountRecord.getAccountRecordValue(), autocompleteData.getLastUsedAccountRecordValue())) {
+            return;
+        }
+
+        // Set the details
+        autocompleteData.setAccount(accountRecord.getAccount());
+        autocompleteData.setAccountRecordText(accountRecord.getAccountRecordText());
+        autocompleteData.setIncomeOrExpenseItemUUID(accountRecord.getIncomeOrExpenseItemUUID());
+        autocompleteData.setLastUsedAccountRecordValue(accountRecord.getAccountRecordValue());
+
+        // Persist the autocomplete data record
+        dataService.saveAccountRecordAutocompleteData(autocompleteData);
     }
 
     private AcctAccount retrieveAccountFromWorkspaceForWorkspaceOperation(

@@ -175,6 +175,15 @@ public enum WorkspacePrivilege {
             .withPrivilegeDescription("Allows capitalizing deposits within a given workspace, " +
                 "provided the user has the correct access rights and can reach the workspace")
             .build()
+    ),
+
+    AUTOCOMPLETE_GET(
+        AcctPrivilege.builder()
+            .withPrivilegeId(WorkspacePrivilegeIds.AUTOCOMPLETE_GET)
+            .withPrivilegeName("Get autocomplete data")
+            .withPrivilegeDescription("Allows querying the autocomplete data of accounts within a workspace, " +
+                "provided the user has the correct access rights and can reach the workspace")
+            .build()
     );
 
 

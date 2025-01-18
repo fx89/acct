@@ -1,6 +1,6 @@
-<mxfile host="Electron" modified="2025-01-06T13:13:20.675Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.1.15 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="gSULgsMoabWD780d1q63" version="22.1.15" type="device">
+<mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/25.0.2 Chrome/128.0.6613.186 Electron/32.2.7 Safari/537.36" version="25.0.2">
   <diagram name="Page-1" id="hEhjSLRuFoLcvZEl_DyT">
-    <mxGraphModel dx="1111" dy="653" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="995" dy="591" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -35,25 +35,25 @@
           <mxGeometry y="208" width="130" height="26" as="geometry" />
         </mxCell>
         <mxCell id="9xO1WTWDoTDsFJdJQcLz-39" value="workspace" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="9" y="1230" width="145" height="182" as="geometry" />
+          <mxGeometry x="9" y="1230" width="151" height="182" as="geometry" />
         </mxCell>
         <mxCell id="9xO1WTWDoTDsFJdJQcLz-40" value="workspace_id" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="9xO1WTWDoTDsFJdJQcLz-39" vertex="1">
-          <mxGeometry y="26" width="145" height="26" as="geometry" />
+          <mxGeometry y="26" width="151" height="26" as="geometry" />
         </mxCell>
         <mxCell id="8dLC3b4qh8bNT53wCTw0-70" value="workspace_uuid" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="9xO1WTWDoTDsFJdJQcLz-39" vertex="1">
-          <mxGeometry y="52" width="145" height="26" as="geometry" />
+          <mxGeometry y="52" width="151" height="26" as="geometry" />
         </mxCell>
         <mxCell id="13" value="workspace_name" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="9xO1WTWDoTDsFJdJQcLz-39" vertex="1">
-          <mxGeometry y="78" width="145" height="26" as="geometry" />
+          <mxGeometry y="78" width="151" height="26" as="geometry" />
         </mxCell>
         <mxCell id="14" value="workspace_description" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="9xO1WTWDoTDsFJdJQcLz-39" vertex="1">
-          <mxGeometry y="104" width="145" height="26" as="geometry" />
+          <mxGeometry y="104" width="151" height="26" as="geometry" />
         </mxCell>
         <mxCell id="9xO1WTWDoTDsFJdJQcLz-50" value="workspace_icon_uuid" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="9xO1WTWDoTDsFJdJQcLz-39" vertex="1">
-          <mxGeometry y="130" width="145" height="26" as="geometry" />
+          <mxGeometry y="130" width="151" height="26" as="geometry" />
         </mxCell>
         <mxCell id="8dLC3b4qh8bNT53wCTw0-79" value="default_currency_uuid" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="9xO1WTWDoTDsFJdJQcLz-39" vertex="1">
-          <mxGeometry y="156" width="145" height="26" as="geometry" />
+          <mxGeometry y="156" width="151" height="26" as="geometry" />
         </mxCell>
         <mxCell id="9xO1WTWDoTDsFJdJQcLz-5" value="user" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="8.995789473684244" y="90" width="170.52631578947367" height="286" as="geometry" />
@@ -578,13 +578,18 @@
           <mxGeometry x="201" y="3134" width="158.75" height="105" as="geometry" />
         </mxCell>
         <mxCell id="78" value="A user workspace set as default for the user cannot be deleted. A group workspace set as default for a user can be deleted." style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;strokeColor=default;" parent="1" vertex="1">
-          <mxGeometry x="9" y="1412" width="171" height="68" as="geometry" />
+          <mxGeometry x="9" y="1412" width="151" height="68" as="geometry" />
         </mxCell>
         <mxCell id="79" value="The workspace set as default for the user might be missing. In this case, the front-end shows an error message that makes it clear that the workspace is no longer present and that the most probable cause is deletion by the admin." style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;strokeColor=default;" parent="1" vertex="1">
           <mxGeometry x="8.75" y="376" width="351" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="YiQUuHxbq1xA9KVsuhwn-88" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="YiQUuHxbq1xA9KVsuhwn-79" target="78" edge="1">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="9dUC7VMo4GP1mSUD_APE-79" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="YiQUuHxbq1xA9KVsuhwn-79" target="8dLC3b4qh8bNT53wCTw0-42" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="120" y="1500" />
+              <mxPoint x="265" y="1500" />
+            </Array>
+          </mxGeometry>
         </mxCell>
         <mxCell id="YiQUuHxbq1xA9KVsuhwn-79" value="account_record_autocomplete_data" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="10" y="1520" width="220.38" height="156" as="geometry" />

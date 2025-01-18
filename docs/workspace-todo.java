@@ -20,7 +20,7 @@
 // DONE: WKS-04004: Deposits endpoint: Get sorted page of deposits to capitalize
 // DONE: WKS-04005: Deposits endpoint: Capitalize deposit
 
-// TODO: WKS-05001: Autocomplete endpoint: Get the account record autocomplete data for workspace, income or expense item and account record text pattern
+// DONE: WKS-05001: Autocomplete endpoint: Get the account record autocomplete data for workspace, income or expense item and account record text pattern
 
 // TODO: WKS-06001: Used items endpoint: Get items in use of type
 

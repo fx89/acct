@@ -9,6 +9,9 @@ import org.springframework.security.oauth2.jwt.Jwt;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
+import static java.util.Collections.emptyList;
 
 /**
  * Provides utility methods for working with JWTs (user access tokens, mostly)
@@ -59,12 +62,19 @@ public abstract class AcctJwtUtils {
 
     }
 
+    @SuppressWarnings("unchecked")
     private static AcctUserClaims extractUserClaimsFromJwt(Jwt jwt) {
         // Get the claims from the jwt or throw na exception
         final Map<String, Object> claims = jwt.getClaims();
         if (claims == null || claims.isEmpty()) {
             throw new AcctJwtException("The provided Jwt does not contain any claims");
         }
+
+        // If this is the back-end client then there are no claims other than the backend scope
+        if (((List<String>) Optional.ofNullable(claims.get("scope")).orElse(emptyList())).contains("backend")) {
+            return AcctUserClaims.builder().withPrivilegeNames(List.of("backend")).build();
+        }
+
 
         // Get the userUUID claim
         final String userUUID = extractClaim(claims, "userUUID");

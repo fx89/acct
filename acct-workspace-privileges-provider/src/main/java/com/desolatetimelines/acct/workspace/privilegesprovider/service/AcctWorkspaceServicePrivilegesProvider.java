@@ -41,7 +41,9 @@ public class AcctWorkspaceServicePrivilegesProvider implements AcctServicePrivil
 
                 DEPOSITS_SAVE.getAcctPrivilege(),
                 DEPOSITS_READ.getAcctPrivilege(),
-                DEPOSITS_CAPITALIZE.getAcctPrivilege()
+                DEPOSITS_CAPITALIZE.getAcctPrivilege(),
+
+                AUTOCOMPLETE_GET.getAcctPrivilege()
             );
     }
 }

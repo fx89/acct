@@ -77,7 +77,7 @@ public class SpringJpaAccountRecordsRepository implements AccountRecordsReposito
             jpaAccountRecordsRepository
                 .findAllByAccountAndAccountRecordTextLike(
                     account,
-                    textPattern,
+                    "%" + textPattern + "%",
                     PageRequest.of(
                         pageNumber,
                         pageSize,

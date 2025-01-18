@@ -33,6 +33,8 @@ public abstract class WorkspacePrivilegeIds {
     public static final String DEPOSITS_READ = "DEPOSITS_READ";
     public static final String DEPOSITS_CAPITALIZE = "DEPOSITS_CAPITALIZE";
 
+    public static final String AUTOCOMPLETE_GET = "AUTOCOMPLETE_GET";
+
 
     private static final Map<WorkspaceServiceOperation, Map<ResourceOwnership, String>>
         workspacePrivilegesOperationAndOwnership =

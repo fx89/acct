@@ -25,18 +25,22 @@ public class AcctWorkspaceDataService {
 
     private final AcctDepositsRepository depositsRepository;
 
+    private final AcctAccountRecordAutocompleteDataRepository accountRecordAutocompleteDataRepository;
+
     public AcctWorkspaceDataService(
         AcctWorkspacesRepository workspacesRepository,
         AccountsRepository accountsRepository,
         AccountRecordsRepository accountRecordsRepository,
         AcctCurrencyExchangesRepository currencyExchangesRepository,
-        AcctDepositsRepository depositsRepository
+        AcctDepositsRepository depositsRepository,
+        AcctAccountRecordAutocompleteDataRepository accountRecordAutocompleteDataRepository
     ) {
         this.workspacesRepository = workspacesRepository;
         this.accountsRepository = accountsRepository;
         this.accountRecordsRepository = accountRecordsRepository;
         this.currencyExchangesRepository = currencyExchangesRepository;
         this.depositsRepository = depositsRepository;
+        this.accountRecordAutocompleteDataRepository = accountRecordAutocompleteDataRepository;
     }
 
     /**
@@ -338,6 +342,78 @@ public class AcctWorkspaceDataService {
                     pageNumber,
                     pageSize
                 );
+    }
+
+    /**
+     * Returns a new instance of {@link AcctAccountRecordAutocompleteData}
+     */
+    public AcctAccountRecordAutocompleteData createNewAccountRecordAutocompleteData() {
+        return accountRecordAutocompleteDataRepository.createNew();
+    }
+
+    /**
+     * Returns a page of {@link AcctAccountRecordAutocompleteData autocomplete data records}
+     * of the given page size and with the given page number, filtering for records that match
+     * the given text pattern and the given income or expense item UUID and that belong to the
+     * referenced account
+     *
+     * @param account                  the referenced account
+     * @param incomeOrExpenseItemUUID  the given income or expense item UUID
+     * @param accountRecordTextPattern the given text pattern
+     * @param pageNumber               the given page number
+     * @param pageSize                 the given page size
+     */
+    public Page<AcctAccountRecordAutocompleteData>
+    findAccountRecordAutocompleteDataByAccountAndIncomeOrExpenseItemUUIDAndAccountRecordTextLike(
+        AcctAccount account,
+        String incomeOrExpenseItemUUID,
+        String accountRecordTextPattern,
+        int pageNumber,
+        int pageSize
+    ) {
+        return
+            accountRecordAutocompleteDataRepository.findAllByAccountAndIncomeOrExpenseItemUUIDAndAccountRecordTextLike(
+                account,
+                incomeOrExpenseItemUUID,
+                accountRecordTextPattern,
+                pageNumber,
+                pageSize
+            );
+    }
+
+    /**
+     * Returns the first {@link AcctAccountRecordAutocompleteData autocomplete data record} that matches
+     * the referenced account, the given income or expense item UUID and the given account record text.
+     * If not found, an empty optional is returned.
+     *
+     * @param account                 the referenced account
+     * @param incomeOrExpenseItemUUID the given income or expense item UUID
+     * @param accountRecordText       the given account record text
+     */
+    public Optional<AcctAccountRecordAutocompleteData>
+    findAccountRecordAutocompleteDataByAccountAndIncomeOrExpenseItemUUIDAndAccountRecordText(
+        AcctAccount account,
+        String incomeOrExpenseItemUUID,
+        String accountRecordText
+    ) {
+        return
+            accountRecordAutocompleteDataRepository.findFirstByAccountAndIncomeOrExpenseItemUUIDAndAccountRecordText(
+                account,
+                incomeOrExpenseItemUUID,
+                accountRecordText
+            );
+    }
+
+    /**
+     * Persists the referenced {@link AcctAccountRecordAutocompleteData autocomplete data record}
+     *
+     * @param autocompleteData the referenced autocomplete data record
+     * @return a reference to the persisted entity
+     */
+    public AcctAccountRecordAutocompleteData saveAccountRecordAutocompleteData(
+        AcctAccountRecordAutocompleteData autocompleteData
+    ) {
+        return accountRecordAutocompleteDataRepository.save(autocompleteData);
     }
 
 }

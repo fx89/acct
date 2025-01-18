@@ -536,7 +536,8 @@ Capitalization involves the following actions:
 
 <br /><br />
 #### `WKS-05001` Get the account record autocomplete data for workspace, income or expense item and account record text pattern
-Returns the `account_record_text` of the first account record matching the following selection criteria:
+Returns the `account_record_text` of the first 10 account records matching the following selection criteria:
+- The `workspace_uuid` of the workspace to which the autocomplete data is related
 - The `account_uuid` of the account pointed to by the `account_id` equals the given `accountUUID`
 - The `income_or_expense_item_uuid` matches the given `incomeOrExpenseItemUUID`
 - The `account_record_text` begins with the given `textPattern` that's at least `3` letters long
@@ -544,13 +545,16 @@ Returns the `account_record_text` of the first account record matching the follo
 Raises an error if the account referenced by the given `accountUUID` is not part of a workspace accessible to the user.
 
 Example request URL:
-- `GET http://acct.desolatetimelines.com/service/workspace/v1/autocomplete?accountUUID=de9bb5cc-2c55-44af-9784-68c2d7964250&incomeOrExpenseItemUUID=b8f610d3-1b94-413a-9848-6ec8dd94ed98&textPattern=Car`
+- `GET http://acct.desolatetimelines.com/service/workspace/v1/autocomplete?workspaceUUID=4507b837-8a31-49b6-b440-391dc8ac4cfd&accountUUID=de9bb5cc-2c55-44af-9784-68c2d7964250&incomeOrExpenseItemUUID=b8f610d3-1b94-413a-9848-6ec8dd94ed98&textPattern=Car`
 
 Example response body:
 ```
-{
-    "accountRecordText": "Car paint"
-}
+[
+    {
+      "accountRecordText": "Car paint",
+      "lastUsedAccountRecordValue": 50.73
+    }
+]
 ```
 
 
