@@ -12,4 +12,8 @@ public interface JpaAcctWorkspacesRepository extends CrudRepository<JpaAcctWorks
 
     Collection<JpaAcctWorkspace> findAllByWorkspaceUUIDIn(Collection<String> workspaceUUIDs);
 
+    Collection<JpaAcctWorkspace> findAllByWorkspaceIconUUIDIn(Collection<String> workspaceIconUUIDs);
+
+    Collection<JpaAcctWorkspace> findAllByDefaultCurrencyUUIDIn(Collection<String> currencyUUIDs);
+
 }

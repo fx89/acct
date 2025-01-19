@@ -49,6 +49,24 @@ public class SpringJpaAcctWorkspacesRepository implements AcctWorkspacesReposito
     }
 
     @Override
+    public Collection<AcctWorkspace> findAllByWorkspaceIconUUIDIn(Collection<String> workspaceIconUUIDs) {
+        return
+            jpaAcctWorkspacesRepository.findAllByWorkspaceIconUUIDIn(workspaceIconUUIDs)
+                .stream()
+                .map(jpaAcctWorkspace -> (AcctWorkspace) jpaAcctWorkspace)
+                .toList();
+    }
+
+    @Override
+    public Collection<AcctWorkspace> findAllByDefaultCurrencyUUIDIn(Collection<String> currencyUUIDs) {
+        return
+            jpaAcctWorkspacesRepository.findAllByDefaultCurrencyUUIDIn(currencyUUIDs)
+                .stream()
+                .map(jpaAcctWorkspace -> (AcctWorkspace) jpaAcctWorkspace)
+                .toList();
+    }
+
+    @Override
     public void delete(AcctWorkspace workspace) {
         doWithJpaAcctWorkspace(workspace, jpaAcctWorkspacesRepository::delete);
     }

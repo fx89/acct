@@ -65,6 +65,33 @@ public interface AccountRecordsRepository {
     );
 
     /**
+     * Returns a count of {@link AcctAccountRecord account records} for which the value of
+     * the {@link AcctAccountRecord#getRecordedByUserUUID() recorded by user UUID} field is
+     * the given user UUID
+     *
+     * @param userUUID the given user UUID
+     */
+    long countByRecordedByUserUUID(String userUUID);
+
+    /**
+     * Returns a count of {@link AcctAccountRecord account records} for which the value of
+     * the {@link AcctAccountRecord#getIncomeOrExpenseItemUUID() income or expense item UUID}
+     * field is the given income or expense item UUID
+     *
+     * @param incomeOrExpenseItemUUID the given income or expense item UUIDs
+     */
+    long countByIncomeOrExpenseItemUUID(String incomeOrExpenseItemUUID);
+
+    /**
+     * Returns a count of {@link AcctAccountRecord account records} for which the value of
+     * the {@link AcctAccountRecord#getLastModifiedByUserUUID() last modified by user UUID}
+     * field is the given user UUID
+     *
+     * @param userUUID the given user UUIDs
+     */
+    long countByLastModifiedByUserUUID(String userUUID);
+
+    /**
      * Returns the sum of the {@link AcctAccountRecord#getAccountRecordValue()} property of all
      * {@link AcctAccountRecord records} belonging to the referenced {@link AcctAccount account}
      *

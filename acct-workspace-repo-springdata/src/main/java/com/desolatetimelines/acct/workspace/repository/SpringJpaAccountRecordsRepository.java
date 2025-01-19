@@ -95,6 +95,21 @@ public class SpringJpaAccountRecordsRepository implements AccountRecordsReposito
     }
 
     @Override
+    public long countByRecordedByUserUUID(String userUUID) {
+        return jpaAccountRecordsRepository.countByRecordedUserUUID(userUUID);
+    }
+
+    @Override
+    public long countByIncomeOrExpenseItemUUID(String incomeOrExpenseItemUUID) {
+        return jpaAccountRecordsRepository.countByIncomeExpenseItemUUID(incomeOrExpenseItemUUID);
+    }
+
+    @Override
+    public long countByLastModifiedByUserUUID(String userUUID) {
+        return jpaAccountRecordsRepository.countByLastModifiedUserUUID(userUUID);
+    }
+
+    @Override
     public Double sumAccountRecordValueByAccount(AcctAccount account) {
         return
             jpaAccountRecordsRepository.sumAccountRecordValueByAccount(

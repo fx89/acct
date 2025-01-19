@@ -9,6 +9,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.Optional;
 
 import static com.desolatetimelines.acct.workspace.util.AcctWorkspaceRepoSpringDataUtils.doWithJpaAcctDepositReturning;
@@ -42,7 +43,7 @@ public class SpringJpaAcctDepositsRepository implements AcctDepositsRepository {
     }
 
     @Override
-    public Page<AcctDeposit> findDepositsByWorkspaceUUID(String workspaceUUID, int pageNumber, int pageSize) {
+    public Page<AcctDeposit> findAllByWorkspaceUUID(String workspaceUUID, int pageNumber, int pageSize) {
         // Get the page
         final org.springframework.data.domain.Page<JpaAcctDeposit> page =
             jpaAcctDepositsRepository
@@ -65,7 +66,7 @@ public class SpringJpaAcctDepositsRepository implements AcctDepositsRepository {
     }
 
     @Override
-    public Page<AcctDeposit> findDepositsByWorkspaceUUIDAndBankUUID(
+    public Page<AcctDeposit> findAllByWorkspaceUUIDAndBankUUID(
         String workspaceUUID, String bankUUID, int pageNumber, int pageSize
     ) {
         // Get the page
@@ -91,7 +92,7 @@ public class SpringJpaAcctDepositsRepository implements AcctDepositsRepository {
     }
 
     @Override
-    public Page<AcctDeposit> findDepositsByWorkspaceUUIDAndDepositInterestAccountRecordNullAndDepositProjectedEndDateLessThan(
+    public Page<AcctDeposit> findAllByWorkspaceUUIDAndDepositInterestAccountRecordNullAndDepositProjectedEndDateLessThan(
         String workspaceUUID,
         Instant projectedEndDate,
         int pageNumber,
@@ -117,6 +118,24 @@ public class SpringJpaAcctDepositsRepository implements AcctDepositsRepository {
                 page.getNumberOfElements(),
                 page.getTotalElements()
             );
+    }
+
+    @Override
+    public Collection<AcctDeposit> findAllByBankUUIDIn(Collection<String> bankUUIDs) {
+        return
+            jpaAcctDepositsRepository.findAllByBankUUIDIn(bankUUIDs)
+                .stream()
+                .map(dep -> (AcctDeposit) dep)
+                .toList();
+    }
+
+    @Override
+    public Collection<AcctDeposit> findAllByCurrencyUUIDIn(Collection<String> currencyUUIDs) {
+        return
+            jpaAcctDepositsRepository.findAllByBankUUIDIn(currencyUUIDs)
+                .stream()
+                .map(dep -> (AcctDeposit) dep)
+                .toList();
     }
 
 }

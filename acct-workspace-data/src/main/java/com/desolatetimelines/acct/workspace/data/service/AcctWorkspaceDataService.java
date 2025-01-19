@@ -83,6 +83,30 @@ public class AcctWorkspaceDataService {
     }
 
     /**
+     * Returns a collection of {@link AcctWorkspace workspaces} for which the
+     * {@link AcctWorkspace#getWorkspaceIconUUID() workspace icon UUID} is one
+     * of the UUIDs in the given collection. In case there's no match, an empty
+     * collection is returned.
+     *
+     * @param workspaceIconUUIDs the given collection
+     */
+    public Collection<AcctWorkspace> findWorkspacesByWorkspaceIconUUIDIn(Collection<String> workspaceIconUUIDs) {
+        return workspacesRepository.findAllByWorkspaceIconUUIDIn(workspaceIconUUIDs);
+    }
+
+    /**
+     * Returns a collection of {@link AcctWorkspace workspaces} for which the
+     * {@link AcctWorkspace#getDefaultCurrencyUUID() default currenct UUID} is
+     * one of the UUIDs in the given collection. In case there's no match, an
+     * empty collection is returned.
+     *
+     * @param currencyUUIDs the given collection
+     */
+    public Collection<AcctWorkspace> findWorkspacesByDefaultCurrencyUUIDIn(Collection<String> currencyUUIDs) {
+        return workspacesRepository.findAllByDefaultCurrencyUUIDIn(currencyUUIDs);
+    }
+
+    /**
      * Deletes the referenced {@link AcctWorkspace workspace}
      */
     public void deleteWorkspace(AcctWorkspace workspace) {
@@ -106,6 +130,42 @@ public class AcctWorkspaceDataService {
      */
     public Optional<AcctAccount> findAccountByAccountUUID(String accountUUID) {
         return accountsRepository.findFirstByAccountUUID(accountUUID);
+    }
+
+    /**
+     * Retrieves a collection of {@link AcctAccount accounts} for which the
+     * {@link AcctAccount#getAccountIconUUID() account icon UUID} is one of
+     * the UUIDs in the given collection. If there is no match, an empty
+     * collection is returned.
+     *
+     * @param accountIconUUIDs the given collection
+     */
+    public Collection<AcctAccount> findAccountsByAccountIconUUIDIn(Collection<String> accountIconUUIDs) {
+        return accountsRepository.findAllByAccountIconUUIDIn(accountIconUUIDs);
+    }
+
+    /**
+     * Retrieves a collection of {@link AcctAccount accounts} for which the
+     * {@link AcctAccount#getBankUUID() bank UUID} is one of the UUIDs in
+     * the given collection. If there is no match, an empty collection is
+     * returned.
+     *
+     * @param bankUUIDs the given collection
+     */
+    public Collection<AcctAccount> findAccountsByBankUUIDIn(Collection<String> bankUUIDs) {
+        return accountsRepository.findAllByBankUUIDIn(bankUUIDs);
+    }
+
+    /**
+     * Retrieves a collection of {@link AcctAccount accounts} for which the
+     * {@link AcctAccount#getCurrencyUUID() currencyUUID} is one of the UUIDs
+     * in the given collection. If there is no match, an empty collection is
+     * returned.
+     *
+     * @param currencyUUIDs the given collection
+     */
+    public Collection<AcctAccount> findAccountsByCurrencyUUIDIn(Collection<String> currencyUUIDs) {
+        return accountsRepository.findAllByCurrencyUUIDIn(currencyUUIDs);
     }
 
     /**
@@ -186,6 +246,39 @@ public class AcctWorkspaceDataService {
             accountRecordsRepository.findAllByAccountAndTextLike(
                 account, textPattern, pageNumber, pageSize
             );
+    }
+
+    /**
+     * Returns a count of {@link AcctAccountRecord account records} for which the value of
+     * the {@link AcctAccountRecord#getRecordedByUserUUID() recorded by user UUID} field is
+     * the given user UUID
+     *
+     * @param userUUID the given user UUID
+     */
+    public long countAccountRecordsByRecordedByUserUUID(String userUUID) {
+        return accountRecordsRepository.countByRecordedByUserUUID(userUUID);
+    }
+
+    /**
+     * Returns a count of {@link AcctAccountRecord account records} for which the value of
+     * the {@link AcctAccountRecord#getIncomeOrExpenseItemUUID() income or expense item UUID}
+     * field is the given income or expense item UUID
+     *
+     * @param incomeOrExpenseItemUUID the given income or expense item UUID
+     */
+    public long countAccountRecordsByIncomeOrExpenseItemUUID(String incomeOrExpenseItemUUID) {
+        return accountRecordsRepository.countByIncomeOrExpenseItemUUID(incomeOrExpenseItemUUID);
+    }
+
+    /**
+     * Returns a count of {@link AcctAccountRecord account records} for which the value of
+     * the {@link AcctAccountRecord#getLastModifiedByUserUUID() last modified by user UUID}
+     * field is the given user UUID
+     *
+     * @param userUUID the given user UUIDs
+     */
+    public long countAccountRecordsByLastModifiedByUserUUID(String userUUID) {
+        return accountRecordsRepository.countByLastModifiedByUserUUID(userUUID);
     }
 
     /**
@@ -299,7 +392,7 @@ public class AcctWorkspaceDataService {
      * @param pageSize      the given page size
      */
     public Page<AcctDeposit> findDepositsByWorkspaceUUID(String workspaceUUID, int pageNumber, int pageSize) {
-        return depositsRepository.findDepositsByWorkspaceUUID(workspaceUUID, pageNumber, pageSize);
+        return depositsRepository.findAllByWorkspaceUUID(workspaceUUID, pageNumber, pageSize);
     }
 
     /**
@@ -315,7 +408,7 @@ public class AcctWorkspaceDataService {
     public Page<AcctDeposit> findDepositsByWorkspaceUUIDAndBankUUID(
         String workspaceUUID, String bankUUID, int pageNumber, int pageSize
     ) {
-        return depositsRepository.findDepositsByWorkspaceUUIDAndBankUUID(workspaceUUID, bankUUID, pageNumber, pageSize);
+        return depositsRepository.findAllByWorkspaceUUIDAndBankUUID(workspaceUUID, bankUUID, pageNumber, pageSize);
     }
 
     /**
@@ -336,12 +429,34 @@ public class AcctWorkspaceDataService {
     ) {
         return
             depositsRepository
-                .findDepositsByWorkspaceUUIDAndDepositInterestAccountRecordNullAndDepositProjectedEndDateLessThan(
+                .findAllByWorkspaceUUIDAndDepositInterestAccountRecordNullAndDepositProjectedEndDateLessThan(
                     workspaceUUID,
                     projectedEndDate,
                     pageNumber,
                     pageSize
                 );
+    }
+
+    /**
+     * Retrieves a collection of {@link AcctDeposit deposits} for which the
+     * {@link AcctDeposit#getBankUUID() bank UUID} is one of the given UUIDs.
+     * In case there is no match, an empty collection is returned.
+     *
+     * @param bankUUIDs the given UUIDs
+     */
+    public Collection<AcctDeposit> findDepositsByBankUUIDIn(Collection<String> bankUUIDs) {
+        return depositsRepository.findAllByBankUUIDIn(bankUUIDs);
+    }
+
+    /**
+     * Retrieves a collection of {@link AcctDeposit deposits} for which the
+     * {@link AcctDeposit#getCurrencyUUID() currency UUID} is one of the
+     * given UUIDs. In case there is no match, an empty collection is returned.
+     *
+     * @param currencyUUIDs the given UUIDs
+     */
+    public Collection<AcctDeposit> findDepositsByCurrencyUUIDIn(Collection<String> currencyUUIDs) {
+        return depositsRepository.findAllByCurrencyUUIDIn(currencyUUIDs);
     }
 
     /**

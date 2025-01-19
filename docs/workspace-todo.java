@@ -22,10 +22,10 @@
 
 // DONE: WKS-05001: Autocomplete endpoint: Get the account record autocomplete data for workspace, income or expense item and account record text pattern
 
-// TODO: WKS-06001: Used items endpoint: Get items in use of type
+// DONE: WKS-06001: Used items endpoint: Get items in use of type
 
-// TODO: WKS-07001: Workspace client: API client
+// DONE: WKS-07001: Workspace client: API client
 
-// TODO: WKS-08001: Registration with the usage service
+// DONE: WKS-08001: Registration with the usage service
 
-// TODO: WKS-09001: Privileges
+// DONE: WKS-09001: Privileges

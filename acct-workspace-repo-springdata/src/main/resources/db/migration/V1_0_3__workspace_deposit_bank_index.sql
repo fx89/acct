@@ -1,0 +1,1 @@
+create index deposit_bank_uuid_idx on "deposit"(bank_uuid);

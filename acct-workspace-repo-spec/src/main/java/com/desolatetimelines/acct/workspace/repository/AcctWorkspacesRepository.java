@@ -40,6 +40,26 @@ public interface AcctWorkspacesRepository {
     Collection<AcctWorkspace> findAllByWorkspaceUUIDIn(Collection<String> workspaceUUIDs);
 
     /**
+     * Returns a collection of {@link AcctWorkspace workspaces} for which the
+     * {@link AcctWorkspace#getWorkspaceIconUUID() workspace icon UUID} is one
+     * of the UUIDs in the given collection. In case there's no match, an empty
+     * collection is returned.
+     *
+     * @param workspaceIconUUIDs the given collection
+     */
+    Collection<AcctWorkspace> findAllByWorkspaceIconUUIDIn(Collection<String> workspaceIconUUIDs);
+
+    /**
+     * Returns a collection of {@link AcctWorkspace workspaces} for which the
+     * {@link AcctWorkspace#getDefaultCurrencyUUID() default currenct UUID} is
+     * one of the UUIDs in the given collection. In case there's no match, an
+     * empty collection is returned.
+     *
+     * @param currencyUUIDs the given collection
+     */
+    Collection<AcctWorkspace> findAllByDefaultCurrencyUUIDIn(Collection<String> currencyUUIDs);
+
+    /**
      * Deletes the referenced {@link AcctWorkspace workspace}
      */
     void delete(AcctWorkspace workspace);

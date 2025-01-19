@@ -24,10 +24,10 @@ public class JpaAcctAccountRecord implements AcctAccountRecord {
     private Instant accountRecordDate;
 
     @Column(name = "recorded_by_user_uuid")
-    private String recordedByUserUUID;
+    private String recordedUserUUID; // Name slightly modified to avoid issues with the Spring Data repository
 
     @Column(name = "income_or_expense_item_uuid")
-    private String incomeOrExpenseItemUUID;
+    private String incomeExpenseItemUUID; // Name slightly modified to avoid issues with the Spring Data repository
 
     @Column(name = "account_record_text")
     private String accountRecordText;
@@ -39,7 +39,7 @@ public class JpaAcctAccountRecord implements AcctAccountRecord {
     private Instant lastModifiedDate;
 
     @Column(name = "last_modified_by_user_uuid")
-    private String lastModifiedByUserUUID;
+    private String lastModifiedUserUUID; // Name slightly modified to avoid issues with the Spring Data repository
 
     @Override
     public Long getAccountRecordId() {
@@ -73,22 +73,42 @@ public class JpaAcctAccountRecord implements AcctAccountRecord {
 
     @Override
     public String getRecordedByUserUUID() {
-        return recordedByUserUUID;
+        return recordedUserUUID;
     }
 
     @Override
     public void setRecordedByUserUUID(String recordedByUserUUID) {
-        this.recordedByUserUUID = recordedByUserUUID;
+        this.recordedUserUUID = recordedByUserUUID;
+    }
+
+    public void setAccount(JpaAcctAccount account) {
+        this.account = account;
+    }
+
+    public String getRecordedUserUUID() {
+        return recordedUserUUID;
+    }
+
+    public void setRecordedUserUUID(String recordedUserUUID) {
+        this.recordedUserUUID = recordedUserUUID;
     }
 
     @Override
     public String getIncomeOrExpenseItemUUID() {
-        return incomeOrExpenseItemUUID;
+        return incomeExpenseItemUUID;
     }
 
     @Override
     public void setIncomeOrExpenseItemUUID(String incomeOrExpenseItemUUID) {
-        this.incomeOrExpenseItemUUID = incomeOrExpenseItemUUID;
+        this.incomeExpenseItemUUID = incomeOrExpenseItemUUID;
+    }
+
+    public String getIncomeExpenseItemUUID() {
+        return incomeExpenseItemUUID;
+    }
+
+    public void setIncomeExpenseItemUUID(String incomeExpenseItemUUID) {
+        this.incomeExpenseItemUUID = incomeExpenseItemUUID;
     }
 
     @Override
@@ -123,12 +143,20 @@ public class JpaAcctAccountRecord implements AcctAccountRecord {
 
     @Override
     public String getLastModifiedByUserUUID() {
-        return lastModifiedByUserUUID;
+        return lastModifiedUserUUID;
     }
 
     @Override
     public void setLastModifiedByUserUUID(String lastModifiedByUserUUID) {
-        this.lastModifiedByUserUUID = lastModifiedByUserUUID;
+        this.lastModifiedUserUUID = lastModifiedByUserUUID;
+    }
+
+    public String getLastModifiedUserUUID() {
+        return lastModifiedUserUUID;
+    }
+
+    public void setLastModifiedUserUUID(String lastModifiedUserUUID) {
+        this.lastModifiedUserUUID = lastModifiedUserUUID;
     }
 
     @Override

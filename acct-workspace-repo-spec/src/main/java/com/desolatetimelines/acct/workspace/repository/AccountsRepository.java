@@ -25,6 +25,36 @@ public interface AccountsRepository {
     Optional<AcctAccount> findFirstByAccountUUID(String accountUUID);
 
     /**
+     * Retrieves a collection of {@link AcctAccount accounts} for which the
+     * {@link AcctAccount#getAccountIconUUID() account icon UUID} is one of
+     * the UUIDs in the given collection. If there is no match, an empty
+     * collection is returned.
+     *
+     * @param accountIconUUIDs the given collection
+     */
+    Collection<AcctAccount> findAllByAccountIconUUIDIn(Collection<String> accountIconUUIDs);
+
+    /**
+     * Retrieves a collection of {@link AcctAccount accounts} for which the
+     * {@link AcctAccount#getBankUUID() bank UUID} is one of the UUIDs in
+     * the given collection. If there is no match, an empty collection is
+     * returned.
+     *
+     * @param bankUUIDs the given collection
+     */
+    Collection<AcctAccount> findAllByBankUUIDIn(Collection<String> bankUUIDs);
+
+    /**
+     * Retrieves a collection of {@link AcctAccount accounts} for which the
+     * {@link AcctAccount#getCurrencyUUID() currencyUUID} is one of the UUIDs
+     * in the given collection. If there is no match, an empty collection is
+     * returned.
+     *
+     * @param currencyUUIDs the given collection
+     */
+    Collection<AcctAccount> findAllByCurrencyUUIDIn(Collection<String> currencyUUIDs);
+
+    /**
      * Persists the referenced {@link AcctAccount account}
      *
      * @param account the referenced account

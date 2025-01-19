@@ -13,4 +13,10 @@ public interface JpaAcctAccountsRepository extends CrudRepository<JpaAcctAccount
 
     Collection<JpaAcctAccount> findAllByWorkspace(JpaAcctWorkspace workspace);
 
+    Collection<JpaAcctAccount> findAllByAccountIconUUIDIn(Collection<String> accountIconUUIDs);
+
+    Collection<JpaAcctAccount> findAllByBankUUIDIn(Collection<String> bankUUIDs);
+
+    Collection<JpaAcctAccount> findAllByCurrencyUUIDIn(Collection<String> currencyUUIDs);
+
 }

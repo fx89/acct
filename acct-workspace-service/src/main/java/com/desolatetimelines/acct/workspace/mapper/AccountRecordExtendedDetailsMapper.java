@@ -1,4 +1,4 @@
-package com.desolatetimelines.acct.workspace;
+package com.desolatetimelines.acct.workspace.mapper;
 
 import com.desolatetimelines.acct.common.model.Page;
 import com.desolatetimelines.acct.workspace.model.AccountRecordExtendedDetails;

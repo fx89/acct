@@ -35,6 +35,33 @@ public class SpringJpaAccountsRepository implements AccountsRepository {
     }
 
     @Override
+    public Collection<AcctAccount> findAllByAccountIconUUIDIn(Collection<String> accountIconUUIDs) {
+        return
+            jpaAcctAccountsRepository.findAllByAccountIconUUIDIn(accountIconUUIDs)
+                .stream()
+                .map(acct -> (AcctAccount) acct)
+                .toList();
+    }
+
+    @Override
+    public Collection<AcctAccount> findAllByBankUUIDIn(Collection<String> bankUUIDs) {
+        return
+            jpaAcctAccountsRepository.findAllByBankUUIDIn(bankUUIDs)
+                .stream()
+                .map(acct -> (AcctAccount) acct)
+                .toList();
+    }
+
+    @Override
+    public Collection<AcctAccount> findAllByCurrencyUUIDIn(Collection<String> currencyUUIDs) {
+        return
+            jpaAcctAccountsRepository.findAllByCurrencyUUIDIn(currencyUUIDs)
+                .stream()
+                .map(acct -> (AcctAccount) acct)
+                .toList();
+    }
+
+    @Override
     public AcctAccount saveAccount(AcctAccount account) {
         return doWithJpaAcctAccountReturning(account, jpaAcctAccountsRepository::save);
     }

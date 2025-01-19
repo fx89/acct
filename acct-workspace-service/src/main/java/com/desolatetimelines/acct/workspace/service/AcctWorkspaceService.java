@@ -2,6 +2,7 @@ package com.desolatetimelines.acct.workspace.service;
 
 import com.desolatetimelines.acct.common.model.ObjectTypes;
 import com.desolatetimelines.acct.common.model.Page;
+import com.desolatetimelines.acct.common.utils.Streams;
 import com.desolatetimelines.acct.security.client.data.AcctSecurityClientService;
 import com.desolatetimelines.acct.security.client.model.UserResourceAccessRights;
 import com.desolatetimelines.acct.security.ws.endpoint.model.OwnedWorkspacesGroup;
@@ -9,9 +10,9 @@ import com.desolatetimelines.acct.security.ws.endpoint.model.OwnerType;
 import com.desolatetimelines.acct.security.ws.endpoint.model.WorkspaceOwner;
 import com.desolatetimelines.acct.usage.ws.client.RESTUsageEndpointClient;
 import com.desolatetimelines.acct.usage.ws.model.ServiceItemTypesList;
-import com.desolatetimelines.acct.workspace.AccountRecordExtendedDetailsMapper;
 import com.desolatetimelines.acct.workspace.data.service.AcctWorkspaceDataService;
 import com.desolatetimelines.acct.workspace.exception.*;
+import com.desolatetimelines.acct.workspace.mapper.AccountRecordExtendedDetailsMapper;
 import com.desolatetimelines.acct.workspace.model.*;
 import com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspaceServiceOperation;
 import jakarta.transaction.Transactional;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Stream;
 
 import static com.desolatetimelines.acct.common.model.CommonUUIDs.INCOME_OR_EXPENSE_ITEM_UUID_FOR_DEPOSIT;
 import static com.desolatetimelines.acct.common.model.CommonUUIDs.INCOME_OR_EXPENSE_ITEM_UUID_FOR_TRANSFER;
@@ -103,27 +105,80 @@ public class AcctWorkspaceService {
     public Collection<String> getInUseItemUUIDs(String objectType, Collection<String> itemUUIDs) {
         // If the object type is ICON then search workspaces and accounts for used icons
         if (Objects.equals(objectType, ObjectTypes.ICON.name())) {
-            throw new UnsupportedOperationException("Not implemented"); // TODO: work here
+            return
+                Stream.concat(
+                    // Find any workspaces that are using any of the icons with the given UUIDs
+                    dataService.findWorkspacesByWorkspaceIconUUIDIn(itemUUIDs)
+                        .stream()
+                        .map(AcctWorkspace::getWorkspaceIconUUID),
+
+                    // Find any icons that are using any of the icons with the given UUIDs
+                    dataService.findAccountsByAccountIconUUIDIn(itemUUIDs)
+                        .stream()
+                        .map(AcctAccount::getAccountIconUUID)
+                ).distinct().toList();
         }
 
         // If the object type is BANK then search accounts and deposits for banks
         if (Objects.equals(objectType, ObjectTypes.BANK.name())) {
-            throw new UnsupportedOperationException("Not implemented"); // TODO: work here
+            return
+                Stream.concat(
+                    // Find any accounts that are using any of the banks with the given UUIDs
+                    dataService.findAccountsByBankUUIDIn(itemUUIDs)
+                        .stream()
+                        .map(AcctAccount::getBankUUID),
+
+                    // Find any deposits that are using any of the banks with the given UUIDs
+                    dataService.findDepositsByBankUUIDIn(itemUUIDs)
+                        .stream()
+                        .map(AcctDeposit::getBankUUID)
+                ).distinct().toList();
         }
 
-        // If the object type is CURRENCY then search workspaces, accounts, and deposits for currencies
+        // If the object type is CURRENCY then search workspaces, accounts and deposits for currencies
         if (Objects.equals(objectType, ObjectTypes.CURRENCY.name())) {
-            throw new UnsupportedOperationException("Not implemented"); // TODO: work here
+            return
+                Streams.multiConcat(
+                    // Find any workspaces that are using any of the currencies with the given UUIDs
+                    dataService.findWorkspacesByDefaultCurrencyUUIDIn(itemUUIDs)
+                        .stream()
+                        .map(AcctWorkspace::getDefaultCurrencyUUID),
+
+                    // Find any accounts that are using any of the currencies with the given UUIDs
+                    dataService.findAccountsByCurrencyUUIDIn(itemUUIDs)
+                        .stream()
+                        .map(AcctAccount::getCurrencyUUID),
+
+                    // Find any deposits that are using any of the currencies with the given UUIDs
+                    dataService.findDepositsByCurrencyUUIDIn(itemUUIDs)
+                        .stream()
+                        .map(AcctDeposit::getCurrencyUUID)
+                ).distinct().toList();
         }
 
         // If the object type is USER then search account records for users
         if (Objects.equals(objectType, ObjectTypes.USER.name())) {
-            throw new UnsupportedOperationException("Not implemented"); // TODO: work here
+            return
+                itemUUIDs.stream()
+                    .filter(
+                        userUUID ->
+                            dataService.countAccountRecordsByRecordedByUserUUID(userUUID) +
+                                dataService.countAccountRecordsByLastModifiedByUserUUID(userUUID)
+                                > 0
+                    )
+                    .distinct()
+                    .toList();
         }
 
         // If the object type is INCOME_OR_EXPENSE_ITEM then search account records for income or expense items
         if (Objects.equals(objectType, ObjectTypes.INCOME_OR_EXPENSE_ITEM.name())) {
-            throw new UnsupportedOperationException("Not implemented"); // TODO: work here
+            // Check if any of the given item UUIDs is used by any account record
+            // (can't return all the account records since there might be too many)
+            return
+                itemUUIDs.stream()
+                    .filter(itemUUID -> dataService.countAccountRecordsByIncomeOrExpenseItemUUID(itemUUID) > 0)
+                    .distinct()
+                    .toList();
         }
 
         // If this point has been reached, it means that either the item type is not supported

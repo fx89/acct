@@ -21,6 +21,11 @@ public interface JpaAccountRecordsRepository extends CrudRepository<JpaAcctAccou
         Pageable page
     );
 
+    long countByRecordedUserUUID(String userUUID);
+
+    long countByLastModifiedUserUUID(String userUUID);
+
+    long countByIncomeExpenseItemUUID(String incomeOrExpenseItemUUID);
 
     /**
      * Done using a JPA query since Spring apparently doesn't have a way of summing. See the
