@@ -5,4 +5,5 @@ package com.desolatetimelines.acct.catalog.privilegesprovider.model;
  */
 public class CatalogPrivilegeIds {
     public static final String ICONS_SAVE = "ICONS_SAVE";
+    public static final String ICONS_GET_CATEGORIES = "ICONS_GET_CATEGORIES";
 }

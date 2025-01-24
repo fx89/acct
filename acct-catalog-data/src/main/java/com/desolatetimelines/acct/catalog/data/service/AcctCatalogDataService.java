@@ -7,6 +7,7 @@ import com.desolatetimelines.acct.catalog.repository.AcctIconsRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Facade for the data layer of the catalog service, allowing for the
@@ -41,6 +42,13 @@ public class AcctCatalogDataService {
      */
     public AcctIconCategory saveIconCategory(AcctIconCategory iconCategory) {
         return iconCategoriesRepository.save(iconCategory);
+    }
+
+    /**
+     * Returns a set of all the {@link AcctIconCategory icon categories} registered in the catalog
+     */
+    public Set<AcctIconCategory> findAllIconCategories() {
+        return iconCategoriesRepository.findAll();
     }
 
     /**

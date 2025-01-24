@@ -4,8 +4,11 @@ import com.desolatetimelines.acct.catalog.ws.endpoint.IconsEndpoint;
 import com.desolatetimelines.acct.catalog.ws.model.IconCreateRequest;
 import com.desolatetimelines.acct.catalog.ws.model.IconUUIDResponse;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.Collection;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -18,5 +21,9 @@ public interface RESTIconsEndpointClient extends IconsEndpoint {
     @Override
     @PostMapping(value = "", produces = APPLICATION_JSON_VALUE)
     IconUUIDResponse createIcon(@RequestBody IconCreateRequest request);
+
+    @Override
+    @GetMapping(value = "", produces = APPLICATION_JSON_VALUE)
+    Collection<String> getIconCategories();
 
 }

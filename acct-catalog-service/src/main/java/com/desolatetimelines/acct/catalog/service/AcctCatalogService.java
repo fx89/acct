@@ -8,6 +8,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -61,6 +62,13 @@ public class AcctCatalogService {
         catch (DataIntegrityViolationException e) {
             throw new AcctCatalogServiceIconConstraintViolationException(errors, iconCategoryName, iconName, e);
         }
+    }
+
+    /**
+     * Returns a set of all the {@link AcctIconCategory icon categories} registered in the catalog
+     */
+    public Set<AcctIconCategory> getIconCategories() {
+        return dataService.findAllIconCategories();
     }
 
     /**

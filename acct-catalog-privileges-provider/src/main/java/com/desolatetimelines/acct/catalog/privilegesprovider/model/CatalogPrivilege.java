@@ -12,6 +12,13 @@ public enum CatalogPrivilege {
             .withPrivilegeName("Save an icon")
             .withPrivilegeDescription("Allows saving icons to the catalog")
             .build()
+    ),
+    ICONS_GET_CATEGORIES(
+        AcctPrivilege.builder()
+            .withPrivilegeId(CatalogPrivilegeIds.ICONS_GET_CATEGORIES)
+            .withPrivilegeName("Get icon categories")
+            .withPrivilegeDescription("Allows listing the names of all icon categories registered in the catalog")
+            .build()
     );
 
     private final AcctPrivilege acctPrivilege;

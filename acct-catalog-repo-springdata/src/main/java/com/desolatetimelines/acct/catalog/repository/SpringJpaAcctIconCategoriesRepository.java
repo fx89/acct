@@ -6,6 +6,9 @@ import com.desolatetimelines.acct.catalog.springrepository.JpaAcctIconCategories
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static com.desolatetimelines.acct.catalog.util.AcctCatalogRepoSpringDataUtils.doWithJpaAcctIconCategory;
 import static java.util.function.Function.identity;
@@ -31,6 +34,14 @@ public class SpringJpaAcctIconCategoriesRepository implements AcctIconCategories
     public AcctIconCategory save(AcctIconCategory iconCategory) {
         return doWithJpaAcctIconCategory(iconCategory, jpaAcctIconCategoriesRepository::save);
     }
+
+    @Override
+    public Set<AcctIconCategory> findAll() {
+        return
+            StreamSupport.stream(jpaAcctIconCategoriesRepository.findAll().spliterator(), false)
+                .collect(Collectors.toSet());
+    }
+
 
     @Override
     public Optional<AcctIconCategory> findByIconCategoryName(String iconCategoryName) {

@@ -16,7 +16,8 @@ public class AcctCatalogServicePrivilegesProvider implements AcctServicePrivileg
     @Override
     public Set<AcctPrivilege> getPrivileges() {
         return Set.of(
-            CatalogPrivilege.ICONS_SAVE.getAcctPrivilege()
+            CatalogPrivilege.ICONS_SAVE.getAcctPrivilege(),
+            CatalogPrivilege.ICONS_GET_CATEGORIES.getAcctPrivilege()
         );
     }
 
