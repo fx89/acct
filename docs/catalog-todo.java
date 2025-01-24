@@ -2,7 +2,7 @@
 // TODO: CAT-00002: Icons endpoint: Get icons count
 // TODO: CAT-00003: Icons endpoint: Get icons
 // TODO: CAT-00004: Icons endpoint: Get icon bytes
-// TODO: CAT-00005: Icons endpoint: Create icon
+// DONE: CAT-00005: Icons endpoint: Create icon
 // TODO: CAT-00006: Icons endpoint: Delete icons
 
 // TODO: CAT-01001: Items endpoint: Get income or expense item categories

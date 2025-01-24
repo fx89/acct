@@ -111,3 +111,23 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+
+  catalog-postgres:
+    image: postgres:${DOCKER_POSTGRES_IMAGE_VERSION}
+    restart: always
+    profiles:
+      - everything
+      - databases
+    networks:
+      - primary
+    ports:
+      - ${CATALOG_DB_PORT}:5432
+    volumes:
+      - ./data/catalog:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=${CATALOG_DB_PASSWORD}
+      - POSTGRES_USER=${CATALOG_DB_USERNAME}
+      - POSTGRES_DB=${CATALOG_DB_NAME}
+    deploy:
+      mode: replicated
+      replicas: 1

@@ -105,7 +105,8 @@ truncated
 
 <br /><br />
 #### `CAT-00005` Create icon
-Creates an icon in the category with the given `categoryName` with the given data.
+Creates an icon in the category with the given `iconCategoryName` with the given data.
+If there is no category with the given name then one is created.
 
 Example request URL:
 - `POST http://acct.desolatetimelines.com/service/catalog/v1/icons`
@@ -114,6 +115,7 @@ Request body example:
 ```
 {
     "iconName": "Cloud in the sky",
+    "iconCategoryName": "Celestial",
     "iconBase64": "/9j/4AAQSkZJRg ... truncated"
 }
 ```

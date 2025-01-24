@@ -9,6 +9,7 @@ mkdir data/security
 mkdir data/user_management
 mkdir data/jobs
 mkdir data/workspace
+mkdir data/catalog
 
 # Start the services
 docker-compose \
