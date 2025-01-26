@@ -2,8 +2,10 @@ package com.desolatetimelines.acct.catalog.ws.client;
 
 import com.desolatetimelines.acct.catalog.ws.endpoint.IconsEndpoint;
 import com.desolatetimelines.acct.catalog.ws.model.IconCreateRequest;
+import com.desolatetimelines.acct.catalog.ws.model.IconProperties;
 import com.desolatetimelines.acct.catalog.ws.model.IconUUIDResponse;
 import com.desolatetimelines.acct.catalog.ws.model.IconsCountResponse;
+import com.desolatetimelines.acct.common.ws.model.AcctPage;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,6 +35,15 @@ public interface RESTIconsEndpointClient extends IconsEndpoint {
     IconsCountResponse getIconsCount(
         @RequestParam(name = "iconNamePattern", required = false) String iconNamePattern,
         @RequestParam(name = "iconCategoryName", required = false) String iconCategoryName
+    );
+
+    @Override
+    @GetMapping(value = "", produces = APPLICATION_JSON_VALUE)
+    AcctPage<IconProperties> getIcons(
+        @RequestParam(name = "iconNamePattern", required = false) String iconNamePattern,
+        @RequestParam(name = "iconCategoryName", required = false) String iconCategoryName,
+        @RequestParam(name = "pageNumber") int pageNumber,
+        @RequestParam(name = "pageSize") int pageSize
     );
 
 }

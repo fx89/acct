@@ -1,6 +1,7 @@
 package com.desolatetimelines.acct.catalog.repository;
 
 import com.desolatetimelines.acct.catalog.model.AcctIcon;
+import com.desolatetimelines.acct.common.model.Page;
 
 /**
  * Repository for loading and persisting {@link AcctIcon icons}
@@ -33,6 +34,23 @@ public interface AcctIconsRepository {
     Long countByIconNameLikeOrNameNullAndIconCategoryNameOrIconCategoryNameNull(
         String iconNamePattern,
         String iconCategoryName
+    );
+
+    /**
+     * Returns a page of all icons that match the given name pattern and are part of the given category
+     * name. If a name pattern is not given then icons with all names are counted. If a category name is
+     * not given then icons from all categories are counted.
+     *
+     * @param iconNamePattern  the given name pattern
+     * @param iconCategoryName the given category name
+     * @param pageNumber       the 0-based number of the page to be returned
+     * @param pageSize         the size of the page to be returned
+     */
+    Page<AcctIcon> findAllByIconNameLikeOrNameNullAndIconCategoryNameOrIconCategoryNameNull(
+        String iconNamePattern,
+        String iconCategoryName,
+        int pageNumber,
+        int pageSize
     );
 
 }

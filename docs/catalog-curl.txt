@@ -24,7 +24,7 @@ curl \
 curl \
     --insecure \
     -v \
-    --cookie 'JSESSIONID=39B2AF0F7BFA7F11783D49792862FDB2' \
+    --cookie 'JSESSIONID=C47610979955BB92C1CC4106E198310A' \
     -X GET 'http://localhost:9001/service/authorization/v1/oauth2/authorize?response_type=code&client_id=frontend-client'
 
 export ACCT_USER_ACCESS_TOKEN=$(\
@@ -33,7 +33,7 @@ curl \
     -v \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'grant_type=authorization_code' \
-    -d 'code=4NoZyZ2l8krNqR0dzaLZix7kmZP6k603b2gkzVNDg76pwMxfV_JeWwVWIEzyIMK-HoFNKBZ3lhIkvXjtoIs_4iFM6Vnba28_ymWCqlF5A9vKTVFKROfytRV92trfCVfT' \
+    -d 'code=xK0fbtycFo9HR4gclXW8VPvvw_UrIMfEOwAZySTrW74V4ZbccILlizSFDQ6QPfB9Hbb1rJ-BkgPwfpWZ9p17KmQTuBozqmFs8ZpFDOoBNDBgbPTZDvy0zuSizjsw2Aj-' \
     -d 'client_id=frontend-client' \
     -d 'client_secret=lkjdwsf23odnwqkld23odfbqweorh23oihd' \
     -X POST 'http://localhost:9001/service/authorization/v1/oauth2/token' \
@@ -94,4 +94,11 @@ curl \
     -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
     -H "Content-Type: application/json; charset=utf-8" \
     -X GET 'http://localhost:8086/service/catalog/v1/icons/count?iconNamePattern=oud&iconCategoryName=Celestial' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X GET 'http://localhost:8086/service/catalog/v1/icons?iconNamePattern=oud&iconCategoryName=Celestial&pageNumber=0&pageSize=2' \
     | jq

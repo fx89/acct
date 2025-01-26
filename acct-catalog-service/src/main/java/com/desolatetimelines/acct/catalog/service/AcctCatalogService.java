@@ -5,6 +5,7 @@ import com.desolatetimelines.acct.catalog.exception.AcctCatalogServiceIconConstr
 import com.desolatetimelines.acct.catalog.exception.AcctCatalogServiceIconValidationException;
 import com.desolatetimelines.acct.catalog.model.AcctIcon;
 import com.desolatetimelines.acct.catalog.model.AcctIconCategory;
+import com.desolatetimelines.acct.common.model.Page;
 import jakarta.transaction.Transactional;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -84,18 +85,45 @@ public class AcctCatalogService {
      */
     public Long countIcons(String iconNamePattern, String iconCategoryName) {
         // If an icon name pattern was provided, make sure it's the right size
-        if (iconNamePattern != null && iconNamePattern.length() < 3) {
-            throw new AcctCatalogServiceIconValidationException(
-                errors.ICON_VALIDATION_NAME_PATTERN,
-                Map.of("iconNamePattern", iconNamePattern)
-            );
-        }
+        verifyIconNamePattern(iconNamePattern);
 
         return
             dataService.countIconsByIconNameLikeOrNameNullAndIconCategoryNameOrIconCategoryNameNull(
                 iconNamePattern,
                 iconCategoryName
             );
+    }
+
+    /**
+     * Returns a {@link Page page} of {@link AcctIcon icons}, with the given page number and of the given
+     * page size, for which the {@link AcctIcon#getIconName() icon name} matches the given name pattern
+     * and which are part of the {@link AcctIconCategory icon category} with the given icon category name.
+     * If the name pattern is not given then icons with all names are returned. If the icon category name
+     * is not given then icons from all categories are returned.
+     *
+     * @param iconNamePattern  the given name pattern - optional - at least 3 characters long
+     * @param iconCategoryName the given icon category name - optional
+     * @param pageNumber       the given page number
+     * @param pageSize         the given page size
+     */
+    public Page<AcctIcon> getIcons(String iconNamePattern, String iconCategoryName, int pageNumber, int pageSize) {
+        // If an icon name pattern was provided, make sure it's the right size
+        verifyIconNamePattern(iconNamePattern);
+
+        // Fetch the page
+        return
+            dataService.findIconsByIconNameLikeOrNameNullAndIconCategoryNameOrIconCategoryNameNull(
+                iconNamePattern, iconCategoryName, pageNumber, pageSize
+            );
+    }
+
+    private void verifyIconNamePattern(String iconNamePattern) {
+        if (iconNamePattern != null && iconNamePattern.length() < 3) {
+            throw new AcctCatalogServiceIconValidationException(
+                errors.ICON_VALIDATION_NAME_PATTERN,
+                Map.of("iconNamePattern", iconNamePattern)
+            );
+        }
     }
 
     /**

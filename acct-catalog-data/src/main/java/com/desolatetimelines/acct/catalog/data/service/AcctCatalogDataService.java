@@ -4,6 +4,7 @@ import com.desolatetimelines.acct.catalog.model.AcctIcon;
 import com.desolatetimelines.acct.catalog.model.AcctIconCategory;
 import com.desolatetimelines.acct.catalog.repository.AcctIconCategoriesRepository;
 import com.desolatetimelines.acct.catalog.repository.AcctIconsRepository;
+import com.desolatetimelines.acct.common.model.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -96,6 +97,31 @@ public class AcctCatalogDataService {
             iconsRepository.countByIconNameLikeOrNameNullAndIconCategoryNameOrIconCategoryNameNull(
                 iconNamePattern,
                 iconCategoryName
+            );
+    }
+
+    /**
+     * Returns a page of all icons that match the given name pattern and are part of the given category
+     * name. If a name pattern is not given then icons with all names are counted. If a category name is
+     * not given then icons from all categories are counted.
+     *
+     * @param iconNamePattern  the given name pattern
+     * @param iconCategoryName the given category name
+     * @param pageNumber       the 0-based number of the page to be returned
+     * @param pageSize         the size of the page to be returned
+     */
+    public Page<AcctIcon> findIconsByIconNameLikeOrNameNullAndIconCategoryNameOrIconCategoryNameNull(
+        String iconNamePattern,
+        String iconCategoryName,
+        int pageNumber,
+        int pageSize
+    ) {
+        return
+            iconsRepository.findAllByIconNameLikeOrNameNullAndIconCategoryNameOrIconCategoryNameNull(
+                iconNamePattern,
+                iconCategoryName,
+                pageNumber,
+                pageSize
             );
     }
 

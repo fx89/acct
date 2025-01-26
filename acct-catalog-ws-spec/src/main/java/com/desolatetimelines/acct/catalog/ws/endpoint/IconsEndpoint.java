@@ -1,8 +1,10 @@
 package com.desolatetimelines.acct.catalog.ws.endpoint;
 
 import com.desolatetimelines.acct.catalog.ws.model.IconCreateRequest;
+import com.desolatetimelines.acct.catalog.ws.model.IconProperties;
 import com.desolatetimelines.acct.catalog.ws.model.IconUUIDResponse;
 import com.desolatetimelines.acct.catalog.ws.model.IconsCountResponse;
+import com.desolatetimelines.acct.common.ws.model.AcctPage;
 
 import java.util.Collection;
 
@@ -34,5 +36,18 @@ public interface IconsEndpoint {
      * @param iconCategoryName the given category name - optional
      */
     IconsCountResponse getIconsCount(String iconNamePattern, String iconCategoryName);
+
+    /**
+     * Returns a page, with the given page number and of the given page size, of the icons
+     * that match the given name pattern and that belong to the given category name. If a
+     * name pattern is not provided then the count includes icons with any name. If the
+     * category name is not provided then the count includes icons from all categories.
+     *
+     * @param iconNamePattern  the given name pattern - optional - must be at least 3 characters long
+     * @param iconCategoryName the given category name - optional
+     * @param pageNumber       the given page number
+     * @param pageSize         the given page size
+     */
+    AcctPage<IconProperties> getIcons(String iconNamePattern, String iconCategoryName, int pageNumber, int pageSize);
 
 }
