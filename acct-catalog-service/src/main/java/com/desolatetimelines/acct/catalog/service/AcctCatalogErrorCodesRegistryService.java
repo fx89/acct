@@ -10,6 +10,8 @@ public class AcctCatalogErrorCodesRegistryService extends AbstractErrorCodesRegi
 
     public String ICON_VALIDATION_NAME_PATTERN;
 
+    public String ICON_NOT_FOUND;
+
     protected AcctCatalogErrorCodesRegistryService() {
         super(Integer.parseInt(System.getenv("CATALOG_SERVICE_NUMBER")));
     }
@@ -18,6 +20,7 @@ public class AcctCatalogErrorCodesRegistryService extends AbstractErrorCodesRegi
     protected void initializeServiceSpecificErrorCodes() {
         final String CAT_NAME_CONSTRAINT_VIOLATIONS = "Constraint violations";
         final String CAT_NAME_BUSINESS_RULES_VALIDATION = "Business rules Validation";
+        final String CAT_NAME_NOT_FOUND = "Not found exceptions";
 
         ICON_ALREADY_EXISTS = resolveErrorCode(
             CAT_NAME_CONSTRAINT_VIOLATIONS,
@@ -30,6 +33,12 @@ public class AcctCatalogErrorCodesRegistryService extends AbstractErrorCodesRegi
             CAT_NAME_BUSINESS_RULES_VALIDATION,
             "The icon name pattern is not correct",
             "The provided icon name pattern is either too short or otherwise incorrect"
+        );
+
+        ICON_NOT_FOUND = resolveErrorCode(
+            CAT_NAME_NOT_FOUND,
+            "The icon was not found",
+            "An operation was requested for an icon that cannot be found"
         );
     }
 

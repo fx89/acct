@@ -9,9 +9,11 @@ import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.desolatetimelines.acct.catalog.util.AcctCatalogRepoSpringDataUtils.doWithJpaAcctIcon;
 import static com.desolatetimelines.acct.common.model.Page.emptyPage;
+import static java.util.function.Function.identity;
 
 /**
  * Implementation of the {@link AcctIconsRepository} that uses Spring Data
@@ -90,6 +92,11 @@ public class SpringJpaAcctIconsRepository implements AcctIconsRepository {
                 pageContent.size(),
                 maxElements
             );
+    }
+
+    @Override
+    public Optional<AcctIcon> findFirstIconByIconUUID(String iconUUID) {
+        return jpaAcctIconsRepository.findFirstByIconUUID(iconUUID).map(identity());
     }
 
 }

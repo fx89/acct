@@ -1,7 +1,7 @@
 // DONE: CAT-00001: Icons endpoint: Get icon categories
 // DONE: CAT-00002: Icons endpoint: Get icons count
 // DONE: CAT-00003: Icons endpoint: Get icons
-// TODO: CAT-00004: Icons endpoint: Get icon bytes
+// DONE: CAT-00004: Icons endpoint: Get icon bytes
 // DONE: CAT-00005: Icons endpoint: Create icon
 // TODO: CAT-00006: Icons endpoint: Delete icons
 

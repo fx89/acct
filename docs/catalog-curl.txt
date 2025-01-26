@@ -102,3 +102,10 @@ curl \
     -H "Content-Type: application/json; charset=utf-8" \
     -X GET 'http://localhost:8086/service/catalog/v1/icons?iconNamePattern=oud&iconCategoryName=Celestial&pageNumber=0&pageSize=2' \
     | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X GET 'http://localhost:8086/service/catalog/v1/icons/icon?iconUUID=ba8f055b-18a4-4d3e-9405-407085bf00d7'
+

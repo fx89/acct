@@ -50,4 +50,11 @@ public interface IconsEndpoint {
      */
     AcctPage<IconProperties> getIcons(String iconNamePattern, String iconCategoryName, int pageNumber, int pageSize);
 
+    /**
+     * Returns the base64-encoded bytes of the icon with the given icon UUID
+     *
+     * @param iconUUID the given icon UUID
+     */
+    String getIconBytesBase64(String iconUUID);
+
 }

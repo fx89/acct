@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.Collection;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 
 @FeignClient(
     contextId = "${CATALOG_APPLICATION_NAME}-icons",
@@ -45,5 +46,9 @@ public interface RESTIconsEndpointClient extends IconsEndpoint {
         @RequestParam(name = "pageNumber") int pageNumber,
         @RequestParam(name = "pageSize") int pageSize
     );
+
+    @Override
+    @GetMapping(value = "/icon", produces = TEXT_PLAIN_VALUE)
+    String getIconBytesBase64(@RequestParam(name = "iconUUID") String iconUUID);
 
 }

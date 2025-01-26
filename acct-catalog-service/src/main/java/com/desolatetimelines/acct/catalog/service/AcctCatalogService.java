@@ -2,6 +2,7 @@ package com.desolatetimelines.acct.catalog.service;
 
 import com.desolatetimelines.acct.catalog.data.service.AcctCatalogDataService;
 import com.desolatetimelines.acct.catalog.exception.AcctCatalogServiceIconConstraintViolationException;
+import com.desolatetimelines.acct.catalog.exception.AcctCatalogServiceIconNotFoundException;
 import com.desolatetimelines.acct.catalog.exception.AcctCatalogServiceIconValidationException;
 import com.desolatetimelines.acct.catalog.model.AcctIcon;
 import com.desolatetimelines.acct.catalog.model.AcctIconCategory;
@@ -65,6 +66,24 @@ public class AcctCatalogService {
         catch (DataIntegrityViolationException e) {
             throw new AcctCatalogServiceIconConstraintViolationException(errors, iconCategoryName, iconName, e);
         }
+    }
+
+    /**
+     * Returns the base64-encoded bytes of the {@link AcctIcon icon} with the
+     * given {@link AcctIcon#getIconUUID() icon UUID}. Throws an exception if
+     * the icon is not found.
+     *
+     * @param iconUUID the given icon UUID
+     */
+    public String getIconBytesBase64(String iconUUID) {
+        // Get the icon or throw an exception
+        final AcctIcon icon =
+            dataService
+                .findIconByIconUUID(iconUUID)
+                .orElseThrow(() -> new AcctCatalogServiceIconNotFoundException(errors, iconUUID));
+
+        // Return the icon's base64-encoded bytes
+        return icon.getIconBytesBase64();
     }
 
     /**

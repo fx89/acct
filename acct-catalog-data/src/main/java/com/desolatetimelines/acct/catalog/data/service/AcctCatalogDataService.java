@@ -125,4 +125,14 @@ public class AcctCatalogDataService {
             );
     }
 
+    /**
+     * Returns the {@link AcctIcon icon} with the given {@link AcctIcon#getIconUUID() icon UUID}
+     * or an empty optional
+     *
+     * @param iconUUID the given icon UUID
+     */
+    public Optional<AcctIcon> findIconByIconUUID(String iconUUID) {
+        return iconsRepository.findFirstIconByIconUUID(iconUUID);
+    }
+
 }

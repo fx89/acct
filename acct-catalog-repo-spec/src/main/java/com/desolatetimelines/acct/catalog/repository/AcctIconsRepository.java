@@ -3,6 +3,8 @@ package com.desolatetimelines.acct.catalog.repository;
 import com.desolatetimelines.acct.catalog.model.AcctIcon;
 import com.desolatetimelines.acct.common.model.Page;
 
+import java.util.Optional;
+
 /**
  * Repository for loading and persisting {@link AcctIcon icons}
  */
@@ -52,5 +54,13 @@ public interface AcctIconsRepository {
         int pageNumber,
         int pageSize
     );
+
+    /**
+     * Returns the {@link AcctIcon icon} with the given {@link AcctIcon#getIconUUID() icon UUID}
+     * or an empty optional
+     *
+     * @param iconUUID the given icon UUID
+     */
+    Optional<AcctIcon> findFirstIconByIconUUID(String iconUUID);
 
 }

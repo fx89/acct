@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import static com.desolatetimelines.acct.catalog.privilegesprovider.model.CatalogPrivilegeIds.*;
 import static com.desolatetimelines.acct.catalog.ws.mapper.IconPropertiesMapper.fromPageOfAcctIcons;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 
 @RestController
 @RequestMapping("/icons")
@@ -86,6 +87,13 @@ public class IconsEndpointController implements IconsEndpoint {
                 pageNumber,
                 pageSize
             );
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + ICONS_READ + "')")
+    @GetMapping(value = "/icon", produces = TEXT_PLAIN_VALUE)
+    public String getIconBytesBase64(@RequestParam(name = "iconUUID") String iconUUID) {
+        return catalogService.getIconBytesBase64(iconUUID);
     }
 
 }
