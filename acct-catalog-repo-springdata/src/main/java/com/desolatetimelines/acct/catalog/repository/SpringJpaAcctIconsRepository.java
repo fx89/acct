@@ -29,4 +29,16 @@ public class SpringJpaAcctIconsRepository implements AcctIconsRepository {
         return doWithJpaAcctIcon(icon, jpaAcctIconsRepository::save);
     }
 
+    @Override
+    public Long countByIconNameLikeOrNameNullAndIconCategoryNameOrIconCategoryNameNull(
+        String iconNamePattern,
+        String iconCategoryName
+    ) {
+        return
+            jpaAcctIconsRepository.countByIconNameLikeOrNameNullAndIconCategoryNameOrIconCategoryNameNull(
+                iconNamePattern == null ? null : ("%" + iconNamePattern + "%"),
+                iconCategoryName
+            );
+    }
+
 }

@@ -24,7 +24,7 @@ curl \
 curl \
     --insecure \
     -v \
-    --cookie 'JSESSIONID=53C25383297FEC462B8BF00DFCD14A2B' \
+    --cookie 'JSESSIONID=39B2AF0F7BFA7F11783D49792862FDB2' \
     -X GET 'http://localhost:9001/service/authorization/v1/oauth2/authorize?response_type=code&client_id=frontend-client'
 
 export ACCT_USER_ACCESS_TOKEN=$(\
@@ -33,7 +33,7 @@ curl \
     -v \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'grant_type=authorization_code' \
-    -d 'code=PDD9ZNQPSYgWEnNnCJj71GWJE8s3Iod9CHaU_xZuV8DeXKsRZFbZzQuoVBBUWJYzn9_b-cTD-K8ctpVwJTj6MCwoBlIGpgjqda_UImL4um_QsnglMVfFKaQM_hnpj9sg' \
+    -d 'code=4NoZyZ2l8krNqR0dzaLZix7kmZP6k603b2gkzVNDg76pwMxfV_JeWwVWIEzyIMK-HoFNKBZ3lhIkvXjtoIs_4iFM6Vnba28_ymWCqlF5A9vKTVFKROfytRV92trfCVfT' \
     -d 'client_id=frontend-client' \
     -d 'client_secret=lkjdwsf23odnwqkld23odfbqweorh23oihd' \
     -X POST 'http://localhost:9001/service/authorization/v1/oauth2/token' \
@@ -66,4 +66,32 @@ curl \
     -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
     -H "Content-Type: application/json; charset=utf-8" \
     -X GET 'http://localhost:8086/service/catalog/v1/icons/iconCategories' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X GET 'http://localhost:8086/service/catalog/v1/icons/count' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X GET 'http://localhost:8086/service/catalog/v1/icons/count?iconNamePattern=12' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X GET 'http://localhost:8086/service/catalog/v1/icons/count?iconNamePattern=oud' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X GET 'http://localhost:8086/service/catalog/v1/icons/count?iconNamePattern=oud&iconCategoryName=Celestial' \
     | jq

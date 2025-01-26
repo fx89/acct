@@ -80,4 +80,23 @@ public class AcctCatalogDataService {
         return iconsRepository.save(icon);
     }
 
+    /**
+     * Returns a count of all icons that match the given name pattern and are part of the given category
+     * name. If a name pattern is not given then icons with all names are counted. If a category name is
+     * not given then icons from all categories are counted.
+     *
+     * @param iconNamePattern  the given name pattern
+     * @param iconCategoryName the given category name
+     */
+    public Long countIconsByIconNameLikeOrNameNullAndIconCategoryNameOrIconCategoryNameNull(
+        String iconNamePattern,
+        String iconCategoryName
+    ) {
+        return
+            iconsRepository.countByIconNameLikeOrNameNullAndIconCategoryNameOrIconCategoryNameNull(
+                iconNamePattern,
+                iconCategoryName
+            );
+    }
+
 }

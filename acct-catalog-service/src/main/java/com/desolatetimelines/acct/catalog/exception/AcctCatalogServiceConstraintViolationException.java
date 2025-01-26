@@ -3,7 +3,8 @@ package com.desolatetimelines.acct.catalog.exception;
 import java.util.Map;
 
 /**
- * Generic exception thrown by the {@link com.desolatetimelines.acct.catalog.service.AcctCatalogService catalog service}
+ * Exception thrown by the {@link com.desolatetimelines.acct.catalog.service.AcctCatalogService catalog service}
+ * when a constraint violation occurs
  */
 public class AcctCatalogServiceConstraintViolationException extends AcctCatalogServiceException {
 

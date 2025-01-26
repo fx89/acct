@@ -5,7 +5,8 @@ import com.desolatetimelines.acct.catalog.service.AcctCatalogErrorCodesRegistryS
 import java.util.Map;
 
 /**
- * Generic exception thrown by the {@link com.desolatetimelines.acct.catalog.service.AcctCatalogService catalog service}
+ * Exception thrown by the {@link com.desolatetimelines.acct.catalog.service.AcctCatalogService catalog service}
+ * when an icon-related constraint violation occurs
  */
 public class AcctCatalogServiceIconConstraintViolationException extends AcctCatalogServiceConstraintViolationException {
 

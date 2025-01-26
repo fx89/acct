@@ -26,8 +26,8 @@ Response body example:
 <br /><br />
 #### `CAT-00002` Get icons count
 Returns the number of icons registered in a given category that match the given `iconNamePattern`.
-If the `iconCategoryName` parameter is null or missing, the count
-of all the icons registered in the catalog is returned.
+If the `iconCategoryName` parameter is null or missing, the count of all the icons registered in
+the catalog is returned.
 
 Example request URLs:
 - `GET http://acct.desolatetimelines.com/service/catalog/v1/icons/count?iconNamePattern=Clo&iconCategoryName=Icon%20cagtegory%20name%204`

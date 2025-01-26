@@ -13,6 +13,14 @@ public enum CatalogPrivilege {
             .withPrivilegeDescription("Allows saving icons to the catalog")
             .build()
     ),
+    ICONS_READ(
+        AcctPrivilege.builder()
+            .withPrivilegeId(CatalogPrivilegeIds.ICONS_SAVE)
+            .withPrivilegeName("Count, list and read icon properties")
+            .withPrivilegeDescription("Allows counting, listing and reading the properties of icons " +
+                "registered in the catalog")
+            .build()
+    ),
     ICONS_GET_CATEGORIES(
         AcctPrivilege.builder()
             .withPrivilegeId(CatalogPrivilegeIds.ICONS_GET_CATEGORIES)
