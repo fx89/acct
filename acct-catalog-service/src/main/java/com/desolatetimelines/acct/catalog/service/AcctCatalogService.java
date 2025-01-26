@@ -2,18 +2,20 @@ package com.desolatetimelines.acct.catalog.service;
 
 import com.desolatetimelines.acct.catalog.data.service.AcctCatalogDataService;
 import com.desolatetimelines.acct.catalog.exception.AcctCatalogServiceIconConstraintViolationException;
+import com.desolatetimelines.acct.catalog.exception.AcctCatalogServiceIconInUseException;
 import com.desolatetimelines.acct.catalog.exception.AcctCatalogServiceIconNotFoundException;
 import com.desolatetimelines.acct.catalog.exception.AcctCatalogServiceIconValidationException;
 import com.desolatetimelines.acct.catalog.model.AcctIcon;
 import com.desolatetimelines.acct.catalog.model.AcctIconCategory;
+import com.desolatetimelines.acct.common.model.ObjectTypes;
 import com.desolatetimelines.acct.common.model.Page;
+import com.desolatetimelines.acct.usage.ws.client.RESTInUseEndpointClient;
 import jakarta.transaction.Transactional;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Main class of the services layer of the ACCT catalog
@@ -25,12 +27,23 @@ public class AcctCatalogService {
 
     private final AcctCatalogErrorCodesRegistryService errors;
 
+    private final RESTInUseEndpointClient inUseEndpointClient;
+
     public AcctCatalogService(
         AcctCatalogDataService dataService,
-        AcctCatalogErrorCodesRegistryService errors
+        AcctCatalogErrorCodesRegistryService errors,
+        RESTInUseEndpointClient inUseEndpointClient
     ) {
         this.dataService = dataService;
         this.errors = errors;
+        this.inUseEndpointClient = inUseEndpointClient;
+    }
+
+    /**
+     * Returns a set of all the {@link AcctIconCategory icon categories} registered in the catalog
+     */
+    public Set<AcctIconCategory> getIconCategories() {
+        return dataService.findAllIconCategories();
     }
 
     /**
@@ -87,10 +100,39 @@ public class AcctCatalogService {
     }
 
     /**
-     * Returns a set of all the {@link AcctIconCategory icon categories} registered in the catalog
+     * Deletes the {@link AcctIcon icons} identified by the {@link AcctIcon#getIconUUID() UUIDs}
+     * in the given collection of icon UUIDs. Throws an exception if any icon is in use by any
+     * ACCT service for any reason. Throws an exception if any of the icons cannot be found.
+     *
+     * @param iconUUIDs the given collection of icon UUIDs
      */
-    public Set<AcctIconCategory> getIconCategories() {
-        return dataService.findAllIconCategories();
+    public void deleteIcons(Collection<String> iconUUIDs) {
+        // Find out if any of the icons is in use
+        final Collection<String> inUseIconUUIDs =
+            inUseEndpointClient.getItemsInUseOfType(ObjectTypes.ICON.name(), iconUUIDs);
+
+        // If any of the icons is in use then throw an exception
+        if (!inUseIconUUIDs.isEmpty()) {
+            throw new AcctCatalogServiceIconInUseException(errors, inUseIconUUIDs);
+        }
+
+        // Find the icons
+        final Collection<AcctIcon> foundIcons = dataService.findIconsByIconUUIDIn(iconUUIDs);
+        final Set<String> foundIconUUIDs = foundIcons.stream().map(AcctIcon::getIconUUID).collect(Collectors.toSet());
+
+        // Check if there are any icons that are not found
+        final List<String> notFoundIconUUIDs =
+            iconUUIDs.stream()
+                .filter(iconUUID -> !foundIconUUIDs.contains(iconUUID))
+                .toList();
+
+        // If any of the icons could not be found, throw an exception
+        if (!notFoundIconUUIDs.isEmpty()) {
+            throw new AcctCatalogServiceIconNotFoundException(errors, notFoundIconUUIDs.get(0));
+        }
+
+        // Delete the icons
+        dataService.deleteIcons(foundIcons);
     }
 
     /**

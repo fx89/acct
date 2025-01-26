@@ -1,16 +1,10 @@
 package com.desolatetimelines.acct.catalog.ws.client;
 
 import com.desolatetimelines.acct.catalog.ws.endpoint.IconsEndpoint;
-import com.desolatetimelines.acct.catalog.ws.model.IconCreateRequest;
-import com.desolatetimelines.acct.catalog.ws.model.IconProperties;
-import com.desolatetimelines.acct.catalog.ws.model.IconUUIDResponse;
-import com.desolatetimelines.acct.catalog.ws.model.IconsCountResponse;
+import com.desolatetimelines.acct.catalog.ws.model.*;
 import com.desolatetimelines.acct.common.ws.model.AcctPage;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
@@ -50,5 +44,9 @@ public interface RESTIconsEndpointClient extends IconsEndpoint {
     @Override
     @GetMapping(value = "/icon", produces = TEXT_PLAIN_VALUE)
     String getIconBytesBase64(@RequestParam(name = "iconUUID") String iconUUID);
+
+    @DeleteMapping(value = "")
+    @Override
+    void deleteIcons(@RequestBody IconDeleteRequest request);
 
 }

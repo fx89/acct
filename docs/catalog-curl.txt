@@ -24,7 +24,7 @@ curl \
 curl \
     --insecure \
     -v \
-    --cookie 'JSESSIONID=C47610979955BB92C1CC4106E198310A' \
+    --cookie 'JSESSIONID=2E4BD3337A9D05EA4E247AF4B0848309' \
     -X GET 'http://localhost:9001/service/authorization/v1/oauth2/authorize?response_type=code&client_id=frontend-client'
 
 export ACCT_USER_ACCESS_TOKEN=$(\
@@ -33,7 +33,7 @@ curl \
     -v \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'grant_type=authorization_code' \
-    -d 'code=xK0fbtycFo9HR4gclXW8VPvvw_UrIMfEOwAZySTrW74V4ZbccILlizSFDQ6QPfB9Hbb1rJ-BkgPwfpWZ9p17KmQTuBozqmFs8ZpFDOoBNDBgbPTZDvy0zuSizjsw2Aj-' \
+    -d 'code=016JpcbXtVMr78LwW-xAWN7mXKzZkDIip7ps7Q8RvAwtr7tkf5-J26H7HwZp_Tmkvwb_9zf_HnBEYFSRp4qZubhanVOFIN7ICnlR3K6A9o-QV8B66gg6IDIxZ6EOVBmz' \
     -d 'client_id=frontend-client' \
     -d 'client_secret=lkjdwsf23odnwqkld23odfbqweorh23oihd' \
     -X POST 'http://localhost:9001/service/authorization/v1/oauth2/token' \
@@ -109,3 +109,47 @@ curl \
     -H "Content-Type: application/json; charset=utf-8" \
     -X GET 'http://localhost:8086/service/catalog/v1/icons/icon?iconUUID=ba8f055b-18a4-4d3e-9405-407085bf00d7'
 
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X DELETE 'http://localhost:8086/service/catalog/v1/icons' \
+    --data-raw '
+        {
+            "iconUUIDs": [
+                "1",
+                "227acd92-c66f-4f61-9780-3a6631da4a3d",
+                "3"
+            ]
+        }
+        ' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X DELETE 'http://localhost:8086/service/catalog/v1/icons' \
+    --data-raw '
+        {
+            "iconUUIDs": [
+                "4c602ecb-7ddc-45d3-805f-f56409001093",
+                "227acd92-c66f-4f61-9780-3a6631da4a3d"
+            ]
+        }
+        ' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X DELETE 'http://localhost:8086/service/catalog/v1/icons' \
+    --data-raw '
+        {
+            "iconUUIDs": [
+                "227acd92-c66f-4f61-9780-3a6631da4a3d"
+            ]
+        }
+        ' \
+    | jq

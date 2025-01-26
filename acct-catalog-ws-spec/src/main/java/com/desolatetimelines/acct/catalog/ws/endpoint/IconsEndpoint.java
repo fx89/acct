@@ -1,9 +1,6 @@
 package com.desolatetimelines.acct.catalog.ws.endpoint;
 
-import com.desolatetimelines.acct.catalog.ws.model.IconCreateRequest;
-import com.desolatetimelines.acct.catalog.ws.model.IconProperties;
-import com.desolatetimelines.acct.catalog.ws.model.IconUUIDResponse;
-import com.desolatetimelines.acct.catalog.ws.model.IconsCountResponse;
+import com.desolatetimelines.acct.catalog.ws.model.*;
 import com.desolatetimelines.acct.common.ws.model.AcctPage;
 
 import java.util.Collection;
@@ -56,5 +53,12 @@ public interface IconsEndpoint {
      * @param iconUUID the given icon UUID
      */
     String getIconBytesBase64(String iconUUID);
+
+    /**
+     * Deletes the icons identified by the UUIDs in the given collection of icon UUIDs
+     *
+     * @param request container for the given collection of icon UUIDs
+     */
+    void deleteIcons(IconDeleteRequest request);
 
 }

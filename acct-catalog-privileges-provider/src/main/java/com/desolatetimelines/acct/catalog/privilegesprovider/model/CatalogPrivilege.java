@@ -21,6 +21,13 @@ public enum CatalogPrivilege {
                 "registered in the catalog")
             .build()
     ),
+    ICONS_DELETE(
+        AcctPrivilege.builder()
+            .withPrivilegeId(CatalogPrivilegeIds.ICONS_DELETE)
+            .withPrivilegeName("Delete icons")
+            .withPrivilegeDescription("Allows deleting icons from the catalog")
+            .build()
+    ),
     ICONS_GET_CATEGORIES(
         AcctPrivilege.builder()
             .withPrivilegeId(CatalogPrivilegeIds.ICONS_GET_CATEGORIES)

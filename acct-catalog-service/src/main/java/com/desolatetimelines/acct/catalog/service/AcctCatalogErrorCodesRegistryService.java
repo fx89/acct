@@ -12,6 +12,8 @@ public class AcctCatalogErrorCodesRegistryService extends AbstractErrorCodesRegi
 
     public String ICON_NOT_FOUND;
 
+    public String ICON_IN_USE;
+
     protected AcctCatalogErrorCodesRegistryService() {
         super(Integer.parseInt(System.getenv("CATALOG_SERVICE_NUMBER")));
     }
@@ -39,6 +41,12 @@ public class AcctCatalogErrorCodesRegistryService extends AbstractErrorCodesRegi
             CAT_NAME_NOT_FOUND,
             "The icon was not found",
             "An operation was requested for an icon that cannot be found"
+        );
+
+        ICON_IN_USE = resolveErrorCode(
+            CAT_NAME_BUSINESS_RULES_VALIDATION,
+            "One or more icons are in use",
+            "An operation was requested for one or more icons which are in use by various services"
         );
     }
 

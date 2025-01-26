@@ -3,6 +3,7 @@ package com.desolatetimelines.acct.catalog.repository;
 import com.desolatetimelines.acct.catalog.model.AcctIcon;
 import com.desolatetimelines.acct.common.model.Page;
 
+import java.util.Collection;
 import java.util.Optional;
 
 /**
@@ -62,5 +63,20 @@ public interface AcctIconsRepository {
      * @param iconUUID the given icon UUID
      */
     Optional<AcctIcon> findFirstIconByIconUUID(String iconUUID);
+
+    /**
+     * Returns a collection of {@link AcctIcon icons} for which the {@link AcctIcon#getIconUUID() UUID}
+     * can be found in the given collection of icon UUIDs
+     *
+     * @param iconUUIDs the given collection of icon UUIDs
+     */
+    Collection<AcctIcon> findAllByIconUUIDIn(Collection<String> iconUUIDs);
+
+    /**
+     * Deletes all the icons in the given collection of icons
+     *
+     * @param icons the given collection of icons
+     */
+    void delete(Collection<AcctIcon> icons);
 
 }

@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.Optional;
 
 public interface JpaAcctIconsRepository extends CrudRepository<JpaAcctIcon, Long> {
@@ -24,5 +25,7 @@ public interface JpaAcctIconsRepository extends CrudRepository<JpaAcctIcon, Long
     );
 
     Optional<JpaAcctIcon> findFirstByIconUUID(String iconUUID);
+
+    Collection<JpaAcctIcon> findAllByIconUUIDIn(Collection<String> iconUUIDs);
 
 }

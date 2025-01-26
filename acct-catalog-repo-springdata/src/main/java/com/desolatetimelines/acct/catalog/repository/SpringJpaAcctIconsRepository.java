@@ -8,6 +8,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -97,6 +98,25 @@ public class SpringJpaAcctIconsRepository implements AcctIconsRepository {
     @Override
     public Optional<AcctIcon> findFirstIconByIconUUID(String iconUUID) {
         return jpaAcctIconsRepository.findFirstByIconUUID(iconUUID).map(identity());
+    }
+
+    @Override
+    public Collection<AcctIcon> findAllByIconUUIDIn(Collection<String> iconUUIDs) {
+        return
+            jpaAcctIconsRepository.findAllByIconUUIDIn(iconUUIDs)
+                .stream()
+                .map(jpaAcctIcon -> (AcctIcon) jpaAcctIcon)
+                .toList();
+
+    }
+
+    @Override
+    public void delete(Collection<AcctIcon> icons) {
+        jpaAcctIconsRepository.deleteAll(
+            icons.stream()
+                .map(icon -> doWithJpaAcctIcon(icon, identity()))
+                .toList()
+        );
     }
 
 }

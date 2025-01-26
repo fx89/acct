@@ -7,6 +7,7 @@ import com.desolatetimelines.acct.catalog.repository.AcctIconsRepository;
 import com.desolatetimelines.acct.common.model.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 
@@ -133,6 +134,25 @@ public class AcctCatalogDataService {
      */
     public Optional<AcctIcon> findIconByIconUUID(String iconUUID) {
         return iconsRepository.findFirstIconByIconUUID(iconUUID);
+    }
+
+    /**
+     * Returns a collection of {@link AcctIcon icons} for which the {@link AcctIcon#getIconUUID() UUID}
+     * can be found in the given collection of icon UUIDs
+     *
+     * @param iconUUIDs the given collection of icon UUIDs
+     */
+    public Collection<AcctIcon> findIconsByIconUUIDIn(Collection<String> iconUUIDs) {
+        return iconsRepository.findAllByIconUUIDIn(iconUUIDs);
+    }
+
+    /**
+     * Deletes all the icons in the given collection of icons
+     *
+     * @param icons the given collection of icons
+     */
+    public void deleteIcons(Collection<AcctIcon> icons) {
+        iconsRepository.delete(icons);
     }
 
 }
