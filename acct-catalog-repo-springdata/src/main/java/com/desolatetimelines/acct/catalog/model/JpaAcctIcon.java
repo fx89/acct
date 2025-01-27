@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 import java.util.Objects;
 
-import static com.desolatetimelines.acct.catalog.util.AcctCatalogRepoSpringDataUtils.doWithJpaAcctIconCategory;
+import static com.desolatetimelines.acct.catalog.util.AcctCatalogRepoSpringDataUtils.doWithJpaAcctIconCategoryReturning;
 import static java.util.function.Function.identity;
 
 @Entity
@@ -73,7 +73,7 @@ public class JpaAcctIcon implements AcctIcon {
 
     @Override
     public void setIconCategory(AcctIconCategory category) {
-        this.iconCategory = doWithJpaAcctIconCategory(category, identity());
+        this.iconCategory = doWithJpaAcctIconCategoryReturning(category, identity());
     }
 
     public void setIconCategory(JpaAcctIconCategory iconCategory) {

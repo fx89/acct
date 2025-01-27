@@ -1,9 +1,6 @@
 package com.desolatetimelines.acct.catalog.util;
 
-import com.desolatetimelines.acct.catalog.model.AcctIcon;
-import com.desolatetimelines.acct.catalog.model.AcctIconCategory;
-import com.desolatetimelines.acct.catalog.model.JpaAcctIcon;
-import com.desolatetimelines.acct.catalog.model.JpaAcctIconCategory;
+import com.desolatetimelines.acct.catalog.model.*;
 
 import java.util.function.Function;
 
@@ -13,7 +10,7 @@ import java.util.function.Function;
  */
 public abstract class AcctCatalogRepoSpringDataUtils {
 
-    public static JpaAcctIconCategory doWithJpaAcctIconCategory(
+    public static JpaAcctIconCategory doWithJpaAcctIconCategoryReturning(
         AcctIconCategory acctIconCategory,
         Function<JpaAcctIconCategory, JpaAcctIconCategory> todo
     ) {
@@ -27,7 +24,7 @@ public abstract class AcctCatalogRepoSpringDataUtils {
         );
     }
 
-    public static JpaAcctIcon doWithJpaAcctIcon(
+    public static JpaAcctIcon doWithJpaAcctIconReturning(
         AcctIcon acctIcon,
         Function<JpaAcctIcon, JpaAcctIcon> todo
     ) {
@@ -38,6 +35,20 @@ public abstract class AcctCatalogRepoSpringDataUtils {
         throw new IllegalArgumentException(
             "The referenced " + AcctIcon.class.getName() +
                 " is not of type " + JpaAcctIcon.class.getCanonicalName()
+        );
+    }
+
+    public static JpaAcctIncomeOrExpenseItemCategory doWithJpaAcctIncomeOrExpenseItemCategoryReturning(
+        AcctIncomeOrExpenseItemCategory acctIncomeOrExpenseItemCategory,
+        Function<JpaAcctIncomeOrExpenseItemCategory, JpaAcctIncomeOrExpenseItemCategory> todo
+    ) {
+        if (acctIncomeOrExpenseItemCategory instanceof JpaAcctIncomeOrExpenseItemCategory jpaIncomeOrExpenseItemCategory) {
+            return todo.apply(jpaIncomeOrExpenseItemCategory);
+        }
+
+        throw new IllegalArgumentException(
+            "The referenced " + AcctIncomeOrExpenseItemCategory.class.getName() +
+                " is not of type " + JpaAcctIncomeOrExpenseItemCategory.class.getCanonicalName()
         );
     }
 

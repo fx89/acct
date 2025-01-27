@@ -8,15 +8,15 @@ import java.util.Map;
  * Generic exception thrown by the {@link com.desolatetimelines.acct.catalog.service.AcctCatalogService catalog service}
  * when an icon is not found
  */
-public class AcctCatalogServiceIconNotFoundException extends AcctCatalogServiceNotFoundException {
+public class AcctCatalogServiceIncomeOrExpenseItemCategoryNotFoundException extends AcctCatalogServiceNotFoundException {
 
-    public AcctCatalogServiceIconNotFoundException(
+    public AcctCatalogServiceIncomeOrExpenseItemCategoryNotFoundException(
         AcctCatalogErrorCodesRegistryService errors,
-        String iconUUID
+        String incomeOrExpenseItemCategoryUUID
     ) {
         super(
-            errors.ICON_NOT_FOUND,
-            Map.of("iconUUID", iconUUID)
+            errors.INCOME_OR_EXPENSE_ITEM_CATEGORY_NOT_FOUND,
+            Map.of("incomeOrExpenseItemCategoryUUID", incomeOrExpenseItemCategoryUUID)
         );
     }
 

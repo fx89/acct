@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import static com.desolatetimelines.acct.catalog.util.AcctCatalogRepoSpringDataUtils.doWithJpaAcctIcon;
+import static com.desolatetimelines.acct.catalog.util.AcctCatalogRepoSpringDataUtils.doWithJpaAcctIconReturning;
 import static com.desolatetimelines.acct.common.model.Page.emptyPage;
 import static java.util.function.Function.identity;
 
@@ -38,7 +38,7 @@ public class SpringJpaAcctIconsRepository implements AcctIconsRepository {
 
     @Override
     public AcctIcon save(AcctIcon icon) {
-        return doWithJpaAcctIcon(icon, jpaAcctIconsRepository::save);
+        return doWithJpaAcctIconReturning(icon, jpaAcctIconsRepository::save);
     }
 
     @Override
@@ -114,7 +114,7 @@ public class SpringJpaAcctIconsRepository implements AcctIconsRepository {
     public void delete(Collection<AcctIcon> icons) {
         jpaAcctIconsRepository.deleteAll(
             icons.stream()
-                .map(icon -> doWithJpaAcctIcon(icon, identity()))
+                .map(icon -> doWithJpaAcctIconReturning(icon, identity()))
                 .toList()
         );
     }

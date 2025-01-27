@@ -13,6 +13,7 @@ public class AcctCatalogErrorCodesRegistryService extends AbstractErrorCodesRegi
     public String ICON_NOT_FOUND;
 
     public String ICON_IN_USE;
+    public String INCOME_OR_EXPENSE_ITEM_CATEGORY_NOT_FOUND;
 
     protected AcctCatalogErrorCodesRegistryService() {
         super(Integer.parseInt(System.getenv("CATALOG_SERVICE_NUMBER")));
@@ -47,6 +48,12 @@ public class AcctCatalogErrorCodesRegistryService extends AbstractErrorCodesRegi
             CAT_NAME_BUSINESS_RULES_VALIDATION,
             "One or more icons are in use",
             "An operation was requested for one or more icons which are in use by various services"
+        );
+
+        INCOME_OR_EXPENSE_ITEM_CATEGORY_NOT_FOUND = resolveErrorCode(
+            CAT_NAME_NOT_FOUND,
+            "The income or expense item category was not found",
+            "An operation was requested for an income or expense item category that cannot be found"
         );
     }
 

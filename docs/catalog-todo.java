@@ -6,7 +6,7 @@
 // DONE: CAT-00006: Icons endpoint: Delete icons
 
 // TODO: CAT-01001: Items endpoint: Get income or expense item categories
-// TODO: CAT-01002: Items endpoint: Save income or expense item category
+// DONE: CAT-01002: Items endpoint: Save income or expense item category
 // TODO: CAT-01003: Items endpoint: Delete income or expense item categories
 // TODO: CAT-01004: Items endpoint: Get income or expense item subcategories
 // TODO: CAT-01005: Items endpoint: Save income or expense item subcategory

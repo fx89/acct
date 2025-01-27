@@ -24,7 +24,7 @@ curl \
 curl \
     --insecure \
     -v \
-    --cookie 'JSESSIONID=2E4BD3337A9D05EA4E247AF4B0848309' \
+    --cookie 'JSESSIONID=B888888BC95AC85BE7719799FF5915FB' \
     -X GET 'http://localhost:9001/service/authorization/v1/oauth2/authorize?response_type=code&client_id=frontend-client'
 
 export ACCT_USER_ACCESS_TOKEN=$(\
@@ -33,7 +33,7 @@ curl \
     -v \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'grant_type=authorization_code' \
-    -d 'code=016JpcbXtVMr78LwW-xAWN7mXKzZkDIip7ps7Q8RvAwtr7tkf5-J26H7HwZp_Tmkvwb_9zf_HnBEYFSRp4qZubhanVOFIN7ICnlR3K6A9o-QV8B66gg6IDIxZ6EOVBmz' \
+    -d 'code=tuuDbkUZ-K865hMdideLILgdlFhL17R4GFJ7byw83uqlUVIGJOkYSiBVbhBacc3utg66d9L9RyfNyQGoPRWpZnQUSVFgtTzGtAxLYUxcwWrDgwVOyfgcNhFK6Ky5ERGm' \
     -d 'client_id=frontend-client' \
     -d 'client_secret=lkjdwsf23odnwqkld23odfbqweorh23oihd' \
     -X POST 'http://localhost:9001/service/authorization/v1/oauth2/token' \
@@ -144,12 +144,26 @@ curl \
     --insecure \
     -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
     -H "Content-Type: application/json; charset=utf-8" \
-    -X DELETE 'http://localhost:8086/service/catalog/v1/icons' \
+    -X PUT 'http://localhost:8086/service/catalog/v1/items/categories' \
     --data-raw '
         {
-            "iconUUIDs": [
-                "227acd92-c66f-4f61-9780-3a6631da4a3d"
-            ]
+            "incomeOrExpenseItemCategoryName": "My New Category Name",
+            "incomeOrExpenseItemCategoryDescription": "This is my new income or expense item category",
+            "incomeOrExpenseItemCategoryIconUUID": "4dc9a964-e97a-4a6e-b1f6-76d0e86a250a"
+        }
+        ' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT 'http://localhost:8086/service/catalog/v1/items/categories?incomeOrExpenseItemCategoryUUID=31301305-2518-4465-ac65-174b619e9fb6' \
+    --data-raw '
+        {
+            "incomeOrExpenseItemCategoryName": "My Newly edited Category Name",
+            "incomeOrExpenseItemCategoryDescription": "This is my newly edited income or expense item category",
+            "incomeOrExpenseItemCategoryIconUUID": "4dc9a964-e97a-4a6e-b1f6-76d0e86a250b"
         }
         ' \
     | jq

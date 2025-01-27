@@ -2,8 +2,10 @@ package com.desolatetimelines.acct.catalog.data.service;
 
 import com.desolatetimelines.acct.catalog.model.AcctIcon;
 import com.desolatetimelines.acct.catalog.model.AcctIconCategory;
+import com.desolatetimelines.acct.catalog.model.AcctIncomeOrExpenseItemCategory;
 import com.desolatetimelines.acct.catalog.repository.AcctIconCategoriesRepository;
 import com.desolatetimelines.acct.catalog.repository.AcctIconsRepository;
+import com.desolatetimelines.acct.catalog.repository.AcctIncomeOrExpenseItemCategoriesRepository;
 import com.desolatetimelines.acct.common.model.Page;
 import org.springframework.stereotype.Service;
 
@@ -22,9 +24,16 @@ public class AcctCatalogDataService {
 
     private final AcctIconsRepository iconsRepository;
 
-    public AcctCatalogDataService(AcctIconCategoriesRepository iconCategoriesRepository, AcctIconsRepository iconsRepository) {
+    private final AcctIncomeOrExpenseItemCategoriesRepository incomeOrExpenseItemCategoriesRepository;
+
+    public AcctCatalogDataService(
+        AcctIconCategoriesRepository iconCategoriesRepository,
+        AcctIconsRepository iconsRepository,
+        AcctIncomeOrExpenseItemCategoriesRepository incomeOrExpenseItemCategoriesRepository
+    ) {
         this.iconCategoriesRepository = iconCategoriesRepository;
         this.iconsRepository = iconsRepository;
+        this.incomeOrExpenseItemCategoriesRepository = incomeOrExpenseItemCategoriesRepository;
     }
 
     /**
@@ -153,6 +162,40 @@ public class AcctCatalogDataService {
      */
     public void deleteIcons(Collection<AcctIcon> icons) {
         iconsRepository.delete(icons);
+    }
+
+    /**
+     * Creates a new instance of {@link AcctIncomeOrExpenseItemCategory income or expense item category}
+     */
+    public AcctIncomeOrExpenseItemCategory createNewIncomeOrExpenseItemCategory() {
+        return incomeOrExpenseItemCategoriesRepository.createNew();
+    }
+
+    /**
+     * Returns a reference to the {@link AcctIncomeOrExpenseItemCategory income or expense item category}
+     * with the given income or expense item category UUID or an empty optional if such a category does
+     * not exist
+     *
+     * @param incomeOrExpenseItemCategoryUUID the given income or expense item category UUID
+     */
+    public Optional<AcctIncomeOrExpenseItemCategory> findIncomeOrExpenseItemCategoryByIncomeOrExpenseItemCategoryUUID(
+        String incomeOrExpenseItemCategoryUUID
+    ) {
+        return
+            incomeOrExpenseItemCategoriesRepository
+                .findFirstByIncomeOrExpenseItemCategoryUUID(incomeOrExpenseItemCategoryUUID);
+    }
+
+    /**
+     * Persists the referenced {@link AcctIncomeOrExpenseItemCategory income or expense item category}
+     *
+     * @param incomeOrExpenseItemCategory the referenced income or expense item category
+     * @return a reference to the persisted entity
+     */
+    public AcctIncomeOrExpenseItemCategory saveIncomeOrExpenseItemCategory(
+        AcctIncomeOrExpenseItemCategory incomeOrExpenseItemCategory
+    ) {
+        return incomeOrExpenseItemCategoriesRepository.save(incomeOrExpenseItemCategory);
     }
 
 }

@@ -34,6 +34,14 @@ public enum CatalogPrivilege {
             .withPrivilegeName("Get icon categories")
             .withPrivilegeDescription("Allows listing the names of all icon categories registered in the catalog")
             .build()
+    ),
+    ITEM_CATEGORIES_SAVE(
+        AcctPrivilege.builder()
+            .withPrivilegeId(CatalogPrivilegeIds.ITEM_CATEGORIES_SAVE)
+            .withPrivilegeName("Save income or expense item categories")
+            .withPrivilegeDescription("Allows registering or updating already-registered income or expense items " +
+                "in the catalog")
+            .build()
     );
 
     private final AcctPrivilege acctPrivilege;

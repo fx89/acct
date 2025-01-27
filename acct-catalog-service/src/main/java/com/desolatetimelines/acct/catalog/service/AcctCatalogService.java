@@ -1,12 +1,10 @@
 package com.desolatetimelines.acct.catalog.service;
 
 import com.desolatetimelines.acct.catalog.data.service.AcctCatalogDataService;
-import com.desolatetimelines.acct.catalog.exception.AcctCatalogServiceIconConstraintViolationException;
-import com.desolatetimelines.acct.catalog.exception.AcctCatalogServiceIconInUseException;
-import com.desolatetimelines.acct.catalog.exception.AcctCatalogServiceIconNotFoundException;
-import com.desolatetimelines.acct.catalog.exception.AcctCatalogServiceIconValidationException;
+import com.desolatetimelines.acct.catalog.exception.*;
 import com.desolatetimelines.acct.catalog.model.AcctIcon;
 import com.desolatetimelines.acct.catalog.model.AcctIconCategory;
+import com.desolatetimelines.acct.catalog.model.AcctIncomeOrExpenseItemCategory;
 import com.desolatetimelines.acct.common.model.ObjectTypes;
 import com.desolatetimelines.acct.common.model.Page;
 import com.desolatetimelines.acct.usage.ws.client.RESTInUseEndpointClient;
@@ -176,6 +174,69 @@ public class AcctCatalogService {
             dataService.findIconsByIconNameLikeOrNameNullAndIconCategoryNameOrIconCategoryNameNull(
                 iconNamePattern, iconCategoryName, pageNumber, pageSize
             );
+    }
+
+    /**
+     * Creates a new {@link AcctIncomeOrExpenseItemCategory income or expense item category}
+     * or updates an existing one with the given properties, based on the existence of the
+     * given income or expense item category UUID. If the UUID is given then the category
+     * with the given UUID is looked up and updated. If it does not exist, an exception is
+     * thrown. If the UUID is not given then a new category is created with a generated UUID.
+     * An exception is thrown in case of constraint violation exceptions.
+     *
+     * @param incomeOrExpenseItemCategoryUUID        the given income or expense item category UUID
+     * @param incomeOrExpenseItemCategoryName        the name to be set to the income or expense item category
+     * @param incomeOrExpenseItemCategoryDescription the description to be set to the income or expense item category
+     * @param incomeOrExpenseItemCategoryIconUUID    the UUID of the icon to represent the income or expense item category in the UI
+     * @return a reference to the persisted {@link AcctIncomeOrExpenseItemCategory income or expense item category}
+     */
+    public AcctIncomeOrExpenseItemCategory saveIncomeOrExpenseItem(
+        String incomeOrExpenseItemCategoryUUID,
+        String incomeOrExpenseItemCategoryName,
+        String incomeOrExpenseItemCategoryDescription,
+        String incomeOrExpenseItemCategoryIconUUID
+    ) {
+        // Get or create the category based on the existence of the UUID
+        final Optional<AcctIncomeOrExpenseItemCategory> optionalCategory =
+            Optional
+                .ofNullable(incomeOrExpenseItemCategoryUUID)
+                .map(dataService::findIncomeOrExpenseItemCategoryByIncomeOrExpenseItemCategoryUUID)
+                .orElseGet(() -> {
+                    AcctIncomeOrExpenseItemCategory newCategory = dataService.createNewIncomeOrExpenseItemCategory();
+                    newCategory.setIncomeOrExpenseItemCategoryUUID(UUID.randomUUID().toString());
+                    return Optional.of(newCategory);
+                });
+
+        // If the category was not found, throw an exception
+        if (optionalCategory.isEmpty()) {
+            throw
+                new AcctCatalogServiceIncomeOrExpenseItemCategoryNotFoundException(
+                    errors,
+                    incomeOrExpenseItemCategoryUUID
+                );
+        }
+
+        // Get the category
+        final AcctIncomeOrExpenseItemCategory category = optionalCategory.get();
+
+        // Populate the category attributes
+        category.setIncomeOrExpenseItemCategoryName(incomeOrExpenseItemCategoryName);
+        category.setIncomeOrExpenseItemCategoryDescription(incomeOrExpenseItemCategoryDescription);
+        category.setIncomeOrExpenseItemCategoryIconUUID(incomeOrExpenseItemCategoryIconUUID);
+
+        // Persist the category and return a reference
+        try {
+            return dataService.saveIncomeOrExpenseItemCategory(category);
+        }
+        // Throw a service layer exception if a constraint violation exception occurs
+        catch (DataIntegrityViolationException e) {
+            throw
+                new AcctCatalogServiceIncomeOrExpenseItemCategoryConstraintViolationException(
+                    errors,
+                    incomeOrExpenseItemCategoryName,
+                    e
+                );
+        }
     }
 
     private void verifyIconNamePattern(String iconNamePattern) {

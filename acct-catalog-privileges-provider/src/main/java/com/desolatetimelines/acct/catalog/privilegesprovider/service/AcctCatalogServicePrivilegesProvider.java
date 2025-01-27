@@ -19,7 +19,8 @@ public class AcctCatalogServicePrivilegesProvider implements AcctServicePrivileg
             CatalogPrivilege.ICONS_SAVE.getAcctPrivilege(),
             CatalogPrivilege.ICONS_READ.getAcctPrivilege(),
             CatalogPrivilege.ICONS_DELETE.getAcctPrivilege(),
-            CatalogPrivilege.ICONS_GET_CATEGORIES.getAcctPrivilege()
+            CatalogPrivilege.ICONS_GET_CATEGORIES.getAcctPrivilege(),
+            CatalogPrivilege.ITEM_CATEGORIES_SAVE.getAcctPrivilege()
         );
     }
 
