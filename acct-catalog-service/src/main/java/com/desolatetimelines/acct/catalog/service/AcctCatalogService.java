@@ -239,6 +239,14 @@ public class AcctCatalogService {
         }
     }
 
+    /**
+     * Returns a collection of all the {@link AcctIncomeOrExpenseItemCategory income or expense item categories}
+     * registered in the catalog
+     */
+    public Collection<AcctIncomeOrExpenseItemCategory> getIncomeOrExpenseItemCategories() {
+        return dataService.findAllIncomeOrExpenseItemCategories();
+    }
+
     private void verifyIconNamePattern(String iconNamePattern) {
         if (iconNamePattern != null && iconNamePattern.length() < 3) {
             throw new AcctCatalogServiceIconValidationException(

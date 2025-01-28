@@ -42,6 +42,14 @@ public enum CatalogPrivilege {
             .withPrivilegeDescription("Allows registering or updating already-registered income or expense items " +
                 "in the catalog")
             .build()
+    ),
+    ITEM_CATEGORIES_READ(
+        AcctPrivilege.builder()
+            .withPrivilegeId(CatalogPrivilegeIds.ITEM_CATEGORIES_READ)
+            .withPrivilegeName("List and view income or expense item categories")
+            .withPrivilegeDescription("Allows listing and viewing the properties of income or expense items " +
+                "in the catalog")
+            .build()
     );
 
     private final AcctPrivilege acctPrivilege;

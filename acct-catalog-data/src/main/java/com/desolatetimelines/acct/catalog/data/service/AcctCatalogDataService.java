@@ -198,4 +198,11 @@ public class AcctCatalogDataService {
         return incomeOrExpenseItemCategoriesRepository.save(incomeOrExpenseItemCategory);
     }
 
+    /**
+     * Returns a list of all {@link AcctIncomeOrExpenseItemCategory income or expense item categories}
+     */
+    public Collection<AcctIncomeOrExpenseItemCategory> findAllIncomeOrExpenseItemCategories() {
+        return incomeOrExpenseItemCategoriesRepository.findAll();
+    }
+
 }

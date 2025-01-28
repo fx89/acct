@@ -2,6 +2,7 @@ package com.desolatetimelines.acct.catalog.repository;
 
 import com.desolatetimelines.acct.catalog.model.AcctIncomeOrExpenseItemCategory;
 
+import java.util.Collection;
 import java.util.Optional;
 
 /**
@@ -34,5 +35,10 @@ public interface AcctIncomeOrExpenseItemCategoriesRepository {
     AcctIncomeOrExpenseItemCategory save(
         AcctIncomeOrExpenseItemCategory incomeOrExpenseItemCategory
     );
+
+    /**
+     * Returns a collection of all the {@link AcctIncomeOrExpenseItemCategory income or expense item categories}
+     */
+    Collection<AcctIncomeOrExpenseItemCategory> findAll();
 
 }

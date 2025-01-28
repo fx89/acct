@@ -1,7 +1,10 @@
 package com.desolatetimelines.acct.catalog.ws.endpoint;
 
+import com.desolatetimelines.acct.catalog.ws.model.IncomeOrExpenseItemCategoryProperties;
 import com.desolatetimelines.acct.catalog.ws.model.IncomeOrExpenseItemCategorySaveRequest;
 import com.desolatetimelines.acct.catalog.ws.model.IncomeOrExpenseItemCategoryUUIDResponse;
+
+import java.util.Collection;
 
 /**
  * Defines operations that are supported by the Catalog service for items,
@@ -24,5 +27,10 @@ public interface ItemsEndpoint {
         String incomeOrExpenseItemCategoryUUID,
         IncomeOrExpenseItemCategorySaveRequest request
     );
+
+    /**
+     * Returns a collection of all the income or expense item categories in the catalog
+     */
+    Collection<IncomeOrExpenseItemCategoryProperties> getIncomeOrExpenseItemCategories();
 
 }

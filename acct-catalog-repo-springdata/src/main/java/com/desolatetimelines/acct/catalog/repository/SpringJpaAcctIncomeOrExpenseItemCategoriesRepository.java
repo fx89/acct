@@ -5,7 +5,9 @@ import com.desolatetimelines.acct.catalog.model.JpaAcctIncomeOrExpenseItemCatego
 import com.desolatetimelines.acct.catalog.springrepository.JpaAcctIncomeOrExpenseItemCategoriesRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 import static com.desolatetimelines.acct.catalog.util.AcctCatalogRepoSpringDataUtils.doWithJpaAcctIncomeOrExpenseItemCategoryReturning;
 import static java.util.function.Function.identity;
@@ -48,5 +50,18 @@ public class SpringJpaAcctIncomeOrExpenseItemCategoriesRepository implements Acc
                         identity()
                     )
                 );
+    }
+
+    @Override
+    public Collection<AcctIncomeOrExpenseItemCategory> findAll() {
+        return
+            StreamSupport.stream(
+                    jpaAcctIncomeOrExpenseItemCategoriesRepository.findAll().spliterator(),
+                    false
+                )
+                .map(jpaAcctIncomeOrExpenseItemCategory ->
+                    (AcctIncomeOrExpenseItemCategory) jpaAcctIncomeOrExpenseItemCategory
+                )
+                .toList();
     }
 }

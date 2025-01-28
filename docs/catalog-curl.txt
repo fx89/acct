@@ -24,7 +24,7 @@ curl \
 curl \
     --insecure \
     -v \
-    --cookie 'JSESSIONID=B888888BC95AC85BE7719799FF5915FB' \
+    --cookie 'JSESSIONID=46CA6E3FD4F4F55DF291B9A27AFBD636' \
     -X GET 'http://localhost:9001/service/authorization/v1/oauth2/authorize?response_type=code&client_id=frontend-client'
 
 export ACCT_USER_ACCESS_TOKEN=$(\
@@ -33,7 +33,7 @@ curl \
     -v \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'grant_type=authorization_code' \
-    -d 'code=tuuDbkUZ-K865hMdideLILgdlFhL17R4GFJ7byw83uqlUVIGJOkYSiBVbhBacc3utg66d9L9RyfNyQGoPRWpZnQUSVFgtTzGtAxLYUxcwWrDgwVOyfgcNhFK6Ky5ERGm' \
+    -d 'code=Uhw22HzYELkFHuYrmPSGZsPs6YVBBxKbUVqo6afQ4BTFkh7k8EEcQI7pjI8CFE2cdiML_WXq0b0pkwcV7Wn9q_D2RHPi7wjrTPAoEriouxvvmr6yG_4tDE499MGl5b18' \
     -d 'client_id=frontend-client' \
     -d 'client_secret=lkjdwsf23odnwqkld23odfbqweorh23oihd' \
     -X POST 'http://localhost:9001/service/authorization/v1/oauth2/token' \
@@ -166,4 +166,11 @@ curl \
             "incomeOrExpenseItemCategoryIconUUID": "4dc9a964-e97a-4a6e-b1f6-76d0e86a250b"
         }
         ' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X GET 'http://localhost:8086/service/catalog/v1/items/categories' \
     | jq
