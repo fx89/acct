@@ -5,24 +5,24 @@ package com.desolatetimelines.acct.catalog.model;
  */
 public interface AcctIncomeOrExpenseItemSubcategory {
 
-    AcctIncomeOrExpenseItemCategory getIncomeOrExpenseItemCategory();
+    AcctIncomeOrExpenseItemCategory getIncomeExpenseItemCategory();
 
-    void setIncomeOrExpenseItemCategory(AcctIncomeOrExpenseItemCategory incomeOrExpenseItemCategory);
+    void setIncomeOrExpenseItemCategory(AcctIncomeOrExpenseItemCategory incomeExpenseItemCategory);
 
     String getIncomeOrExpenseItemSubcategoryUUID();
 
-    void setIncomeOrExpenseItemSubcategoryUUID(String incomeOrExpenseItemSubcategoryUUID);
+    void setIncomeOrExpenseItemSubcategoryUUID(String incomeExpenseItemSubcategoryUUID);
 
     String getIncomeOrExpenseItemSubcategoryName();
 
-    void setIncomeOrExpenseItemSubcategoryName(String incomeOrExpenseItemSubcategoryName);
+    void setIncomeOrExpenseItemSubcategoryName(String incomeExpenseItemSubcategoryName);
 
     String getIncomeOrExpenseItemSubcategoryDescription();
 
-    void setIncomeOrExpenseItemSubcategoryDescription(String incomeOrExpenseItemSubcategoryDescription);
+    void setIncomeOrExpenseItemSubcategoryDescription(String incomeExpenseItemSubcategoryDescription);
 
     String getIncomeOrExpenseItemSubcategoryIconUUID();
 
-    void setIncomeOrExpenseItemSubcategoryIconUUID(String incomeOrExpenseItemSubcategoryIconUUID);
+    void setIncomeOrExpenseItemSubcategoryIconUUID(String incomeExpenseItemSubcategoryIconUUID);
 
 }

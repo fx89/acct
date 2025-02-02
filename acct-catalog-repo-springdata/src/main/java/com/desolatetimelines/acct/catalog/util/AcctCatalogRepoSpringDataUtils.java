@@ -52,5 +52,33 @@ public abstract class AcctCatalogRepoSpringDataUtils {
         );
     }
 
+    public static JpaAcctIncomeOrExpenseItemSubcategory doWithJpaAcctIncomeOrExpenseItemSubcategoryReturning(
+        AcctIncomeOrExpenseItemSubcategory acctIncomeOrExpenseItemSubcategory,
+        Function<JpaAcctIncomeOrExpenseItemSubcategory, JpaAcctIncomeOrExpenseItemSubcategory> todo
+    ) {
+        if (acctIncomeOrExpenseItemSubcategory instanceof JpaAcctIncomeOrExpenseItemSubcategory jpaIncomeOrExpenseItemSubcategory) {
+            return todo.apply(jpaIncomeOrExpenseItemSubcategory);
+        }
+
+        throw new IllegalArgumentException(
+            "The referenced " + AcctIncomeOrExpenseItemSubcategory.class.getName() +
+                " is not of type " + JpaAcctIncomeOrExpenseItemSubcategory.class.getCanonicalName()
+        );
+    }
+
+    public static JpaAcctIncomeOrExpenseItem doWithJpaAcctIncomeOrExpenseItemReturning(
+        AcctIncomeOrExpenseItem acctIncomeOrExpenseItem,
+        Function<JpaAcctIncomeOrExpenseItem, JpaAcctIncomeOrExpenseItem> todo
+    ) {
+        if (acctIncomeOrExpenseItem instanceof JpaAcctIncomeOrExpenseItem jpaIncomeOrExpenseItem) {
+            return todo.apply(jpaIncomeOrExpenseItem);
+        }
+
+        throw new IllegalArgumentException(
+            "The referenced " + AcctIncomeOrExpenseItem.class.getName() +
+                " is not of type " + JpaAcctIncomeOrExpenseItem.class.getCanonicalName()
+        );
+    }
+
 }
 

@@ -2,9 +2,7 @@ package com.desolatetimelines.acct.catalog.service;
 
 import com.desolatetimelines.acct.catalog.data.service.AcctCatalogDataService;
 import com.desolatetimelines.acct.catalog.exception.*;
-import com.desolatetimelines.acct.catalog.model.AcctIcon;
-import com.desolatetimelines.acct.catalog.model.AcctIconCategory;
-import com.desolatetimelines.acct.catalog.model.AcctIncomeOrExpenseItemCategory;
+import com.desolatetimelines.acct.catalog.model.*;
 import com.desolatetimelines.acct.common.model.ObjectTypes;
 import com.desolatetimelines.acct.common.model.Page;
 import com.desolatetimelines.acct.usage.ws.client.RESTInUseEndpointClient;
@@ -245,6 +243,85 @@ public class AcctCatalogService {
      */
     public Collection<AcctIncomeOrExpenseItemCategory> getIncomeOrExpenseItemCategories() {
         return dataService.findAllIncomeOrExpenseItemCategories();
+    }
+
+    /**
+     * Deletes the {@link AcctIncomeOrExpenseItemCategory income or expense item categories}
+     * identified by the UUIDs in the given collection of income or expense item categories.
+     * Also deletes any {@link AcctIncomeOrExpenseItemSubcategory sub-categories} contained
+     * by the deleted categories as well as all the {@link AcctIncomeOrExpenseItem items}
+     * that are contained by the aforementioned sub-categories. <br />
+     * <br />
+     * If any of the referenced categories does not exist in the catalog, an exception is
+     * thrown. <br />
+     * <br />
+     * If any of the entities to be deleted is in use, an exception is thrown
+     *
+     * @param incomeOrExpenseItemCategoryUUIDs the given list of income or expense item categories
+     */
+    @Transactional
+    public void deleteIncomeOrExpenseItemCategories(Collection<String> incomeOrExpenseItemCategoryUUIDs) {
+        // Make sure the UUIDs are distinct
+        final Set<String> distinctCategoryUUIDs = new HashSet<>(incomeOrExpenseItemCategoryUUIDs);
+
+        // Find the categories
+        final Collection<AcctIncomeOrExpenseItemCategory> foundCategories =
+            dataService.findIncomeOrExpenseItemCategoryByIncomeOrExpenseItemCategoryUUIDIn(distinctCategoryUUIDs);
+
+        // Extract the UUIDs of the found categories so they can be used to check if any
+        // of the requested categories is not found
+        final Collection<String> foundCategoryUUIDs =
+            foundCategories.stream()
+                .map(AcctIncomeOrExpenseItemCategory::getIncomeOrExpenseItemCategoryUUID)
+                .toList();
+
+        // Check if any category is not found
+        final Collection<String> notFoundCategoryUUIDs =
+            distinctCategoryUUIDs.stream()
+                .filter(catUUID -> !foundCategoryUUIDs.contains(catUUID))
+                .toList();
+
+        // If any category is not found, throw an exception
+        if (!notFoundCategoryUUIDs.isEmpty()) {
+            throw
+                new AcctCatalogServiceIncomeOrExpenseItemCategoryNotFoundException(
+                    errors,
+                    notFoundCategoryUUIDs.stream().findAny().orElseThrow()
+                );
+        }
+
+        // Find all the sub-categories contained by the categories
+        final Collection<AcctIncomeOrExpenseItemSubcategory> connectedSubcategories =
+            dataService.findIncomeOrExpenseItemSubcategoriesByIncomeOrExpenseItemCategoryIn(foundCategories);
+
+        // Find all the items contained by all the sub-categories contained by the categories
+        final Collection<AcctIncomeOrExpenseItem> connectedItems =
+            dataService.findIncomeOrExpenseItemsByIncomeOrExpenseItemSubcategoryIn(connectedSubcategories);
+
+        // Get the UUIDs of any items that might be in use
+        final Collection<String> inUseIncomeOrExpenseItemUUIDs =
+            inUseEndpointClient.getItemsInUseOfType(
+                ObjectTypes.INCOME_OR_EXPENSE_ITEM.name(),
+                connectedItems.stream().map(AcctIncomeOrExpenseItem::getIncomeOrExpenseItemUUID).toList()
+            );
+
+        // If any item is in use, throw an exception
+        if (!inUseIncomeOrExpenseItemUUIDs.isEmpty()) {
+            throw
+                new AcctCatalogServiceIncomeOrExpenseItemInUseException(
+                    errors,
+                    inUseIncomeOrExpenseItemUUIDs
+                );
+        }
+
+        // Delete the items
+        dataService.deleteIncomeOrExpenseItems(connectedItems);
+
+        // Delete the sub-categories
+        dataService.deleteIncomeOrExpenseItemSubcategories(connectedSubcategories);
+
+        // Delete the categories
+        dataService.deleteIncomeOrExpenseItemCategories(foundCategories);
     }
 
     private void verifyIconNamePattern(String iconNamePattern) {

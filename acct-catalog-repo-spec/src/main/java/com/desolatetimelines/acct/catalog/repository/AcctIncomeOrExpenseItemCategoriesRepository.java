@@ -41,4 +41,20 @@ public interface AcctIncomeOrExpenseItemCategoriesRepository {
      */
     Collection<AcctIncomeOrExpenseItemCategory> findAll();
 
+    /**
+     * Returns a collection of all {@link AcctIncomeOrExpenseItemCategory income or expense item categories}
+     * for the income or expense item category UUIDs contined by the given collection
+     *
+     * @param incomeOrExpenseItemCategoryUUIDs the given collection
+     */
+    Collection<AcctIncomeOrExpenseItemCategory> findByIncomeOrExpenseItemCategoryUUIDIn(
+        Collection<String> incomeOrExpenseItemCategoryUUIDs
+    );
+
+    /**
+     * Deletes all the referenced {@link AcctIncomeOrExpenseItemCategory income or expense item categories}
+     *
+     * @param incomeOrExpenseItemCategories the referenced income or expense item categories
+     */
+    void deleteAll(Collection<AcctIncomeOrExpenseItemCategory> incomeOrExpenseItemCategories);
 }

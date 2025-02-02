@@ -11,8 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
-import static com.desolatetimelines.acct.catalog.privilegesprovider.model.CatalogPrivilegeIds.ITEM_CATEGORIES_READ;
-import static com.desolatetimelines.acct.catalog.privilegesprovider.model.CatalogPrivilegeIds.ITEM_CATEGORIES_SAVE;
+import static com.desolatetimelines.acct.catalog.privilegesprovider.model.CatalogPrivilegeIds.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
@@ -52,6 +51,15 @@ public class ItemsEndpointController implements ItemsEndpoint {
                 .fromCollectionOfAcctIncomeOrExpenseItemCategories(
                     catalogService.getIncomeOrExpenseItemCategories()
                 );
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + ITEM_CATEGORIES_DELETE + "')")
+    @DeleteMapping(value = "/categories")
+    public void deleteIncomeOrExpenseItemCategories(
+        @RequestParam(name = "categories") Collection<String> incomeOrExpenseItemCategoryUUIDs
+    ) {
+        catalogService.deleteIncomeOrExpenseItemCategories(incomeOrExpenseItemCategoryUUIDs);
     }
 
 }

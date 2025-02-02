@@ -1,11 +1,7 @@
 package com.desolatetimelines.acct.catalog.data.service;
 
-import com.desolatetimelines.acct.catalog.model.AcctIcon;
-import com.desolatetimelines.acct.catalog.model.AcctIconCategory;
-import com.desolatetimelines.acct.catalog.model.AcctIncomeOrExpenseItemCategory;
-import com.desolatetimelines.acct.catalog.repository.AcctIconCategoriesRepository;
-import com.desolatetimelines.acct.catalog.repository.AcctIconsRepository;
-import com.desolatetimelines.acct.catalog.repository.AcctIncomeOrExpenseItemCategoriesRepository;
+import com.desolatetimelines.acct.catalog.model.*;
+import com.desolatetimelines.acct.catalog.repository.*;
 import com.desolatetimelines.acct.common.model.Page;
 import org.springframework.stereotype.Service;
 
@@ -26,14 +22,22 @@ public class AcctCatalogDataService {
 
     private final AcctIncomeOrExpenseItemCategoriesRepository incomeOrExpenseItemCategoriesRepository;
 
+    private final AcctIncomeOrExpenseItemSubcategoriesRepository incomeOrExpenseItemSubcategoriesRepository;
+
+    private final AcctIncomeOrExpenseItemsRepository incomeOrExpenseItemsRepository;
+
     public AcctCatalogDataService(
         AcctIconCategoriesRepository iconCategoriesRepository,
         AcctIconsRepository iconsRepository,
-        AcctIncomeOrExpenseItemCategoriesRepository incomeOrExpenseItemCategoriesRepository
+        AcctIncomeOrExpenseItemCategoriesRepository incomeOrExpenseItemCategoriesRepository,
+        AcctIncomeOrExpenseItemSubcategoriesRepository incomeOrExpenseItemSubcategoriesRepository,
+        AcctIncomeOrExpenseItemsRepository incomeOrExpenseItemsRepository
     ) {
         this.iconCategoriesRepository = iconCategoriesRepository;
         this.iconsRepository = iconsRepository;
         this.incomeOrExpenseItemCategoriesRepository = incomeOrExpenseItemCategoriesRepository;
+        this.incomeOrExpenseItemSubcategoriesRepository = incomeOrExpenseItemSubcategoriesRepository;
+        this.incomeOrExpenseItemsRepository = incomeOrExpenseItemsRepository;
     }
 
     /**
@@ -203,6 +207,87 @@ public class AcctCatalogDataService {
      */
     public Collection<AcctIncomeOrExpenseItemCategory> findAllIncomeOrExpenseItemCategories() {
         return incomeOrExpenseItemCategoriesRepository.findAll();
+    }
+
+    /**
+     * Returns a collection of {@link AcctIncomeOrExpenseItemCategory income or expense item categories}
+     * identified by the UUIDs in the given collection of income or expense item category UUIDs
+     *
+     * @param incomeOrExpenseItemCategoryUUIDs the given collection of income or expense item category UUIDs
+     */
+    public Collection<AcctIncomeOrExpenseItemCategory> findIncomeOrExpenseItemCategoryByIncomeOrExpenseItemCategoryUUIDIn(
+        Collection<String> incomeOrExpenseItemCategoryUUIDs
+    ) {
+        return
+            incomeOrExpenseItemCategoriesRepository.findByIncomeOrExpenseItemCategoryUUIDIn(
+                incomeOrExpenseItemCategoryUUIDs
+            );
+    }
+
+    /**
+     * Deletes the {@link AcctIncomeOrExpenseItemCategory income or expense item categories} in the given
+     * collection of income or expense item categories
+     *
+     * @param incomeOrExpenseItemCategories the given collection of income or expense item categories
+     */
+    public void deleteIncomeOrExpenseItemCategories(
+        Collection<AcctIncomeOrExpenseItemCategory> incomeOrExpenseItemCategories
+    ) {
+        incomeOrExpenseItemCategoriesRepository.deleteAll(incomeOrExpenseItemCategories);
+    }
+
+    /**
+     * Returns a collection of {@link AcctIncomeOrExpenseItemSubcategory income or expense item subcategories}
+     * contained by the {@link AcctIncomeOrExpenseItemCategory income or expense item categories} in the given
+     * collection of income or expense item categories
+     *
+     * @param incomeOrExpenseItemCategories the given collection of income or expense item categories
+     */
+    public Collection<AcctIncomeOrExpenseItemSubcategory> findIncomeOrExpenseItemSubcategoriesByIncomeOrExpenseItemCategoryIn(
+        Collection<AcctIncomeOrExpenseItemCategory> incomeOrExpenseItemCategories
+    ) {
+        return
+            incomeOrExpenseItemSubcategoriesRepository.findAllByByIncomeOrExpenseItemCategoryIn(
+                incomeOrExpenseItemCategories
+            );
+    }
+
+    /**
+     * Returns a collection of {@link AcctIncomeOrExpenseItem income or expense items} contained by the
+     * {@link AcctIncomeOrExpenseItemSubcategory income or expense item subcategories} in the given collection
+     * of income or expense item subcategories
+     *
+     * @param incomeOrExpenseItemSubcategories the given collection of income or expense item subcategories
+     */
+    public Collection<AcctIncomeOrExpenseItem> findIncomeOrExpenseItemsByIncomeOrExpenseItemSubcategoryIn(
+        Collection<AcctIncomeOrExpenseItemSubcategory> incomeOrExpenseItemSubcategories
+    ) {
+        return
+            incomeOrExpenseItemsRepository.findAllByIncomeOrExpenseItemSubcategoryIn(
+                incomeOrExpenseItemSubcategories
+            );
+    }
+
+    /**
+     * Deletes the {@link AcctIncomeOrExpenseItemSubcategory income or expense item subcategories} in the
+     * given collection of income or expense item subcategories
+     *
+     * @param incomeOrExpenseItemSubcategories the given collection of income or expense item subcategories
+     */
+    public void deleteIncomeOrExpenseItemSubcategories(
+        Collection<AcctIncomeOrExpenseItemSubcategory> incomeOrExpenseItemSubcategories
+    ) {
+        incomeOrExpenseItemSubcategoriesRepository.deleteAll(incomeOrExpenseItemSubcategories);
+    }
+
+    /**
+     * Deletes the {@link AcctIncomeOrExpenseItem income or expense items} in the given collection
+     * of income or expense items
+     *
+     * @param incomeOrExpenseItems the given collection of income or expense items
+     */
+    public void deleteIncomeOrExpenseItems(Collection<AcctIncomeOrExpenseItem> incomeOrExpenseItems) {
+        incomeOrExpenseItemsRepository.deleteAll(incomeOrExpenseItems);
     }
 
 }

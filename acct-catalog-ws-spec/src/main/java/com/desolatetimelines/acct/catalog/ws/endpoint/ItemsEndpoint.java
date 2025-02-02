@@ -33,4 +33,13 @@ public interface ItemsEndpoint {
      */
     Collection<IncomeOrExpenseItemCategoryProperties> getIncomeOrExpenseItemCategories();
 
+    /**
+     * Deletes the income or expense item categories represented by the UUIDs in the given collection
+     * of income or expense item UUIDs. Throws exceptions if any of the items is not found or cannot
+     * be deleted.
+     *
+     * @param incomeOrExpenseItemCategoryUUIDs the given list of income or expense item UUIDs
+     */
+    void deleteIncomeOrExpenseItemCategories(Collection<String> incomeOrExpenseItemCategoryUUIDs);
+
 }

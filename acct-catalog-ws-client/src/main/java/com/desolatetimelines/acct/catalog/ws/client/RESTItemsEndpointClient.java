@@ -5,10 +5,7 @@ import com.desolatetimelines.acct.catalog.ws.model.IncomeOrExpenseItemCategoryPr
 import com.desolatetimelines.acct.catalog.ws.model.IncomeOrExpenseItemCategorySaveRequest;
 import com.desolatetimelines.acct.catalog.ws.model.IncomeOrExpenseItemCategoryUUIDResponse;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
@@ -30,5 +27,10 @@ public interface RESTItemsEndpointClient extends ItemsEndpoint {
     @Override
     @GetMapping(value = "/categories", produces = APPLICATION_JSON_VALUE)
     Collection<IncomeOrExpenseItemCategoryProperties> getIncomeOrExpenseItemCategories();
+
+    @DeleteMapping(value = "/categories")
+    void deleteIncomeOrExpenseItemCategories(
+        @RequestParam(name = "categories") Collection<String> incomeOrExpenseItemCategoryUUIDs
+    );
 
 }

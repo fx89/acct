@@ -24,7 +24,7 @@ curl \
 curl \
     --insecure \
     -v \
-    --cookie 'JSESSIONID=46CA6E3FD4F4F55DF291B9A27AFBD636' \
+    --cookie 'JSESSIONID=48F3D35395E91051A22747D815BE1A1C' \
     -X GET 'http://localhost:9001/service/authorization/v1/oauth2/authorize?response_type=code&client_id=frontend-client'
 
 export ACCT_USER_ACCESS_TOKEN=$(\
@@ -33,7 +33,7 @@ curl \
     -v \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'grant_type=authorization_code' \
-    -d 'code=Uhw22HzYELkFHuYrmPSGZsPs6YVBBxKbUVqo6afQ4BTFkh7k8EEcQI7pjI8CFE2cdiML_WXq0b0pkwcV7Wn9q_D2RHPi7wjrTPAoEriouxvvmr6yG_4tDE499MGl5b18' \
+    -d 'code=xB9CfqRwNWsUg5NwCZLsxuxhGMPzsk04s9t3KVB14tZ7vNTYLCEdpYhGp8vxiBUZ7fSJfE8IklkvrWDtn_dE0OXPQpvgKp9PenDkApVKyKTa4onMvuLyKLE9dR2AdkJz' \
     -d 'client_id=frontend-client' \
     -d 'client_secret=lkjdwsf23odnwqkld23odfbqweorh23oihd' \
     -X POST 'http://localhost:9001/service/authorization/v1/oauth2/token' \
@@ -173,4 +173,36 @@ curl \
     -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
     -H "Content-Type: application/json; charset=utf-8" \
     -X GET 'http://localhost:8086/service/catalog/v1/items/categories' \
+    | jq
+
+curl \
+    --insecure \
+    -v \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X DELETE 'http://localhost:8086/service/catalog/v1/items/categories?categories=1dc9a964-e97a-4a6e-b1f6-76d0e86a230a' \
+    | jq
+
+curl \
+    --insecure \
+    -v \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X DELETE 'http://localhost:8086/service/catalog/v1/items/categories?categories=31301305-2518-4465-ac65-174b619e9fb6' \
+    | jq
+
+curl \
+    --insecure \
+    -v \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X DELETE 'http://localhost:8086/service/catalog/v1/items/categories?categories=31301305-2518-4465-ac65-174b619e9fb6,1dc9a964-e97a-4a6e-b1f6-76d0e86a230a' \
+    | jq
+
+curl \
+    --insecure \
+    -v \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X DELETE 'http://localhost:8086/service/catalog/v1/items/categories?categories=31301305-2518-4465-ac65-174b619e9fb7' \
     | jq

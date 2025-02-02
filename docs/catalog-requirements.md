@@ -223,22 +223,16 @@ Response body:
 This service deletes the income or expense item categories having the `incomeOrExpenseItemCategoryUUID`
 within the given list of UUIDs. When an income or expense item category is deleted, all
 the income or expense item subcategories contained by the category are deleted with it.
-This operation fails if any of the income or expense item categories being deleted is in use by the
-workspace service.
+Additionally, all the income or expense items contained by the income or expense item subcategory
+are deleted. 
+
+The operation fails if any of the income or expense item categories cannot be found.
+
+This operation fails if any of the income or expense item categories, subcategories or items being
+deleted is in use by the workspace service.
 
 Example request URL:
-- `DELETE http://acct.desolatetimelines.com/service/catalog/v1/items/categories`
-
-Request body example:
-```
-{
-    "incomeOrExpenseItemCategoryUUID": [
-        "4dc9a964-e97a-4a6e-b1f6-76d0e86a230a",
-        "2bc9a476-e97a-4a6e-b1f6-76d0e86a230b",
-        "1da9a112-e97a-4a6e-b1f6-76d0e86a230c"
-    ]
-}
-```
+- `DELETE http://acct.desolatetimelines.com/service/catalog/v1/items/categories?categories=4dc9a964-e97a-4a6e-b1f6-76d0e86a230a,2bc9a476-e97a-4a6e-b1f6-76d0e86a230b,1da9a112-e97a-4a6e-b1f6-76d0e86a230c`
 
 
 

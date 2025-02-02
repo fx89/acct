@@ -64,4 +64,27 @@ public class SpringJpaAcctIncomeOrExpenseItemCategoriesRepository implements Acc
                 )
                 .toList();
     }
+
+    @Override
+    public Collection<AcctIncomeOrExpenseItemCategory> findByIncomeOrExpenseItemCategoryUUIDIn(
+        Collection<String> incomeOrExpenseItemCategoryUUIDs
+    ) {
+        return
+            jpaAcctIncomeOrExpenseItemCategoriesRepository
+                .findByIncomeExpenseItemCategoryUUIDIn(incomeOrExpenseItemCategoryUUIDs)
+                .stream()
+                .map(cat -> (AcctIncomeOrExpenseItemCategory) cat)
+                .toList();
+    }
+
+    @Override
+    public void deleteAll(Collection<AcctIncomeOrExpenseItemCategory> incomeOrExpenseItemCategories) {
+        jpaAcctIncomeOrExpenseItemCategoriesRepository.deleteAll(
+            incomeOrExpenseItemCategories.stream()
+                .map(cat ->
+                    doWithJpaAcctIncomeOrExpenseItemCategoryReturning(cat, identity())
+                )
+                .toList()
+        );
+    }
 }
