@@ -7,8 +7,6 @@ eureka:
   client:
     serviceUrl:
       defaultZone: ${EUREKA_SERVER_SCHEME}://${EUREKA_SERVER_HOST}:${EUREKA_SERVER_PORT}/eureka/
-  instance:
-    hostname: ${EUREKA_SERVER_HOST}
 
 spring:
   application:

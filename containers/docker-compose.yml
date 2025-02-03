@@ -4,17 +4,61 @@ networks:
       config:
         - subnet: 10.0.10.0/24
 
+x-db-common-config: &dbCommonConfig
+  image: postgres:${DOCKER_POSTGRES_IMAGE_VERSION}
+  restart: always
+  profiles:
+    - everything
+    - databases
+  networks:
+    - primary
+  deploy:
+    mode: replicated
+    replicas: 1
+
+x-service-common-config: &serviceCommonConfig
+  build:
+    context: ../
+    dockerfile: containers/generic-app.docker
+  restart: always
+  networks:
+    - primary
+  env_file:
+    - _environment.txt
+    - _environment.containers.txt
+  deploy:
+    mode: replicated
+    replicas: 1
+
+x-service-boilerplate-config: &serviceBoilerplateConfig
+  <<: *serviceCommonConfig
+  profiles:
+    - everything
+    - application
+    - boilerplate
+
+x-service-acct-boilerplate-config: &serviceAcctBoilerplateConfig
+  <<: *serviceCommonConfig
+  profiles:
+    - everything
+    - application
+    - boilerplate
+    - acct-boilerplate
+
+x-service-acct-service-config: &serviceAcctServiceConfig
+  <<: *serviceCommonConfig
+  profiles:
+    - everything
+    - application
+    - boilerplate
+    - acct-service
+
 services:
   user-management-postgres:
     #container_name: acct-user-management-postgres
     # https://hub.docker.com/_/postgres
-    image: postgres:${DOCKER_POSTGRES_IMAGE_VERSION}
-    restart: always
-    profiles:
-      - everything
-      - databases
-    networks:
-      - primary
+    <<: *dbCommonConfig
+    hostname: user-management-postgres
     ports:
       - ${USER_MANAGEMENT_DB_PORT}:5432
     volumes:
@@ -23,43 +67,22 @@ services:
       - POSTGRES_PASSWORD=${USER_MANAGEMENT_DB_PASSWORD}
       - POSTGRES_USER=${USER_MANAGEMENT_DB_USERNAME}
       - POSTGRES_DB=${USER_MANAGEMENT_DB_NAME}
-    deploy:
-      mode: replicated
-      replicas: 1
 
   security-postgres:
-    image: postgres:${DOCKER_POSTGRES_IMAGE_VERSION}
-    restart: always
-    profiles:
-      - everything
-      - databases
-    networks:
-      - primary
+    <<: *dbCommonConfig
+    hostname: security-postgres
     ports:
       - ${SECURITY_DB_PORT}:5432
     volumes:
       - ./data/security:/var/lib/postgresql/data
-#   env_files:
-#     - 1.txt
-#     - 2.txt
     environment:
       - POSTGRES_PASSWORD=${SECURITY_DB_PASSWORD}
       - POSTGRES_USER=${SECURITY_DB_USERNAME}
       - POSTGRES_DB=${SECURITY_DB_NAME}
-    deploy:
-      mode: replicated
-      replicas: 1
-#   depends_on:
-#     - db
 
   usage-postgres:
-    image: postgres:${DOCKER_POSTGRES_IMAGE_VERSION}
-    restart: always
-    profiles:
-      - everything
-      - databases
-    networks:
-      - primary
+    <<: *dbCommonConfig
+    hostname: usage-postgres
     ports:
       - ${USAGE_DB_PORT}:5432
     volumes:
@@ -68,18 +91,10 @@ services:
       - POSTGRES_PASSWORD=${USAGE_DB_PASSWORD}
       - POSTGRES_USER=${USAGE_DB_USERNAME}
       - POSTGRES_DB=${USAGE_DB_NAME}
-    deploy:
-      mode: replicated
-      replicas: 1
 
   jobs-postgres:
-    image: postgres:${DOCKER_POSTGRES_IMAGE_VERSION}
-    restart: always
-    profiles:
-      - everything
-      - databases
-    networks:
-      - primary
+    <<: *dbCommonConfig
+    hostname: jobs-postgres
     ports:
       - ${JOBS_REGISTRY_DB_PORT}:5432
     volumes:
@@ -88,18 +103,10 @@ services:
       - POSTGRES_PASSWORD=${JOBS_REGISTRY_DB_PASSWORD}
       - POSTGRES_USER=${JOBS_REGISTRY_DB_USERNAME}
       - POSTGRES_DB=${JOBS_REGISTRY_DB_NAME}
-    deploy:
-      mode: replicated
-      replicas: 1
 
   workspace-postgres:
-    image: postgres:${DOCKER_POSTGRES_IMAGE_VERSION}
-    restart: always
-    profiles:
-      - everything
-      - databases
-    networks:
-      - primary
+    <<: *dbCommonConfig
+    hostname: workspace-postgres
     ports:
       - ${WORKSPACE_DB_PORT}:5432
     volumes:
@@ -108,18 +115,10 @@ services:
       - POSTGRES_PASSWORD=${WORKSPACE_DB_PASSWORD}
       - POSTGRES_USER=${WORKSPACE_DB_USERNAME}
       - POSTGRES_DB=${WORKSPACE_DB_NAME}
-    deploy:
-      mode: replicated
-      replicas: 1
 
   catalog-postgres:
-    image: postgres:${DOCKER_POSTGRES_IMAGE_VERSION}
-    restart: always
-    profiles:
-      - everything
-      - databases
-    networks:
-      - primary
+    <<: *dbCommonConfig
+    hostname: catalog-postgres
     ports:
       - ${CATALOG_DB_PORT}:5432
     volumes:
@@ -128,6 +127,121 @@ services:
       - POSTGRES_PASSWORD=${CATALOG_DB_PASSWORD}
       - POSTGRES_USER=${CATALOG_DB_USERNAME}
       - POSTGRES_DB=${CATALOG_DB_NAME}
-    deploy:
-      mode: replicated
-      replicas: 1
+
+  eureka-service:
+    <<: *serviceBoilerplateConfig
+    build:
+      args:
+        - ACCT_VERSION=${ACCT_VERSION}
+        - ACCT_MODULE_NAME=acct-eureka-server
+        - DOCKER_ECLIPSE_TEMURIN_IMAGE_VERSION=${DOCKER_ECLIPSE_TEMURIN_IMAGE_VERSION}
+    image: acct-eureka-server:${ACCT_VERSION}
+    hostname: eureka-service
+    ports:
+      - ${EUREKA_SERVER_PORT}:${EUREKA_SERVER_PORT}
+
+  authorization-service:
+    <<: *serviceBoilerplateConfig
+    build:
+      args:
+        - ACCT_VERSION=${ACCT_VERSION}
+        - ACCT_MODULE_NAME=acct-authorization-server
+        - DOCKER_ECLIPSE_TEMURIN_IMAGE_VERSION=${DOCKER_ECLIPSE_TEMURIN_IMAGE_VERSION}
+    image: acct-authorization-server:${ACCT_VERSION}
+    hostname: authorization-service
+    ports:
+      - ${AUTHORIZATION_SERVER_PORT}:${AUTHORIZATION_SERVER_PORT}
+    depends_on:
+      - eureka-service
+
+  usage-service:
+    <<: *serviceAcctBoilerplateConfig
+    build:
+      args:
+        - ACCT_VERSION=${ACCT_VERSION}
+        - ACCT_MODULE_NAME=acct-usage-ws-server
+        - DOCKER_ECLIPSE_TEMURIN_IMAGE_VERSION=${DOCKER_ECLIPSE_TEMURIN_IMAGE_VERSION}
+    image: acct-usage-ws-server:${ACCT_VERSION}
+    hostname: usage-service
+    ports:
+      - ${USAGE_SERVER_PORT}:${USAGE_SERVER_PORT}
+    depends_on:
+      - eureka-service
+      - usage-postgres
+    links:
+      - usage-postgres
+
+  jobs-service:
+    <<: *serviceAcctBoilerplateConfig
+    build:
+      args:
+        - ACCT_VERSION=${ACCT_VERSION}
+        - ACCT_MODULE_NAME=acct-job-ws-server
+        - DOCKER_ECLIPSE_TEMURIN_IMAGE_VERSION=${DOCKER_ECLIPSE_TEMURIN_IMAGE_VERSION}
+    image: acct-job-ws-server:${ACCT_VERSION}
+    hostname: job-service
+    ports:
+      - ${JOBS_REGISTRY_SERVER_PORT}:${JOBS_REGISTRY_SERVER_PORT}
+    depends_on:
+      - eureka-service
+      - jobs-postgres
+    links:
+      - jobs-postgres
+
+  security-service:
+    <<: *serviceAcctBoilerplateConfig
+    build:
+      args:
+        - ACCT_VERSION=${ACCT_VERSION}
+        - ACCT_MODULE_NAME=acct-security-ws-server
+        - DOCKER_ECLIPSE_TEMURIN_IMAGE_VERSION=${DOCKER_ECLIPSE_TEMURIN_IMAGE_VERSION}
+    image: acct-security-ws-server:${ACCT_VERSION}
+    hostname: security-service
+    ports:
+      - ${SECURITY_SERVER_PORT}:${SECURITY_SERVER_PORT}
+    depends_on:
+      - eureka-service
+      - usage-service
+      - jobs-service
+      - security-postgres
+    links:
+      - security-postgres
+
+  user-management-service:
+    <<: *serviceAcctBoilerplateConfig
+    build:
+      args:
+        - ACCT_VERSION=${ACCT_VERSION}
+        - ACCT_MODULE_NAME=acct-user-management-ws-server
+        - DOCKER_ECLIPSE_TEMURIN_IMAGE_VERSION=${DOCKER_ECLIPSE_TEMURIN_IMAGE_VERSION}
+    image: acct-user-management-ws-server:${ACCT_VERSION}
+    hostname: user-management-service
+    ports:
+      - ${USER_MANAGEMENT_SERVER_PORT}:${USER_MANAGEMENT_SERVER_PORT}
+    depends_on:
+      - eureka-service
+      - jobs-service
+      - usage-service
+      - user-management-postgres
+    links:
+      - user-management-postgres
+
+  workspace-service:
+    <<: *serviceAcctServiceConfig
+    build:
+      args:
+        - ACCT_VERSION=${ACCT_VERSION}
+        - ACCT_MODULE_NAME=acct-workspace-ws-server
+        - DOCKER_ECLIPSE_TEMURIN_IMAGE_VERSION=${DOCKER_ECLIPSE_TEMURIN_IMAGE_VERSION}
+    image: acct-workspace-ws-server:${ACCT_VERSION}
+    hostname: workspace-service
+    ports:
+      - ${WORKSPACE_SERVER_PORT}:${WORKSPACE_SERVER_PORT}
+    depends_on:
+      - eureka-service
+      - authorization-service
+      - usage-service
+      - jobs-service
+      - workspace-postgres
+    links:
+      - workspace-postgres

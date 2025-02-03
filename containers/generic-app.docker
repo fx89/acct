@@ -1,0 +1,29 @@
+# The base image
+ARG DOCKER_ECLIPSE_TEMURIN_IMAGE_VERSION
+FROM eclipse-temurin:${DOCKER_ECLIPSE_TEMURIN_IMAGE_VERSION}
+
+# Working directory
+RUN mkdir /opt/acct
+WORKDIR /opt/acct
+
+# Variables needed for the build
+ARG ACCT_VERSION
+ARG ACCT_MODULE_NAME
+
+# The environment
+ENV JAR_FILE=${ACCT_MODULE_NAME}-${ACCT_VERSION}.jar
+
+# Required files
+COPY ${ACCT_MODULE_NAME}/target/${JAR_FILE} ./${JAR_FILE}
+
+# The application user
+RUN adduser --no-create-home --disabled-password acct
+
+# Grants
+RUN chown -R acct:acct /opt/acct
+
+# Switch to the application user
+USER acct
+
+# Start command
+ENTRYPOINT java -jar ${JAR_FILE}
