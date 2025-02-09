@@ -237,6 +237,27 @@ public class AcctCatalogDataService {
     }
 
     /**
+     * Creates a new instance of {@link AcctIncomeOrExpenseItemSubcategory}
+     *
+     * @return a reference to the newly created entity
+     */
+    public AcctIncomeOrExpenseItemSubcategory createNewIncomeOrExpenseItemSubcategory() {
+        return incomeOrExpenseItemSubcategoriesRepository.createNew();
+    }
+
+    /**
+     * Persists the referenced {@link AcctIncomeOrExpenseItemSubcategory income or expense item subcategory}
+     *
+     * @param incomeOrExpenseItemSubcategory the referenced income or expense item subcategory
+     * @return a reference to the persisted entity
+     */
+    public AcctIncomeOrExpenseItemSubcategory saveIncomeOrExpenseItemSubcategory(
+        AcctIncomeOrExpenseItemSubcategory incomeOrExpenseItemSubcategory
+    ) {
+        return incomeOrExpenseItemSubcategoriesRepository.save(incomeOrExpenseItemSubcategory);
+    }
+
+    /**
      * Returns a collection of {@link AcctIncomeOrExpenseItemSubcategory income or expense item subcategories}
      * contained by the {@link AcctIncomeOrExpenseItemCategory income or expense item categories} in the given
      * collection of income or expense item categories
@@ -250,6 +271,36 @@ public class AcctCatalogDataService {
             incomeOrExpenseItemSubcategoriesRepository.findAllByByIncomeOrExpenseItemCategoryIn(
                 incomeOrExpenseItemCategories
             );
+    }
+
+    /**
+     * Returns a reference to the {@link AcctIncomeOrExpenseItemSubcategory income or expense item subcategory}
+     * with the given income or expense item subcategory UUID or an empty optional if such a subcategory does
+     * not exist
+     *
+     * @param incomeOrExpenseItemSubcategoryUUID the given income or expense item category UUID
+     */
+    public Optional<AcctIncomeOrExpenseItemSubcategory> findIncomeOrExpenseItemSubcategoryByIncomeOrExpenseItemSubcategoryUUID(
+        String incomeOrExpenseItemSubcategoryUUID
+    ) {
+        return
+            incomeOrExpenseItemSubcategoriesRepository
+                .findFirstByIncomeOrExpenseItemSubcategoryUUID(incomeOrExpenseItemSubcategoryUUID);
+    }
+
+    /**
+     * Returns a collection of {@link AcctIncomeOrExpenseItemSubcategory income or expense item subcategories}
+     * for the UUIDs in the given collection of income or expense item subcategory UUIDs
+     *
+     * @param incomeOrExpenseItemSubcategoryUUIDs the given collection of income or expense item subcategory UUIDs
+     */
+    public Collection<AcctIncomeOrExpenseItemSubcategory>
+    findIncomeOrExpenseItemSubcategoryByIncomeOrExpenseItemSubcategoryUUIDIn(
+        Collection<String> incomeOrExpenseItemSubcategoryUUIDs
+    ) {
+        return
+            incomeOrExpenseItemSubcategoriesRepository
+                .findByIncomeOrExpenseItemSubcategoryUUIDIn(incomeOrExpenseItemSubcategoryUUIDs);
     }
 
     /**
@@ -278,6 +329,49 @@ public class AcctCatalogDataService {
         Collection<AcctIncomeOrExpenseItemSubcategory> incomeOrExpenseItemSubcategories
     ) {
         incomeOrExpenseItemSubcategoriesRepository.deleteAll(incomeOrExpenseItemSubcategories);
+    }
+
+    /**
+     * Creates a new instance of {@link AcctIncomeOrExpenseItem income or expense item}
+     *
+     * @return a reference to the created instance
+     */
+    public AcctIncomeOrExpenseItem createNewIncomeOrExpenseItem() {
+        return incomeOrExpenseItemsRepository.createNew();
+    }
+
+    /**
+     * Returns the {@link AcctIncomeOrExpenseItem income or expense item} with the given
+     * income or expense item UUID or an empty optional if such an item does not exist.
+     *
+     * @param incomeOrExpenseItemUUID the given income or expense item UUID
+     */
+    public Optional<AcctIncomeOrExpenseItem> findIncomeOrExpenseItemByIncomeOrExpenseItemUUID(
+        String incomeOrExpenseItemUUID
+    ) {
+        return incomeOrExpenseItemsRepository.findFirstByIncomeOrExpenseItemUUID(incomeOrExpenseItemUUID);
+    }
+
+    /**
+     * Returns a collection of the {@link AcctIncomeOrExpenseItem income or expense items}
+     * identified by the UUIDs in the given collection of income or expense item UUIDs
+     *
+     * @param incomeOrExpenseItemUUIDs the given collection of income or expense item UUIDs
+     */
+    public Collection<AcctIncomeOrExpenseItem> findIncomeOrExpenseItemsByIncomeOrExpenseItemUUIDIn(
+        Collection<String> incomeOrExpenseItemUUIDs
+    ) {
+        return incomeOrExpenseItemsRepository.findAllByIncomeOrExpenseItemUUIDIn(incomeOrExpenseItemUUIDs);
+    }
+
+    /**
+     * Persists the referenced {@link AcctIncomeOrExpenseItem income or expense item}
+     *
+     * @param incomeOrExpenseItem the referenced income or expense item
+     * @return a reference to the persisted entity
+     */
+    public AcctIncomeOrExpenseItem saveIncomeOrExpenseItem(AcctIncomeOrExpenseItem incomeOrExpenseItem) {
+        return incomeOrExpenseItemsRepository.save(incomeOrExpenseItem);
     }
 
     /**

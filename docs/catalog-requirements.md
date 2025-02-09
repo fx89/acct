@@ -305,7 +305,7 @@ This service deletes the income or expense item subcategories having the `income
 within the given list of UUIDs.
 
 The operation fails if any of the income or expense item subcategories being deleted is in use by the
-workspace service
+workspace service.
 
 Example request URL:
 - `DELETE http://acct.desolatetimelines.com/service/catalog/v1/items/subcategories`
@@ -320,6 +320,95 @@ Request body example:
     ]
 }
 ```
+
+
+
+<br /><br />
+#### `CAT-01007` Get income or expense items
+This service returns a collection of income or expense items in the income or expense item subcategory
+referenced by the given `incomeOrExpenseItemSubcategoryUUID`.
+
+The operation fails if the referenced subcategory cannot be found.
+
+Example request URL:
+- `GET http://acct.desolatetimelines.com/service/catalog/v1/items?incomeOrExpenseItemSubcategoryUUID=2bc9a476-e97a-2b5d-b1f6-76d0e86a230b`
+
+Response body example:
+```
+[
+    {
+        "incomeOrExpenseItemUUID": "cba53ea5-bd31-499a-9a47-a2c56a25cbaa",
+        "incomeOrExpenseItemName": "Item 1",
+        "incomeOrExpenseItemDescription": "Item number 1",
+        "incomeOrExpenseItemIconUUID": "4dc9a964-e97a-4a6d-b1f6-76d0e86a250a"
+    },
+    {
+        "incomeOrExpenseItemUUID": "f76b09f5-4fcd-4261-916e-e621f540900c",
+        "incomeOrExpenseItemName": "Item 2",
+        "incomeOrExpenseItemDescription": "Item number 2",
+        "incomeOrExpenseItemIconUUID": "4dc9a964-e97a-4a6d-b1f6-76d0e86a250b"
+    },
+    {
+        "incomeOrExpenseItemUUID": "3b7d742c-e8c7-4dfc-b3d0-92d665e07933",
+        "incomeOrExpenseItemName": "Item 3",
+        "incomeOrExpenseItemDescription": "Item number 3",
+        "incomeOrExpenseItemIconUUID": "4dc9a964-e97a-4a6d-b1f6-76d0e86a250c"
+    },
+]
+```
+
+
+
+
+<br /><br />
+#### `CAT-01008` Save income or expense item
+This service persists an income or expense item within the income or expense items subcategory with the given
+`incomeOrExpenseItemSubcategoryUUID`.
+
+If an `incomeOrExpenseItemUUID` is given then the income or expense item having the given UUID is updated.
+
+If an `incomeOrExpenseItemUUID` is not given then a new one is created.
+
+In either case, the UUID of the persisted entity is returned.
+
+Exceptions:
+- If there is no category with the given `incomeOrExpenseItemSubcategoryUUID` then an exception is thrown.
+- If an `incomeOrExpenseItemUUID` is given and such an item does not exist, an exception is thrown.
+- If constraint violations occur, an exception is thrown.
+
+Example request URLs:
+- `PUT http://acct.desolatetimelines.com/service/catalog/v1/items?incomeOrExpenseItemSubcategoryUUID=2bc9a476-e97a-2b5d-b1f6-76d0e86a230b`
+- `PUT http://acct.desolatetimelines.com/service/catalog/v1/items?incomeOrExpenseItemSubcategoryUUID=2bc9a476-e97a-2b5d-b1f6-76d0e86a230b&incomeOrExpenseItemUUID=1d5db9e1-cb69-41cd-b1cc-fe24659601af`
+
+Example request body:
+```
+{
+    "incomeOrExpenseItemName": "Item 1",
+    "incomeOrExpenseItemDescription": "Item number 1",
+    "incomeOrExpenseItemIconUUID": "4dc9a964-e97a-4a6d-b1f6-76d0e86a250c"
+}
+```
+
+Example response body:
+```
+{
+    "incomeOrExpenseItemUUID": "1d5db9e1-cb69-41cd-b1cc-fe24659601af"
+}
+```
+
+
+
+
+<br /><br />
+#### `CAT-01009` Delete income or expense items
+Deletes the income or expense items identified by the UUIDs inside the given `incomeOrExpenseItemUUIDs` collection.
+
+If any of the referenced items does not exist, an exception is thrown.
+
+Example request URL:
+- `DELETE http://acct.desolatetimelines.com/service/catalog/v1/items?incomeOrExpenseItemUUIDs=1d5db9e1-cb69-41cd-b1cc-fe24659601af,a5f683a1-a639-4624-b8d1-b34c0386e486,e74f7485-eaa2-40bb-944b-b8c3e0fcf508`
+
+
 
 
 

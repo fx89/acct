@@ -58,7 +58,7 @@ public class JpaAcctIncomeOrExpenseItem implements AcctIncomeOrExpenseItem {
 
     @Override
     public void setIncomeOrExpenseItemUUID(String incomeOrExpenseItemUUID) {
-        this.incomeExpenseItemUUID = incomeExpenseItemUUID;
+        this.incomeExpenseItemUUID = incomeOrExpenseItemUUID;
     }
 
     @Override
@@ -68,7 +68,7 @@ public class JpaAcctIncomeOrExpenseItem implements AcctIncomeOrExpenseItem {
 
     @Override
     public void setIncomeOrExpenseItemName(String incomeOrExpenseItemName) {
-        this.incomeExpenseItemName = incomeExpenseItemName;
+        this.incomeExpenseItemName = incomeOrExpenseItemName;
     }
 
     @Override
@@ -78,7 +78,7 @@ public class JpaAcctIncomeOrExpenseItem implements AcctIncomeOrExpenseItem {
 
     @Override
     public void setIncomeOrExpenseItemDescription(String incomeOrExpenseItemDescription) {
-        this.incomeExpenseItemDescription = incomeExpenseItemDescription;
+        this.incomeExpenseItemDescription = incomeOrExpenseItemDescription;
     }
 
     @Override
@@ -88,7 +88,7 @@ public class JpaAcctIncomeOrExpenseItem implements AcctIncomeOrExpenseItem {
 
     @Override
     public void setIncomeOrExpenseItemIconUUID(String incomeOrExpenseItemIconUUID) {
-        this.incomeExpenseItemIconUUID = incomeExpenseItemIconUUID;
+        this.incomeExpenseItemIconUUID = incomeOrExpenseItemIconUUID;
     }
 
     public JpaAcctIncomeOrExpenseItemSubcategory getIncomeExpenseItemSubcategory() {

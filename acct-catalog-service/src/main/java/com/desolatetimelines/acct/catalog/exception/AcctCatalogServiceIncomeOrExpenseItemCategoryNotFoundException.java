@@ -6,7 +6,7 @@ import java.util.Map;
 
 /**
  * Generic exception thrown by the {@link com.desolatetimelines.acct.catalog.service.AcctCatalogService catalog service}
- * when an icon is not found
+ * when an income or expense item category is not found
  */
 public class AcctCatalogServiceIncomeOrExpenseItemCategoryNotFoundException extends AcctCatalogServiceNotFoundException {
 

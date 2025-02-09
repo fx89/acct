@@ -16,7 +16,7 @@ public class AcctCatalogServiceIncomeOrExpenseItemCategoryConstraintViolationExc
         Throwable cause
     ) {
         super(
-            errors.ICON_ALREADY_EXISTS,
+            errors.INCOME_OR_EXPENSE_ITEM_CATEGORY_ALREADY_EXISTS,
             Map.of(
                 "incomeOrExpenseItemCategoryName", incomeOrExpenseItemCategoryName
             ),

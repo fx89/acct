@@ -24,7 +24,7 @@ curl \
 curl \
     --insecure \
     -v \
-    --cookie 'JSESSIONID=48F3D35395E91051A22747D815BE1A1C' \
+    --cookie 'JSESSIONID=50628D4C8AF57B035B38A427BD0BDD2D' \
     -X GET 'http://localhost:9001/service/authorization/v1/oauth2/authorize?response_type=code&client_id=frontend-client'
 
 export ACCT_USER_ACCESS_TOKEN=$(\
@@ -33,7 +33,7 @@ curl \
     -v \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'grant_type=authorization_code' \
-    -d 'code=xB9CfqRwNWsUg5NwCZLsxuxhGMPzsk04s9t3KVB14tZ7vNTYLCEdpYhGp8vxiBUZ7fSJfE8IklkvrWDtn_dE0OXPQpvgKp9PenDkApVKyKTa4onMvuLyKLE9dR2AdkJz' \
+    -d 'code=IWn_v1Wz25eG5JN_cjW7y2nn-qV9E1LymbkajuDj8v7x3zNY2HG58w4zkDxJSgQ8FDnjd9mRRWq70H-YGOFqGhCZhYo5ijGlChst2EvExn_N3jqvr3_AAjXWNT4rVKxA' \
     -d 'client_id=frontend-client' \
     -d 'client_secret=lkjdwsf23odnwqkld23odfbqweorh23oihd' \
     -X POST 'http://localhost:9001/service/authorization/v1/oauth2/token' \
@@ -205,4 +205,172 @@ curl \
     -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
     -H "Content-Type: application/json; charset=utf-8" \
     -X DELETE 'http://localhost:8086/service/catalog/v1/items/categories?categories=31301305-2518-4465-ac65-174b619e9fb7' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT 'http://localhost:8086/service/catalog/v1/items/subcategories?incomeOrExpenseItemCategoryUUID=31301305-2518-4465-ac65-174b619e9fb7' \
+    --data-raw '
+        {
+            "incomeOrExpenseItemSubcategoryName": "My Newly added Subcategory Name",
+            "incomeOrExpenseItemSubcategoryDescription": "This is my newly edited income or expense item subcategory",
+            "incomeOrExpenseItemSubcategoryIconUUID": "4dc9a964-e97a-4a6e-b1f6-76d0e86a250b"
+        }
+        ' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT 'http://localhost:8086/service/catalog/v1/items/subcategories?incomeOrExpenseItemCategoryUUID=31301305-2518-4465-ac65-174b619e9fb6&incomeOrExpenseItemSubcategoryUUID=123' \
+    --data-raw '
+        {
+            "incomeOrExpenseItemSubcategoryName": "My Newly added Subcategory Name",
+            "incomeOrExpenseItemSubcategoryDescription": "This is my newly edited income or expense item subcategory",
+            "incomeOrExpenseItemSubcategoryIconUUID": "4dc9a964-e97a-4a6e-b1f6-76d0e86a250b"
+        }
+        ' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT 'http://localhost:8086/service/catalog/v1/items/subcategories?incomeOrExpenseItemCategoryUUID=31301305-2518-4465-ac65-174b619e9fb6' \
+    --data-raw '
+        {
+            "incomeOrExpenseItemSubcategoryName": "My Newly added Subcategory Name",
+            "incomeOrExpenseItemSubcategoryDescription": "This is my newly edited income or expense item subcategory",
+            "incomeOrExpenseItemSubcategoryIconUUID": "4dc9a964-e97a-4a6e-b1f6-76d0e86a250b"
+        }
+        ' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT 'http://localhost:8086/service/catalog/v1/items/subcategories?incomeOrExpenseItemCategoryUUID=31301305-2518-4465-ac65-174b619e9fb6&incomeOrExpenseItemSubcategoryUUID=5f0b98e1-7bd2-4ea3-8bd6-091cfd747284' \
+    --data-raw '
+        {
+            "incomeOrExpenseItemSubcategoryName": "My Newly edited Subcategory Name",
+            "incomeOrExpenseItemSubcategoryDescription": "This is my newly edited income or expense item subcategory",
+            "incomeOrExpenseItemSubcategoryIconUUID": "4dc9a964-e97a-4a6e-b1f6-76d0e86a250b"
+        }
+        ' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X GET 'http://localhost:8086/service/catalog/v1/items/subcategories?incomeOrExpenseItemCategoryUUID=31301305-2518-4465-ac65-174b619e9fb6' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X DELETE 'http://localhost:8086/service/catalog/v1/items/subcategories?incomeOrExpenseItemSubcategoryUUIDs=abae93f2-c18d-41b8-9d94-e2a1e0edb0b8' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X DELETE 'http://localhost:8086/service/catalog/v1/items/subcategories?incomeOrExpenseItemSubcategoryUUIDs=5f0b98e1-7bd2-4ea3-8bd6-091cfd747285' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT 'http://localhost:8086/service/catalog/v1/items?incomeOrExpenseItemSubcategoryUUID=3' \
+    --data-raw '
+        {
+            "incomeOrExpenseItemName": "My Newly created Item Name",
+            "incomeOrExpenseItemDescription": "This is my newly created income or expense item",
+            "incomeOrExpenseItemIconUUID": "4dc9a964-e97a-4a6e-b1f6-76d0e86a250b"
+        }
+        ' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT 'http://localhost:8086/service/catalog/v1/items?incomeOrExpenseItemSubcategoryUUID=abae93f2-c18d-41b8-9d94-e2a1e0edb0b8&incomeOrExpenseItemUUID=3' \
+    --data-raw '
+        {
+            "incomeOrExpenseItemName": "My Newly created Item Name",
+            "incomeOrExpenseItemDescription": "This is my newly created income or expense item",
+            "incomeOrExpenseItemIconUUID": "4dc9a964-e97a-4a6e-b1f6-76d0e86a250b"
+        }
+        ' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT 'http://localhost:8086/service/catalog/v1/items?incomeOrExpenseItemSubcategoryUUID=abae93f2-c18d-41b8-9d94-e2a1e0edb0b8' \
+    --data-raw '
+        {
+            "incomeOrExpenseItemName": "My Newly created Item Name",
+            "incomeOrExpenseItemDescription": "This is my newly created income or expense item",
+            "incomeOrExpenseItemIconUUID": "4dc9a964-e97a-4a6e-b1f6-76d0e86a250b"
+        }
+        ' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT 'http://localhost:8086/service/catalog/v1/items?incomeOrExpenseItemSubcategoryUUID=abae93f2-c18d-41b8-9d94-e2a1e0edb0b8&incomeOrExpenseItemUUID=96924db8-1ea1-441e-b2fe-f09ac31b402b' \
+    --data-raw '
+        {
+            "incomeOrExpenseItemName": "My Newly edited Item Name",
+            "incomeOrExpenseItemDescription": "This is my newly edited income or expense item",
+            "incomeOrExpenseItemIconUUID": "4dc9a964-e97a-4a6e-b1f6-76d0e86a250b"
+        }
+        ' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X GET 'http://localhost:8086/service/catalog/v1/items?incomeOrExpenseItemSubcategoryUUID=abae93f2-c18d-41b8-9d94-e2a1e0edb0b8' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X GET 'http://localhost:8086/service/catalog/v1/items?incomeOrExpenseItemSubcategoryUUID=3' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X DELETE 'http://localhost:8086/service/catalog/v1/items?incomeOrExpenseItemUUIDs=3' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X DELETE 'http://localhost:8086/service/catalog/v1/items?incomeOrExpenseItemUUIDs=abae93f2-c18d-41b8-9d94-e2a1e0edb0b9' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X DELETE 'http://localhost:8086/service/catalog/v1/items?incomeOrExpenseItemUUIDs=96924db8-1ea1-441e-b2fe-f09ac31b402c' \
     | jq

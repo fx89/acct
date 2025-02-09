@@ -2,10 +2,12 @@ package com.desolatetimelines.acct.catalog.repository;
 
 import com.desolatetimelines.acct.catalog.model.AcctIncomeOrExpenseItem;
 import com.desolatetimelines.acct.catalog.model.AcctIncomeOrExpenseItemSubcategory;
+import com.desolatetimelines.acct.catalog.model.JpaAcctIncomeOrExpenseItem;
 import com.desolatetimelines.acct.catalog.springrepository.JpaAcctIncomeOrExpenseItemsRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import static com.desolatetimelines.acct.catalog.util.AcctCatalogRepoSpringDataUtils.doWithJpaAcctIncomeOrExpenseItemReturning;
 import static com.desolatetimelines.acct.catalog.util.AcctCatalogRepoSpringDataUtils.doWithJpaAcctIncomeOrExpenseItemSubcategoryReturning;
@@ -24,7 +26,32 @@ public class SpringJpaAcctIncomeOrExpenseItemsRepository implements AcctIncomeOr
     }
 
     @Override
-    public Collection<AcctIncomeOrExpenseItem> findAllByIncomeOrExpenseItemSubcategoryIn(Collection<AcctIncomeOrExpenseItemSubcategory> incomeOrExpenseItemSubcategories) {
+    public AcctIncomeOrExpenseItem createNew() {
+        return new JpaAcctIncomeOrExpenseItem();
+    }
+
+    @Override
+    public Optional<AcctIncomeOrExpenseItem> findFirstByIncomeOrExpenseItemUUID(String incomeOrExpenseItemUUID) {
+        return
+            jpaAcctIncomeOrExpenseItemsRepository.findFirstByIncomeExpenseItemUUID(incomeOrExpenseItemUUID)
+                .map(identity());
+    }
+
+    @Override
+    public Collection<AcctIncomeOrExpenseItem> findAllByIncomeOrExpenseItemUUIDIn(
+        Collection<String> incomeOrExpenseItemUUIDs
+    ) {
+        return
+            jpaAcctIncomeOrExpenseItemsRepository.findAllByIncomeExpenseItemUUIDIn(incomeOrExpenseItemUUIDs)
+                .stream()
+                .map(jpaItem -> (AcctIncomeOrExpenseItem) jpaItem)
+                .toList();
+    }
+
+    @Override
+    public Collection<AcctIncomeOrExpenseItem> findAllByIncomeOrExpenseItemSubcategoryIn(
+        Collection<AcctIncomeOrExpenseItemSubcategory> incomeOrExpenseItemSubcategories
+    ) {
         return
             jpaAcctIncomeOrExpenseItemsRepository
                 .findAllByIncomeExpenseItemSubcategoryIn(
@@ -37,6 +64,15 @@ public class SpringJpaAcctIncomeOrExpenseItemsRepository implements AcctIncomeOr
                 .stream()
                 .map(item -> (AcctIncomeOrExpenseItem) item)
                 .toList();
+    }
+
+    @Override
+    public AcctIncomeOrExpenseItem save(AcctIncomeOrExpenseItem incomeOrExpenseItem) {
+        return
+            doWithJpaAcctIncomeOrExpenseItemReturning(
+                incomeOrExpenseItem,
+                jpaAcctIncomeOrExpenseItemsRepository::save
+            );
     }
 
     @Override

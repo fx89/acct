@@ -8,12 +8,12 @@
 // DONE: CAT-01001: Items endpoint: Get income or expense item categories
 // DONE: CAT-01002: Items endpoint: Save income or expense item category
 // DONE: CAT-01003: Items endpoint: Delete income or expense item categories
-// TODO: CAT-01004: Items endpoint: Get income or expense item subcategories
-// TODO: CAT-01005: Items endpoint: Save income or expense item subcategory
-// TODO: CAT-01006: Items endpoint: Delete income or expense item subcategories
-// TODO: CAT-01007: Items endpoint: Get income or expense items
-// TODO: CAT-01008: Items endpoint: Save income or expense item
-// TODO: CAT-01009: Items endpoint: Delete income or expense items
+// DONE: CAT-01004: Items endpoint: Get income or expense item subcategories
+// DONE: CAT-01005: Items endpoint: Save income or expense item subcategory
+// DONE: CAT-01006: Items endpoint: Delete income or expense item subcategories
+// DONE: CAT-01007: Items endpoint: Get income or expense items
+// DONE: CAT-01008: Items endpoint: Save income or expense item
+// DONE: CAT-01009: Items endpoint: Delete income or expense items
 
 // TODO: CAT-02001: Banks endpoint: Get banks
 // TODO: CAT-02002: Banks endpoint: Save bank

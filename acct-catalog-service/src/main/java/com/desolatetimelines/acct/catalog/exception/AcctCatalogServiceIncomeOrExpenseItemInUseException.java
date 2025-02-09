@@ -19,4 +19,5 @@ public class AcctCatalogServiceIncomeOrExpenseItemInUseException extends AcctCat
     ) {
         super(errors.INCOME_OR_EXPENSE_ITEM_IN_USE, Map.of("incomeOrExpenseItemUUIDs", join(incomeOrExpenseItemUUIDs, ",")));
     }
+
 }

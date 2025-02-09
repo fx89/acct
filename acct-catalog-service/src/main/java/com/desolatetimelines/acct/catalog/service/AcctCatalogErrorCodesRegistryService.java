@@ -16,6 +16,16 @@ public class AcctCatalogErrorCodesRegistryService extends AbstractErrorCodesRegi
 
     public String INCOME_OR_EXPENSE_ITEM_CATEGORY_NOT_FOUND;
 
+    public String INCOME_OR_EXPENSE_ITEM_CATEGORY_ALREADY_EXISTS;
+
+    public String INCOME_OR_EXPENSE_ITEM_SUBCATEGORY_NOT_FOUND;
+
+    public String INCOME_OR_EXPENSE_ITEM_SUBCATEGORY_ALREADY_EXISTS;
+
+    public String INCOME_OR_EXPENSE_ITEM_ALREADY_EXISTS;
+
+    public String INCOME_OR_EXPENSE_ITEM_NOT_FOUND;
+
     public String INCOME_OR_EXPENSE_ITEM_IN_USE;
 
     protected AcctCatalogErrorCodesRegistryService() {
@@ -59,11 +69,44 @@ public class AcctCatalogErrorCodesRegistryService extends AbstractErrorCodesRegi
             "An operation was requested for an income or expense item category that cannot be found"
         );
 
+        INCOME_OR_EXPENSE_ITEM_CATEGORY_ALREADY_EXISTS = resolveErrorCode(
+            CAT_NAME_CONSTRAINT_VIOLATIONS,
+            "Income or expense item category already exists",
+            "An income or expense item category with the same name as the one that is being created " +
+                "already exists in the catalog"
+        );
+
+        INCOME_OR_EXPENSE_ITEM_SUBCATEGORY_ALREADY_EXISTS = resolveErrorCode(
+            CAT_NAME_CONSTRAINT_VIOLATIONS,
+            "Income or expense item subcategory already exists",
+            "An income or expense item subcategory with the same name as the one that is being created " +
+                "already exists within the referenced income or expense item category"
+        );
+
+        INCOME_OR_EXPENSE_ITEM_SUBCATEGORY_NOT_FOUND = resolveErrorCode(
+            CAT_NAME_NOT_FOUND,
+            "The income or expense item subcategory was not found",
+            "An operation was requested for an income or expense item subcategory that cannot be found"
+        );
+
         INCOME_OR_EXPENSE_ITEM_IN_USE = resolveErrorCode(
             CAT_NAME_BUSINESS_RULES_VALIDATION,
             "The income or expense item is in use",
             "An operation cannot be executed on one or more income or expense items because they are " +
                 "referenced by other entities stored in either the catalog service or the other services"
+        );
+
+        INCOME_OR_EXPENSE_ITEM_NOT_FOUND = resolveErrorCode(
+            CAT_NAME_NOT_FOUND,
+            "The income or expense item was not found",
+            "An operation was requested for an income or expense item that cannot be found"
+        );
+
+        INCOME_OR_EXPENSE_ITEM_ALREADY_EXISTS = resolveErrorCode(
+            CAT_NAME_CONSTRAINT_VIOLATIONS,
+            "Income or expense item already exists",
+            "An income or expense item with the same name as the one that is being created " +
+                "already exists in the referenced income or expense item subcategory"
         );
     }
 

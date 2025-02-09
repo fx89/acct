@@ -4,11 +4,37 @@ import com.desolatetimelines.acct.catalog.model.AcctIncomeOrExpenseItem;
 import com.desolatetimelines.acct.catalog.model.AcctIncomeOrExpenseItemSubcategory;
 
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * Repository for loading and persisting {@link AcctIncomeOrExpenseItem income or expense items}
  */
 public interface AcctIncomeOrExpenseItemsRepository {
+
+    /**
+     * Creates a new instance of {@link AcctIncomeOrExpenseItem income or expense item}
+     *
+     * @return a reference to the created instance
+     */
+    AcctIncomeOrExpenseItem createNew();
+
+    /**
+     * Returns the {@link AcctIncomeOrExpenseItem income or expense item} with the given
+     * income or expense item UUID or an empty optional if such an item does not exist.
+     *
+     * @param incomeOrExpenseItemUUID the given income or expense item UUID
+     */
+    Optional<AcctIncomeOrExpenseItem> findFirstByIncomeOrExpenseItemUUID(String incomeOrExpenseItemUUID);
+
+    /**
+     * Returns a collection of the {@link AcctIncomeOrExpenseItem income or expense items}
+     * identified by the UUIDs in the given collection of income or expense item UUIDs
+     *
+     * @param incomeOrExpenseItemUUIDs the given collection of income or expense item UUIDs
+     */
+    Collection<AcctIncomeOrExpenseItem> findAllByIncomeOrExpenseItemUUIDIn(
+        Collection<String> incomeOrExpenseItemUUIDs
+    );
 
     /**
      * Returns a collection of {@link AcctIncomeOrExpenseItem income or expense items} contained by the
@@ -20,6 +46,14 @@ public interface AcctIncomeOrExpenseItemsRepository {
     Collection<AcctIncomeOrExpenseItem> findAllByIncomeOrExpenseItemSubcategoryIn(
         Collection<AcctIncomeOrExpenseItemSubcategory> incomeOrExpenseItemSubcategories
     );
+
+    /**
+     * Persists the referenced {@link AcctIncomeOrExpenseItem income or expense item}
+     *
+     * @param incomeOrExpenseItem the referenced income or expense item
+     * @return a reference to the persisted entity
+     */
+    AcctIncomeOrExpenseItem save(AcctIncomeOrExpenseItem incomeOrExpenseItem);
 
     /**
      * Deletes the {@link AcctIncomeOrExpenseItem income or expense items} in the given collection

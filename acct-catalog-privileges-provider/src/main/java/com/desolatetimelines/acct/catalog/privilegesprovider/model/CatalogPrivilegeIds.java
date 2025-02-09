@@ -11,4 +11,10 @@ public class CatalogPrivilegeIds {
     public static final String ITEM_CATEGORIES_SAVE = "ITEM_CATEGORIES_SAVE";
     public static final String ITEM_CATEGORIES_READ = "ITEM_CATEGORIES_READ";
     public static final String ITEM_CATEGORIES_DELETE = "ITEM_CATEGORIES_DELETE";
+    public static final String ITEM_SUBCATEGORIES_SAVE = "ITEM_SUBCATEGORIES_SAVE";
+    public static final String ITEM_SUBCATEGORIES_READ = "ITEM_SUBCATEGORIES_READ";
+    public static final String ITEM_SUBCATEGORIES_DELETE = "ITEM_SUBCATEGORIES_DELETE";
+    public static final String ITEMS_SAVE = "ITEMS_SAVE";
+    public static final String ITEMS_READ = "ITEMS_READ";
+    public static final String ITEMS_DELETE = "ITEMS_DELETE";
 }

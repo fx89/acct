@@ -59,6 +59,54 @@ public enum CatalogPrivilege {
                 "in the catalog, together with the contained income and expense item sub-categories and " +
                 "related income or expense items")
             .build()
+    ),
+    ITEM_SUBCATEGORIES_SAVE(
+        AcctPrivilege.builder()
+            .withPrivilegeId(CatalogPrivilegeIds.ITEM_SUBCATEGORIES_SAVE)
+            .withPrivilegeName("Save income or expense item subcategories")
+            .withPrivilegeDescription("Allows registering or updating already-registered income or expense item " +
+                "subcategories in the catalog")
+            .build()
+    ),
+    ITEM_SUBCATEGORIES_READ(
+        AcctPrivilege.builder()
+            .withPrivilegeId(CatalogPrivilegeIds.ITEM_SUBCATEGORIES_READ)
+            .withPrivilegeName("List and view income or expense item subcategories")
+            .withPrivilegeDescription("Allows listing and viewing the properties of income or expense item " +
+                "subcategories in the catalog")
+            .build()
+    ),
+    ITEM_SUBCATEGORIES_DELETE(
+        AcctPrivilege.builder()
+            .withPrivilegeId(CatalogPrivilegeIds.ITEM_SUBCATEGORIES_DELETE)
+            .withPrivilegeName("Delete income or expense item subcategories")
+            .withPrivilegeDescription("Allows deleting of income or expense item subcategories " +
+                "in the catalog, together with the related income or expense items")
+            .build()
+    ),
+    ITEMS_SAVE(
+        AcctPrivilege.builder()
+            .withPrivilegeId(CatalogPrivilegeIds.ITEMS_SAVE)
+            .withPrivilegeName("Save income or expense items")
+            .withPrivilegeDescription("Allows registering or updating already-registered income or expense items " +
+                "in the catalog")
+            .build()
+    ),
+    ITEMS_READ(
+        AcctPrivilege.builder()
+            .withPrivilegeId(CatalogPrivilegeIds.ITEMS_READ)
+            .withPrivilegeName("List and view income or expense items")
+            .withPrivilegeDescription("Allows listing and viewing the properties of income or expense items " +
+                "in the catalog")
+            .build()
+    ),
+    ITEMS_DELETE(
+        AcctPrivilege.builder()
+            .withPrivilegeId(CatalogPrivilegeIds.ITEMS_DELETE)
+            .withPrivilegeName("Delete income or expense items")
+            .withPrivilegeDescription("Allows deleting of income or expense items " +
+                "in the catalog")
+            .build()
     );
 
     private final AcctPrivilege acctPrivilege;

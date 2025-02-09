@@ -22,7 +22,13 @@ public class AcctCatalogServicePrivilegesProvider implements AcctServicePrivileg
             CatalogPrivilege.ICONS_GET_CATEGORIES.getAcctPrivilege(),
             CatalogPrivilege.ITEM_CATEGORIES_SAVE.getAcctPrivilege(),
             CatalogPrivilege.ITEM_CATEGORIES_READ.getAcctPrivilege(),
-            CatalogPrivilege.ITEM_CATEGORIES_DELETE.getAcctPrivilege()
+            CatalogPrivilege.ITEM_CATEGORIES_DELETE.getAcctPrivilege(),
+            CatalogPrivilege.ITEM_SUBCATEGORIES_SAVE.getAcctPrivilege(),
+            CatalogPrivilege.ITEM_SUBCATEGORIES_READ.getAcctPrivilege(),
+            CatalogPrivilege.ITEM_SUBCATEGORIES_DELETE.getAcctPrivilege(),
+            CatalogPrivilege.ITEMS_SAVE.getAcctPrivilege(),
+            CatalogPrivilege.ITEMS_READ.getAcctPrivilege(),
+            CatalogPrivilege.ITEMS_DELETE.getAcctPrivilege()
         );
     }
 

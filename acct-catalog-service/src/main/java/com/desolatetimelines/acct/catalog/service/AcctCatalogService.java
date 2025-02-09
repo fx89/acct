@@ -11,7 +11,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.function.Function;
 
 /**
  * Main class of the services layer of the ACCT catalog
@@ -114,18 +114,17 @@ public class AcctCatalogService {
 
         // Find the icons
         final Collection<AcctIcon> foundIcons = dataService.findIconsByIconUUIDIn(iconUUIDs);
-        final Set<String> foundIconUUIDs = foundIcons.stream().map(AcctIcon::getIconUUID).collect(Collectors.toSet());
 
-        // Check if there are any icons that are not found
-        final List<String> notFoundIconUUIDs =
-            iconUUIDs.stream()
-                .filter(iconUUID -> !foundIconUUIDs.contains(iconUUID))
-                .toList();
-
-        // If any of the icons could not be found, throw an exception
-        if (!notFoundIconUUIDs.isEmpty()) {
-            throw new AcctCatalogServiceIconNotFoundException(errors, notFoundIconUUIDs.get(0));
-        }
+        // If any of the referenced icons is not found, throw an exception
+        throwExceptionIfAnyEntityIsNotFound(
+            foundIcons,
+            AcctIcon::getIconUUID,
+            iconUUIDs,
+            notFoundUUIDs -> new AcctCatalogServiceIconNotFoundException(
+                errors,
+                notFoundUUIDs.stream().findAny().orElseThrow()
+            )
+        );
 
         // Delete the icons
         dataService.deleteIcons(foundIcons);
@@ -188,7 +187,8 @@ public class AcctCatalogService {
      * @param incomeOrExpenseItemCategoryIconUUID    the UUID of the icon to represent the income or expense item category in the UI
      * @return a reference to the persisted {@link AcctIncomeOrExpenseItemCategory income or expense item category}
      */
-    public AcctIncomeOrExpenseItemCategory saveIncomeOrExpenseItem(
+    @Transactional
+    public AcctIncomeOrExpenseItemCategory saveIncomeOrExpenseItemCategory(
         String incomeOrExpenseItemCategoryUUID,
         String incomeOrExpenseItemCategoryName,
         String incomeOrExpenseItemCategoryDescription,
@@ -268,27 +268,16 @@ public class AcctCatalogService {
         final Collection<AcctIncomeOrExpenseItemCategory> foundCategories =
             dataService.findIncomeOrExpenseItemCategoryByIncomeOrExpenseItemCategoryUUIDIn(distinctCategoryUUIDs);
 
-        // Extract the UUIDs of the found categories so they can be used to check if any
-        // of the requested categories is not found
-        final Collection<String> foundCategoryUUIDs =
-            foundCategories.stream()
-                .map(AcctIncomeOrExpenseItemCategory::getIncomeOrExpenseItemCategoryUUID)
-                .toList();
-
-        // Check if any category is not found
-        final Collection<String> notFoundCategoryUUIDs =
-            distinctCategoryUUIDs.stream()
-                .filter(catUUID -> !foundCategoryUUIDs.contains(catUUID))
-                .toList();
-
-        // If any category is not found, throw an exception
-        if (!notFoundCategoryUUIDs.isEmpty()) {
-            throw
-                new AcctCatalogServiceIncomeOrExpenseItemCategoryNotFoundException(
-                    errors,
-                    notFoundCategoryUUIDs.stream().findAny().orElseThrow()
-                );
-        }
+        // If any of the referenced categories is not found, throw an exception
+        throwExceptionIfAnyEntityIsNotFound(
+            foundCategories,
+            AcctIncomeOrExpenseItemCategory::getIncomeOrExpenseItemCategoryUUID,
+            incomeOrExpenseItemCategoryUUIDs,
+            notFoundUUIDs -> new AcctCatalogServiceIncomeOrExpenseItemCategoryNotFoundException(
+                errors,
+                notFoundUUIDs.stream().findAny().orElseThrow()
+            )
+        );
 
         // Find all the sub-categories contained by the categories
         final Collection<AcctIncomeOrExpenseItemSubcategory> connectedSubcategories =
@@ -322,6 +311,327 @@ public class AcctCatalogService {
 
         // Delete the categories
         dataService.deleteIncomeOrExpenseItemCategories(foundCategories);
+    }
+
+    /**
+     * Creates a new {@link AcctIncomeOrExpenseItemSubcategory income or expense item subccategory}
+     * or updates an existing one with the given properties, based on the existence of the given
+     * income or expense item subcategory UUID. If the UUID is given then the subcategory with the
+     * given UUID is looked up and updated. If it does not exist, an exception is thrown. If the UUID
+     * is not given then a new subcategory is created with a generated UUID. An exception is thrown
+     *
+     * @param incomeOrExpenseItemCategoryUUID           the parent category of the subcategory being saved
+     * @param incomeOrExpenseItemSubcategoryUUID        the given income or expense item subcategory UUID
+     * @param incomeOrExpenseItemSubcategoryName        the name to be set to the income or expense item subcategory
+     * @param incomeOrExpenseItemSubcategoryDescription the description to be set to the income or expense item subcategory
+     * @param incomeOrExpenseItemSubcategoryIconUUID    the UUID of the icon to represent the income or expense item subcategory in the UI
+     * @return a reference to the persisted {@link AcctIncomeOrExpenseItemCategory income or expense item category}
+     */
+    @Transactional
+    public AcctIncomeOrExpenseItemSubcategory saveIncomeOrExpenseItemSubcategory(
+        String incomeOrExpenseItemCategoryUUID,
+        String incomeOrExpenseItemSubcategoryUUID,
+        String incomeOrExpenseItemSubcategoryName,
+        String incomeOrExpenseItemSubcategoryDescription,
+        String incomeOrExpenseItemSubcategoryIconUUID
+    ) {
+        // Get a reference to the parent category or throw an exception
+        AcctIncomeOrExpenseItemCategory parentCategory =
+            findIncomeOrExpenseItemCategory(incomeOrExpenseItemCategoryUUID);
+
+        // Get or create the category based on the existence of the UUID
+        final Optional<AcctIncomeOrExpenseItemSubcategory> optionalSubcategory =
+            Optional
+                .ofNullable(incomeOrExpenseItemSubcategoryUUID)
+                .map(dataService::findIncomeOrExpenseItemSubcategoryByIncomeOrExpenseItemSubcategoryUUID)
+                .orElseGet(() -> {
+                    AcctIncomeOrExpenseItemSubcategory newSubcategory = dataService.createNewIncomeOrExpenseItemSubcategory();
+                    newSubcategory.setIncomeOrExpenseItemSubcategoryUUID(UUID.randomUUID().toString());
+                    return Optional.of(newSubcategory);
+                });
+
+        // If the category was not found, throw an exception
+        if (optionalSubcategory.isEmpty()) {
+            throw
+                new AcctCatalogServiceIncomeOrExpenseItemSubcategoryNotFoundException(
+                    errors,
+                    incomeOrExpenseItemSubcategoryUUID
+                );
+        }
+
+        // Get the subcategory
+        final AcctIncomeOrExpenseItemSubcategory subcategory = optionalSubcategory.get();
+
+        // Populate the category attributes
+        subcategory.setIncomeOrExpenseItemCategory(parentCategory);
+        subcategory.setIncomeOrExpenseItemSubcategoryName(incomeOrExpenseItemSubcategoryName);
+        subcategory.setIncomeOrExpenseItemSubcategoryDescription(incomeOrExpenseItemSubcategoryDescription);
+        subcategory.setIncomeOrExpenseItemSubcategoryIconUUID(incomeOrExpenseItemSubcategoryIconUUID);
+
+        // Persist the category and return a reference
+        try {
+            return dataService.saveIncomeOrExpenseItemSubcategory(subcategory);
+        }
+        // Throw a service layer exception if a constraint violation exception occurs
+        catch (DataIntegrityViolationException e) {
+            throw
+                new AcctCatalogServiceIncomeOrExpenseItemSubcategoryConstraintViolationException(
+                    errors,
+                    incomeOrExpenseItemSubcategoryName,
+                    e
+                );
+        }
+    }
+
+    /**
+     * Returns a collection of {@link AcctIncomeOrExpenseItemSubcategory income or expense item subcategories}
+     * that are part of the {@link AcctIncomeOrExpenseItemCategory income or expense item category} referenced
+     * by the given income or expense item subcategory UUID. If there is no category with the given UUID then
+     * an exception is throw.
+     *
+     * @param incomeOrExpenseItemCategoryUUID the given income or expense item category UUID
+     */
+    public Collection<AcctIncomeOrExpenseItemSubcategory> getIncomeOrExpenseItemSubcategories(
+        String incomeOrExpenseItemCategoryUUID
+    ) {
+        // Find the income or expense item category or throw an exception
+        final AcctIncomeOrExpenseItemCategory parentCategory =
+            findIncomeOrExpenseItemCategory(incomeOrExpenseItemCategoryUUID);
+
+        // Get and return a collection of all the subcategories in the category
+        return
+            dataService.findIncomeOrExpenseItemSubcategoriesByIncomeOrExpenseItemCategoryIn(
+                List.of(parentCategory)
+            );
+    }
+
+    /**
+     * Deletes the {@link AcctIncomeOrExpenseItemSubcategory income or expense item subcategories}
+     * represented by the UUIDs in the given collection of income or expense item subcategory UUIDs.<br />
+     * <br />
+     * If any of the referenced subcategories does not exist in the catalog, an exception is thrown.<br />
+     * <br />
+     * If any of the referenced entities is in use, an exception is thrown.
+     *
+     * @param incomeOrExpenseItemSubcategoryUUIDs the given collection of income or expense item subcategory UUIDs
+     */
+    public void deleteIncomeOrExpenseItemSubcategories(Collection<String> incomeOrExpenseItemSubcategoryUUIDs) {
+        // Make sure the UUIDs are distinct
+        final Set<String> distinctSubcategoryUUIDs = new HashSet<>(incomeOrExpenseItemSubcategoryUUIDs);
+
+        // Find the subcategories
+        final Collection<AcctIncomeOrExpenseItemSubcategory> foundSubcategories =
+            dataService.findIncomeOrExpenseItemSubcategoryByIncomeOrExpenseItemSubcategoryUUIDIn(
+                distinctSubcategoryUUIDs
+            );
+
+        // If any of the referenced categories is not found, throw an exception
+        throwExceptionIfAnyEntityIsNotFound(
+            foundSubcategories,
+            AcctIncomeOrExpenseItemSubcategory::getIncomeOrExpenseItemSubcategoryUUID,
+            incomeOrExpenseItemSubcategoryUUIDs,
+            notFoundUUIDs -> new AcctCatalogServiceIncomeOrExpenseItemSubcategoryNotFoundException(
+                errors,
+                notFoundUUIDs.stream().findAny().orElseThrow()
+            )
+        );
+
+        // Find all the items contained by the referenced sub-categories
+        final Collection<AcctIncomeOrExpenseItem> connectedItems =
+            dataService.findIncomeOrExpenseItemsByIncomeOrExpenseItemSubcategoryIn(foundSubcategories);
+
+        // Throw an exception if any of the connected items is in use
+        verifyIncomeOrExpenseItemsUsage(connectedItems);
+
+        // Delete the items
+        dataService.deleteIncomeOrExpenseItems(connectedItems);
+
+        // Delete the sub-categories
+        dataService.deleteIncomeOrExpenseItemSubcategories(foundSubcategories);
+    }
+
+    /**
+     * Persists the {@link AcctIncomeOrExpenseItem income or expense item} with the given income or expense item UUID
+     * within the {@link AcctIncomeOrExpenseItemSubcategory income or expense item subcategory} with the given income
+     * or expense item subcategory UUID. If no income or expense item UUID is given then a new income or expense item
+     * is created. <br />
+     * <br />
+     * Throws an exception if there is no {@link AcctIncomeOrExpenseItemSubcategory income or expense item subcategory}
+     * with the given income or expense item subcategory UUID.<br />
+     * <br />
+     * Throws an exception if the income or expense item UUID is given and there is no
+     * {@link AcctIncomeOrExpenseItem income or expense item} with that UUID in the catalog.<br />
+     * <br />
+     * Throws exceptions if any constraint violation exceptions occur
+     *
+     * @param incomeOrExpenseItemSubcategoryUUID the given income or expense item subcategory UUID
+     * @param incomeOrExpenseItemUUID            the given income or expense item UUID
+     * @param incomeOrExpenseItemName            the name to set to the persisted income or expense item
+     * @param incomeOrExpenseItemDescription     the description to set to the persisted income or expense item
+     * @param incomeOrExpenseItemIconUUID        the icon UUID to set to the persisted income or expense item
+     * @return a reference to the persisted entity
+     */
+    public AcctIncomeOrExpenseItem saveIncomeOrExpenseItem(
+        String incomeOrExpenseItemSubcategoryUUID,
+        String incomeOrExpenseItemUUID,
+        String incomeOrExpenseItemName,
+        String incomeOrExpenseItemDescription,
+        String incomeOrExpenseItemIconUUID
+    ) {
+        // Get a reference to the parent subcategory or throw an exception
+        AcctIncomeOrExpenseItemSubcategory parentSubcategory =
+            findIncomeOrExpenseItemSubcategory(incomeOrExpenseItemSubcategoryUUID);
+
+        // Get or create the income or expense item based on the existence of the UUID
+        final Optional<AcctIncomeOrExpenseItem> optionalItem =
+            Optional
+                .ofNullable(incomeOrExpenseItemUUID)
+                .map(dataService::findIncomeOrExpenseItemByIncomeOrExpenseItemUUID)
+                .orElseGet(() -> {
+                    AcctIncomeOrExpenseItem newItem = dataService.createNewIncomeOrExpenseItem();
+                    newItem.setIncomeOrExpenseItemUUID(UUID.randomUUID().toString());
+                    return Optional.of(newItem);
+                });
+
+        // If the item was not found, throw an exception
+        final AcctIncomeOrExpenseItem item =
+            optionalItem.orElseThrow(
+                () -> new AcctCatalogServiceIncomeOrExpenseItemNotFoundException(errors, incomeOrExpenseItemUUID)
+            );
+
+        // Set the parent subcategory if the item
+        item.setIncomeOrExpenseItemSubcategory(parentSubcategory);
+
+        // Set the properties of the acquired item
+        item.setIncomeOrExpenseItemName(incomeOrExpenseItemName);
+        item.setIncomeOrExpenseItemDescription(incomeOrExpenseItemDescription);
+        item.setIncomeOrExpenseItemIconUUID(incomeOrExpenseItemIconUUID);
+
+        // Persist the category and return a reference
+        try {
+            return dataService.saveIncomeOrExpenseItem(item);
+        }
+        // Throw a service layer exception if a constraint violation exception occurs
+        catch (DataIntegrityViolationException e) {
+            throw
+                new AcctCatalogServiceIncomeOrExpenseItemConstraintViolationException(
+                    errors,
+                    incomeOrExpenseItemName,
+                    e
+                );
+        }
+    }
+
+    /**
+     * Returns a collection of all the {@link AcctIncomeOrExpenseItem income or expense items}
+     * within the {@link AcctIncomeOrExpenseItemSubcategory income or expense item subcategory}
+     * referenced by the given income or expense item subcategory UUID
+     *
+     * @param incomeOrExpenseItemSubcategoryUUID the given income or expense item subcategory UUID
+     */
+    public Collection<AcctIncomeOrExpenseItem> getIncomeOrExpenseItems(String incomeOrExpenseItemSubcategoryUUID) {
+        // Get a reference to the parent subcategory or throw an exception
+        AcctIncomeOrExpenseItemSubcategory parentSubcategory =
+            findIncomeOrExpenseItemSubcategory(incomeOrExpenseItemSubcategoryUUID);
+
+        // Return all the items in the subcategory
+        return dataService.findIncomeOrExpenseItemsByIncomeOrExpenseItemSubcategoryIn(List.of(parentSubcategory));
+    }
+
+    /**
+     * Deletes the {@link AcctIncomeOrExpenseItem income or expense items} identified by the UUIDs
+     * in the given collection of income or expense item UUIDs. Throws an exception if any of the
+     * referenced items does not exist or is in use.
+     *
+     * @param incomeOrExpenseItemUUIDs the given collection of income or expense item UUIDs
+     */
+    public void deleteIncomeOrExpenseItems(Collection<String> incomeOrExpenseItemUUIDs) {
+        // Find the items
+        final Collection<AcctIncomeOrExpenseItem> items =
+            dataService.findIncomeOrExpenseItemsByIncomeOrExpenseItemUUIDIn(incomeOrExpenseItemUUIDs);
+
+        // If any of the referenced items is not found, throw an exception
+        throwExceptionIfAnyEntityIsNotFound(
+            items,
+            AcctIncomeOrExpenseItem::getIncomeOrExpenseItemUUID,
+            incomeOrExpenseItemUUIDs,
+            notFoundUUIDs -> new AcctCatalogServiceIncomeOrExpenseItemNotFoundException(
+                errors,
+                notFoundUUIDs.stream().findAny().orElseThrow()
+            )
+        );
+
+        // Throw an exception if any of the items is in use
+        verifyIncomeOrExpenseItemsUsage(items);
+
+        // If all is well then delete the items
+        dataService.deleteIncomeOrExpenseItems(items);
+    }
+
+    private <T> void throwExceptionIfAnyEntityIsNotFound(
+        Collection<T> foundEntities,
+        Function<T, String> entityUUIDExtractorFunction,
+        Collection<String> requestedUUIDs,
+        Function<Collection<String>, RuntimeException> exceptionMapperFunction
+    ) {
+        // Compute the list of found entity UUIDs
+        final Collection<String> foundEntityUUIDs =
+            foundEntities.stream().map(entityUUIDExtractorFunction).distinct().toList();
+
+        // Check if any entity is not found
+        final Collection<String> notFoundEntityUUIDs =
+            requestedUUIDs.stream()
+                .filter(requestedUUID -> !foundEntityUUIDs.contains(requestedUUID))
+                .toList();
+
+        // If any entity is not found, throw an exception
+        if (!notFoundEntityUUIDs.isEmpty()) {
+            throw exceptionMapperFunction.apply(notFoundEntityUUIDs);
+        }
+    }
+
+    private void verifyIncomeOrExpenseItemsUsage(Collection<AcctIncomeOrExpenseItem> incomeOrExpenseItems) {
+        // Get the UUIDs of any items that might be in use
+        final Collection<String> inUseIncomeOrExpenseItemUUIDs =
+            inUseEndpointClient.getItemsInUseOfType(
+                ObjectTypes.INCOME_OR_EXPENSE_ITEM.name(),
+                incomeOrExpenseItems.stream().map(AcctIncomeOrExpenseItem::getIncomeOrExpenseItemUUID).toList()
+            );
+
+        // If any item is in use, throw an exception
+        if (!inUseIncomeOrExpenseItemUUIDs.isEmpty()) {
+            throw
+                new AcctCatalogServiceIncomeOrExpenseItemInUseException(
+                    errors,
+                    inUseIncomeOrExpenseItemUUIDs
+                );
+        }
+    }
+
+    private AcctIncomeOrExpenseItemSubcategory findIncomeOrExpenseItemSubcategory(
+        String incomeOrExpenseItemSubcategoryUUID
+    ) {
+        return
+            dataService.findIncomeOrExpenseItemSubcategoryByIncomeOrExpenseItemSubcategoryUUID(
+                incomeOrExpenseItemSubcategoryUUID
+            ).orElseThrow(() ->
+                new AcctCatalogServiceIncomeOrExpenseItemSubcategoryNotFoundException(
+                    errors,
+                    incomeOrExpenseItemSubcategoryUUID
+                )
+            );
+    }
+
+    private AcctIncomeOrExpenseItemCategory findIncomeOrExpenseItemCategory(String incomeOrExpenseItemCategoryUUID) {
+        return
+            dataService.findIncomeOrExpenseItemCategoryByIncomeOrExpenseItemCategoryUUID(
+                incomeOrExpenseItemCategoryUUID
+            ).orElseThrow(() ->
+                new AcctCatalogServiceIncomeOrExpenseItemCategoryNotFoundException(
+                    errors,
+                    incomeOrExpenseItemCategoryUUID
+                )
+            );
     }
 
     private void verifyIconNamePattern(String iconNamePattern) {
