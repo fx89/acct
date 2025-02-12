@@ -28,7 +28,10 @@ public class AcctCatalogServicePrivilegesProvider implements AcctServicePrivileg
             CatalogPrivilege.ITEM_SUBCATEGORIES_DELETE.getAcctPrivilege(),
             CatalogPrivilege.ITEMS_SAVE.getAcctPrivilege(),
             CatalogPrivilege.ITEMS_READ.getAcctPrivilege(),
-            CatalogPrivilege.ITEMS_DELETE.getAcctPrivilege()
+            CatalogPrivilege.ITEMS_DELETE.getAcctPrivilege(),
+            CatalogPrivilege.BANKS_SAVE.getAcctPrivilege(),
+            CatalogPrivilege.BANKS_READ.getAcctPrivilege(),
+            CatalogPrivilege.BANKS_DELETE.getAcctPrivilege()
         );
     }
 

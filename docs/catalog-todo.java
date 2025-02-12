@@ -15,9 +15,9 @@
 // DONE: CAT-01008: Items endpoint: Save income or expense item
 // DONE: CAT-01009: Items endpoint: Delete income or expense items
 
-// TODO: CAT-02001: Banks endpoint: Get banks
-// TODO: CAT-02002: Banks endpoint: Save bank
-// TODO: CAT-02003: Banks endpoint: Delete bank
+// DONE: CAT-02001: Banks endpoint: Get banks
+// DONE: CAT-02002: Banks endpoint: Save bank
+// DONE: CAT-02003: Banks endpoint: Delete bank
 
 // TODO: CAT-03001: Currencies endpoint: Get currencies
 // TODO: CAT-03002: Currencies endpoint: Save currency

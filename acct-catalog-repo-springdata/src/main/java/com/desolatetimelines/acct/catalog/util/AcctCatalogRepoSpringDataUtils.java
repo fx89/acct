@@ -80,5 +80,19 @@ public abstract class AcctCatalogRepoSpringDataUtils {
         );
     }
 
+    public static JpaAcctBank doWithJpaAcctBankReturning(
+        AcctBank acctBank,
+        Function<JpaAcctBank, JpaAcctBank> todo
+    ) {
+        if (acctBank instanceof JpaAcctBank jpaAcctBank) {
+            return todo.apply(jpaAcctBank);
+        }
+
+        throw new IllegalArgumentException(
+            "The referenced " + AcctBank.class.getName() +
+                " is not of type " + JpaAcctBank.class.getCanonicalName()
+        );
+    }
+
 }
 

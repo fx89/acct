@@ -24,7 +24,7 @@ curl \
 curl \
     --insecure \
     -v \
-    --cookie 'JSESSIONID=50628D4C8AF57B035B38A427BD0BDD2D' \
+    --cookie 'JSESSIONID=853BD2752A404D30F5D37D29FC17491A' \
     -X GET 'http://localhost:9001/service/authorization/v1/oauth2/authorize?response_type=code&client_id=frontend-client'
 
 export ACCT_USER_ACCESS_TOKEN=$(\
@@ -33,7 +33,7 @@ curl \
     -v \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'grant_type=authorization_code' \
-    -d 'code=IWn_v1Wz25eG5JN_cjW7y2nn-qV9E1LymbkajuDj8v7x3zNY2HG58w4zkDxJSgQ8FDnjd9mRRWq70H-YGOFqGhCZhYo5ijGlChst2EvExn_N3jqvr3_AAjXWNT4rVKxA' \
+    -d 'code=vk4ex-jHG0GjsZbXXWMnd0wc3Ntmls7j3_LkAQ08HtclSY92wfpdu0KPdL0slJ7DPxAK8zgCgtROuvu0NcdFwNhR1tPf2O5eBmIVwSr-OJl4uoHvXAhbcTggQZVK-TRv' \
     -d 'client_id=frontend-client' \
     -d 'client_secret=lkjdwsf23odnwqkld23odfbqweorh23oihd' \
     -X POST 'http://localhost:9001/service/authorization/v1/oauth2/token' \
@@ -373,4 +373,77 @@ curl \
     -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
     -H "Content-Type: application/json; charset=utf-8" \
     -X DELETE 'http://localhost:8086/service/catalog/v1/items?incomeOrExpenseItemUUIDs=96924db8-1ea1-441e-b2fe-f09ac31b402c' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT 'http://localhost:8086/service/catalog/v1/banks?bankUUID=1' \
+    --data-raw '
+        {
+            "bankCode": "BNR",
+            "bankName": "Banca Nationala Romana",
+            "internetBankingURL": "www.bnr.ro",
+            "bankIconUUID": "0669a55a-8d3a-49b4-a04c-7948dd22e091"
+        }
+        ' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT 'http://localhost:8086/service/catalog/v1/banks' \
+    --data-raw '
+        {
+            "bankCode": "BNR",
+            "bankName": "Banca Nationala Romana",
+            "internetBankingURL": "www.bnr.ro",
+            "bankIconUUID": "0669a55a-8d3a-49b4-a04c-7948dd22e091"
+        }
+        ' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT 'http://localhost:8086/service/catalog/v1/banks?bankUUID=d2f64241-171d-4616-8665-cdeadda16c55' \
+    --data-raw '
+        {
+            "bankCode": "BNR",
+            "bankName": "Banca Nationala Romana Actualizata",
+            "internetBankingURL": "www.bnr.ro",
+            "bankIconUUID": "0669a55a-8d3a-49b4-a04c-7948dd22e091"
+        }
+        ' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X GET 'http://localhost:8086/service/catalog/v1/banks' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X DELETE 'http://localhost:8086/service/catalog/v1/banks?bankUUIDs=10' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X DELETE 'http://localhost:8086/service/catalog/v1/banks?bankUUIDs=d2f64241-171d-4616-8665-cdeadda16c56,10' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X DELETE 'http://localhost:8086/service/catalog/v1/banks?bankUUIDs=d2f64241-171d-4616-8665-cdeadda16c56' \
     | jq

@@ -17,4 +17,7 @@ public class CatalogPrivilegeIds {
     public static final String ITEMS_SAVE = "ITEMS_SAVE";
     public static final String ITEMS_READ = "ITEMS_READ";
     public static final String ITEMS_DELETE = "ITEMS_DELETE";
+    public static final String BANKS_SAVE = "BANKS_SAVE";
+    public static final String BANKS_READ = "BANKS_READ";
+    public static final String BANKS_DELETE = "BANKS_DELETE";
 }

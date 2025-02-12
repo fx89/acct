@@ -1,0 +1,1 @@
+create unique index bank_ukey_bank_code on "bank"(bank_code);

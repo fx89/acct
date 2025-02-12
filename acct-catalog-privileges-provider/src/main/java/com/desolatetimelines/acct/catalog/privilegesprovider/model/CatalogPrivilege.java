@@ -107,6 +107,27 @@ public enum CatalogPrivilege {
             .withPrivilegeDescription("Allows deleting of income or expense items " +
                 "in the catalog")
             .build()
+    ),
+    BANKS_SAVE(
+        AcctPrivilege.builder()
+            .withPrivilegeId(CatalogPrivilegeIds.BANKS_SAVE)
+            .withPrivilegeName("Save banks")
+            .withPrivilegeDescription("Allows registering or updating already-registered banks in the catalog")
+            .build()
+    ),
+    BANKS_READ(
+        AcctPrivilege.builder()
+            .withPrivilegeId(CatalogPrivilegeIds.BANKS_READ)
+            .withPrivilegeName("List and view banks")
+            .withPrivilegeDescription("Allows listing and viewing the properties of banks in the catalog")
+            .build()
+    ),
+    BANKS_DELETE(
+        AcctPrivilege.builder()
+            .withPrivilegeId(CatalogPrivilegeIds.BANKS_DELETE)
+            .withPrivilegeName("Delete banks")
+            .withPrivilegeDescription("Allows deleting banks from the catalog")
+            .build()
     );
 
     private final AcctPrivilege acctPrivilege;

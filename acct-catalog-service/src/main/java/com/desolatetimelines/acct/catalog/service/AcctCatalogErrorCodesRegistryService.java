@@ -28,6 +28,12 @@ public class AcctCatalogErrorCodesRegistryService extends AbstractErrorCodesRegi
 
     public String INCOME_OR_EXPENSE_ITEM_IN_USE;
 
+    public String BANK_NOT_FOUND;
+
+    public String BANK_ALREADY_EXISTS;
+
+    public String BANK_IN_USE;
+
     protected AcctCatalogErrorCodesRegistryService() {
         super(Integer.parseInt(System.getenv("CATALOG_SERVICE_NUMBER")));
     }
@@ -107,6 +113,25 @@ public class AcctCatalogErrorCodesRegistryService extends AbstractErrorCodesRegi
             "Income or expense item already exists",
             "An income or expense item with the same name as the one that is being created " +
                 "already exists in the referenced income or expense item subcategory"
+        );
+
+        BANK_NOT_FOUND = resolveErrorCode(
+            CAT_NAME_NOT_FOUND,
+            "The bank was not found",
+            "An operation was requested for a bank that cannot be found"
+        );
+
+        BANK_ALREADY_EXISTS = resolveErrorCode(
+            CAT_NAME_CONSTRAINT_VIOLATIONS,
+            "Bank already exists",
+            "A bank with the same name as the one that is being created " +
+                "already exists in the catalog"
+        );
+
+        BANK_IN_USE = resolveErrorCode(
+            CAT_NAME_BUSINESS_RULES_VALIDATION,
+            "One or more banks are in use",
+            "An operation was requested for one or more banks which are in use by various services"
         );
     }
 

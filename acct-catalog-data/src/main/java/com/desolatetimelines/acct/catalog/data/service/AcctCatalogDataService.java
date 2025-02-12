@@ -26,18 +26,22 @@ public class AcctCatalogDataService {
 
     private final AcctIncomeOrExpenseItemsRepository incomeOrExpenseItemsRepository;
 
+    private final AcctBanksRepository banksRepository;
+
     public AcctCatalogDataService(
         AcctIconCategoriesRepository iconCategoriesRepository,
         AcctIconsRepository iconsRepository,
         AcctIncomeOrExpenseItemCategoriesRepository incomeOrExpenseItemCategoriesRepository,
         AcctIncomeOrExpenseItemSubcategoriesRepository incomeOrExpenseItemSubcategoriesRepository,
-        AcctIncomeOrExpenseItemsRepository incomeOrExpenseItemsRepository
+        AcctIncomeOrExpenseItemsRepository incomeOrExpenseItemsRepository,
+        AcctBanksRepository banksRepository
     ) {
         this.iconCategoriesRepository = iconCategoriesRepository;
         this.iconsRepository = iconsRepository;
         this.incomeOrExpenseItemCategoriesRepository = incomeOrExpenseItemCategoriesRepository;
         this.incomeOrExpenseItemSubcategoriesRepository = incomeOrExpenseItemSubcategoriesRepository;
         this.incomeOrExpenseItemsRepository = incomeOrExpenseItemsRepository;
+        this.banksRepository = banksRepository;
     }
 
     /**
@@ -382,6 +386,62 @@ public class AcctCatalogDataService {
      */
     public void deleteIncomeOrExpenseItems(Collection<AcctIncomeOrExpenseItem> incomeOrExpenseItems) {
         incomeOrExpenseItemsRepository.deleteAll(incomeOrExpenseItems);
+    }
+
+    /**
+     * Creates a new instance of {@link AcctBank}
+     *
+     * @return a reference to the newly created instance
+     */
+    public AcctBank createNewBank() {
+        return banksRepository.createNew();
+    }
+
+    /**
+     * Persists the referenced bank
+     *
+     * @param bank the referenced bank
+     * @return a reference to the persisted entity
+     */
+    public AcctBank saveBank(AcctBank bank) {
+        return banksRepository.save(bank);
+    }
+
+    /**
+     * Returns a collection of all the {@link AcctBank banks} registered in the catalog
+     */
+    public Collection<AcctBank> findAllBanks() {
+        return banksRepository.findAll();
+    }
+
+
+    /**
+     * Retrieves the {@link AcctBank bank} with the given bank UUID or an empty optional
+     * if such an entity does not exist.
+     *
+     * @param bankUUID the given bank UUID
+     */
+    public Optional<AcctBank> findBankByBankUUID(String bankUUID) {
+        return banksRepository.findFirstByBankUUID(bankUUID);
+    }
+
+    /**
+     * Returns a collection of {@link AcctBank banks} identified by the UUIDs in the
+     * given collection of bank UUIDs
+     *
+     * @param bankUUIDs the given collection of bank UUIDs
+     */
+    public Collection<AcctBank> findBanksByBankUUIDIn(Collection<String> bankUUIDs) {
+        return banksRepository.findAllByBankUUIDIn(bankUUIDs);
+    }
+
+    /**
+     * Deletes the {@link AcctBank banks} in the referenced collection of banks
+     *
+     * @param banks the referenced collection of banks
+     */
+    public void deleteBanks(Collection<AcctBank> banks) {
+        banksRepository.deleteAll(banks);
     }
 
 }

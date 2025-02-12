@@ -568,6 +568,110 @@ public class AcctCatalogService {
         dataService.deleteIncomeOrExpenseItems(items);
     }
 
+    /**
+     * Persists the bank with the given bank UUID and the given properties. If a bank UUID is not given,
+     * a new entity is created. If the bank UUID is given and the referenced bank does not exist, an
+     * exception is thrown. If a constraint violation occurs, an exception is thrown.
+     *
+     * @param bankUUID           the given bank UUID
+     * @param bankCode           The unique code given to the bank in the ACCT ecosystem (i.e. ING, BNR, BT, BCR, etc.)
+     * @param bankName           The unique human-readable name of the bank
+     * @param internetBankingURL The optional internet banking URL for the bank
+     * @param bankIconUUID       The UUID of the optional icon that represents the bank on the ACCT GUI
+     * @return a reference to the persisted entity
+     */
+    public AcctBank saveBank(
+        String bankUUID,
+        String bankCode,
+        String bankName,
+        String internetBankingURL,
+        String bankIconUUID
+    ) {
+        // Get or create the bank based on the existence of the UUID
+        final Optional<AcctBank> optionalBank =
+            Optional
+                .ofNullable(bankUUID)
+                .map(dataService::findBankByBankUUID)
+                .orElseGet(() -> {
+                    AcctBank newBank = dataService.createNewBank();
+                    newBank.setBankUUID(UUID.randomUUID().toString());
+                    return Optional.of(newBank);
+                });
+
+        // If the bank does not exist, throw an exception
+        final AcctBank bank =
+            optionalBank.orElseThrow(
+                () -> new AcctCatalogServiceBankNotFoundException(errors, bankUUID)
+            );
+
+        // Set the bank properties
+        bank.setBankCode(bankCode);
+        bank.setBankName(bankName);
+        bank.setInternetBankingURL(internetBankingURL);
+        bank.setBankIconUUID(bankIconUUID);
+
+        // Persist the bank and return a reference
+        try {
+            return dataService.saveBank(bank);
+        }
+        // Throw a service layer exception if a constraint violation exception occurs
+        catch (DataIntegrityViolationException e) {
+            throw
+                new AcctCatalogServiceBankConstraintViolationException(
+                    errors,
+                    bankCode,
+                    e
+                );
+        }
+    }
+
+    /**
+     * Returns a collection of all the {@link AcctBank banks} registered in the catalog
+     */
+    public Collection<AcctBank> getBanks() {
+        return dataService.findAllBanks();
+    }
+
+    /**
+     * Deletes the {@link AcctBank banks} referenced by the UUIDs in the given collection
+     * of bank UUIDs. If any of the referenced banks cannot be found, an exception is thrown.
+     * If any of the banks is in use, an exception is thrown.
+     *
+     * @param bankUUIDs the given collection of bank UUIDs.
+     */
+    public void deleteBanks(Collection<String> bankUUIDs) {
+        // Find the banks
+        final Collection<AcctBank> banks =
+            dataService.findBanksByBankUUIDIn(bankUUIDs);
+
+        // If any of the referenced items is not found, throw an exception
+        throwExceptionIfAnyEntityIsNotFound(
+            banks,
+            AcctBank::getBankUUID,
+            bankUUIDs,
+            notFoundUUIDs -> new AcctCatalogServiceBankNotFoundException(
+                errors,
+                notFoundUUIDs.stream().findAny().orElseThrow()
+            )
+        );
+
+        // Get the UUIDs of any items that might be in use
+        final Collection<String> inUseBankUUIDs =
+            inUseEndpointClient.getItemsInUseOfType(ObjectTypes.BANK.name(), bankUUIDs);
+
+        // If any item is in use, throw an exception
+        if (!inUseBankUUIDs.isEmpty()) {
+            throw
+                new AcctCatalogServiceBankInUseException(
+                    errors,
+                    inUseBankUUIDs
+                );
+        }
+
+        // If all is well then delete the items
+        dataService.deleteBanks(banks);
+    }
+
     private <T> void throwExceptionIfAnyEntityIsNotFound(
         Collection<T> foundEntities,
         Function<T, String> entityUUIDExtractorFunction,

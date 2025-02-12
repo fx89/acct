@@ -476,11 +476,12 @@ Response body example:
 
 <br /><br />
 #### `CAT-02003` Delete bank
-Deletes the bank with the given `bankUUID`. 
-The operation fails if the bank is in use by a monitored currency or by the workspace service.
+Deletes the banks referenced by the UUIDs in the given `bankUUIDs` collection. 
+The operation fails if any of the referenced banks are in use by a monitored currency or by the workspace service.
+The operation also fails if any of the referenced banks cannot be found.
 
 Example request URL:
-- `DELETE http://acct.desolatetimelines.com/service/catalog/v1/banks?bankUUID=a3bb33c5-c176-4402-a563-5c2ce9b0ec4b`
+- `DELETE http://acct.desolatetimelines.com/service/catalog/v1/banks?bankUUIDs=a3bb33c5-c176-4402-a563-5c2ce9b0ec4b`
 
 
 
