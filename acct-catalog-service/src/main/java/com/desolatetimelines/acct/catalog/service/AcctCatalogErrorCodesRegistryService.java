@@ -34,6 +34,12 @@ public class AcctCatalogErrorCodesRegistryService extends AbstractErrorCodesRegi
 
     public String BANK_IN_USE;
 
+    public String CURRENCY_NOT_FOUND;
+
+    public String CURRENCY_ALREADY_EXISTS;
+
+    public String CURRENCY_IN_USE;
+
     protected AcctCatalogErrorCodesRegistryService() {
         super(Integer.parseInt(System.getenv("CATALOG_SERVICE_NUMBER")));
     }
@@ -132,6 +138,25 @@ public class AcctCatalogErrorCodesRegistryService extends AbstractErrorCodesRegi
             CAT_NAME_BUSINESS_RULES_VALIDATION,
             "One or more banks are in use",
             "An operation was requested for one or more banks which are in use by various services"
+        );
+
+        CURRENCY_NOT_FOUND = resolveErrorCode(
+            CAT_NAME_NOT_FOUND,
+            "The currency was not found",
+            "An operation was requested for a currency that cannot be found"
+        );
+
+        CURRENCY_ALREADY_EXISTS = resolveErrorCode(
+            CAT_NAME_NOT_FOUND,
+            "The currency already exists",
+            "A currency with the same name as the one that is being created " +
+                "already exists in the catalog"
+        );
+
+        CURRENCY_IN_USE = resolveErrorCode(
+            CAT_NAME_BUSINESS_RULES_VALIDATION,
+            "One or more currencies are in use",
+            "An operation was requested for one or more currencies which are in use by various services"
         );
     }
 

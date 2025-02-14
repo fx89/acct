@@ -94,5 +94,20 @@ public abstract class AcctCatalogRepoSpringDataUtils {
         );
     }
 
+    public static JpaAcctCurrency doWithJpaAcctCurrencyReturning(
+        AcctCurrency acctCurrency,
+        Function<JpaAcctCurrency, JpaAcctCurrency> todo
+    ) {
+        if (acctCurrency instanceof JpaAcctCurrency jpaAcctCurrency) {
+            return todo.apply(jpaAcctCurrency);
+        }
+
+        throw new IllegalArgumentException(
+            "The referenced " + AcctCurrency.class.getName() +
+                " is not of type " + JpaAcctCurrency.class.getCanonicalName()
+        );
+    }
+
+
 }
 

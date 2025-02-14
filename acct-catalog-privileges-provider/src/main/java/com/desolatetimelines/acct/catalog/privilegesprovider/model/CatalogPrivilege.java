@@ -128,6 +128,27 @@ public enum CatalogPrivilege {
             .withPrivilegeName("Delete banks")
             .withPrivilegeDescription("Allows deleting banks from the catalog")
             .build()
+    ),
+    CURRENCIES_SAVE(
+        AcctPrivilege.builder()
+            .withPrivilegeId(CatalogPrivilegeIds.CURRENCIES_SAVE)
+            .withPrivilegeName("Save currencies")
+            .withPrivilegeDescription("Allows registering or updating already-registered currencies in the catalog")
+            .build()
+    ),
+    CURRENCIES_READ(
+        AcctPrivilege.builder()
+            .withPrivilegeId(CatalogPrivilegeIds.CURRENCIES_READ)
+            .withPrivilegeName("List and view currencies")
+            .withPrivilegeDescription("Allows listing and viewing the properties of currencies in the catalog")
+            .build()
+    ),
+    CURRENCIES_DELETE(
+        AcctPrivilege.builder()
+            .withPrivilegeId(CatalogPrivilegeIds.CURRENCIES_DELETE)
+            .withPrivilegeName("Delete currencies")
+            .withPrivilegeDescription("Allows deleting currencies from the catalog")
+            .build()
     );
 
     private final AcctPrivilege acctPrivilege;

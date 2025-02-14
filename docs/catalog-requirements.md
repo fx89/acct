@@ -533,7 +533,6 @@ Example request URLs:
 Request body example:
 ```
 {
-    "currencyUUID": "198bbd0e-2490-40ec-adcb-173654052d51",
     "currencyCode": "USD",
     "currencyName": "US Dollar",
     "currencyIconUUID": "4c1577df-7f9a-4f4c-bfe5-24b7c1919045"
@@ -554,21 +553,14 @@ Response body example:
 Deletes the currencies having the `currencyUUID` in the given list.
 
 Example request URL:
-- `DELETE http://acct.desolatetimelines.com/service/catalog/v1/currencies`
+- `DELETE http://acct.desolatetimelines.com/service/catalog/v1/currencies?currencyUUIDs=238592b3-0bfb-4700-9d1b-fcbb9728008a,b450a9dc-817c-4dc1-8d19-bf8b6a4f2afb,198bbd0e-2490-40ec-adcb-173654052d51`
 
-Request body example:
-```
-{
-    "currencyUUIDs": [
-        "238592b3-0bfb-4700-9d1b-fcbb9728008a",
-        "b450a9dc-817c-4dc1-8d19-bf8b6a4f2afb",
-        "198bbd0e-2490-40ec-adcb-173654052d51"
-    ]
-}
-```
+The operation fails if any of the referenced currencies cannot be found in the catalog.
+
 The operation fails if any of the referenced currencies is in use by any service (i.e. workspace service, currency service).
 
-http://acct.desolatetimelines.com/service/catalog/v1
+
+
 
 <br /><br />
 ### Used items endpoint

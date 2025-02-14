@@ -19,9 +19,9 @@
 // DONE: CAT-02002: Banks endpoint: Save bank
 // DONE: CAT-02003: Banks endpoint: Delete bank
 
-// TODO: CAT-03001: Currencies endpoint: Get currencies
-// TODO: CAT-03002: Currencies endpoint: Save currency
-// TODO: CAT-03003: Currencies endpoint: Delete currencies
+// DONE: CAT-03001: Currencies endpoint: Get currencies
+// DONE: CAT-03002: Currencies endpoint: Save currency
+// DONE: CAT-03003: Currencies endpoint: Delete currencies
 
 // TODO: CAT-04001: Used items endpoint: Get items in use of type
 

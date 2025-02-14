@@ -20,4 +20,7 @@ public class CatalogPrivilegeIds {
     public static final String BANKS_SAVE = "BANKS_SAVE";
     public static final String BANKS_READ = "BANKS_READ";
     public static final String BANKS_DELETE = "BANKS_DELETE";
+    public static final String CURRENCIES_SAVE = "CURRENCIES_SAVE";
+    public static final String CURRENCIES_READ = "CURRENCIES_READ";
+    public static final String CURRENCIES_DELETE = "CURRENCIES_DELETE";
 }

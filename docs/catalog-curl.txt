@@ -24,7 +24,7 @@ curl \
 curl \
     --insecure \
     -v \
-    --cookie 'JSESSIONID=853BD2752A404D30F5D37D29FC17491A' \
+    --cookie 'JSESSIONID=6F746878F155745AA27C051D3D8614F4' \
     -X GET 'http://localhost:9001/service/authorization/v1/oauth2/authorize?response_type=code&client_id=frontend-client'
 
 export ACCT_USER_ACCESS_TOKEN=$(\
@@ -33,7 +33,7 @@ curl \
     -v \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'grant_type=authorization_code' \
-    -d 'code=vk4ex-jHG0GjsZbXXWMnd0wc3Ntmls7j3_LkAQ08HtclSY92wfpdu0KPdL0slJ7DPxAK8zgCgtROuvu0NcdFwNhR1tPf2O5eBmIVwSr-OJl4uoHvXAhbcTggQZVK-TRv' \
+    -d 'code=vY__0SM1VPDXu5CjH8KXU3gDxdpym3OAq51PRIaeRUmM_K4KOr_p3chJeKuAk5yC-PzltHn0OkShBurXmJ5oeQ6KxU26UBNZkG-AxpJm7QBfgpo4M385VKhFJn0OTGek' \
     -d 'client_id=frontend-client' \
     -d 'client_secret=lkjdwsf23odnwqkld23odfbqweorh23oihd' \
     -X POST 'http://localhost:9001/service/authorization/v1/oauth2/token' \
@@ -446,4 +446,81 @@ curl \
     -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
     -H "Content-Type: application/json; charset=utf-8" \
     -X DELETE 'http://localhost:8086/service/catalog/v1/banks?bankUUIDs=d2f64241-171d-4616-8665-cdeadda16c56' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT 'http://localhost:8086/service/catalog/v1/currencies?currencyUUID=d2f64241-171d-4616-8665-cdeadda16c55' \
+    --data-raw '
+        {
+            "currencyCode": "USD",
+            "currencyName": "US Dollar",
+            "currencyIconUUID": "0669a55a-8d3a-49b4-a04c-7948dd22e091"
+        }
+        ' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT 'http://localhost:8086/service/catalog/v1/currencies' \
+    --data-raw '
+        {
+            "currencyCode": "USD",
+            "currencyName": "US Dollar",
+            "currencyIconUUID": "0669a55a-8d3a-49b4-a04c-7948dd22e091"
+        }
+        ' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT 'http://localhost:8086/service/catalog/v1/currencies' \
+    --data-raw '
+        {
+            "currencyCode": "USD",
+            "currencyName": "US Dollar",
+            "currencyIconUUID": "0669a55a-8d3a-49b4-a04c-7948dd22e091"
+        }
+        ' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT 'http://localhost:8086/service/catalog/v1/currencies?currencyUUID=8f500d98-977a-40db-9963-cfa1a2283b82' \
+    --data-raw '
+        {
+            "currencyCode": "U$D",
+            "currencyName": "U$ Dollar",
+            "currencyIconUUID": "0669a55a-8d3a-49b4-a04c-7948dd22e09E"
+        }
+        ' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X GET 'http://localhost:8086/service/catalog/v1/currencies' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X DELETE 'http://localhost:8086/service/catalog/v1/currencies?currencyUUIDs=12345' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X DELETE 'http://localhost:8086/service/catalog/v1/currencies?currencyUUIDs=8f500d98-977a-40db-9963-cfa1a2283b83' \
     | jq

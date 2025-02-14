@@ -13,7 +13,7 @@ import static com.desolatetimelines.acct.catalog.util.AcctCatalogRepoSpringDataU
 import static java.util.function.Function.identity;
 
 /**
- * Implementation of the {@link SpringJpaAcctBanksRepository} that uses Spring Data
+ * Implementation of the {@link AcctBanksRepository} that uses Spring Data
  */
 @Service
 public class SpringJpaAcctBanksRepository implements AcctBanksRepository {

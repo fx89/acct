@@ -28,13 +28,16 @@ public class AcctCatalogDataService {
 
     private final AcctBanksRepository banksRepository;
 
+    private final AcctCurrenciesRepository currenciesRepository;
+
     public AcctCatalogDataService(
         AcctIconCategoriesRepository iconCategoriesRepository,
         AcctIconsRepository iconsRepository,
         AcctIncomeOrExpenseItemCategoriesRepository incomeOrExpenseItemCategoriesRepository,
         AcctIncomeOrExpenseItemSubcategoriesRepository incomeOrExpenseItemSubcategoriesRepository,
         AcctIncomeOrExpenseItemsRepository incomeOrExpenseItemsRepository,
-        AcctBanksRepository banksRepository
+        AcctBanksRepository banksRepository,
+        AcctCurrenciesRepository currenciesRepository
     ) {
         this.iconCategoriesRepository = iconCategoriesRepository;
         this.iconsRepository = iconsRepository;
@@ -42,6 +45,7 @@ public class AcctCatalogDataService {
         this.incomeOrExpenseItemSubcategoriesRepository = incomeOrExpenseItemSubcategoriesRepository;
         this.incomeOrExpenseItemsRepository = incomeOrExpenseItemsRepository;
         this.banksRepository = banksRepository;
+        this.currenciesRepository = currenciesRepository;
     }
 
     /**
@@ -442,6 +446,61 @@ public class AcctCatalogDataService {
      */
     public void deleteBanks(Collection<AcctBank> banks) {
         banksRepository.deleteAll(banks);
+    }
+
+    /**
+     * Creates a new instance of {@link AcctCurrency}
+     *
+     * @return a reference to the newly created entity
+     */
+    public AcctCurrency createNewCurrency() {
+        return currenciesRepository.createNew();
+    }
+
+    /**
+     * Persists the referenced {@link AcctCurrency currency}
+     *
+     * @param currency the referenced currency
+     * @return a reference to the persisted entity
+     */
+    public AcctCurrency saveCurrency(AcctCurrency currency) {
+        return currenciesRepository.save(currency);
+    }
+
+    /**
+     * Returns the {@link AcctCurrency currency} identified by the given currency UUID
+     * or an empty optional if such a currency does not exist
+     *
+     * @param currencyUUID the given currency UUID
+     */
+    public Optional<AcctCurrency> findCurrencyByCurrencyUUID(String currencyUUID) {
+        return currenciesRepository.findByCurrencyUUID(currencyUUID);
+    }
+
+    /**
+     * Returns the {@link AcctCurrency currencies} referenced by the UUIDs in the given
+     * collection of currency UUIDs.
+     *
+     * @param currencyUUIDs the given collection of currency UUIDs
+     */
+    public Collection<AcctCurrency> findCurrenciesByCurrencyUUIDIn(Collection<String> currencyUUIDs) {
+        return currenciesRepository.findAllByCurrencyUUIDIn(currencyUUIDs);
+    }
+
+    /**
+     * Returns a collection of all {@link AcctCurrency currencies} in the catalog
+     */
+    public Collection<AcctCurrency> findAllCurrencies() {
+        return currenciesRepository.findAll();
+    }
+
+    /**
+     * Deletes the {@link AcctCurrency currencies} in the given collection of currencies
+     *
+     * @param currencies the given collection of currencies
+     */
+    public void deleteCurrencies(Collection<AcctCurrency> currencies) {
+        currenciesRepository.deleteAll(currencies);
     }
 
 }

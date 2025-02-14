@@ -11,7 +11,9 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Main class of the services layer of the ACCT catalog
@@ -196,14 +198,12 @@ public class AcctCatalogService {
     ) {
         // Get or create the category based on the existence of the UUID
         final Optional<AcctIncomeOrExpenseItemCategory> optionalCategory =
-            Optional
-                .ofNullable(incomeOrExpenseItemCategoryUUID)
-                .map(dataService::findIncomeOrExpenseItemCategoryByIncomeOrExpenseItemCategoryUUID)
-                .orElseGet(() -> {
-                    AcctIncomeOrExpenseItemCategory newCategory = dataService.createNewIncomeOrExpenseItemCategory();
-                    newCategory.setIncomeOrExpenseItemCategoryUUID(UUID.randomUUID().toString());
-                    return Optional.of(newCategory);
-                });
+            getOrCreateOptionalEntity(
+                incomeOrExpenseItemCategoryUUID,
+                dataService::findIncomeOrExpenseItemCategoryByIncomeOrExpenseItemCategoryUUID,
+                dataService::createNewIncomeOrExpenseItemCategory,
+                AcctIncomeOrExpenseItemCategory::setIncomeOrExpenseItemCategoryIconUUID
+            );
 
         // If the category was not found, throw an exception
         if (optionalCategory.isEmpty()) {
@@ -341,14 +341,12 @@ public class AcctCatalogService {
 
         // Get or create the category based on the existence of the UUID
         final Optional<AcctIncomeOrExpenseItemSubcategory> optionalSubcategory =
-            Optional
-                .ofNullable(incomeOrExpenseItemSubcategoryUUID)
-                .map(dataService::findIncomeOrExpenseItemSubcategoryByIncomeOrExpenseItemSubcategoryUUID)
-                .orElseGet(() -> {
-                    AcctIncomeOrExpenseItemSubcategory newSubcategory = dataService.createNewIncomeOrExpenseItemSubcategory();
-                    newSubcategory.setIncomeOrExpenseItemSubcategoryUUID(UUID.randomUUID().toString());
-                    return Optional.of(newSubcategory);
-                });
+            getOrCreateOptionalEntity(
+                incomeOrExpenseItemSubcategoryUUID,
+                dataService::findIncomeOrExpenseItemSubcategoryByIncomeOrExpenseItemSubcategoryUUID,
+                dataService::createNewIncomeOrExpenseItemSubcategory,
+                AcctIncomeOrExpenseItemSubcategory::setIncomeOrExpenseItemSubcategoryIconUUID
+            );
 
         // If the category was not found, throw an exception
         if (optionalSubcategory.isEmpty()) {
@@ -484,14 +482,12 @@ public class AcctCatalogService {
 
         // Get or create the income or expense item based on the existence of the UUID
         final Optional<AcctIncomeOrExpenseItem> optionalItem =
-            Optional
-                .ofNullable(incomeOrExpenseItemUUID)
-                .map(dataService::findIncomeOrExpenseItemByIncomeOrExpenseItemUUID)
-                .orElseGet(() -> {
-                    AcctIncomeOrExpenseItem newItem = dataService.createNewIncomeOrExpenseItem();
-                    newItem.setIncomeOrExpenseItemUUID(UUID.randomUUID().toString());
-                    return Optional.of(newItem);
-                });
+            getOrCreateOptionalEntity(
+                incomeOrExpenseItemUUID,
+                dataService::findIncomeOrExpenseItemByIncomeOrExpenseItemUUID,
+                dataService::createNewIncomeOrExpenseItem,
+                AcctIncomeOrExpenseItem::setIncomeOrExpenseItemUUID
+            );
 
         // If the item was not found, throw an exception
         final AcctIncomeOrExpenseItem item =
@@ -589,14 +585,12 @@ public class AcctCatalogService {
     ) {
         // Get or create the bank based on the existence of the UUID
         final Optional<AcctBank> optionalBank =
-            Optional
-                .ofNullable(bankUUID)
-                .map(dataService::findBankByBankUUID)
-                .orElseGet(() -> {
-                    AcctBank newBank = dataService.createNewBank();
-                    newBank.setBankUUID(UUID.randomUUID().toString());
-                    return Optional.of(newBank);
-                });
+            getOrCreateOptionalEntity(
+                bankUUID,
+                dataService::findBankByBankUUID,
+                dataService::createNewBank,
+                AcctBank::setBankUUID
+            );
 
         // If the bank does not exist, throw an exception
         final AcctBank bank =
@@ -670,6 +664,129 @@ public class AcctCatalogService {
 
         // If all is well then delete the items
         dataService.deleteBanks(banks);
+    }
+
+    /**
+     * Creates a new currency or updates an existing currency in the catalog with the given currency code,
+     * the given currency name and the given currency icon UUID. The decision to create or update is taken
+     * based on the existence of the given currency UUID. <br />
+     * <br />
+     * If the currency UUID is given and the referenced currency does not exist, an exception is thrown.<br />
+     * <br />
+     * If a currency with the given currency code already exists in the catalog, an exception is thrown.
+     *
+     * @param currencyUUID     the given currency UUID
+     * @param currencyCode     the given currency code
+     * @param currencyName     the currency name
+     * @param currencyIconUUID the given currency icon UUID
+     * @return a reference to the created or updated entity
+     */
+    public AcctCurrency saveCurrency(
+        String currencyUUID,
+        String currencyCode,
+        String currencyName,
+        String currencyIconUUID
+    ) {
+        // Get or create the bank based on the existence of the UUID
+        final Optional<AcctCurrency> optionalCurrency =
+            getOrCreateOptionalEntity(
+                currencyUUID,
+                dataService::findCurrencyByCurrencyUUID,
+                dataService::createNewCurrency,
+                AcctCurrency::setCurrencyUUID
+            );
+
+        // If the currency does not exist, throw an exception
+        final AcctCurrency currency =
+            optionalCurrency.orElseThrow(
+                () -> new AcctCatalogServiceCurrencyNotFoundException(errors, currencyUUID)
+            );
+
+        // Set the bank properties
+        currency.setCurrencyCode(currencyCode);
+        currency.setCurrencyName(currencyName);
+        currency.setCurrencyIconUUID(currencyIconUUID);
+
+        // Persist the bank and return a reference
+        try {
+            return dataService.saveCurrency(currency);
+        }
+        // Throw a service layer exception if a constraint violation exception occurs
+        catch (DataIntegrityViolationException e) {
+            throw
+                new AcctCatalogServiceCurrencyConstraintViolationException(
+                    errors,
+                    currencyCode,
+                    e
+                );
+        }
+    }
+
+    /**
+     * Returns a collection of all currencies in the catalog
+     */
+    public Collection<AcctCurrency> getCurrencies() {
+        return dataService.findAllCurrencies();
+    }
+
+    /**
+     * Deletes the {@link AcctCurrency currencies} referenced through the UUIDs in the
+     * given collection of currency UUIDs.<br />
+     * <br />
+     * If any of the referenced currencies cannot be found, an exception is thrown.<br />
+     * <br />
+     * If any of the referenced currencies is in use, an exception is thrown.
+     *
+     * @param currencyUUIDs the given collection of currency UUIDs
+     */
+    public void deleteCurrencies(Collection<String> currencyUUIDs) {
+        // Find the currencies
+        final Collection<AcctCurrency> currencies =
+            dataService.findCurrenciesByCurrencyUUIDIn(currencyUUIDs);
+
+        // If any of the referenced items is not found, throw an exception
+        throwExceptionIfAnyEntityIsNotFound(
+            currencies,
+            AcctCurrency::getCurrencyUUID,
+            currencyUUIDs,
+            notFoundUUIDs -> new AcctCatalogServiceCurrencyNotFoundException(
+                errors,
+                notFoundUUIDs.stream().findAny().orElseThrow()
+            )
+        );
+
+        // Get the UUIDs of any items that might be in use
+        final Collection<String> inUseCurrencyUUIDs =
+            inUseEndpointClient.getItemsInUseOfType(ObjectTypes.CURRENCY.name(), currencyUUIDs);
+
+        // If any item is in use, throw an exception
+        if (!inUseCurrencyUUIDs.isEmpty()) {
+            throw
+                new AcctCatalogServiceCurrencyInUseException(
+                    errors,
+                    inUseCurrencyUUIDs
+                );
+        }
+
+        // If all is well then delete the items
+        dataService.deleteCurrencies(currencies);
+    }
+
+    private <T> Optional<T> getOrCreateOptionalEntity(
+        String entityUUID,
+        Function<String, Optional<T>> findFunction,
+        Supplier<T> newEntitySupplier,
+        BiConsumer<T, String> uuidSettingConsumer
+    ) {
+        return
+            Optional
+                .ofNullable(entityUUID)
+                .map(findFunction)
+                .orElseGet(() -> {
+                    T newEntity = newEntitySupplier.get();
+                    uuidSettingConsumer.accept(newEntity, UUID.randomUUID().toString());
+                    return Optional.of(newEntity);
+                });
     }
 
     private <T> void throwExceptionIfAnyEntityIsNotFound(

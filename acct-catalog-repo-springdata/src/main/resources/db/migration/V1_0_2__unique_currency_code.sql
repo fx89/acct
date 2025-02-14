@@ -1,0 +1,1 @@
+create unique index currency_ukey_currency_code on "currency"(currency_code);
