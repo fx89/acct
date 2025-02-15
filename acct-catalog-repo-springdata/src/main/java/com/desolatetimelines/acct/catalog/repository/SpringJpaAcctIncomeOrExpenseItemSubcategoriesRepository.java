@@ -82,6 +82,15 @@ public class SpringJpaAcctIncomeOrExpenseItemSubcategoriesRepository implements 
     }
 
     @Override
+    public Collection<AcctIncomeOrExpenseItemSubcategory> findAllByIncomeOrExpenseItemSubcategoryIconUUIDIn(Collection<String> iconUUIDs) {
+        return
+            jpaAcctIncomeOrExpenseItemSubcategoriesRepository.findAllByIncomeExpenseItemSubcategoryIconUUIDIn(iconUUIDs)
+                .stream()
+                .map(jpaAcctIncomeOrExpenseItemSubcategory -> (AcctIncomeOrExpenseItemSubcategory) jpaAcctIncomeOrExpenseItemSubcategory)
+                .toList();
+    }
+
+    @Override
     public void deleteAll(Collection<AcctIncomeOrExpenseItemSubcategory> incomeOrExpenseItemSubcategories) {
         jpaAcctIncomeOrExpenseItemSubcategoriesRepository.deleteAll(
             incomeOrExpenseItemSubcategories.stream()

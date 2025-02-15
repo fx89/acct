@@ -23,8 +23,8 @@
 // DONE: CAT-03002: Currencies endpoint: Save currency
 // DONE: CAT-03003: Currencies endpoint: Delete currencies
 
-// TODO: CAT-04001: Used items endpoint: Get items in use of type
+// DONE: CAT-04001: Used items endpoint: Get items in use of type
 
-// TODO: CAT-05001: Catalog client: API client
+// DONE: CAT-05001: Catalog client: API client
 
-// TODO: CAT-06001: Privileges
+// DONE: CAT-06001: Privileges

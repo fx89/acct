@@ -21,4 +21,8 @@ public interface JpaAcctIncomeOrExpenseItemSubcategoriesRepository extends CrudR
         Collection<String> incomeExpenseItemSubcategoryUUIDs
     );
 
+    Collection<JpaAcctIncomeOrExpenseItemSubcategory> findAllByIncomeExpenseItemSubcategoryIconUUIDIn(
+        Collection<String> iconUUIDs
+    );
+
 }

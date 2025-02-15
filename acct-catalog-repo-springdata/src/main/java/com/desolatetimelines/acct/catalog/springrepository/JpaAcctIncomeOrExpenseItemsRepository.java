@@ -17,4 +17,6 @@ public interface JpaAcctIncomeOrExpenseItemsRepository extends CrudRepository<Jp
 
     Collection<JpaAcctIncomeOrExpenseItem> findAllByIncomeExpenseItemUUIDIn(Collection<String> incomeExpenseItemUUIDs);
 
+    Collection<JpaAcctIncomeOrExpenseItem> findAllByIncomeExpenseItemIconUUIDIn(Collection<String> iconUUIDs);
+
 }

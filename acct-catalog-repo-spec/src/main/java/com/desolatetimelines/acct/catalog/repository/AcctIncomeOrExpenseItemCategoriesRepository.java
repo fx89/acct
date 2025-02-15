@@ -1,6 +1,8 @@
 package com.desolatetimelines.acct.catalog.repository;
 
+import com.desolatetimelines.acct.catalog.model.AcctIcon;
 import com.desolatetimelines.acct.catalog.model.AcctIncomeOrExpenseItemCategory;
+import com.desolatetimelines.acct.catalog.model.AcctIncomeOrExpenseItemSubcategory;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -49,6 +51,16 @@ public interface AcctIncomeOrExpenseItemCategoriesRepository {
      */
     Collection<AcctIncomeOrExpenseItemCategory> findByIncomeOrExpenseItemCategoryUUIDIn(
         Collection<String> incomeOrExpenseItemCategoryUUIDs
+    );
+
+    /**
+     * Returns a collection of {@link AcctIncomeOrExpenseItemSubcategory income or expense item categories}
+     * linked to the {@link AcctIcon icons} identified by the UUIDs in the given collection icon UUIDs
+     *
+     * @param iconUUIDs the given collection of icon UUIDs
+     */
+    Collection<AcctIncomeOrExpenseItemCategory> findAllByIncomeOrExpenseItemCategoryIconUUIDIn(
+        Collection<String> iconUUIDs
     );
 
     /**

@@ -67,6 +67,15 @@ public class SpringJpaAcctIncomeOrExpenseItemsRepository implements AcctIncomeOr
     }
 
     @Override
+    public Collection<AcctIncomeOrExpenseItem> findAllByIncomeOrExpenseItemIconUUIDIn(Collection<String> iconUUIDs) {
+        return
+            jpaAcctIncomeOrExpenseItemsRepository.findAllByIncomeExpenseItemIconUUIDIn(iconUUIDs)
+                .stream()
+                .map(jpaAcctIncomeOrExpenseItemsRepository -> (AcctIncomeOrExpenseItem) jpaAcctIncomeOrExpenseItemsRepository)
+                .toList();
+    }
+
+    @Override
     public AcctIncomeOrExpenseItem save(AcctIncomeOrExpenseItem incomeOrExpenseItem) {
         return
             doWithJpaAcctIncomeOrExpenseItemReturning(

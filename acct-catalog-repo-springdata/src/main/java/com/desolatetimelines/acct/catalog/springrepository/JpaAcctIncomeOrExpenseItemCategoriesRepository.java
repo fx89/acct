@@ -16,4 +16,8 @@ public interface JpaAcctIncomeOrExpenseItemCategoriesRepository
     Collection<JpaAcctIncomeOrExpenseItemCategory> findByIncomeExpenseItemCategoryUUIDIn(
         Collection<String> incomeOrExpenseItemCategoryUUIDs
     );
+
+    Collection<JpaAcctIncomeOrExpenseItemCategory> findAllByIncomeExpenseItemCategoryIconUUIDIn(
+        Collection<String> iconUUIDs
+    );
 }

@@ -57,6 +57,15 @@ public class SpringJpaAcctBanksRepository implements AcctBanksRepository {
     }
 
     @Override
+    public Collection<AcctBank> findAllByBankIconUUIDIn(Collection<String> bankIconUUIDs) {
+        return
+            jpaAcctBanksRepository.findAllByBankIconUUIDIn(bankIconUUIDs)
+                .stream()
+                .map(jpaAcctBank -> (AcctBank) jpaAcctBank)
+                .toList();
+    }
+
+    @Override
     public void deleteAll(Collection<AcctBank> banks) {
         jpaAcctBanksRepository.deleteAll(
             banks.stream().map(acctBank -> doWithJpaAcctBankReturning(acctBank, identity())).toList()

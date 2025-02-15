@@ -223,13 +223,25 @@ public class AcctCatalogDataService {
      *
      * @param incomeOrExpenseItemCategoryUUIDs the given collection of income or expense item category UUIDs
      */
-    public Collection<AcctIncomeOrExpenseItemCategory> findIncomeOrExpenseItemCategoryByIncomeOrExpenseItemCategoryUUIDIn(
+    public Collection<AcctIncomeOrExpenseItemCategory> findIncomeOrExpenseItemCategoriesByIncomeOrExpenseItemCategoryUUIDIn(
         Collection<String> incomeOrExpenseItemCategoryUUIDs
     ) {
         return
             incomeOrExpenseItemCategoriesRepository.findByIncomeOrExpenseItemCategoryUUIDIn(
                 incomeOrExpenseItemCategoryUUIDs
             );
+    }
+
+    /**
+     * Returns a collection of {@link AcctIncomeOrExpenseItemCategory income or expense item categories}
+     * linked to the {@link AcctIcon icons} identified by the UUIDs in the given collection of icon UUIDs
+     *
+     * @param iconUUIDs the given collection of icon UUIDs
+     */
+    public Collection<AcctIncomeOrExpenseItemCategory> findIncomeOrExpenseItemCategoriesByIncomeOrExpenseItemCategoryIconUUIDIn(
+        Collection<String> iconUUIDs
+    ) {
+        return incomeOrExpenseItemCategoriesRepository.findAllByIncomeOrExpenseItemCategoryIconUUIDIn(iconUUIDs);
     }
 
     /**
@@ -303,12 +315,25 @@ public class AcctCatalogDataService {
      * @param incomeOrExpenseItemSubcategoryUUIDs the given collection of income or expense item subcategory UUIDs
      */
     public Collection<AcctIncomeOrExpenseItemSubcategory>
-    findIncomeOrExpenseItemSubcategoryByIncomeOrExpenseItemSubcategoryUUIDIn(
+    findIncomeOrExpenseItemSubcategoriesByIncomeOrExpenseItemSubcategoryUUIDIn(
         Collection<String> incomeOrExpenseItemSubcategoryUUIDs
     ) {
         return
             incomeOrExpenseItemSubcategoriesRepository
                 .findByIncomeOrExpenseItemSubcategoryUUIDIn(incomeOrExpenseItemSubcategoryUUIDs);
+    }
+
+    /**
+     * Returns a collection of {@link AcctIncomeOrExpenseItemSubcategory income or expense item subcategories}
+     * linked to the {@link AcctIcon icons} identified by the UUIDs in the given collection icon UUIDs
+     *
+     * @param iconUUIDs the given collection of icon UUIDs
+     */
+    public Collection<AcctIncomeOrExpenseItemSubcategory>
+    findIncomeOrExpenseItemSubcategoriesByIncomeOrExpenseItemSubcategoryIconUUIDIn(
+        Collection<String> iconUUIDs
+    ) {
+        return incomeOrExpenseItemSubcategoriesRepository.findByIncomeOrExpenseItemSubcategoryUUIDIn(iconUUIDs);
     }
 
     /**
@@ -370,6 +395,18 @@ public class AcctCatalogDataService {
         Collection<String> incomeOrExpenseItemUUIDs
     ) {
         return incomeOrExpenseItemsRepository.findAllByIncomeOrExpenseItemUUIDIn(incomeOrExpenseItemUUIDs);
+    }
+
+    /**
+     * Returns a collection of the {@link AcctIncomeOrExpenseItem income or expense items}
+     * linked to the icons identified by the UUIDs in the given collection of icon UUIDs
+     *
+     * @param iconUUIDs the given collection of income or expense item UUIDs
+     */
+    public Collection<AcctIncomeOrExpenseItem> findIncomeOrExpenseItemsByIncomeOrExpenseItemIconUUIDIn(
+        Collection<String> iconUUIDs
+    ) {
+        return incomeOrExpenseItemsRepository.findAllByIncomeOrExpenseItemIconUUIDIn(iconUUIDs);
     }
 
     /**
@@ -440,6 +477,16 @@ public class AcctCatalogDataService {
     }
 
     /**
+     * Returns a collection of {@link AcctBank banks} that are linked to the {@link AcctIcon icons}
+     * referenced by the UUIDs in the given collection of bank icon UUIDs
+     *
+     * @param bankIconUUIDs the given collection of bank icon UUIDs
+     */
+    public Collection<AcctBank> findBanksByBankIconUUIDIn(Collection<String> bankIconUUIDs) {
+        return banksRepository.findAllByBankIconUUIDIn(bankIconUUIDs);
+    }
+
+    /**
      * Deletes the {@link AcctBank banks} in the referenced collection of banks
      *
      * @param banks the referenced collection of banks
@@ -485,6 +532,16 @@ public class AcctCatalogDataService {
      */
     public Collection<AcctCurrency> findCurrenciesByCurrencyUUIDIn(Collection<String> currencyUUIDs) {
         return currenciesRepository.findAllByCurrencyUUIDIn(currencyUUIDs);
+    }
+
+    /**
+     * Returns the {@link AcctCurrency currencies} linked to the {@link AcctIcon icons} referenced by
+     * the UUIDs in the given collection of icon UUIDs.
+     *
+     * @param iconUUIDs the given collection of icon UUIDs
+     */
+    public Collection<AcctCurrency> findCurrenciesByCurrencyIconUUIDIn(Collection<String> iconUUIDs) {
+        return currenciesRepository.findAllByCurrencyIconUUIDIn(iconUUIDs);
     }
 
     /**

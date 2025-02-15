@@ -1,5 +1,6 @@
 package com.desolatetimelines.acct.catalog.repository;
 
+import com.desolatetimelines.acct.catalog.model.AcctIcon;
 import com.desolatetimelines.acct.catalog.model.AcctIncomeOrExpenseItemCategory;
 import com.desolatetimelines.acct.catalog.model.AcctIncomeOrExpenseItemSubcategory;
 
@@ -56,6 +57,16 @@ public interface AcctIncomeOrExpenseItemSubcategoriesRepository {
      */
     Collection<AcctIncomeOrExpenseItemSubcategory> findByIncomeOrExpenseItemSubcategoryUUIDIn(
         Collection<String> incomeOrExpenseItemSubcategoryUUIDs
+    );
+
+    /**
+     * Returns a collection of {@link AcctIncomeOrExpenseItemSubcategory income or expense item subcategories}
+     * linked to the {@link AcctIcon icons} identified by the UUIDs in the given collection icon UUIDs
+     *
+     * @param iconUUIDs the given collection of icon UUIDs
+     */
+    Collection<AcctIncomeOrExpenseItemSubcategory> findAllByIncomeOrExpenseItemSubcategoryIconUUIDIn(
+        Collection<String> iconUUIDs
     );
 
     /**

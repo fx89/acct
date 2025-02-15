@@ -5,8 +5,14 @@ import com.desolatetimelines.acct.catalog.exception.*;
 import com.desolatetimelines.acct.catalog.model.*;
 import com.desolatetimelines.acct.common.model.ObjectTypes;
 import com.desolatetimelines.acct.common.model.Page;
+import com.desolatetimelines.acct.common.utils.Streams;
 import com.desolatetimelines.acct.usage.ws.client.RESTInUseEndpointClient;
+import com.desolatetimelines.acct.usage.ws.client.RESTUsageEndpointClient;
+import com.desolatetimelines.acct.usage.ws.model.ServiceItemTypesList;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -27,14 +33,88 @@ public class AcctCatalogService {
 
     private final RESTInUseEndpointClient inUseEndpointClient;
 
+    private final RESTUsageEndpointClient usageEndpointClient;
+
+    private final String applicationName;
+
+    private final String contextPath;
+
     public AcctCatalogService(
         AcctCatalogDataService dataService,
         AcctCatalogErrorCodesRegistryService errors,
-        RESTInUseEndpointClient inUseEndpointClient
+        RESTInUseEndpointClient inUseEndpointClient,
+        RESTUsageEndpointClient usageEndpointClient,
+        @Value("${CATALOG_APPLICATION_NAME}") String applicationName,
+        @Value("${CATALOG_SERVER_CONTEXT_PATH}") String contextPath
     ) {
         this.dataService = dataService;
         this.errors = errors;
         this.inUseEndpointClient = inUseEndpointClient;
+        this.usageEndpointClient = usageEndpointClient;
+        this.applicationName = applicationName;
+        this.contextPath = contextPath;
+    }
+
+    /**
+     * Registers in-use item types with the usage service upon startup
+     */
+    @SuppressWarnings("unused")
+    @EventListener(ApplicationReadyEvent.class)
+    protected void registerInUseObjectTypes() {
+        usageEndpointClient.registerItemTypesForService(
+            ServiceItemTypesList.builder()
+                .withServiceName(applicationName)
+                .withServiceContextPath(contextPath)
+                .withItemType(List.of(
+                    ObjectTypes.ICON.name()
+                ))
+                .build()
+        );
+    }
+
+    /**
+     * Returns the UUIDs of any used items of the given type and that can be found in the given list
+     *
+     * @param objectType the given type
+     * @param itemUUIDs  the given list
+     */
+    public Collection<String> getInUseItemUUIDs(String objectType, Collection<String> itemUUIDs) {
+        // If the object type is ICON then search banks, currencies and income or expense items,
+        // item sub-categories and item categories for used icons
+        if (Objects.equals(objectType, ObjectTypes.ICON.name())) {
+            return
+                Streams.multiConcat(
+                    // Find any banks that are using any of the icons with the given UUIDs
+                    dataService.findBanksByBankIconUUIDIn(itemUUIDs)
+                        .stream()
+                        .map(AcctBank::getBankIconUUID),
+
+                    // Find any currencies that are using any of the icons with the given UUIDs
+                    dataService.findCurrenciesByCurrencyIconUUIDIn(itemUUIDs)
+                        .stream()
+                        .map(AcctCurrency::getCurrencyIconUUID),
+
+                    // Find any income or expense items that are using any of the icons with the given UUIDs
+                    dataService.findIncomeOrExpenseItemsByIncomeOrExpenseItemIconUUIDIn(itemUUIDs)
+                        .stream()
+                        .map(AcctIncomeOrExpenseItem::getIncomeOrExpenseItemIconUUID),
+
+                    // Find any income or expense item categories that are using any of the icons with the given UUIDs
+                    dataService.findIncomeOrExpenseItemCategoriesByIncomeOrExpenseItemCategoryIconUUIDIn(itemUUIDs)
+                        .stream()
+                        .map(AcctIncomeOrExpenseItemCategory::getIncomeOrExpenseItemCategoryIconUUID),
+
+                    // Find any income or expense item subcategories that are using any of the icons with the given UUIDs
+                    dataService.findIncomeOrExpenseItemSubcategoriesByIncomeOrExpenseItemSubcategoryIconUUIDIn(itemUUIDs)
+                        .stream()
+                        .map(AcctIncomeOrExpenseItemSubcategory::getIncomeOrExpenseItemSubcategoryIconUUID)
+
+                ).distinct().toList();
+        }
+
+        // If this point has been reached, it means that either the item type is not supported
+        // or the code for handling the object type is missing from above
+        throw new IllegalArgumentException("Object type [" + objectType + "] not supported");
     }
 
     /**
@@ -266,7 +346,7 @@ public class AcctCatalogService {
 
         // Find the categories
         final Collection<AcctIncomeOrExpenseItemCategory> foundCategories =
-            dataService.findIncomeOrExpenseItemCategoryByIncomeOrExpenseItemCategoryUUIDIn(distinctCategoryUUIDs);
+            dataService.findIncomeOrExpenseItemCategoriesByIncomeOrExpenseItemCategoryUUIDIn(distinctCategoryUUIDs);
 
         // If any of the referenced categories is not found, throw an exception
         throwExceptionIfAnyEntityIsNotFound(
@@ -419,7 +499,7 @@ public class AcctCatalogService {
 
         // Find the subcategories
         final Collection<AcctIncomeOrExpenseItemSubcategory> foundSubcategories =
-            dataService.findIncomeOrExpenseItemSubcategoryByIncomeOrExpenseItemSubcategoryUUIDIn(
+            dataService.findIncomeOrExpenseItemSubcategoriesByIncomeOrExpenseItemSubcategoryUUIDIn(
                 distinctSubcategoryUUIDs
             );
 

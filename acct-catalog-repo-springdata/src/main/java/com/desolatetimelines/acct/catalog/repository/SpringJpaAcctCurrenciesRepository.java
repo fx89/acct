@@ -57,6 +57,15 @@ public class SpringJpaAcctCurrenciesRepository implements AcctCurrenciesReposito
     }
 
     @Override
+    public Collection<AcctCurrency> findAllByCurrencyIconUUIDIn(Collection<String> iconUUIDs) {
+        return
+            jpaAcctCurrenciesRepository.findAllByCurrencyIconUUIDIn(iconUUIDs)
+                .stream()
+                .map(jpaAcctCurrency -> (AcctCurrency) jpaAcctCurrency)
+                .toList();
+    }
+
+    @Override
     public void deleteAll(Collection<AcctCurrency> currencies) {
         jpaAcctCurrenciesRepository.deleteAll(
             currencies.stream()

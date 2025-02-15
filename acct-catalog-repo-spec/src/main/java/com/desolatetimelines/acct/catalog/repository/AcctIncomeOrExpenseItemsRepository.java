@@ -48,6 +48,14 @@ public interface AcctIncomeOrExpenseItemsRepository {
     );
 
     /**
+     * Returns a collection of the {@link AcctIncomeOrExpenseItem income or expense items}
+     * linked to the icons identified by the UUIDs in the given collection of icon UUIDs
+     *
+     * @param iconUUIDs the given collection of income or expense item UUIDs
+     */
+    Collection<AcctIncomeOrExpenseItem> findAllByIncomeOrExpenseItemIconUUIDIn(Collection<String> iconUUIDs);
+
+    /**
      * Persists the referenced {@link AcctIncomeOrExpenseItem income or expense item}
      *
      * @param incomeOrExpenseItem the referenced income or expense item

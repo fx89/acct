@@ -12,4 +12,6 @@ public interface JpaAcctCurrenciesRepository extends CrudRepository<JpaAcctCurre
 
     Collection<JpaAcctCurrency> findAllByCurrencyUUIDIn(Collection<String> currencyUUIDs);
 
+    Collection<JpaAcctCurrency> findAllByCurrencyIconUUIDIn(Collection<String> iconUUIDs);
+
 }

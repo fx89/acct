@@ -1,6 +1,7 @@
 package com.desolatetimelines.acct.catalog.repository;
 
 import com.desolatetimelines.acct.catalog.model.AcctBank;
+import com.desolatetimelines.acct.catalog.model.AcctIcon;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -45,6 +46,14 @@ public interface AcctBanksRepository {
      * @param bankUUIDs the given collection of bank UUIDs
      */
     Collection<AcctBank> findAllByBankUUIDIn(Collection<String> bankUUIDs);
+
+    /**
+     * Returns a collection of {@link AcctBank banks} that are linked to the {@link AcctIcon icons}
+     * referenced by the UUIDs in the given collection of bank icon UUIDs
+     *
+     * @param bankIconUUIDs the given collection of bank icon UUIDs
+     */
+    Collection<AcctBank> findAllByBankIconUUIDIn(Collection<String> bankIconUUIDs);
 
     /**
      * Deletes the {@link AcctBank banks} in the referenced collection of banks

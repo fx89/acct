@@ -12,4 +12,6 @@ public interface JpaAcctBanksRepository extends CrudRepository<JpaAcctBank, Long
 
     Collection<JpaAcctBank> findAllByBankUUIDIn(Collection<String> bankUUIDs);
 
+    Collection<JpaAcctBank> findAllByBankIconUUIDIn(Collection<String> bankIconUUIDs);
+
 }
