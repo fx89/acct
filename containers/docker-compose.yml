@@ -17,9 +17,6 @@ x-db-common-config: &dbCommonConfig
     replicas: 1
 
 x-service-common-config: &serviceCommonConfig
-  build:
-    context: ../
-    dockerfile: containers/generic-app.docker
   restart: always
   networks:
     - primary
@@ -131,6 +128,8 @@ services:
   eureka-service:
     <<: *serviceBoilerplateConfig
     build:
+      context: ../
+      dockerfile: containers/generic-app.docker
       args:
         - ACCT_VERSION=${ACCT_VERSION}
         - ACCT_MODULE_NAME=acct-eureka-server
@@ -143,6 +142,8 @@ services:
   authorization-service:
     <<: *serviceBoilerplateConfig
     build:
+      context: ../
+      dockerfile: containers/generic-app.docker
       args:
         - ACCT_VERSION=${ACCT_VERSION}
         - ACCT_MODULE_NAME=acct-authorization-server
@@ -157,6 +158,8 @@ services:
   usage-service:
     <<: *serviceAcctBoilerplateConfig
     build:
+      context: ../
+      dockerfile: containers/generic-app.docker
       args:
         - ACCT_VERSION=${ACCT_VERSION}
         - ACCT_MODULE_NAME=acct-usage-ws-server
@@ -174,6 +177,8 @@ services:
   jobs-service:
     <<: *serviceAcctBoilerplateConfig
     build:
+      context: ../
+      dockerfile: containers/generic-app.docker
       args:
         - ACCT_VERSION=${ACCT_VERSION}
         - ACCT_MODULE_NAME=acct-job-ws-server
@@ -191,6 +196,8 @@ services:
   security-service:
     <<: *serviceAcctBoilerplateConfig
     build:
+      context: ../
+      dockerfile: containers/generic-app.docker
       args:
         - ACCT_VERSION=${ACCT_VERSION}
         - ACCT_MODULE_NAME=acct-security-ws-server
@@ -210,6 +217,8 @@ services:
   user-management-service:
     <<: *serviceAcctBoilerplateConfig
     build:
+      context: ../
+      dockerfile: containers/generic-app.docker
       args:
         - ACCT_VERSION=${ACCT_VERSION}
         - ACCT_MODULE_NAME=acct-user-management-ws-server
@@ -229,6 +238,8 @@ services:
   workspace-service:
     <<: *serviceAcctServiceConfig
     build:
+      context: ../
+      dockerfile: containers/generic-app.docker
       args:
         - ACCT_VERSION=${ACCT_VERSION}
         - ACCT_MODULE_NAME=acct-workspace-ws-server
@@ -245,3 +256,25 @@ services:
       - workspace-postgres
     links:
       - workspace-postgres
+
+  catalog-service:
+    <<: *serviceAcctServiceConfig
+    build:
+      context: ../
+      dockerfile: containers/generic-app.docker
+      args:
+        - ACCT_VERSION=${ACCT_VERSION}
+        - ACCT_MODULE_NAME=acct-catalog-ws-server
+        - DOCKER_ECLIPSE_TEMURIN_IMAGE_VERSION=${DOCKER_ECLIPSE_TEMURIN_IMAGE_VERSION}
+    image: acct-catalog-ws-server:${ACCT_VERSION}
+    hostname: catalog-service
+    ports:
+      - ${CATALOG_SERVER_PORT}:${CATALOG_SERVER_PORT}
+    depends_on:
+      - eureka-service
+      - authorization-service
+      - usage-service
+      - jobs-service
+      - catalog-postgres
+    links:
+      - catalog-postgres
