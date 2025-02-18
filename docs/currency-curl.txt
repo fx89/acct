@@ -1,0 +1,109 @@
+# Use https://www.browserling.com/tools/bcrypt for hashing the password
+# Use the default strength of 10, as the BCryptPasswordEncoder does if the strength is not specified, which it isn't
+export ACCT_BACKEND_CLIENT_ACCESS_TOKEN=$(\
+curl \
+    --insecure \
+    -v \
+    -H 'Content-Type: application/x-www-form-urlencoded' \
+    -d 'grant_type=client_credentials' \
+    -d 'client_id=backend-client' \
+    -d 'client_secret=34if3fj134-f1309fWEFhqweifEWFhew9fh314-frhF13-8fh341WEF2f43h23iSp413pr1h3Wrh130rh13EH19dhF143d03d023yh9eF20jdfcnWdsfherc' \
+    -d 'scope=openid backend' \
+    -X POST 'http://localhost:9001/service/authorization/v1/oauth2/token' \
+    | jq -j '.access_token'\
+)
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
+    -X GET 'http://localhost:8087/service/currency/v1/errors' \
+    | jq
+
+
+
+curl \
+    --insecure \
+    -v \
+    --cookie 'JSESSIONID=BBD4C6DBD6B54232C6AF27A6F6FC8739' \
+    -X GET 'http://localhost:9001/service/authorization/v1/oauth2/authorize?response_type=code&client_id=frontend-client'
+
+export ACCT_USER_ACCESS_TOKEN=$(\
+curl \
+    --insecure \
+    -v \
+    -H 'Content-Type: application/x-www-form-urlencoded' \
+    -d 'grant_type=authorization_code' \
+    -d 'code=iWFlWSoSEs1XgNU6sTGsS9OoWeHyvDRUKDEDtf9wJDwJd7PLbY8RRuAnST0en-_0XrfrwtqJBNAIrS1KRuRB3F8IhoAOJye4sNuEsP5SljQR4qKFOFKIull9sVJNBTJ3' \
+    -d 'client_id=frontend-client' \
+    -d 'client_secret=lkjdwsf23odnwqkld23odfbqweorh23oihd' \
+    -X POST 'http://localhost:9001/service/authorization/v1/oauth2/token' \
+    | jq -j '.access_token'\
+)
+
+
+
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT 'http://localhost:8087/service/currency/v1/monitoredCurrencies?monitoredCurrencyUUID=12345' \
+    --data-raw '
+        {
+            "bankUUID": "6b55063f-de66-41b1-a222-3343574607c7",
+            "currencyUUID": "cc51d147-3620-4729-abc6-5ba94d968216",
+            "quoteCurrencyUUID": "f1ec339a-e6b9-4651-a9ca-41f8e1dab185",
+            "collectorName": "com.desolatetimelines.acct.currency.collector.BnrCurrencyHistoryCollector",
+            "scheduledTimeHhMm": "14:00"
+        }
+    ' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT 'http://localhost:8087/service/currency/v1/monitoredCurrencies' \
+    --data-raw '
+        {
+            "bankUUID": "6b55063f-de66-41b1-a222-3343574607c7",
+            "currencyUUID": "cc51d147-3620-4729-abc6-5ba94d968216",
+            "quoteCurrencyUUID": "f1ec339a-e6b9-4651-a9ca-41f8e1dab185",
+            "collectorName": "com.desolatetimelines.acct.currency.collector.BnrCurrencyHistoryCollector",
+            "scheduledTimeHhMm": "14:00"
+        }
+    ' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT 'http://localhost:8087/service/currency/v1/monitoredCurrencies?monitoredCurrencyUUID=a71a7fe1-2dc2-43fe-9c4a-f32994d97a06' \
+    --data-raw '
+        {
+            "bankUUID": "6b55063f-de66-41b1-a222-3343574607c8",
+            "currencyUUID": "cc51d147-3620-4729-abc6-5ba94d968217",
+            "quoteCurrencyUUID": "f1ec339a-e6b9-4651-a9ca-41f8e1dab186",
+            "collectorName": "com.desolatetimelines.acct.currency.collector.BnrCurrencyHistoryCollector",
+            "scheduledTimeHhMm": "14:30"
+        }
+    ' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT 'http://localhost:8087/service/currency/v1/monitoredCurrencies' \
+    --data-raw '
+        {
+            "bankUUID": "6b55063f-de66-41b1-a222-3343574607c8",
+            "currencyUUID": "cc51d147-3620-4729-abc6-5ba94d968217",
+            "quoteCurrencyUUID": "f1ec339a-e6b9-4651-a9ca-41f8e1dab186",
+            "collectorName": "com.desolatetimelines.acct.currency.collector.BnrCurrencyHistoryCollector",
+            "scheduledTimeHhMm": "14:00"
+        }
+    ' \
+    | jq
+

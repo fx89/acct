@@ -3,7 +3,7 @@ package com.desolatetimelines.acct.catalog.privilegesprovider.model;
 import com.desolatetimelines.acct.privilegesprovider.model.AcctPrivilege;
 
 /**
- * Defines the privileges required by the Jobs Registry service
+ * Defines the privileges required by the Catalog service
  */
 public enum CatalogPrivilege {
     ICONS_SAVE(

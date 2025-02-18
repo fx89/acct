@@ -1,4 +1,4 @@
-<mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/25.0.2 Chrome/128.0.6613.186 Electron/32.2.7 Safari/537.36" version="25.0.2">
+<mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.0.9 Chrome/128.0.6613.186 Electron/32.3.0 Safari/537.36" version="26.0.9">
   <diagram name="Page-1" id="hEhjSLRuFoLcvZEl_DyT">
     <mxGraphModel dx="995" dy="591" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
@@ -166,7 +166,7 @@
         <mxCell id="8dLC3b4qh8bNT53wCTw0-37" value="currency_uuid" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="8dLC3b4qh8bNT53wCTw0-33" vertex="1">
           <mxGeometry y="104" width="279.75" height="26" as="geometry" />
         </mxCell>
-        <mxCell id="8dLC3b4qh8bNT53wCTw0-38" value="quote_currency_uuid" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="8dLC3b4qh8bNT53wCTw0-33" vertex="1">
+        <mxCell id="8dLC3b4qh8bNT53wCTw0-38" value="quoted_currency_uuid" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="8dLC3b4qh8bNT53wCTw0-33" vertex="1">
           <mxGeometry y="130" width="279.75" height="26" as="geometry" />
         </mxCell>
         <mxCell id="CWZ8HQogGbBSWKQR_5Hk-7" value="collector_name (Spring bean)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="8dLC3b4qh8bNT53wCTw0-33" vertex="1">

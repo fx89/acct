@@ -62,8 +62,8 @@ Request body example:
 ```
 {
     "bankUUID": "6b55063f-de66-41b1-a222-3343574607c7",
-    "currencyUUID: "cc51d147-3620-4729-abc6-5ba94d968216",
-    "quoteCurrencyUUID: "f1ec339a-e6b9-4651-a9ca-41f8e1dab185",
+    "currencyUUID": "cc51d147-3620-4729-abc6-5ba94d968216",
+    "quoteCurrencyUUID": "f1ec339a-e6b9-4651-a9ca-41f8e1dab185",
     "collectorName": "com.desolatetimelines.acct.currency.collector.BnrCurrencyHistoryCollector",
     "scheduledTimeHhMm": "14:00"
 }

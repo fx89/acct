@@ -123,6 +123,16 @@
         <module>acct-catalog-repo-spec</module>
         <module>acct-catalog-repo-springdata</module>
 
+        <!-- Currency -->
+        <module>acct-currency-ws-spec</module>
+        <module>acct-currency-ws-server</module>
+        <module>acct-currency-ws-client</module>
+        <module>acct-currency-privileges-provider</module>
+        <module>acct-currency-data</module>
+        <module>acct-currency-service</module>
+        <module>acct-currency-repo-spec</module>
+        <module>acct-currency-repo-springdata</module>
+
         <!-- Project-specific reusable dependencies -->
         <module>acct-privileges-provider-spec</module>
         <module>acct-common</module>
