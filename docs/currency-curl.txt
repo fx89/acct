@@ -24,7 +24,7 @@ curl \
 curl \
     --insecure \
     -v \
-    --cookie 'JSESSIONID=BBD4C6DBD6B54232C6AF27A6F6FC8739' \
+    --cookie 'JSESSIONID=8F4C253305F124A92AC641ED016DC5A3' \
     -X GET 'http://localhost:9001/service/authorization/v1/oauth2/authorize?response_type=code&client_id=frontend-client'
 
 export ACCT_USER_ACCESS_TOKEN=$(\
@@ -33,7 +33,7 @@ curl \
     -v \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'grant_type=authorization_code' \
-    -d 'code=iWFlWSoSEs1XgNU6sTGsS9OoWeHyvDRUKDEDtf9wJDwJd7PLbY8RRuAnST0en-_0XrfrwtqJBNAIrS1KRuRB3F8IhoAOJye4sNuEsP5SljQR4qKFOFKIull9sVJNBTJ3' \
+    -d 'code=DO3sKY72hoT8bT6BAXdn7ddzYZ2fF1slhE4fAWE6JNNjY-_cYGXZmLjB8GQWtU68j2n1jgOImksplVJUor7JflfwVZe6fVXehjtZQLBb4LS2-uYhYkGv8h31uyeQgslY' \
     -d 'client_id=frontend-client' \
     -d 'client_secret=lkjdwsf23odnwqkld23odfbqweorh23oihd' \
     -X POST 'http://localhost:9001/service/authorization/v1/oauth2/token' \
@@ -107,3 +107,9 @@ curl \
     ' \
     | jq
 
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X GET 'http://localhost:8087/service/currency/v1/monitoredCurrencies' \
+    | jq

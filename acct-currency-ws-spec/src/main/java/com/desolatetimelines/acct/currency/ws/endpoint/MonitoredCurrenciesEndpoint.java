@@ -1,7 +1,10 @@
 package com.desolatetimelines.acct.currency.ws.endpoint;
 
+import com.desolatetimelines.acct.currency.ws.model.MonitoredCurrencyProperties;
 import com.desolatetimelines.acct.currency.ws.model.MonitoredCurrencySaveRequest;
 import com.desolatetimelines.acct.currency.ws.model.MonitoredCurrencyUUIDResponse;
+
+import java.util.Collection;
 
 /**
  * Defines operations that are supported by the Currency service for monitored currencies
@@ -20,5 +23,10 @@ public interface MonitoredCurrenciesEndpoint {
         String monitoredCurrencyUUID,
         MonitoredCurrencySaveRequest request
     );
+
+    /**
+     * Returns a collection of all the monitored currencies
+     */
+    Collection<MonitoredCurrencyProperties> getMonitoredCurrencies();
 
 }

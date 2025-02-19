@@ -2,6 +2,7 @@ package com.desolatetimelines.acct.currency.repository;
 
 import com.desolatetimelines.acct.currency.model.AcctMonitoredCurrency;
 
+import java.util.Collection;
 import java.util.Optional;
 
 /**
@@ -31,5 +32,10 @@ public interface AcctMonitoredCurrenciesRepository {
      * @return a reference to the persisted entity
      */
     AcctMonitoredCurrency save(AcctMonitoredCurrency monitoredCurrency);
+
+    /**
+     * Returns a collection of all the {@link AcctMonitoredCurrency monitored currencies}
+     */
+    Collection<AcctMonitoredCurrency> findAll();
 
 }

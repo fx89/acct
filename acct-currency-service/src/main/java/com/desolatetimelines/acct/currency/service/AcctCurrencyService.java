@@ -6,6 +6,7 @@ import com.desolatetimelines.acct.currency.model.AcctMonitoredCurrency;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiConsumer;
@@ -96,6 +97,13 @@ public class AcctCurrencyService {
                     e
                 );
         }
+    }
+
+    /**
+     * Returns a collection of all the {@link AcctMonitoredCurrency monitored currencies}
+     */
+    public Collection<AcctMonitoredCurrency> getMonitoredCurrencies() {
+        return dataService.findAllMonitoredCurrencies();
     }
 
     // TODO: Put this in a common place, where it can be accessed by both the Catalog and Currency services

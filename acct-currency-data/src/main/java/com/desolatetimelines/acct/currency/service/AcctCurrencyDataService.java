@@ -4,6 +4,7 @@ import com.desolatetimelines.acct.currency.model.AcctMonitoredCurrency;
 import com.desolatetimelines.acct.currency.repository.AcctMonitoredCurrenciesRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.Optional;
 
 /**
@@ -36,6 +37,13 @@ public class AcctCurrencyDataService {
      */
     public Optional<AcctMonitoredCurrency> findMonitoredCurrencyByMonitoredCurrencyUUID(String monitoredCurrencyUUID) {
         return monitoredCurrenciesRepository.findFirstByMonitoredCurrencyUUID(monitoredCurrencyUUID);
+    }
+
+    /**
+     * Returns a collection of all the {@link AcctMonitoredCurrency monitored currencies}
+     */
+    public Collection<AcctMonitoredCurrency> findAllMonitoredCurrencies() {
+        return monitoredCurrenciesRepository.findAll();
     }
 
     /**

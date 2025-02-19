@@ -5,7 +5,9 @@ import com.desolatetimelines.acct.currency.model.JpaAcctMonitoredCurrency;
 import com.desolatetimelines.acct.currency.springrepository.JpaAcctMonitoredCurrenciesRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 import static com.desolatetimelines.acct.currency.util.AcctCurrencyRepoSpringDataUtils.doWithJpaAcctMonitoredCurrencyReturning;
 import static java.util.function.Function.identity;
@@ -40,6 +42,14 @@ public class SpringJpaAcctMonitoredCurrenciesRepository implements AcctMonitored
     @Override
     public AcctMonitoredCurrency save(AcctMonitoredCurrency monitoredCurrency) {
         return doWithJpaAcctMonitoredCurrencyReturning(monitoredCurrency, jpaAcctMonitoredCurrenciesRepository::save);
+    }
+
+    @Override
+    public Collection<AcctMonitoredCurrency> findAll() {
+        return
+            StreamSupport.stream(jpaAcctMonitoredCurrenciesRepository.findAll().spliterator(), false)
+                .map(jpaAcctMonitoredCurrency -> (AcctMonitoredCurrency) jpaAcctMonitoredCurrency)
+                .toList();
     }
 
 }
