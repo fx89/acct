@@ -7,7 +7,7 @@ import java.util.function.Function;
 
 /**
  * Provides utility methods used by components of the Spring Data-based implementation
- * of the ACCT Catalog repositories
+ * of the ACCT Currency repositories
  */
 public abstract class AcctCurrencyRepoSpringDataUtils {
 

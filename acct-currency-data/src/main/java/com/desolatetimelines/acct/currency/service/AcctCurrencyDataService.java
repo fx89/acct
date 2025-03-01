@@ -1,9 +1,12 @@
 package com.desolatetimelines.acct.currency.service;
 
 import com.desolatetimelines.acct.currency.model.AcctMonitoredCurrency;
+import com.desolatetimelines.acct.currency.model.AcctMonitoredCurrencyRecord;
 import com.desolatetimelines.acct.currency.repository.AcctMonitoredCurrenciesRepository;
+import com.desolatetimelines.acct.currency.repository.AcctMonitoredCurrencyRecordsRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -16,8 +19,14 @@ public class AcctCurrencyDataService {
 
     private final AcctMonitoredCurrenciesRepository monitoredCurrenciesRepository;
 
-    public AcctCurrencyDataService(AcctMonitoredCurrenciesRepository monitoredCurrenciesRepository) {
+    private final AcctMonitoredCurrencyRecordsRepository monitoredCurrencyRecordsRepository;
+
+    public AcctCurrencyDataService(
+        AcctMonitoredCurrenciesRepository monitoredCurrenciesRepository,
+        AcctMonitoredCurrencyRecordsRepository monitoredCurrencyRecordsRepository
+    ) {
         this.monitoredCurrenciesRepository = monitoredCurrenciesRepository;
+        this.monitoredCurrencyRecordsRepository = monitoredCurrencyRecordsRepository;
     }
 
     /**
@@ -54,6 +63,56 @@ public class AcctCurrencyDataService {
      */
     public AcctMonitoredCurrency saveMonitoredCurrency(AcctMonitoredCurrency monitoredCurrency) {
         return monitoredCurrenciesRepository.save(monitoredCurrency);
+    }
+
+    /**
+     * Creates a new instance of {@link AcctMonitoredCurrencyRecord}
+     *
+     * @return a reference to the newly created instance
+     */
+    public AcctMonitoredCurrencyRecord createNewAcctMonitoredCurrencyRecord() {
+        return monitoredCurrencyRecordsRepository.createNew();
+    }
+
+    /**
+     * Persists the referenced {@link AcctMonitoredCurrencyRecord monitored currency record}
+     *
+     * @param monitoredCurrencyRecord the referenced monitored currency record
+     * @return a reference to the persisted entity
+     */
+    public AcctMonitoredCurrencyRecord saveMonitoredCurrencyRecord(AcctMonitoredCurrencyRecord monitoredCurrencyRecord) {
+        return monitoredCurrencyRecordsRepository.save(monitoredCurrencyRecord);
+    }
+
+    /**
+     * Returns a collection of all {@link AcctMonitoredCurrencyRecord monitored currency records}
+     * belonging to the referenced {@link AcctMonitoredCurrency monitored currency} and that have
+     * the {@link AcctMonitoredCurrencyRecord#getMonitoredCurrencyRecordDate() record date} in the
+     * given collection of record dates
+     *
+     * @param monitoredCurrency            the referenced monitored currency
+     * @param monitoredCurrencyRecordDates the given collection of record dates
+     */
+    public Collection<AcctMonitoredCurrencyRecord>
+    findAllMonitoredCurrencyRecordsByMonitoredCurrencyAndMonitoredCurrencyRecordDateIn(
+        AcctMonitoredCurrency monitoredCurrency,
+        Collection<Instant> monitoredCurrencyRecordDates
+    ) {
+        return
+            monitoredCurrencyRecordsRepository.findAllByMonitoredCurrencyAndMonitoredCurrencyRecordDateIn(
+                monitoredCurrency,
+                monitoredCurrencyRecordDates
+            );
+    }
+
+    /**
+     * Removes all of the {@link AcctMonitoredCurrencyRecord monitored currency records} in the
+     * given collection of monitored currency records
+     *
+     * @param monitoredCurrencyRecords the given collection of monitored currency records
+     */
+    public void deleteAllMonitoredCurrencyRecords(Collection<AcctMonitoredCurrencyRecord> monitoredCurrencyRecords) {
+        monitoredCurrencyRecordsRepository.deleteAll(monitoredCurrencyRecords);
     }
 
 }

@@ -117,6 +117,7 @@
         <module>acct-catalog-ws-spec</module>
         <module>acct-catalog-ws-server</module>
         <module>acct-catalog-ws-client</module>
+        <module>acct-catalog-ws-memory</module>
         <module>acct-catalog-privileges-provider</module>
         <module>acct-catalog-data</module>
         <module>acct-catalog-service</module>
@@ -132,6 +133,13 @@
         <module>acct-currency-service</module>
         <module>acct-currency-repo-spec</module>
         <module>acct-currency-repo-springdata</module>
+        <module>acct-currency-repo-memory</module>
+        <module>acct-currency-collector-framework</module>
+        <module>acct-currency-collector-spec</module>
+        <module>acct-currency-collector-ro-bt</module>
+        <module>acct-currency-collector-ro-bcr</module>
+        <module>acct-currency-collector-ro-bnr</module>
+        <module>acct-currency-job</module>
 
         <!-- Project-specific reusable dependencies -->
         <module>acct-privileges-provider-spec</module>

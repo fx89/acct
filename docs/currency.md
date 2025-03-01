@@ -40,9 +40,24 @@ Example request URL:
 Response body example:
 ```
 [
-    "com.desolatetimelines.acct.currency.collector.BnrCurrencyHistoryCollector",
-    "com.desolatetimelines.acct.currency.collector.BtCurrencyHistoryCollector",
-    "com.desolatetimelines.acct.currency.collector.BcrCurrencyHistoryCollector"
+    {
+        "currencyCollectorName": "com.desolatetimelines.acct.currency.collector.BnrCurrencyHistoryCollector",
+        "supportedBankCodes": [
+            "BNR"
+        ]
+    },
+    {
+        "currencyCollectorName": "com.desolatetimelines.acct.currency.collector.BtCurrencyHistoryCollector",
+        "supportedBankCodes": [
+            "BT"
+        ]
+    },
+    {
+        "currencyCollectorName": "com.desolatetimelines.acct.currency.collector.BcrCurrencyHistoryCollector",
+        "supportedBankCodes": [
+            "BCR"
+        ]
+    }
 ]
 ```
 

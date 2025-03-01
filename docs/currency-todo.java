@@ -9,7 +9,7 @@
 
 // TODO: CUR-03001: Monitored currencies client: API client
 
-// TODO: CUR-04001: Background functionality: Collection framework
+// DONE: CUR-04001: Background functionality: Collection framework
 
 // TODO: CUR-05001: Monitored currency collectors: BNR (EUR/RON, USD/RON, CHF/RON, GBP/RON)
 // TODO: CUR-05002: Monitored currency collectors: BT (EUR/RON, USD/RON, CHF/RON, GBP/RON)
