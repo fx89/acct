@@ -87,9 +87,9 @@ public class AcctCurrencyCollectionServiceTest {
         final AcctCurrencyCollectionService currencyCollectionService = createCurrencyCollectionService(dataStore);
 
         // Test that the currency collector is returned correctly
-        final Map<String, CurrencyCollectorService> collectors = currencyCollectionService.getCurrencyCollectorsByName();
+        final Map<String, CurrencyCollectorService<?>> collectors = currencyCollectionService.getCurrencyCollectorsByName();
         assertEquals(1, collectors.size());
-        final CurrencyCollectorService collector = collectors.get(dataStore.currencyCollectorService.getClass().getCanonicalName());
+        final CurrencyCollectorService<?> collector = collectors.get(dataStore.currencyCollectorService.getClass().getCanonicalName());
         assertNotNull(collector);
     }
 

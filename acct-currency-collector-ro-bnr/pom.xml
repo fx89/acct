@@ -15,12 +15,36 @@
     <packaging>jar</packaging>
 
     <dependencies>
+        <!-- Specification -->
         <dependency>
             <groupId>com.desolatetimelines</groupId>
             <artifactId>acct-currency-collector-spec</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
 
+        <!-- Service annotation -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+
+        <!-- Web client -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+
+        <!-- XML parsing -->
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+        </dependency>
+
+        <!-- Testing -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>

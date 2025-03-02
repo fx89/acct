@@ -4,7 +4,10 @@ import com.desolatetimelines.acct.catalog.ws.endpoint.BanksEndpoint;
 import com.desolatetimelines.acct.catalog.ws.endpoint.CurrenciesEndpoint;
 import com.desolatetimelines.acct.catalog.ws.model.BankProperties;
 import com.desolatetimelines.acct.catalog.ws.model.CurrencyProperties;
+import com.desolatetimelines.acct.currency.collector.model.BankParameters;
 import com.desolatetimelines.acct.currency.collector.model.CollectedCurrencyExchangeRecord;
+import com.desolatetimelines.acct.currency.collector.model.CollectionSession;
+import com.desolatetimelines.acct.currency.collector.model.SessionParameters;
 import com.desolatetimelines.acct.currency.collector.service.CurrencyCollectorService;
 import com.desolatetimelines.acct.currency.model.AcctMonitoredCurrency;
 import com.desolatetimelines.acct.currency.model.AcctMonitoredCurrencyRecord;
@@ -20,6 +23,7 @@ import java.util.stream.Collectors;
 
 import static java.time.ZoneOffset.UTC;
 import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.groupingBy;
 
 /**
  * Handles the collection of currency exchange records for various currencies
@@ -37,14 +41,14 @@ public class AcctCurrencyCollectionService {
 
     private final CurrenciesEndpoint currenciesEndpoint;
 
-    private final Map<String, CurrencyCollectorService> currencyCollectorsByName;
+    private final Map<String, CurrencyCollectorService<? extends CollectionSession>> currencyCollectorsByName;
 
     public AcctCurrencyCollectionService(
         AcctCurrencyDataService dataService,
         AcctCurrencyExchangeRecordsPersistenceService persistenceService,
         BanksEndpoint banksEndpoint,
         CurrenciesEndpoint currenciesEndpoint,
-        Collection<CurrencyCollectorService> currencyCollectors
+        Collection<CurrencyCollectorService<? extends CollectionSession>> currencyCollectors
     ) {
         this.dataService = dataService;
         this.persistenceService = persistenceService;
@@ -53,11 +57,11 @@ public class AcctCurrencyCollectionService {
         this.currencyCollectorsByName = mapCurrencyCollectorsByName(currencyCollectors);
     }
 
-    private static Map<String, CurrencyCollectorService> mapCurrencyCollectorsByName(
-        Collection<CurrencyCollectorService> currencyCollectors
+    private static Map<String, CurrencyCollectorService<? extends CollectionSession>> mapCurrencyCollectorsByName(
+        Collection<CurrencyCollectorService<? extends CollectionSession>> currencyCollectors
     ) {
         // Create a map of the proper size
-        final Map<String, CurrencyCollectorService> currencyCollectorsByName =
+        final Map<String, CurrencyCollectorService<? extends CollectionSession>> currencyCollectorsByName =
             new HashMap<>(currencyCollectors.size());
 
         // Populate the map
@@ -75,7 +79,7 @@ public class AcctCurrencyCollectionService {
     /**
      * Returns the available {@link CurrencyCollectorService currency collectors} mapped by their names
      */
-    public Map<String, CurrencyCollectorService> getCurrencyCollectorsByName() {
+    public Map<String, CurrencyCollectorService<? extends CollectionSession>> getCurrencyCollectorsByName() {
         return currencyCollectorsByName;
     }
 
@@ -125,78 +129,154 @@ public class AcctCurrencyCollectionService {
                     CurrencyProperties::currencyCode
                 ));
 
-        // For each monitored currency, handle currency exchange rates collection
-        allMonitoredCurrencies.forEach(monitoredCurrency ->
-            handleCurrencyExchangeRatesCollection(
-                monitoredCurrency,
-                bankCodesByBankUUID.get(monitoredCurrency.getBankUUID()),
-                currencyCodesByCurrencyUUID.get(monitoredCurrency.getCurrencyUUID())
-            )
-        );
+        // Group monitored currencies by collector name (exclude the ones that do not specify a collector name)
+        final Map<String, List<AcctMonitoredCurrency>> monitoredCurrenciesByCollectorName =
+            allMonitoredCurrencies.stream()
+                .filter(monitoredCurrency -> monitoredCurrency.getCollectorName() != null)
+                .collect(groupingBy(AcctMonitoredCurrency::getCollectorName));
+
+        // For each collector name that's defined
+        monitoredCurrenciesByCollectorName.forEach((collectorName, monitoredCurrencies) -> {
+            // Get a reference to the currency collector defined for this currency
+            final CurrencyCollectorService<? extends CollectionSession> currencyCollector = currencyCollectorsByName.get(collectorName);
+
+            // Run the collector
+            handleCurrencyExchangeRatesCollectionByCollector(
+                collectorName,
+                currencyCollector,
+                monitoredCurrencies,
+                bankCodesByBankUUID,
+                currencyCodesByCurrencyUUID
+            );
+        });
     }
 
-    private void handleCurrencyExchangeRatesCollection(
-        AcctMonitoredCurrency monitoredCurrency,
-        String bankCode,
-        String currencyCode
+    private <T extends CollectionSession> void handleCurrencyExchangeRatesCollectionByCollector(
+        String collectorName,
+        CurrencyCollectorService<T> currencyCollector,
+        List<AcctMonitoredCurrency> monitoredCurrencies,
+        final Map<String, String> bankCodesByBankUUID,
+        final Map<String, String> currencyCodesByCurrencyUUID
     ) {
-        // Get a reference to the currency collector defined for this currency
-        final Optional<CurrencyCollectorService> optionalCurrencyCollector =
-            identifyCurrencyCollectorServiceForMonitoredCurrency(monitoredCurrency);
-
-        // If there's no currency collector defined then exit
-        // because no collection can be done
-        if (optionalCurrencyCollector.isEmpty()) {
-            return;
-        }
-
-        // If the collector does not support the bank code then exit
-        // because the collector cannot collect data from the bank
-        if (!optionalCurrencyCollector.get().getSupportedBankCodes().contains(bankCode)) {
-            persistenceService.saveCurrencyErrorMessage(
-                monitoredCurrency,
-                "Bank not supported by the currency exchange records collector"
+        // If the currency collector does not exist, record this as an error message for all related currencies
+        // and then exit
+        if (currencyCollector == null) {
+            persistenceService.saveCurrenciesErrorMessage(
+                monitoredCurrencies,
+                "Collector not found: " + collectorName
             );
             return;
         }
 
-        // If the monitored currency exchange records have been collected today then exit
-        // because the data was already collected for the day
-        if (monitoredCurrency.getLastMonitoredCurrencyRecordDate() != null &&
-            monitoredCurrency.getLastMonitoredCurrencyRecordDate().isAfter(
-                LocalDate.now().atStartOfDay().toInstant(UTC)
-            )
-        ) {
-            return;
-        }
+        // Group monitored currencies with the same collector by bank code
+        final Map<String, List<AcctMonitoredCurrency>> monitoredCurrenciesByBankCode =
+            monitoredCurrencies.stream()
+                .collect(groupingBy(monitoredCurrency ->
+                    bankCodesByBankUUID.get(monitoredCurrency.getBankUUID())
+                ));
 
-        // Get the monitored currency's scheduled time (HH:MM)
-        final Instant todayAtScheduledTime = todayAtTimeStrHHMM(monitoredCurrency.getScheduledTimeHHMM());
+        // Exclude any bank codes that are not supported by the collector
+        final Map<String, List<AcctMonitoredCurrency>> monitoredCurrenciesBySupportedBankCode =
+            new HashMap<>(monitoredCurrenciesByBankCode.size());
 
-        // If the current time is before the scheduled time then exit
-        // because it's too early to collect the data
-        if (Instant.now().isBefore(todayAtScheduledTime)) {
-            return;
-        }
+        monitoredCurrenciesByBankCode.forEach((bankCode, currencies) -> {
+            if (currencyCollector.getSupportedBankCodes() != null &&
+                currencyCollector.getSupportedBankCodes().contains(bankCode)
+            ) {
+                monitoredCurrenciesBySupportedBankCode.put(bankCode, currencies);
+            } else {
+                persistenceService.saveCurrenciesErrorMessage(
+                    currencies,
+                    "Bank not supported by the collector: " + bankCode
+                );
+            }
+        });
 
-        // Collect the monitored currency exchange records
-        Collection<CollectedCurrencyExchangeRecord> collectedCurrencyExchangeRecords =
-            optionalCurrencyCollector.get().collectRecords(bankCode, currencyCode);
+        // Map monitored currency codes by bank code and create the session parameters
+        final SessionParameters sessionParameters =
+            new SessionParameters(
+                monitoredCurrenciesBySupportedBankCode.entrySet().stream()
+                    .map(entry ->
+                        new BankParameters(
+                            entry.getKey(),
+                            entry.getValue().stream()
+                                .map(curr -> currencyCodesByCurrencyUUID.get(curr.getCurrencyUUID()))
+                                .toList()
+                        )
+                    )
+                    .toList()
+            );
 
-        // Persists the records and update the monitored currency
+        // Get monitored currencies for supported bank codes
+        final Collection<AcctMonitoredCurrency> currenciesWithSupportedBankCodes =
+            monitoredCurrenciesByBankCode.values().stream().flatMap(List::stream).toList();
+
+        // Try to initialize the session for the collector
+        T session;
         try {
-            persistenceService.persistMonitoredCurrencyExchangeRecords(
-                monitoredCurrency,
-                collectedCurrencyExchangeRecords
-            );
+            session = currencyCollector.startSession(sessionParameters);
         }
-        // Record any exception that might occur
+        // If not possible then record this for all related monitored currencies and exit
         catch (Exception e) {
-            persistenceService.saveCurrencyErrorMessage(
-                monitoredCurrency,
-                "Exception occurred while trying to collect exchange rates: " + e.getMessage()
+            persistenceService.saveCurrenciesErrorMessage(
+                currenciesWithSupportedBankCodes,
+                "Collection session init failed: " + e.getMessage()
             );
+            return;
         }
+
+        // For each bank code...
+        monitoredCurrenciesBySupportedBankCode.forEach((bankCode, currencies) ->
+            // For each currency
+            currencies.forEach(currency -> {
+                // Try to collect currency exchange records
+                try {
+                    // If the monitored currency exchange records have been collected today then exit
+                    // because the data was already collected for the day
+                    if (currency.getLastMonitoredCurrencyRecordDate() != null &&
+                        currency.getLastMonitoredCurrencyRecordDate().isAfter(
+                            LocalDate.now().atStartOfDay().toInstant(UTC)
+                        )
+                    ) {
+                        return;
+                    }
+
+                    // Get the monitored currency's scheduled time (HH:MM)
+                    final Instant todayAtScheduledTime = todayAtTimeStrHHMM(currency.getScheduledTimeHHMM());
+
+                    // If the current time is before the scheduled time then exit
+                    // because it's too early to collect the data
+                    if (Instant.now().isBefore(todayAtScheduledTime)) {
+                        return;
+                    }
+
+                    // Collect the monitored currency exchange records
+                    Collection<CollectedCurrencyExchangeRecord> collectedCurrencyExchangeRecords =
+                        currencyCollector.collectRecords(
+                            session,
+                            bankCode,
+                            currencyCodesByCurrencyUUID.get(currency.getCurrencyUUID())
+                        );
+
+                    // Persist the currency collected currency exchange records
+                    persistenceService.persistMonitoredCurrencyExchangeRecords(
+                        currency,
+                        collectedCurrencyExchangeRecords
+                    );
+                }
+                // If failed then record the error for the currency
+                catch (Exception e) {
+                    persistenceService.saveCurrencyErrorMessage(
+                        currency,
+                        "Unable to collect exchange rates: " + e.getMessage()
+                    );
+                }
+
+            })
+        );
+
+        // End the session
+        currencyCollector.endSession(session);
     }
 
     /**
@@ -206,7 +286,8 @@ public class AcctCurrencyCollectionService {
      * @param monitoredCurrency the given monitored currency
      * @return either an empty optional or one containing the reference to the currency collector
      */
-    private Optional<CurrencyCollectorService> identifyCurrencyCollectorServiceForMonitoredCurrency(
+    private Optional<CurrencyCollectorService<? extends CollectionSession>> identifyCurrencyCollectorServiceForMonitoredCurrency
+    (
         AcctMonitoredCurrency monitoredCurrency
     ) {
         return
@@ -280,7 +361,7 @@ public class AcctCurrencyCollectionService {
                         )
                     )
                     .collect(
-                        Collectors.groupingBy(matchedRecord ->
+                        groupingBy(matchedRecord ->
                             matchedRecord.registeredRecord == null
                                 ? "TO_BE_CREATED"
                                 : "TO_BE_UPDATED"
@@ -329,6 +410,16 @@ public class AcctCurrencyCollectionService {
 
             // Persist the monitored currency
             dataService.saveMonitoredCurrency(monitoredCurrency);
+        }
+
+        @Transactional
+        public void saveCurrenciesErrorMessage(
+            Collection<AcctMonitoredCurrency> monitoredCurrencies,
+            String errorMessage
+        ) {
+            monitoredCurrencies.forEach(monitoredCurrency ->
+                saveCurrencyErrorMessage(monitoredCurrency, errorMessage)
+            );
         }
 
         @Transactional
