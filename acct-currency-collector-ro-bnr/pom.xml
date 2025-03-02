@@ -36,12 +36,9 @@
 
         <!-- XML parsing -->
         <dependency>
-            <groupId>jakarta.xml.bind</groupId>
-            <artifactId>jakarta.xml.bind-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
+            <groupId>com.desolatetimelines</groupId>
+            <artifactId>acct-common</artifactId>
+            <version>${project.parent.version}</version>
         </dependency>
 
         <!-- Testing -->

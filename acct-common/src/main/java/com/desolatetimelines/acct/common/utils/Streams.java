@@ -5,7 +5,7 @@ import java.util.stream.Stream;
 /**
  * Provides service methods for working with {@link Stream streams}
  */
-public class Streams {
+public abstract class Streams {
 
     /**
      * {@link Stream#concat(Stream, Stream) Concatenates} all the streams in the

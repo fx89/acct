@@ -13,7 +13,7 @@
 
 // DONE: CUR-05001: Monitored currency collectors: BNR (EUR/RON, USD/RON, CHF/RON, GBP/RON)
 // TODO: CUR-05002: Monitored currency collectors: BT (EUR/RON, USD/RON, CHF/RON, GBP/RON)
-// TODO: CUR-05003: Monitored currency collectors: BCR (EUR/RON, USD/RON, CHF/RON, GBP/RON)
+// DONE: CUR-05003: Monitored currency collectors: BCR (EUR/RON, USD/RON, CHF/RON, GBP/RON)
 
 // TODO: CUR-06001: Registration with the usage service
 
