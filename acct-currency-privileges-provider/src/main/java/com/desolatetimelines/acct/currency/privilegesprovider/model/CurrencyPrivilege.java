@@ -26,6 +26,13 @@ public enum CurrencyPrivilege {
             .withPrivilegeName("Delete monitored currencies")
             .withPrivilegeDescription("Allows deleting monitored currencies")
             .build()
+    ),
+    MONITORED_CURRENCY_COLLECTORS_READ(
+        AcctPrivilege.builder()
+            .withPrivilegeId(CurrencyPrivilegeIds.MONITORED_CURRENCY_COLLECTORS_READ)
+            .withPrivilegeName("List available monitored currency collectors")
+            .withPrivilegeDescription("Allows listing all the available monitored currency collectors")
+            .build()
     );
 
     private final AcctPrivilege acctPrivilege;

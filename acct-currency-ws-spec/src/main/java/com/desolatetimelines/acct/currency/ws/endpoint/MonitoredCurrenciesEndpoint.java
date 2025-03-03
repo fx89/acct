@@ -1,5 +1,6 @@
 package com.desolatetimelines.acct.currency.ws.endpoint;
 
+import com.desolatetimelines.acct.currency.ws.model.MonitoredCurrencyCollector;
 import com.desolatetimelines.acct.currency.ws.model.MonitoredCurrencyProperties;
 import com.desolatetimelines.acct.currency.ws.model.MonitoredCurrencySaveRequest;
 import com.desolatetimelines.acct.currency.ws.model.MonitoredCurrencyUUIDResponse;
@@ -28,5 +29,11 @@ public interface MonitoredCurrenciesEndpoint {
      * Returns a collection of all the monitored currencies
      */
     Collection<MonitoredCurrencyProperties> getMonitoredCurrencies();
+
+    /**
+     * Returns a collection containing the details of each available monitored currency
+     * exchange records collector
+     */
+    Collection<MonitoredCurrencyCollector> getAvailableMonitoredCurrencyCollectors();
 
 }

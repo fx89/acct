@@ -1,6 +1,7 @@
 package com.desolatetimelines.acct.currency.ws.client;
 
 import com.desolatetimelines.acct.currency.ws.endpoint.MonitoredCurrenciesEndpoint;
+import com.desolatetimelines.acct.currency.ws.model.MonitoredCurrencyCollector;
 import com.desolatetimelines.acct.currency.ws.model.MonitoredCurrencyProperties;
 import com.desolatetimelines.acct.currency.ws.model.MonitoredCurrencySaveRequest;
 import com.desolatetimelines.acct.currency.ws.model.MonitoredCurrencyUUIDResponse;
@@ -30,5 +31,9 @@ public interface RESTMonitoredCurrenciesEndpointClient extends MonitoredCurrenci
     @Override
     @GetMapping(value = "", produces = APPLICATION_JSON_VALUE)
     Collection<MonitoredCurrencyProperties> getMonitoredCurrencies();
+
+    @Override
+    @GetMapping(value = "/collectors", produces = APPLICATION_JSON_VALUE)
+    Collection<MonitoredCurrencyCollector> getAvailableMonitoredCurrencyCollectors();
 
 }

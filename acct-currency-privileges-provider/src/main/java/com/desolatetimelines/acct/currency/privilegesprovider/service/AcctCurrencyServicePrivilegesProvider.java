@@ -18,7 +18,8 @@ public class AcctCurrencyServicePrivilegesProvider implements AcctServicePrivile
         return Set.of(
             CurrencyPrivilege.MONITORED_CURRENCIES_SAVE.getAcctPrivilege(),
             CurrencyPrivilege.MONITORED_CURRENCIES_READ.getAcctPrivilege(),
-            CurrencyPrivilege.MONITORED_CURRENCIES_DELETE.getAcctPrivilege()
+            CurrencyPrivilege.MONITORED_CURRENCIES_DELETE.getAcctPrivilege(),
+            CurrencyPrivilege.MONITORED_CURRENCY_COLLECTORS_READ.getAcctPrivilege()
         );
     }
 

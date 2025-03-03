@@ -1,5 +1,6 @@
 package com.desolatetimelines.acct.currency.service;
 
+import com.desolatetimelines.acct.currency.collector.service.CurrencyCollectorService;
 import com.desolatetimelines.acct.currency.exception.AcctCurrencyServiceMonitoredCurrencyConstraintViolationException;
 import com.desolatetimelines.acct.currency.exception.AcctCurrencyServiceMonitoredCurrencyNotFoundException;
 import com.desolatetimelines.acct.currency.model.AcctMonitoredCurrency;
@@ -7,6 +8,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiConsumer;
@@ -23,12 +25,16 @@ public class AcctCurrencyService {
 
     private final AcctCurrencyErrorCodesRegistryService errors;
 
+    private final AcctCurrencyCollectionService currencyCollectionService;
+
     public AcctCurrencyService(
         AcctCurrencyDataService dataService,
-        AcctCurrencyErrorCodesRegistryService errors
+        AcctCurrencyErrorCodesRegistryService errors,
+        AcctCurrencyCollectionService currencyCollectionService
     ) {
         this.dataService = dataService;
         this.errors = errors;
+        this.currencyCollectionService = currencyCollectionService;
     }
 
     /**
@@ -104,6 +110,13 @@ public class AcctCurrencyService {
      */
     public Collection<AcctMonitoredCurrency> getMonitoredCurrencies() {
         return dataService.findAllMonitoredCurrencies();
+    }
+
+    /**
+     * Returns all the available currency collectors mapped by name
+     */
+    public Map<String, CurrencyCollectorService<?>> getCurrencyCollectorsByName() {
+        return currencyCollectionService.getCurrencyCollectorsByName();
     }
 
     // TODO: Put this in a common place, where it can be accessed by both the Catalog and Currency services

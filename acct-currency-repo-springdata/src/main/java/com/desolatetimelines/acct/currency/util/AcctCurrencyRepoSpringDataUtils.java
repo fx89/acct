@@ -1,7 +1,9 @@
 package com.desolatetimelines.acct.currency.util;
 
 import com.desolatetimelines.acct.currency.model.AcctMonitoredCurrency;
+import com.desolatetimelines.acct.currency.model.AcctMonitoredCurrencyRecord;
 import com.desolatetimelines.acct.currency.model.JpaAcctMonitoredCurrency;
+import com.desolatetimelines.acct.currency.model.JpaAcctMonitoredCurrencyRecord;
 
 import java.util.function.Function;
 
@@ -22,6 +24,20 @@ public abstract class AcctCurrencyRepoSpringDataUtils {
         throw new IllegalArgumentException(
             "The referenced " + AcctMonitoredCurrency.class.getName() +
                 " is not of type " + JpaAcctMonitoredCurrency.class.getCanonicalName()
+        );
+    }
+
+    public static JpaAcctMonitoredCurrencyRecord doWithJpaAcctMonitoredCurrencyRecordReturning(
+        AcctMonitoredCurrencyRecord acctMonitoredCurrencyRecord,
+        Function<JpaAcctMonitoredCurrencyRecord, JpaAcctMonitoredCurrencyRecord> todo
+    ) {
+        if (acctMonitoredCurrencyRecord instanceof JpaAcctMonitoredCurrencyRecord jpaAcctMonitoredCurrencyRecord) {
+            return todo.apply(jpaAcctMonitoredCurrencyRecord);
+        }
+
+        throw new IllegalArgumentException(
+            "The referenced " + AcctMonitoredCurrencyRecord.class.getName() +
+                " is not of type " + JpaAcctMonitoredCurrencyRecord.class.getCanonicalName()
         );
     }
 

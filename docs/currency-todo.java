@@ -1,5 +1,5 @@
 // DONE: CUR-01001: Monitored currencies endpoint: Get monitored currencies
-// TODO: CUR-01002: Monitored currencies endpoint: Get available monitored currency collectors
+// DONE: CUR-01002: Monitored currencies endpoint: Get available monitored currency collectors
 // DONE: CUR-01003: Monitored currencies endpoint: Save monitored currency
 // TODO: CUR-01004: Monitored currencies endpoint: Delete monitored currency
 // TODO: CUR-01005: Monitored currencies endpoint: Collect manually
