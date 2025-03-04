@@ -47,6 +47,7 @@ public class BCRCurrencyCollectorService implements CurrencyCollectorService<BCR
         return
             session.exchangeRatesResponse().exchangeRates().exchangeRates().stream()
                 .filter(exchangeRate -> Objects.equals(currencyCode, exchangeRate.currency()))
+                .filter(exchangeRate -> Objects.equals("00:00:00", exchangeRate.strTime()))
                 .map(exchangeRate ->
                     new CollectedCurrencyExchangeRecord(
                         exchangeRate.rateDate().toInstant(),
