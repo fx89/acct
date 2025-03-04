@@ -20,6 +20,9 @@ public record ExchangeRate(
 
     @JsonProperty("RateDate")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyyMMdd")
-    Date rateDate
+    Date rateDate,
+
+    @JsonProperty("RateTime")
+    String strTime
 ) {
 }

@@ -86,7 +86,7 @@ public class AcctCurrencyCollectionService {
     /**
      * Collects the exchange records for all the {@link AcctMonitoredCurrency monitored currencies}
      * that have a {@link AcctMonitoredCurrency#getCollectorName() curency collector} set and for
-     * which it is time to collect this data. The collected data is persisted to the data store.
+     * which it is strTime to collect this data. The collected data is persisted to the data store.
      */
     public void handleCurrencyExchangeRatesCollection() {
         // find all the monitored currencies
@@ -241,10 +241,10 @@ public class AcctCurrencyCollectionService {
                         return;
                     }
 
-                    // Get the monitored currency's scheduled time (HH:MM)
+                    // Get the monitored currency's scheduled strTime (HH:MM)
                     final Instant todayAtScheduledTime = todayAtTimeStrHHMM(currency.getScheduledTimeHHMM());
 
-                    // If the current time is before the scheduled time then exit
+                    // If the current strTime is before the scheduled strTime then exit
                     // because it's too early to collect the data
                     if (Instant.now().isBefore(todayAtScheduledTime)) {
                         return;
@@ -297,20 +297,20 @@ public class AcctCurrencyCollectionService {
     }
 
     /**
-     * Returns an instant of the current date at the given time
+     * Returns an instant of the current date at the given strTime
      *
-     * @param timeStrHHMM the given time, formatted as "HH:MM", expressed in UTC
+     * @param timeStrHHMM the given strTime, formatted as "HH:MM", expressed in UTC
      */
     private static Instant todayAtTimeStrHHMM(String timeStrHHMM) {
-        // Parse the time string
+        // Parse the strTime string
         final LocalTime time;
         try {
             time = LocalTime.parse(timeStrHHMM);
         } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("The given time string [" + timeStrHHMM + "] is badly formatted");
+            throw new IllegalArgumentException("The given strTime string [" + timeStrHHMM + "] is badly formatted");
         }
 
-        // Return the current date at the given time
+        // Return the current date at the given strTime
         return LocalDate.now().atTime(time).toInstant(UTC);
     }
 

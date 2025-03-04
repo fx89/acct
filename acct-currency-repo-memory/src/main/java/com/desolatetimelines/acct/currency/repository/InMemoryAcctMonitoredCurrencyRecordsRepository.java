@@ -57,6 +57,7 @@ public class InMemoryAcctMonitoredCurrencyRecordsRepository implements AcctMonit
         records.removeAll(monitoredCurrencyRecords);
     }
 
+    @Override
     public Collection<AcctMonitoredCurrencyRecord> findAllByMonitoredCurrency(AcctMonitoredCurrency monitoredCurrency) {
         return
             records.stream()

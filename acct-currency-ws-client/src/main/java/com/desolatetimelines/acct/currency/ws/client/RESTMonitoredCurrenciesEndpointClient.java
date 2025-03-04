@@ -1,10 +1,7 @@
 package com.desolatetimelines.acct.currency.ws.client;
 
 import com.desolatetimelines.acct.currency.ws.endpoint.MonitoredCurrenciesEndpoint;
-import com.desolatetimelines.acct.currency.ws.model.MonitoredCurrencyCollector;
-import com.desolatetimelines.acct.currency.ws.model.MonitoredCurrencyProperties;
-import com.desolatetimelines.acct.currency.ws.model.MonitoredCurrencySaveRequest;
-import com.desolatetimelines.acct.currency.ws.model.MonitoredCurrencyUUIDResponse;
+import com.desolatetimelines.acct.currency.ws.model.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -35,5 +32,9 @@ public interface RESTMonitoredCurrenciesEndpointClient extends MonitoredCurrenci
     @Override
     @GetMapping(value = "/collectors", produces = APPLICATION_JSON_VALUE)
     Collection<MonitoredCurrencyCollector> getAvailableMonitoredCurrencyCollectors();
+
+    @Override
+    @GetMapping(value = "/records", produces = APPLICATION_JSON_VALUE)
+    Collection<MonitoredCurrencyRecordProperties> getMonitoredCurrencyRecords(String monitoredCurrencyUUID);
 
 }

@@ -115,4 +115,16 @@ public class AcctCurrencyDataService {
         monitoredCurrencyRecordsRepository.deleteAll(monitoredCurrencyRecords);
     }
 
+    /**
+     * Returns a collection of all the {@link AcctMonitoredCurrencyRecord records}
+     * of the referenced monitored currency
+     *
+     * @param monitoredCurrency the referenced monitored currency
+     */
+    public Collection<AcctMonitoredCurrencyRecord> findMonitoredCurrencyRecordsByMonitoredCurrency(
+        AcctMonitoredCurrency monitoredCurrency
+    ) {
+        return monitoredCurrencyRecordsRepository.findAllByMonitoredCurrency(monitoredCurrency);
+    }
+
 }

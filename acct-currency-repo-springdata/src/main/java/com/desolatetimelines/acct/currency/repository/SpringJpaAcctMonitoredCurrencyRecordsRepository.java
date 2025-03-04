@@ -63,4 +63,18 @@ public class SpringJpaAcctMonitoredCurrencyRecordsRepository implements AcctMoni
                 .toList()
         );
     }
+
+    @Override
+    public Collection<AcctMonitoredCurrencyRecord> findAllByMonitoredCurrency(
+        AcctMonitoredCurrency monitoredCurrency
+    ) {
+        return
+            jpaAcctMonitoredCurrencyRecordsRepository.findAllByMonitoredCurrency(
+                    doWithJpaAcctMonitoredCurrencyReturning(monitoredCurrency, identity())
+                )
+                .stream()
+                .map(jpaAcctMonitoredCurrencyRecord -> (AcctMonitoredCurrencyRecord) jpaAcctMonitoredCurrencyRecord)
+                .toList();
+
+    }
 }

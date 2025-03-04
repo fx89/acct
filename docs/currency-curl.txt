@@ -24,7 +24,7 @@ curl \
 curl \
     --insecure \
     -v \
-    --cookie 'JSESSIONID=3A382CED5FBDECE9B567075CB8C87168' \
+    --cookie 'JSESSIONID=858620D54BED2E65875BA20665812DB3' \
     -X GET 'http://localhost:9001/service/authorization/v1/oauth2/authorize?response_type=code&client_id=frontend-client'
 
 export ACCT_USER_ACCESS_TOKEN=$(\
@@ -33,7 +33,7 @@ curl \
     -v \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'grant_type=authorization_code' \
-    -d 'code=hopuNXHxhItfqaqYVFM71qYaQnTEELK-5C2jR9quC6o-DvLlYZjWllSmBrpeFBVlbzpPCG4c_TkQFSzvVR7fzu3SJ4ejKPnUT5uL_eeREtX0Wary9a8QFTGOM8-QMKYt' \
+    -d 'code=zX-TbI6bUralbDRCFTVFVViVHq01JGomHyy_ObBPUkzEOBTLlkP_6iAkpbeGaWMcw_MHug8Eo1xyNSMcytXaYKyctGDsIPj7wFu6Iy6Oc1u6KnFE6vRrZYxydC1foNKp' \
     -d 'client_id=frontend-client' \
     -d 'client_secret=lkjdwsf23odnwqkld23odfbqweorh23oihd' \
     -X POST 'http://localhost:9001/service/authorization/v1/oauth2/token' \
@@ -121,3 +121,23 @@ curl \
     -X GET 'http://localhost:8087/service/currency/v1/monitoredCurrencies/collectors' \
     | jq
 
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X GET 'http://localhost:8087/service/currency/v1/monitoredCurrencies/records' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X GET 'http://localhost:8087/service/currency/v1/monitoredCurrencies/records?monitoredCurrencyUUID=12345' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X GET 'http://localhost:8087/service/currency/v1/monitoredCurrencies/records?monitoredCurrencyUUID=a71a7fe1-2dc2-43fe-9c4a-f32994d97a06' \
+    | jq

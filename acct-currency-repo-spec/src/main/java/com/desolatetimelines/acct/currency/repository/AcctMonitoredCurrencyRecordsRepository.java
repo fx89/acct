@@ -48,4 +48,12 @@ public interface AcctMonitoredCurrencyRecordsRepository {
      */
     void deleteAll(Collection<AcctMonitoredCurrencyRecord> monitoredCurrencyRecords);
 
+    /**
+     * Returns a collection of all the {@link AcctMonitoredCurrencyRecord records}
+     * of the referenced monitored currency
+     *
+     * @param monitoredCurrency the referenced monitored currency
+     */
+    Collection<AcctMonitoredCurrencyRecord> findAllByMonitoredCurrency(AcctMonitoredCurrency monitoredCurrency);
+
 }

@@ -4,13 +4,11 @@ import com.desolatetimelines.acct.currency.collector.service.CurrencyCollectorSe
 import com.desolatetimelines.acct.currency.exception.AcctCurrencyServiceMonitoredCurrencyConstraintViolationException;
 import com.desolatetimelines.acct.currency.exception.AcctCurrencyServiceMonitoredCurrencyNotFoundException;
 import com.desolatetimelines.acct.currency.model.AcctMonitoredCurrency;
+import com.desolatetimelines.acct.currency.model.AcctMonitoredCurrencyRecord;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -55,7 +53,7 @@ public class AcctCurrencyService {
      * @param currencyUUID          the UUID of the currency being monitored
      * @param quoteCurrencyUUID     the UUID of the currency against which the monitored currency is measured
      * @param collectorName         the name of the collector service that handles the data collection
-     * @param scheduledTimeHhMm     the time of day, formatted as "HH:MM", when the exchange rate is expected to be updated
+     * @param scheduledTimeHhMm     the strTime of day, formatted as "HH:MM", when the exchange rate is expected to be updated
      * @return a reference to the persisted {@link AcctMonitoredCurrency monitored currency}
      */
     public AcctMonitoredCurrency saveMonitoredCurrency(
@@ -117,6 +115,31 @@ public class AcctCurrencyService {
      */
     public Map<String, CurrencyCollectorService<?>> getCurrencyCollectorsByName() {
         return currencyCollectionService.getCurrencyCollectorsByName();
+    }
+
+    /**
+     * Returns a collection of all the available {@link AcctMonitoredCurrencyRecord monitored currency records}
+     * for the currency with the given monitored currency UUID, sorted by
+     * {@link AcctMonitoredCurrencyRecord#getMonitoredCurrencyRecordDate() record date}
+     *
+     * @param monitoredCurrencyUUID the given monitored currency UUID
+     */
+    public Collection<AcctMonitoredCurrencyRecord> getMonitoredCurrencyRecordsSortedByDate(
+        String monitoredCurrencyUUID
+    ) {
+        // Attempt to find the monitored currency or throw an exception if not found
+        final AcctMonitoredCurrency monitoredCurrency =
+            dataService.findMonitoredCurrencyByMonitoredCurrencyUUID(monitoredCurrencyUUID)
+                .orElseThrow(
+                    () -> new AcctCurrencyServiceMonitoredCurrencyNotFoundException(errors, monitoredCurrencyUUID)
+                );
+
+        // Get the records, sort and return
+        return
+            dataService.findMonitoredCurrencyRecordsByMonitoredCurrency(monitoredCurrency)
+                .stream()
+                .sorted(Comparator.comparing(AcctMonitoredCurrencyRecord::getMonitoredCurrencyRecordDate))
+                .toList();
     }
 
     // TODO: Put this in a common place, where it can be accessed by both the Catalog and Currency services

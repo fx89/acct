@@ -1,9 +1,6 @@
 package com.desolatetimelines.acct.currency.ws.endpoint;
 
-import com.desolatetimelines.acct.currency.ws.model.MonitoredCurrencyCollector;
-import com.desolatetimelines.acct.currency.ws.model.MonitoredCurrencyProperties;
-import com.desolatetimelines.acct.currency.ws.model.MonitoredCurrencySaveRequest;
-import com.desolatetimelines.acct.currency.ws.model.MonitoredCurrencyUUIDResponse;
+import com.desolatetimelines.acct.currency.ws.model.*;
 
 import java.util.Collection;
 
@@ -35,5 +32,13 @@ public interface MonitoredCurrenciesEndpoint {
      * exchange records collector
      */
     Collection<MonitoredCurrencyCollector> getAvailableMonitoredCurrencyCollectors();
+
+    /**
+     * Returns the monitored currency records for the monitored currency identified by the given monitored currency
+     * UUID, sorted by {@link MonitoredCurrencyRecordProperties#monitoredCurrencyRecordDate() record date}
+     *
+     * @param monitoredCurrencyUUID the given monitored currency UUID
+     */
+    Collection<MonitoredCurrencyRecordProperties> getMonitoredCurrencyRecords(String monitoredCurrencyUUID);
 
 }

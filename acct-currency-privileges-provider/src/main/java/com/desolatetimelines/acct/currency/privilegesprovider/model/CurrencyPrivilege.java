@@ -33,6 +33,13 @@ public enum CurrencyPrivilege {
             .withPrivilegeName("List available monitored currency collectors")
             .withPrivilegeDescription("Allows listing all the available monitored currency collectors")
             .build()
+    ),
+    MONITORED_CURRENCY_RECORDS_READ(
+        AcctPrivilege.builder()
+            .withPrivilegeId(CurrencyPrivilegeIds.MONITORED_CURRENCY_RECORDS_READ)
+            .withPrivilegeName("List exchange rates for monitored currencies")
+            .withPrivilegeDescription("Allows listing the exchange rates history of monitored currencies")
+            .build()
     );
 
     private final AcctPrivilege acctPrivilege;

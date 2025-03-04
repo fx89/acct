@@ -3,10 +3,7 @@ package com.desolatetimelines.acct.currency.ws.controller;
 
 import com.desolatetimelines.acct.currency.service.AcctCurrencyService;
 import com.desolatetimelines.acct.currency.ws.endpoint.MonitoredCurrenciesEndpoint;
-import com.desolatetimelines.acct.currency.ws.model.MonitoredCurrencyCollector;
-import com.desolatetimelines.acct.currency.ws.model.MonitoredCurrencyProperties;
-import com.desolatetimelines.acct.currency.ws.model.MonitoredCurrencySaveRequest;
-import com.desolatetimelines.acct.currency.ws.model.MonitoredCurrencyUUIDResponse;
+import com.desolatetimelines.acct.currency.ws.model.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +12,7 @@ import java.util.Collection;
 import static com.desolatetimelines.acct.currency.privilegesprovider.model.CurrencyPrivilegeIds.*;
 import static com.desolatetimelines.acct.currency.ws.mapper.MonitoredCurrencyCollectorsMapper.fromMapOfStringAndCurrencyCollectorService;
 import static com.desolatetimelines.acct.currency.ws.mapper.MonitoredCurrencyPropertiesMapper.fromCollectionOfAcctMonitoredCurrencies;
+import static com.desolatetimelines.acct.currency.ws.mapper.MonitoredCurrencyRecordPropertiesMapper.fromCollectionOfAcctMonitoredCurrencyRecord;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
@@ -62,6 +60,16 @@ public class MonitoredCurrenciesEndpointController implements MonitoredCurrencie
         return
             fromMapOfStringAndCurrencyCollectorService(
                 currencyService.getCurrencyCollectorsByName()
+            );
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + MONITORED_CURRENCY_RECORDS_READ + "')")
+    @GetMapping(value = "/records", produces = APPLICATION_JSON_VALUE)
+    public Collection<MonitoredCurrencyRecordProperties> getMonitoredCurrencyRecords(String monitoredCurrencyUUID) {
+        return
+            fromCollectionOfAcctMonitoredCurrencyRecord(
+                currencyService.getMonitoredCurrencyRecordsSortedByDate(monitoredCurrencyUUID)
             );
     }
 

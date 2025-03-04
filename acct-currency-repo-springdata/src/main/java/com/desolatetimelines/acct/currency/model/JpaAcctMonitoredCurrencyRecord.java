@@ -26,7 +26,7 @@ public class JpaAcctMonitoredCurrencyRecord implements AcctMonitoredCurrencyReco
     @Column(name = "monitored_currency_record_purchase_value")
     private Double monitoredCurrencyRecordPurchaseValue;
 
-    @Column(name = "monitored_currency_sale_value")
+    @Column(name = "monitored_currency_record_sale_value")
     private Double monitoredCurrencySaleValue;
 
     public Long getMonitoredCurrencyRecordId() {
