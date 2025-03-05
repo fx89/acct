@@ -41,4 +41,11 @@ public interface MonitoredCurrenciesEndpoint {
      */
     Collection<MonitoredCurrencyRecordProperties> getMonitoredCurrencyRecords(String monitoredCurrencyUUID);
 
+    /**
+     * Deletes the monitored currency with the given monitored currency UUID
+     *
+     * @param monitoredCurrencyUUID the given monitored currency UUID
+     */
+    void deleteMonitoredCurrency(String monitoredCurrencyUUID);
+
 }

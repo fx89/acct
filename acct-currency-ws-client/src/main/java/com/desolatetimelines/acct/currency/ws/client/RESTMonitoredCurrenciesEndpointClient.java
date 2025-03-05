@@ -3,10 +3,7 @@ package com.desolatetimelines.acct.currency.ws.client;
 import com.desolatetimelines.acct.currency.ws.endpoint.MonitoredCurrenciesEndpoint;
 import com.desolatetimelines.acct.currency.ws.model.*;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
@@ -35,6 +32,14 @@ public interface RESTMonitoredCurrenciesEndpointClient extends MonitoredCurrenci
 
     @Override
     @GetMapping(value = "/records", produces = APPLICATION_JSON_VALUE)
-    Collection<MonitoredCurrencyRecordProperties> getMonitoredCurrencyRecords(String monitoredCurrencyUUID);
+    Collection<MonitoredCurrencyRecordProperties> getMonitoredCurrencyRecords(
+        @RequestParam(name = "monitoredCurrencyUUID") String monitoredCurrencyUUID
+    );
+
+    @Override
+    @DeleteMapping(value = "", produces = APPLICATION_JSON_VALUE)
+    void deleteMonitoredCurrency(
+        @RequestParam(name = "monitoredCurrencyUUID") String monitoredCurrencyUUID
+    );
 
 }

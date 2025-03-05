@@ -39,4 +39,9 @@ public class InMemoryAcctMonitoredCurrenciesRepository implements AcctMonitoredC
     public Collection<AcctMonitoredCurrency> findAll() {
         return monitoredCurrencyRecordsByUUID.values();
     }
+
+    @Override
+    public void delete(AcctMonitoredCurrency monitoredCurrency) {
+        monitoredCurrencyRecordsByUUID.remove(monitoredCurrency.getMonitoredCurrencyUUID());
+    }
 }

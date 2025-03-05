@@ -128,11 +128,7 @@ public class AcctCurrencyService {
         String monitoredCurrencyUUID
     ) {
         // Attempt to find the monitored currency or throw an exception if not found
-        final AcctMonitoredCurrency monitoredCurrency =
-            dataService.findMonitoredCurrencyByMonitoredCurrencyUUID(monitoredCurrencyUUID)
-                .orElseThrow(
-                    () -> new AcctCurrencyServiceMonitoredCurrencyNotFoundException(errors, monitoredCurrencyUUID)
-                );
+        final AcctMonitoredCurrency monitoredCurrency = findMonitoredCurrencyOrFail(monitoredCurrencyUUID);
 
         // Get the records, sort and return
         return
@@ -140,6 +136,35 @@ public class AcctCurrencyService {
                 .stream()
                 .sorted(Comparator.comparing(AcctMonitoredCurrencyRecord::getMonitoredCurrencyRecordDate))
                 .toList();
+    }
+
+    /**
+     * Deletes the {@link AcctMonitoredCurrency monitored currency} with the given monitored currency UUID.
+     * Throws an exception if the referenced monitored currency does not exist.
+     *
+     * @param monitoredCurrencyUUID the given monitored currency UUID
+     */
+    public void deleteMonitoredCurrencyByMonitoredCurrencyUUID(String monitoredCurrencyUUID) {
+        // Attempt to find the monitored currency or throw an exception if not found
+        final AcctMonitoredCurrency monitoredCurrency = findMonitoredCurrencyOrFail(monitoredCurrencyUUID);
+
+        // Delete the monitored currency
+        dataService.deleteMonitoredCurrency(monitoredCurrency);
+    }
+
+    /**
+     * Retrieves the monitored currency with the given monitored currency UUID or raises an exception
+     * if the referenced monitored currency does not exist
+     *
+     * @param monitoredCurrencyUUID the given monitored currency UUID
+     */
+    private AcctMonitoredCurrency findMonitoredCurrencyOrFail(String monitoredCurrencyUUID) {
+        // Attempt to find the monitored currency or throw an exception if not found
+        return
+            dataService.findMonitoredCurrencyByMonitoredCurrencyUUID(monitoredCurrencyUUID)
+                .orElseThrow(
+                    () -> new AcctCurrencyServiceMonitoredCurrencyNotFoundException(errors, monitoredCurrencyUUID)
+                );
     }
 
     // TODO: Put this in a common place, where it can be accessed by both the Catalog and Currency services

@@ -38,4 +38,11 @@ public interface AcctMonitoredCurrenciesRepository {
      */
     Collection<AcctMonitoredCurrency> findAll();
 
+    /**
+     * Deletes the referenced monitored currency
+     *
+     * @param monitoredCurrency the referenced monitored currency
+     */
+    void delete(AcctMonitoredCurrency monitoredCurrency);
+
 }

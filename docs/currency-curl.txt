@@ -24,7 +24,7 @@ curl \
 curl \
     --insecure \
     -v \
-    --cookie 'JSESSIONID=858620D54BED2E65875BA20665812DB3' \
+    --cookie 'JSESSIONID=BF92D290DA739E2ACE3158360369FEBB' \
     -X GET 'http://localhost:9001/service/authorization/v1/oauth2/authorize?response_type=code&client_id=frontend-client'
 
 export ACCT_USER_ACCESS_TOKEN=$(\
@@ -33,7 +33,7 @@ curl \
     -v \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'grant_type=authorization_code' \
-    -d 'code=zX-TbI6bUralbDRCFTVFVViVHq01JGomHyy_ObBPUkzEOBTLlkP_6iAkpbeGaWMcw_MHug8Eo1xyNSMcytXaYKyctGDsIPj7wFu6Iy6Oc1u6KnFE6vRrZYxydC1foNKp' \
+    -d 'code=6UDNGzq5Xxx0L1dN5iv1AP5Wy09d_4_NZ4fxql9pNGzinv9tVvShRgM9XwP_QFrBM1sF_Y_adGA1LxiBz-5IeyOXN7mFJihw10dYSUTzCVKRDMI5oXcMoaSk7LZGvcv5' \
     -d 'client_id=frontend-client' \
     -d 'client_secret=lkjdwsf23odnwqkld23odfbqweorh23oihd' \
     -X POST 'http://localhost:9001/service/authorization/v1/oauth2/token' \
@@ -140,4 +140,18 @@ curl \
     -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
     -H "Content-Type: application/json; charset=utf-8" \
     -X GET 'http://localhost:8087/service/currency/v1/monitoredCurrencies/records?monitoredCurrencyUUID=a71a7fe1-2dc2-43fe-9c4a-f32994d97a06' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X DELETE 'http://localhost:8087/service/currency/v1/monitoredCurrencies?monitoredCurrencyUUID=1' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X DELETE 'http://localhost:8087/service/currency/v1/monitoredCurrencies?monitoredCurrencyUUID=0d723747-17c3-4951-b17d-4175cd1842a6' \
     | jq

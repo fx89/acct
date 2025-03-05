@@ -52,4 +52,11 @@ public class SpringJpaAcctMonitoredCurrenciesRepository implements AcctMonitored
                 .toList();
     }
 
+    @Override
+    public void delete(AcctMonitoredCurrency monitoredCurrency) {
+        jpaAcctMonitoredCurrenciesRepository.delete(
+            doWithJpaAcctMonitoredCurrencyReturning(monitoredCurrency, identity())
+        );
+    }
+
 }

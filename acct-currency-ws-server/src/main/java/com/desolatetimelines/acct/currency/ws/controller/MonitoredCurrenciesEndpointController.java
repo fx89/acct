@@ -66,11 +66,22 @@ public class MonitoredCurrenciesEndpointController implements MonitoredCurrencie
     @Override
     @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + MONITORED_CURRENCY_RECORDS_READ + "')")
     @GetMapping(value = "/records", produces = APPLICATION_JSON_VALUE)
-    public Collection<MonitoredCurrencyRecordProperties> getMonitoredCurrencyRecords(String monitoredCurrencyUUID) {
+    public Collection<MonitoredCurrencyRecordProperties> getMonitoredCurrencyRecords(
+        @RequestParam(name = "monitoredCurrencyUUID") String monitoredCurrencyUUID
+    ) {
         return
             fromCollectionOfAcctMonitoredCurrencyRecord(
                 currencyService.getMonitoredCurrencyRecordsSortedByDate(monitoredCurrencyUUID)
             );
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + MONITORED_CURRENCIES_DELETE + "')")
+    @DeleteMapping(value = "", produces = APPLICATION_JSON_VALUE)
+    public void deleteMonitoredCurrency(
+        @RequestParam(name = "monitoredCurrencyUUID") String monitoredCurrencyUUID
+    ) {
+        currencyService.deleteMonitoredCurrencyByMonitoredCurrencyUUID(monitoredCurrencyUUID);
     }
 
 }

@@ -127,4 +127,13 @@ public class AcctCurrencyDataService {
         return monitoredCurrencyRecordsRepository.findAllByMonitoredCurrency(monitoredCurrency);
     }
 
+    /**
+     * Deletes the referenced monitored currency
+     *
+     * @param monitoredCurrency the referenced monitored currency
+     */
+    void deleteMonitoredCurrency(AcctMonitoredCurrency monitoredCurrency) {
+        monitoredCurrenciesRepository.delete(monitoredCurrency);
+    }
+
 }
