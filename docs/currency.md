@@ -110,7 +110,7 @@ This needs to abide by all the rules stated in `CUR-04001`, including recording 
 The only exception is that, instead of going through the jobs framework, the collector is run directly.
 
 Example request URL:
-- `POST http://acct.desolatetimelines.com/service/currency/v1/monitoredCurrencies/collectManually`
+- `POST http://acct.desolatetimelines.com/service/currency/v1/monitoredCurrencies/collectManually?monitoredCurrencyUUID=50748477-3793-4fe1-9920-a343475b1719`
 
 
 

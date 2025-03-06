@@ -84,18 +84,32 @@ public class AcctCurrencyCollectionService {
     }
 
     /**
+     * Collects the exchange records for the referenced {@link AcctMonitoredCurrency monitored currency},
+     * if ot has a {@link AcctMonitoredCurrency#getCollectorName() curency collector} set and for if its
+     * strTime is before the current time. The collected data is persisted to the data store.
+     */
+    public void handleCurrencyExchangeRatesCollection(AcctMonitoredCurrency monitoredCurrency) {
+        handleCurrencyExchangeRatesCollection(
+            List.of(monitoredCurrency)
+        );
+    }
+
+    /**
      * Collects the exchange records for all the {@link AcctMonitoredCurrency monitored currencies}
      * that have a {@link AcctMonitoredCurrency#getCollectorName() curency collector} set and for
      * which it is strTime to collect this data. The collected data is persisted to the data store.
      */
     public void handleCurrencyExchangeRatesCollection() {
-        // find all the monitored currencies
-        final Collection<AcctMonitoredCurrency> allMonitoredCurrencies =
-            dataService.findAllMonitoredCurrencies();
+        handleCurrencyExchangeRatesCollection(
+            dataService.findAllMonitoredCurrencies()
+        );
+    }
+
+    private void handleCurrencyExchangeRatesCollection(Collection<AcctMonitoredCurrency> selectedMonitoredCurrencies) {
 
         // Get all the bank UUIDs configured for the monitored currencies
         final Collection<String> bankUUIDs =
-            allMonitoredCurrencies.stream()
+            selectedMonitoredCurrencies.stream()
                 .map(AcctMonitoredCurrency::getBankUUID)
                 .distinct()
                 .toList();
@@ -113,7 +127,7 @@ public class AcctCurrencyCollectionService {
 
         // Get all the currency UUIDs for the monitored currencies
         final Collection<String> currencyUUIDs =
-            allMonitoredCurrencies.stream()
+            selectedMonitoredCurrencies.stream()
                 .map(AcctMonitoredCurrency::getCurrencyUUID)
                 .distinct()
                 .toList();
@@ -131,7 +145,7 @@ public class AcctCurrencyCollectionService {
 
         // Group monitored currencies by collector name (exclude the ones that do not specify a collector name)
         final Map<String, List<AcctMonitoredCurrency>> monitoredCurrenciesByCollectorName =
-            allMonitoredCurrencies.stream()
+            selectedMonitoredCurrencies.stream()
                 .filter(monitoredCurrency -> monitoredCurrency.getCollectorName() != null)
                 .collect(groupingBy(AcctMonitoredCurrency::getCollectorName));
 

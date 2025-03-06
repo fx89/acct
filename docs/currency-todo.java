@@ -2,7 +2,7 @@
 // DONE: CUR-01002: Monitored currencies endpoint: Get available monitored currency collectors
 // DONE: CUR-01003: Monitored currencies endpoint: Save monitored currency
 // DONE: CUR-01004: Monitored currencies endpoint: Delete monitored currency
-// TODO: CUR-01005: Monitored currencies endpoint: Collect manually
+// DONE: CUR-01005: Monitored currencies endpoint: Collect manually
 // DONE: CUR-01006: Monitored currencies endpoint: Get monitored currency records
 
 // TODO: CUR-02001: Used items endpoint: Get items in use of type

@@ -153,6 +153,21 @@ public class AcctCurrencyService {
     }
 
     /**
+     * Runs the collection job for the {@link AcctMonitoredCurrency monitored currency} with the
+     * given monitored currency UUID. Throw an exception if the referenced monitored currency does
+     * not exist.
+     *
+     * @param monitoredCurrencyUUID the given monitored currency UUID
+     */
+    public void manuallyCollectMonitoredCurrencyRecords(String monitoredCurrencyUUID) {
+        // Attempt to find the monitored currency or throw an exception if not found
+        final AcctMonitoredCurrency monitoredCurrency = findMonitoredCurrencyOrFail(monitoredCurrencyUUID);
+
+        // Run the collection job
+        currencyCollectionService.handleCurrencyExchangeRatesCollection(monitoredCurrency);
+    }
+
+    /**
      * Retrieves the monitored currency with the given monitored currency UUID or raises an exception
      * if the referenced monitored currency does not exist
      *

@@ -42,4 +42,10 @@ public interface RESTMonitoredCurrenciesEndpointClient extends MonitoredCurrenci
         @RequestParam(name = "monitoredCurrencyUUID") String monitoredCurrencyUUID
     );
 
+    @Override
+    @PostMapping(value = "/collectManually", produces = APPLICATION_JSON_VALUE)
+    void collectManually(
+        @RequestParam(name = "monitoredCurrencyUUID") String monitoredCurrencyUUID
+    );
+
 }

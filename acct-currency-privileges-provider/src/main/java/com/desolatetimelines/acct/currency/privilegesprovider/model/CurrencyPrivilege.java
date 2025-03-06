@@ -40,6 +40,14 @@ public enum CurrencyPrivilege {
             .withPrivilegeName("List exchange rates for monitored currencies")
             .withPrivilegeDescription("Allows listing the exchange rates history of monitored currencies")
             .build()
+    ),
+    MONITORED_CURRENCIES_COLLECT_MANUALLY(
+        AcctPrivilege.builder()
+            .withPrivilegeId(CurrencyPrivilegeIds.MONITORED_CURRENCIES_COLLECT_MANUALLY)
+            .withPrivilegeName("Manually collect exchange rates")
+            .withPrivilegeDescription("Allows manually triggering the collection of exchange rates for a given" +
+                "monitored currency")
+            .build()
     );
 
     private final AcctPrivilege acctPrivilege;

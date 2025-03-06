@@ -48,4 +48,11 @@ public interface MonitoredCurrenciesEndpoint {
      */
     void deleteMonitoredCurrency(String monitoredCurrencyUUID);
 
+    /**
+     * Runs the collector for the monitored currency specified by the given monitored currency UUID
+     *
+     * @param monitoredCurrencyUUID the given monitored currency UUID
+     */
+    void collectManually(String monitoredCurrencyUUID);
+
 }

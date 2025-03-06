@@ -20,7 +20,8 @@ public class AcctCurrencyServicePrivilegesProvider implements AcctServicePrivile
             CurrencyPrivilege.MONITORED_CURRENCIES_READ.getAcctPrivilege(),
             CurrencyPrivilege.MONITORED_CURRENCIES_DELETE.getAcctPrivilege(),
             CurrencyPrivilege.MONITORED_CURRENCY_COLLECTORS_READ.getAcctPrivilege(),
-            CurrencyPrivilege.MONITORED_CURRENCY_RECORDS_READ.getAcctPrivilege()
+            CurrencyPrivilege.MONITORED_CURRENCY_RECORDS_READ.getAcctPrivilege(),
+            CurrencyPrivilege.MONITORED_CURRENCIES_COLLECT_MANUALLY.getAcctPrivilege()
         );
     }
 

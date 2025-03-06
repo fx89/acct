@@ -84,4 +84,13 @@ public class MonitoredCurrenciesEndpointController implements MonitoredCurrencie
         currencyService.deleteMonitoredCurrencyByMonitoredCurrencyUUID(monitoredCurrencyUUID);
     }
 
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + MONITORED_CURRENCIES_COLLECT_MANUALLY + "')")
+    @PostMapping(value = "/collectManually", produces = APPLICATION_JSON_VALUE)
+    public void collectManually(
+        @RequestParam(name = "monitoredCurrencyUUID") String monitoredCurrencyUUID
+    ) {
+        currencyService.manuallyCollectMonitoredCurrencyRecords(monitoredCurrencyUUID);
+    }
+
 }
