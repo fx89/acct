@@ -5,6 +5,8 @@ import com.desolatetimelines.acct.currency.exception.AcctCurrencyServiceMonitore
 import com.desolatetimelines.acct.currency.exception.AcctCurrencyServiceMonitoredCurrencyNotFoundException;
 import com.desolatetimelines.acct.currency.model.AcctMonitoredCurrency;
 import com.desolatetimelines.acct.currency.model.AcctMonitoredCurrencyRecord;
+import com.desolatetimelines.acct.currency.model.MonitoredCurrencyRecord;
+import jakarta.transaction.Transactional;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -56,6 +58,7 @@ public class AcctCurrencyService {
      * @param scheduledTimeHhMm     the strTime of day, formatted as "HH:MM", when the exchange rate is expected to be updated
      * @return a reference to the persisted {@link AcctMonitoredCurrency monitored currency}
      */
+    @Transactional
     public AcctMonitoredCurrency saveMonitoredCurrency(
         String monitoredCurrencyUUID,
         String bankUUID,
@@ -144,6 +147,7 @@ public class AcctCurrencyService {
      *
      * @param monitoredCurrencyUUID the given monitored currency UUID
      */
+    @Transactional
     public void deleteMonitoredCurrencyByMonitoredCurrencyUUID(String monitoredCurrencyUUID) {
         // Attempt to find the monitored currency or throw an exception if not found
         final AcctMonitoredCurrency monitoredCurrency = findMonitoredCurrencyOrFail(monitoredCurrencyUUID);
@@ -165,6 +169,60 @@ public class AcctCurrencyService {
 
         // Run the collection job
         currencyCollectionService.handleCurrencyExchangeRatesCollection(monitoredCurrency);
+    }
+
+    /**
+     * Creates or updates the {@link AcctMonitoredCurrencyRecord monitored currency records} identified
+     * by the {@link MonitoredCurrencyRecord#monitoredCurrencyRecordDate() record dates} of the given
+     * records collection for the {@link AcctMonitoredCurrency monitored currency} identified by the given
+     * monitored currency UUID
+     *
+     * @param monitoredCurrencyUUID the given monitored currency UUID
+     * @param records               the given records collection
+     */
+    @Transactional
+    public void createOrUpdateMonitoredCurrencyRecords(
+        String monitoredCurrencyUUID,
+        Collection<MonitoredCurrencyRecord> records
+    ) {
+        // Attempt to find the monitored currency or throw an exception if not found
+        final AcctMonitoredCurrency monitoredCurrency = findMonitoredCurrencyOrFail(monitoredCurrencyUUID);
+
+        // Attempt to find any already-existing records for the given date
+        final Collection<AcctMonitoredCurrencyRecord> existingRecords =
+            dataService.findAllMonitoredCurrencyRecordsByMonitoredCurrencyAndMonitoredCurrencyRecordDateIn(
+                monitoredCurrency,
+                records.stream()
+                    .map(MonitoredCurrencyRecord::monitoredCurrencyRecordDate)
+                    .toList()
+            );
+
+        // For each input record...
+        records.forEach(record -> {
+            // Get the already existing record or create a new one
+            final AcctMonitoredCurrencyRecord dbRec =
+                existingRecords.stream()
+                    .filter(rec ->
+                        Objects.equals(
+                            rec.getMonitoredCurrencyRecordDate(),
+                            record.monitoredCurrencyRecordDate()
+                        )
+                    )
+                    .findFirst()
+                    .orElseGet(() -> {
+                        final AcctMonitoredCurrencyRecord newRec = dataService.createNewAcctMonitoredCurrencyRecord();
+                        newRec.setMonitoredCurrency(monitoredCurrency);
+                        newRec.setMonitoredCurrencyRecordDate(record.monitoredCurrencyRecordDate());
+                        return newRec;
+                    });
+
+            // Update the values
+            dbRec.setMonitoredCurrencyRecordPurchaseValue(record.monitoredCurrencyRecordPurchaseValue());
+            dbRec.setMonitoredCurrencyRecordSaleValue(record.monitoredCurrencyRecordSaleValue());
+
+            // Save the record
+            dataService.saveMonitoredCurrencyRecord(dbRec);
+        });
     }
 
     /**

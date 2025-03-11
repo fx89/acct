@@ -41,11 +41,19 @@ public enum CurrencyPrivilege {
             .withPrivilegeDescription("Allows listing the exchange rates history of monitored currencies")
             .build()
     ),
+    MONITORED_CURRENCY_RECORDS_SAVE(
+        AcctPrivilege.builder()
+            .withPrivilegeId(CurrencyPrivilegeIds.MONITORED_CURRENCY_RECORDS_SAVE)
+            .withPrivilegeName("Save exchange rates")
+            .withPrivilegeDescription("Allows creating or updating exchange rates history records for a given " +
+                "monitored currency")
+            .build()
+    ),
     MONITORED_CURRENCIES_COLLECT_MANUALLY(
         AcctPrivilege.builder()
             .withPrivilegeId(CurrencyPrivilegeIds.MONITORED_CURRENCIES_COLLECT_MANUALLY)
             .withPrivilegeName("Manually collect exchange rates")
-            .withPrivilegeDescription("Allows manually triggering the collection of exchange rates for a given" +
+            .withPrivilegeDescription("Allows manually triggering the collection of exchange rates for a given " +
                 "monitored currency")
             .build()
     );

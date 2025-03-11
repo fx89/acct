@@ -24,7 +24,7 @@ curl \
 curl \
     --insecure \
     -v \
-    --cookie 'JSESSIONID=595E3526E5EDF4EED625A3D0803A1BB1' \
+    --cookie 'JSESSIONID=8C61A938D043E019DEE03655A007F21E' \
     -X GET 'http://localhost:9001/service/authorization/v1/oauth2/authorize?response_type=code&client_id=frontend-client'
 
 export ACCT_USER_ACCESS_TOKEN=$(\
@@ -33,7 +33,7 @@ curl \
     -v \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'grant_type=authorization_code' \
-    -d 'code=eyYGfvyGnBO4VbMhn_1VT1prVC_0QO0zuHJJxdzA4dRghsxR9u4oO2tdbv9UldISn2NHKfdli3T1IMg5v0LRW33rW5IY1rYWAd2okk2U3QsV-0xfj8iUVjSLF22mzW3V' \
+    -d 'code=Z_tcrI_IOGtEU81VjsqT3PN0bOA9GwwHyxWycxK7d0xQRWpzpfnbKdCgYlD2fG6ErIFzP-xG3KoVGv-nIBoaZP8-bxAxWWD1D7bG8y-2hdP4Rr9C5ti9Idy3tGtY7RBW' \
     -d 'client_id=frontend-client' \
     -d 'client_secret=lkjdwsf23odnwqkld23odfbqweorh23oihd' \
     -X POST 'http://localhost:9001/service/authorization/v1/oauth2/token' \
@@ -161,4 +161,56 @@ curl \
     -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
     -H "Content-Type: application/json; charset=utf-8" \
     -X POST 'http://localhost:8087/service/currency/v1/monitoredCurrencies/collectManually?monitoredCurrencyUUID=a71a7fe1-2dc2-43fe-9c4a-f32994d97a06' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT 'http://localhost:8087/service/currency/v1/monitoredCurrencies/records?monitoredCurrencyUUID=a71a7fe1-2dc2-43fe-9c4a-f32994d97a06' \
+    --data-raw '
+        [
+            {
+                "monitoredCurrencyRecordDate": "2025-01-01T00:00:00.000Z",
+                "monitoredCurrencyRecordPurchaseValue": 5.0293,
+                "monitoredCurrencyRecordSaleValue": 5.7182
+            },
+            {
+                "monitoredCurrencyRecordDate": "2025-01-02T00:00:00.000Z",
+                "monitoredCurrencyRecordPurchaseValue": 4.9834,
+                "monitoredCurrencyRecordSaleValue": 5.5912
+            },
+            {
+                "monitoredCurrencyRecordDate": "2025-01-03T00:00:00.000Z",
+                "monitoredCurrencyRecordPurchaseValue": 4.9431,
+                "monitoredCurrencyRecordSaleValue": 5.5173
+            }
+        ]
+    ' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT 'http://localhost:8087/service/currency/v1/monitoredCurrencies/records?monitoredCurrencyUUID=a71a7fe1-2dc2-43fe-9c4a-f32994d97a06' \
+    --data-raw '
+        [
+            {
+                "monitoredCurrencyRecordDate": "2025-01-02T00:00:00.000Z",
+                "monitoredCurrencyRecordPurchaseValue": 4.1111,
+                "monitoredCurrencyRecordSaleValue": 5.1111
+            },
+            {
+                "monitoredCurrencyRecordDate": "2025-01-03T00:00:00.000Z",
+                "monitoredCurrencyRecordPurchaseValue": 1.1111,
+                "monitoredCurrencyRecordSaleValue": 2.1111
+            },
+            {
+                "monitoredCurrencyRecordDate": "2025-01-04T00:00:00.000Z",
+                "monitoredCurrencyRecordPurchaseValue": 4.9431,
+                "monitoredCurrencyRecordSaleValue": 5.5173
+            }
+        ]
+    ' \
     | jq

@@ -55,4 +55,16 @@ public interface MonitoredCurrenciesEndpoint {
      */
     void collectManually(String monitoredCurrencyUUID);
 
+    /**
+     * Adds or updates the given monitored currency records for the monitored currency referenced by
+     * the given monitored currency UUID.
+     *
+     * @param monitoredCurrencyUUID the given monitored currency UUID
+     * @param records               the given monitored currency records
+     */
+    void addMonitoredCurrencyRecords(
+        String monitoredCurrencyUUID,
+        Collection<MonitoredCurrencyRecordProperties> records
+    );
+
 }

@@ -125,6 +125,38 @@ Example request URL:
 
 
 <br /><br />
+#### `CUR-01007` Manually add currency records
+Registers records with the given details for the monitored currency identified by the given `monitoredCurrencyUUID`
+request parameter. Throws an exception if the monitored currency does not exist. Throws an exception if any given
+date is in the future. Overwrites any pre-existing records.
+
+Example request URL:
+- `PUT http://acct.desolatetimelines.com/service/currency/v1/monitoredCurrencies/records?monitoredCurrencyUUID=50748477-3793-4fe1-9920-a343475b1719`
+
+Example request body:
+```
+[
+    {
+        "monitoredCurrencyRecordDate": "2025-01-01T00:00:00.000Z",
+        "monitoredCurrencyRecordPurchaseValue": 5.0293,
+        "monitoredCurrencyRecordSaleValue": 5.7182
+    },
+    {
+        "monitoredCurrencyRecordDate": "2025-01-02T00:00:00.000Z",
+        "monitoredCurrencyRecordPurchaseValue": 4.9834,
+        "monitoredCurrencyRecordSaleValue": 5.5912
+    },
+    {
+        "monitoredCurrencyRecordDate": "2025-01-03T00:00:00.000Z",
+        "monitoredCurrencyRecordPurchaseValue": 4.9431,
+        "monitoredCurrencyRecordSaleValue": 5.5173
+    }
+]
+```
+
+
+
+<br /><br />
 ### Used items endpoint
 
 <br /><br />

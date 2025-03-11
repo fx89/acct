@@ -4,10 +4,11 @@
 // DONE: CUR-01004: Monitored currencies endpoint: Delete monitored currency
 // DONE: CUR-01005: Monitored currencies endpoint: Collect manually
 // DONE: CUR-01006: Monitored currencies endpoint: Get monitored currency records
+// DONE: CUR-01007: Monitored currencies endpoint: Manually add currency records
 
 // TODO: CUR-02001: Used items endpoint: Get items in use of type
 
-// TODO: CUR-03001: Monitored currencies client: API client
+// DONE: CUR-03001: Monitored currencies client: API client
 
 // DONE: CUR-04001: Background functionality: Collection framework
 

@@ -48,4 +48,11 @@ public interface RESTMonitoredCurrenciesEndpointClient extends MonitoredCurrenci
         @RequestParam(name = "monitoredCurrencyUUID") String monitoredCurrencyUUID
     );
 
+    @Override
+    @PutMapping(value = "/records")
+    void addMonitoredCurrencyRecords(
+        @RequestParam(name = "monitoredCurrencyUUID") String monitoredCurrencyUUID,
+        @RequestBody Collection<MonitoredCurrencyRecordProperties> records
+    );
+
 }

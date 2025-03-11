@@ -13,6 +13,7 @@ import static com.desolatetimelines.acct.currency.privilegesprovider.model.Curre
 import static com.desolatetimelines.acct.currency.ws.mapper.MonitoredCurrencyCollectorsMapper.fromMapOfStringAndCurrencyCollectorService;
 import static com.desolatetimelines.acct.currency.ws.mapper.MonitoredCurrencyPropertiesMapper.fromCollectionOfAcctMonitoredCurrencies;
 import static com.desolatetimelines.acct.currency.ws.mapper.MonitoredCurrencyRecordPropertiesMapper.fromCollectionOfAcctMonitoredCurrencyRecord;
+import static com.desolatetimelines.acct.currency.ws.mapper.MonitoredCurrencyRecordPropertiesMapper.toCollectionOfMonitoredCurrencyRecord;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
@@ -91,6 +92,19 @@ public class MonitoredCurrenciesEndpointController implements MonitoredCurrencie
         @RequestParam(name = "monitoredCurrencyUUID") String monitoredCurrencyUUID
     ) {
         currencyService.manuallyCollectMonitoredCurrencyRecords(monitoredCurrencyUUID);
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + MONITORED_CURRENCY_RECORDS_SAVE + "')")
+    @PutMapping(value = "/records")
+    public void addMonitoredCurrencyRecords(
+        @RequestParam(name = "monitoredCurrencyUUID") String monitoredCurrencyUUID,
+        @RequestBody Collection<MonitoredCurrencyRecordProperties> records
+    ) {
+        currencyService.createOrUpdateMonitoredCurrencyRecords(
+            monitoredCurrencyUUID,
+            toCollectionOfMonitoredCurrencyRecord(records)
+        );
     }
 
 }
