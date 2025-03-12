@@ -59,3 +59,19 @@ curl \
     -d '["acd9cc68-d0bb-4156-9ef5-0bb42d9edcb8", "cd4583a8-781a-4aac-90c5-dec57dcad3e6", "348835f6-c4dc-4c4c-a454-77d5e1cf5e23", "06f916c8-97c8-4c59-ac17-f858b8e3a187"]'\
     -X POST 'http://localhost:8083/service/usage/v1/itemsInUse?objectType=BANK' \
     | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json" \
+    -d '["acd9cc68-d0bb-4156-9ef5-0bb42d9edcb8", "6b55063f-de66-41b1-a222-3343574607c8"]'\
+    -X POST 'http://localhost:8083/service/usage/v1/itemsInUse?objectType=BANK' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json" \
+    -d '["cc51d147-3620-4729-abc6-5ba94d968217", "f1ec339a-e6b9-4651-a9ca-41f8e1dab186"]'\
+    -X POST 'http://localhost:8083/service/usage/v1/itemsInUse?objectType=CURRENCY' \
+    | jq

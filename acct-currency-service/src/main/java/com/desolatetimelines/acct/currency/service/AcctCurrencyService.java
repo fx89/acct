@@ -1,12 +1,18 @@
 package com.desolatetimelines.acct.currency.service;
 
+import com.desolatetimelines.acct.common.model.ObjectTypes;
 import com.desolatetimelines.acct.currency.collector.service.CurrencyCollectorService;
 import com.desolatetimelines.acct.currency.exception.AcctCurrencyServiceMonitoredCurrencyConstraintViolationException;
 import com.desolatetimelines.acct.currency.exception.AcctCurrencyServiceMonitoredCurrencyNotFoundException;
 import com.desolatetimelines.acct.currency.model.AcctMonitoredCurrency;
 import com.desolatetimelines.acct.currency.model.AcctMonitoredCurrencyRecord;
 import com.desolatetimelines.acct.currency.model.MonitoredCurrencyRecord;
+import com.desolatetimelines.acct.usage.ws.client.RESTUsageEndpointClient;
+import com.desolatetimelines.acct.usage.ws.model.ServiceItemTypesList;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +20,7 @@ import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 /**
  * Main class of the services layer of the ACCT currency service
@@ -27,14 +34,80 @@ public class AcctCurrencyService {
 
     private final AcctCurrencyCollectionService currencyCollectionService;
 
+    private final RESTUsageEndpointClient usageEndpointClient;
+
+    private final String applicationName;
+
+    private final String contextPath;
+
     public AcctCurrencyService(
         AcctCurrencyDataService dataService,
         AcctCurrencyErrorCodesRegistryService errors,
-        AcctCurrencyCollectionService currencyCollectionService
+        AcctCurrencyCollectionService currencyCollectionService,
+        RESTUsageEndpointClient usageEndpointClient,
+        @Value("${CURRENCY_APPLICATION_NAME}") String applicationName,
+        @Value("${CURRENCY_SERVER_CONTEXT_PATH}") String contextPath
     ) {
         this.dataService = dataService;
         this.errors = errors;
         this.currencyCollectionService = currencyCollectionService;
+        this.usageEndpointClient = usageEndpointClient;
+        this.applicationName = applicationName;
+        this.contextPath = contextPath;
+    }
+
+    /**
+     * Registers in-use item types with the usage service upon startup
+     */
+    @SuppressWarnings("unused")
+    @EventListener(ApplicationReadyEvent.class)
+    protected void registerInUseObjectTypes() {
+        usageEndpointClient.registerItemTypesForService(
+            ServiceItemTypesList.builder()
+                .withServiceName(applicationName)
+                .withServiceContextPath(contextPath)
+                .withItemType(List.of(
+                    ObjectTypes.BANK.name(),
+                    ObjectTypes.CURRENCY.name()
+                ))
+                .build()
+        );
+    }
+
+    /**
+     * Returns the UUIDs of any used items of the given type and that can be found in the given list
+     *
+     * @param objectType the given type
+     * @param itemUUIDs  the given list
+     */
+    public Collection<String> getInUseItemUUIDs(String objectType, Collection<String> itemUUIDs) {
+        // If the object type is BANK then search monitored currencies for banks
+        if (Objects.equals(objectType, ObjectTypes.BANK.name())) {
+            return
+                dataService.findMonitoredCurrenciesByBankUUIDIn(itemUUIDs)
+                    .stream()
+                    .map(AcctMonitoredCurrency::getBankUUID)
+                    .distinct()
+                    .toList();
+        }
+
+        // If the object type is CURRENCY then search monitored currencies for currencies and quoted currencies
+        if (Objects.equals(objectType, ObjectTypes.CURRENCY.name())) {
+            return
+                Stream.concat(
+                        dataService.findMonitoredCurrenciesByCurrencyUUIDIn(itemUUIDs)
+                            .stream()
+                            .map(AcctMonitoredCurrency::getCurrencyUUID),
+                        dataService.findMonitoredCurrenciesByQuotedCurrencyUUIDIn(itemUUIDs)
+                            .stream()
+                            .map(AcctMonitoredCurrency::getQuotedCurrencyUUID)
+                    ).distinct()
+                    .toList();
+        }
+
+        // If this point has been reached, it means that either the item type is not supported
+        // or the code for handling the object type is missing from above
+        throw new IllegalArgumentException("Object type [" + objectType + "] not supported");
     }
 
     /**

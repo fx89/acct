@@ -59,4 +59,39 @@ public class SpringJpaAcctMonitoredCurrenciesRepository implements AcctMonitored
         );
     }
 
+    @Override
+    public Collection<AcctMonitoredCurrency> findAllByBankUUIDIn(Collection<String> bankUUIDs) {
+        return
+            mapJpaEntitiesToSpecEntities(
+                jpaAcctMonitoredCurrenciesRepository.findAllByBankUUIDIn(bankUUIDs)
+            );
+    }
+
+    @Override
+    public Collection<AcctMonitoredCurrency> findAllByCurrencyUUIDIn(Collection<String> currencyUUIDs) {
+        return
+            mapJpaEntitiesToSpecEntities(
+                jpaAcctMonitoredCurrenciesRepository.findAllByCurrencyUUIDIn(currencyUUIDs)
+            );
+    }
+
+    @Override
+    public Collection<AcctMonitoredCurrency> findAllByQuotedCurrencyUUIDIn(
+        Collection<String> quotedCurrencyUUIDs
+    ) {
+        return
+            mapJpaEntitiesToSpecEntities(
+                jpaAcctMonitoredCurrenciesRepository.findAllByQuotedCurrencyUUIDIn(quotedCurrencyUUIDs)
+            );
+    }
+
+    private static Collection<AcctMonitoredCurrency> mapJpaEntitiesToSpecEntities(
+        Collection<JpaAcctMonitoredCurrency> jpaEntities
+    ) {
+        return
+            jpaEntities.stream()
+                .map(jpaAcctMonitoredCurrency -> (AcctMonitoredCurrency) jpaAcctMonitoredCurrency)
+                .toList();
+    }
+
 }

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 
 /**
- * Implementation of the {@link InUseItemsService} for the ACCT Usage service
+ * Implementation of the {@link InUseItemsService} for the ACCT Workspace service
  */
 @Service
 public class AcctWorkspaceInUseItemsService implements InUseItemsService {

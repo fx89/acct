@@ -66,6 +66,43 @@ public class AcctCurrencyDataService {
     }
 
     /**
+     * Returns a collection of {@link AcctMonitoredCurrency monitored currencies} for which the
+     * {@link AcctMonitoredCurrency#getBankUUID() bank UUID} can be found in the given collection
+     * of bank UUIDs
+     *
+     * @param bankUUIDs the given collection of bank UUIDs
+     */
+    public Collection<AcctMonitoredCurrency> findMonitoredCurrenciesByBankUUIDIn(Collection<String> bankUUIDs) {
+        return monitoredCurrenciesRepository.findAllByBankUUIDIn(bankUUIDs);
+    }
+
+    /**
+     * Returns a collection of {@link AcctMonitoredCurrency monitored currencies} for which the
+     * {@link AcctMonitoredCurrency#getCurrencyUUID() currenncy UUID} can be found in the given
+     * collection of currency UUIDs
+     *
+     * @param currencyUUIDs the given collection of currency UUIDs
+     */
+    public Collection<AcctMonitoredCurrency> findMonitoredCurrenciesByCurrencyUUIDIn(
+        Collection<String> currencyUUIDs
+    ) {
+        return monitoredCurrenciesRepository.findAllByCurrencyUUIDIn(currencyUUIDs);
+    }
+
+    /**
+     * Returns a collection of {@link AcctMonitoredCurrency monitored currencies} for which the
+     * {@link AcctMonitoredCurrency#getQuotedCurrencyUUID() quoted currenncy UUID} can be found
+     * in the given collection of quoted currency UUIDs
+     *
+     * @param quotedCurrencyUUIDs the given collection of quoted currency UUIDs
+     */
+    public Collection<AcctMonitoredCurrency> findMonitoredCurrenciesByQuotedCurrencyUUIDIn(
+        Collection<String> quotedCurrencyUUIDs
+    ) {
+        return monitoredCurrenciesRepository.findAllByQuotedCurrencyUUIDIn(quotedCurrencyUUIDs);
+    }
+
+    /**
      * Creates a new instance of {@link AcctMonitoredCurrencyRecord}
      *
      * @return a reference to the newly created instance

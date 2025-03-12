@@ -45,4 +45,35 @@ public interface AcctMonitoredCurrenciesRepository {
      */
     void delete(AcctMonitoredCurrency monitoredCurrency);
 
+    /**
+     * Returns a collection of {@link AcctMonitoredCurrency monitored currencies} for which the
+     * {@link AcctMonitoredCurrency#getBankUUID() bank UUID} can be found in the given collection
+     * of bank UUIDs
+     *
+     * @param bankUUIDs the given collection of bank UUIDs
+     */
+    Collection<AcctMonitoredCurrency> findAllByBankUUIDIn(Collection<String> bankUUIDs);
+
+    /**
+     * Returns a collection of {@link AcctMonitoredCurrency monitored currencies} for which the
+     * {@link AcctMonitoredCurrency#getCurrencyUUID() currenncy UUID} can be found in the given
+     * collection of currency UUIDs
+     *
+     * @param currencyUUIDs the given collection of currency UUIDs
+     */
+    Collection<AcctMonitoredCurrency> findAllByCurrencyUUIDIn(
+        Collection<String> currencyUUIDs
+    );
+
+    /**
+     * Returns a collection of {@link AcctMonitoredCurrency monitored currencies} for which the
+     * {@link AcctMonitoredCurrency#getQuotedCurrencyUUID() quoted currenncy UUID} can be found
+     * in the given collection of quoted currency UUIDs
+     *
+     * @param quotedCurrencyUUIDs the given collection of quoted currency UUIDs
+     */
+    Collection<AcctMonitoredCurrency> findAllByQuotedCurrencyUUIDIn(
+        Collection<String> quotedCurrencyUUIDs
+    );
+
 }

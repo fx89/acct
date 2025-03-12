@@ -44,4 +44,30 @@ public class InMemoryAcctMonitoredCurrenciesRepository implements AcctMonitoredC
     public void delete(AcctMonitoredCurrency monitoredCurrency) {
         monitoredCurrencyRecordsByUUID.remove(monitoredCurrency.getMonitoredCurrencyUUID());
     }
+
+    @Override
+    public Collection<AcctMonitoredCurrency> findAllByBankUUIDIn(Collection<String> bankUUIDs) {
+        return
+            monitoredCurrencyRecordsByUUID.values().stream()
+                .filter(mc -> bankUUIDs.contains(mc.getBankUUID()))
+                .toList();
+    }
+
+    @Override
+    public Collection<AcctMonitoredCurrency> findAllByCurrencyUUIDIn(Collection<String> currencyUUIDs) {
+        return
+            monitoredCurrencyRecordsByUUID.values().stream()
+                .filter(mc -> currencyUUIDs.contains(mc.getCurrencyUUID()))
+                .toList();
+    }
+
+    @Override
+    public Collection<AcctMonitoredCurrency> findAllByQuotedCurrencyUUIDIn(
+        Collection<String> quotedCurrencyUUIDs
+    ) {
+        return
+            monitoredCurrencyRecordsByUUID.values().stream()
+                .filter(mc -> quotedCurrencyUUIDs.contains(mc.getQuotedCurrencyUUID()))
+                .toList();
+    }
 }
