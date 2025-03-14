@@ -2,8 +2,9 @@ package com.desolatetimelines.acct.job.framework.service;
 
 import com.desolatetimelines.acct.job.framework.model.AcctJobCron;
 import com.desolatetimelines.acct.job.ws.spec.model.JobSummary;
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 
 /**
  * Defines the properties and lifecycle of a background job running within the ACCT ecosystem.<br />
@@ -71,7 +72,7 @@ public abstract class AcctJob {
         maxDelayMs = getMaxDelayMs();
     }
 
-    @PostConstruct
+    @EventListener(ApplicationReadyEvent.class)
     @SuppressWarnings("unused")
     private void resolveJobRegistration() {
         jobsExecutionService.resolveJobRegistration(jobSummary);
