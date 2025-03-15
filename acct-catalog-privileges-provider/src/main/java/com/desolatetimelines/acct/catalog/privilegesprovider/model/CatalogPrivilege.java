@@ -15,7 +15,7 @@ public enum CatalogPrivilege {
     ),
     ICONS_READ(
         AcctPrivilege.builder()
-            .withPrivilegeId(CatalogPrivilegeIds.ICONS_SAVE)
+            .withPrivilegeId(CatalogPrivilegeIds.ICONS_READ)
             .withPrivilegeName("Count, list and read icon properties")
             .withPrivilegeDescription("Allows counting, listing and reading the properties of icons " +
                 "registered in the catalog")

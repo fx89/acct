@@ -290,3 +290,25 @@ services:
       - catalog-postgres
     links:
       - catalog-postgres
+
+  currency-service:
+    <<: *serviceAcctServiceConfig
+    build:
+      context: ../
+      dockerfile: containers/generic-app.docker
+      args:
+        - ACCT_VERSION=${ACCT_VERSION}
+        - ACCT_MODULE_NAME=acct-currency-ws-server
+        - DOCKER_ECLIPSE_TEMURIN_IMAGE_VERSION=${DOCKER_ECLIPSE_TEMURIN_IMAGE_VERSION}
+    image: acct-currency-ws-server:${ACCT_VERSION}
+    hostname: currency-service
+    ports:
+      - ${CURRENCY_SERVER_PORT}:${CURRENCY_SERVER_PORT}
+    depends_on:
+      - eureka-service
+      - authorization-service
+      - usage-service
+      - jobs-service
+      - currency-postgres
+    links:
+      - currency-postgres

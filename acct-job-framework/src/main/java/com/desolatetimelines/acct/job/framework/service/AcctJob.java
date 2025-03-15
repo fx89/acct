@@ -74,7 +74,7 @@ public abstract class AcctJob {
 
     @EventListener(ApplicationReadyEvent.class)
     @SuppressWarnings("unused")
-    private void resolveJobRegistration() {
+    protected void resolveJobRegistration() {
         jobsExecutionService.resolveJobRegistration(jobSummary);
     }
 
