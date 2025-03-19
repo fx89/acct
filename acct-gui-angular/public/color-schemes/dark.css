@@ -1,0 +1,7 @@
+.color-theme-dark {
+    --application-background-color: #111;
+    --application-text-color: #EEE;
+    --input-border-color: #333;
+    --input-background-color: #000;
+    --input-text-color: #FFF;
+}

@@ -1,0 +1,32 @@
+<app-color-theme-selector></app-color-theme-selector>
+<input value="12345">
+
+@if ( router.url === '/' ) {
+
+
+
+<!-- --- This is the content of the main page ---------------------------------------------- -->
+  Main page
+<!-- --- End of main page ------------------------------------------------------------------ -->
+
+
+
+} @else {
+
+
+
+<!-- --- This is the layout of everyt other page ------------------------------------------- -->
+
+  <gui-sidebar></gui-sidebar>
+
+  @for (configItem of this.router.config; track configItem) {
+    <div>{{ configItem.path }}</div>
+  }
+
+  <router-outlet />
+
+<!-- --- End of every other page ---------------------------------------------------------- -->
+
+
+
+}

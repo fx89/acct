@@ -1,0 +1,12 @@
+{
+    "Bright": {
+        "file": "bright.css",
+        "description": "Default bright theme",
+        "selector": "color-theme-bright"
+    },
+    "Dark": {
+        "file": "dark.css",
+        "description": "Default dark theme",
+        "selector": "color-theme-dark"
+    }
+}

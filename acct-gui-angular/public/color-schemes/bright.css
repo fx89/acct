@@ -1,0 +1,7 @@
+.color-theme-bright {
+    --application-background-color: #EEE;
+    --application-text-color: #111;
+    --input-border-color: #BBB;
+    --input-background-color: #FFF;
+    --input-text-color: #000;
+}

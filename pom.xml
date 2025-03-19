@@ -56,6 +56,9 @@
         <module>acct-authorization-server-data-rest</module>
         <module>acct-authorization-server-data-mock</module>
 
+        <!-- GUI -->
+        <module>acct-gui-angular</module>
+
         <!-- User management -->
         <module>acct-user-management-ws-spec</module>
         <module>acct-user-management-ws-server</module>
