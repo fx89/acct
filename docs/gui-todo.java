@@ -1,4 +1,4 @@
-// TODO: GUI-01001: GUI components: Button
+// DONE: GUI-01001: GUI components: Button (with optional icon)
 // TODO: GUI-01002: GUI components: Switch
 // TODO: GUI-01003: GUI components: Card (image only, image + text, text position)
 // TODO: GUI-01004: GUI components: Cards list

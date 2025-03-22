@@ -19,3 +19,44 @@ input {
     background-color: var(--input-background-color);
     color: var(--input-text-color);
 }
+
+.form-control {
+    border-style: solid;
+    border-width: 1px;
+    border-color: var(--form-control-border);
+    background-color: var(--form-control-background-color);
+    color: var(--form-control-text-color-enabled);
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.form-control.hoverable :hover {
+    background-color: var(--form-control-background-color-hover);
+    color: var(--form-control-text-color-hover);
+    transition: 0.5s;
+    border-radius: 4px;
+}
+
+.form-control.disabled {
+    color: var(--form-control-text-color-disabled);
+}
+
+.red {
+    background-color: var(--red-background-color) !important;
+    color: var(--red-text-color);
+}
+
+.form-control.hoverable.red :hover {
+    background-color: var(--red-background-color-hover) !important;
+    color: var(--red-text-color);
+}
+
+.blue {
+    background-color: var(--blue-background-color) !important;
+    color: var(--blue-text-color);
+}
+
+.form-control.hoverable.blue :hover {
+    background-color: var(--blue-background-color-hover) !important;
+    color: var(--blue-text-color);
+}

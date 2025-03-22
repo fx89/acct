@@ -1,7 +1,23 @@
 .color-theme-bright {
     --application-background-color: #EEE;
     --application-text-color: #111;
+
     --input-border-color: #BBB;
     --input-background-color: #FFF;
     --input-text-color: #000;
+
+    --form-control-border: #BBB;
+    --form-control-background-color: #CCC;
+    --form-control-background-color-hover: #EEE;
+    --form-control-text-color-enabled: #333;
+    --form-control-text-color-disabled: #777;
+    --form-control-text-color-hover: #000;
+
+    --red-background-color: #D55;
+    --red-background-color-hover: #F88;
+    --red-text-color: #FFF;
+
+    --blue-background-color: #55D;
+    --blue-background-color-hover: #77F;
+    --blue-text-color: #FFF;
 }

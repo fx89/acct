@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { ColorThemesService } from '../../services-reusable/color-themes.service';
 import {v4 as uuidv4} from 'uuid';
-import { ValueChangeEvent } from '@angular/forms';
 
 @Component({
   selector: 'app-color-theme-selector',

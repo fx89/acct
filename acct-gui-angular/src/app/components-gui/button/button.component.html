@@ -1,0 +1,45 @@
+<div
+    id="{{ this.id }}_button"
+    [class]="{'form-control': true, 'hoverable': this.isEnabled(), 'red': this.isRed(), 'blue': this.isBlue(), 'disabled': !this.isEnabled()}"
+    [style.width]="this.getWidth()"
+    [style.height]="this.getHeight()"
+    [style.lineHeight]="this.getHeight()"
+    [style.textAlign]="this.getTextAlign()"
+    (click)="this.onClick()"
+>
+    @if ( this.isIconDefined() ) {
+        <table
+            id="{{ this.id }}_button_table"
+            style="width:100%; height:100%; border-style:none; padding:0px; margin:0px; line-height:0px; padding-left:3px; padding-right:3px; "
+            cellspacing="0"
+            cellpadding="0"
+        >
+            <tr>
+                @if (this.isIconAlignLeft()) {
+                    <td style="text-align:left; padding-right:3px; width:0px;">
+                        <img
+                            id="{{ this.id }}_button_image_left"
+                            src="{{ this.getIcon() }}"
+                            [style.height]="'calc(' + this.getHeight() + ' - 6px)'"
+                        >
+                    </td>
+                }
+
+                <td style="padding-left:3px; padding-right:3px;">{{ this.getValue() }}</td>
+
+                @if (this.isIconAlignRight()) {
+                    <td style="text-align:left; padding-right:3px; width:0px;">
+                        <img
+                            id="{{ this.id }}_button_image_right"
+                            src="{{ this.getIcon() }}"
+                            [style.height]="'calc(' + this.getHeight() + ' - 6px)'"
+                        >
+                    </td>
+                }
+            </tr>
+        </table>
+    }
+    @else {
+        {{ this.getValue() }}
+    }
+</div>

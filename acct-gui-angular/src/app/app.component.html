@@ -1,5 +1,21 @@
 <app-color-theme-selector></app-color-theme-selector>
+<br /><br />
+
 <input value="12345">
+<br /><br />
+
+<app-button
+  value='Button text'
+  textAlign="left"
+  width="300px"
+  height="30px" 
+  icon="favicon.ico"
+  iconAlign="left"
+  enabled="false"
+  (onClick)="onButtonClick()"
+  color="none"
+></app-button>
+<br /><br />
 
 @if ( router.url === '/' ) {
 
