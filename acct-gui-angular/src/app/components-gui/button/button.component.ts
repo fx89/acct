@@ -15,17 +15,17 @@ export class ButtonComponent {
   public id = uuidv4()
 
   // Properties
-  enabled   : InputSignal<string> = input("true");
-  value     : InputSignal<string> = input.required<string>();
-  textAlign : InputSignal<string> = input("left");
-  width     : InputSignal<string> = input("100%");
-  height    : InputSignal<string> = input("1.3em");
-  icon      : InputSignal<string> = input("");
-  iconAlign : InputSignal<string> = input("left");
-  color     : InputSignal<string> = input('none');
+  enabled   : InputSignal<boolean> = input(true)
+  value     : InputSignal<string> = input.required<string>()
+  textAlign : InputSignal<string> = input("left")
+  width     : InputSignal<string> = input("100%")
+  height    : InputSignal<string> = input("1.3em")
+  icon      : InputSignal<string> = input("")
+  iconAlign : InputSignal<string> = input("left")
+  color     : InputSignal<string> = input('none')
 
   // Events
-  @Output('onClick') onClickEventEmitter: EventEmitter<void> = new EventEmitter<void>();
+  @Output('onClick') onClickEventEmitter: EventEmitter<void> = new EventEmitter<void>()
 
   constructor() {
     
@@ -64,7 +64,7 @@ export class ButtonComponent {
   }
 
   public isEnabled() : boolean {
-    return this.enabled() !== "false"
+    return this.enabled()
   }
 
   public isRed() : boolean {

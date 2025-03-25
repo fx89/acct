@@ -1,0 +1,16 @@
+<input
+    id="{{ this.id }}_input"
+    [disabled]="!this.isEnabled()"
+    [value]="this.isHintVisible() ? this.getHint() : this.getCurrentValue()"
+    [class]="{'form-control': true, 'editable': true, 'enabled': this.isEnabled(), 'disabled': !this.isEnabled(), 'invalid': !this.isValid(), 'hint': this.isHintVisible()}"
+    style="padding-left: 5px; padding-right: 5px;"
+    [style.width]="'calc(' + this.getWidth() + ' - 10px)'"
+    [style.height]="this.getHeight()"
+    (keyup)="this.keyupEventHandler(itemValue.value)"
+    (focus)="this.focusEventHandler()"
+    (click)="this.focusEventHandler()"
+    (blur)="this.lostFocusEventHandler()"
+    #itemValue
+>
+
+{{ this.getCurrentValue() }}

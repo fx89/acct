@@ -4,15 +4,24 @@ import { SidebarComponent } from './components-gui/sidebar/sidebar.component';
 import { ColorThemesService } from './services-reusable/color-themes.service';
 import { ColorThemeSelectorComponent } from './components-gui/color-theme-selector/color-theme-selector.component';
 import { ButtonComponent } from './components-gui/button/button.component';
+import { InputComponent } from './components-gui/input/input.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, SidebarComponent, ColorThemeSelectorComponent, ButtonComponent],
+  imports: [
+    RouterOutlet,
+    SidebarComponent,
+    ColorThemeSelectorComponent,
+    ButtonComponent,
+    InputComponent
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.less'
 })
 export class AppComponent {
-  title = 'acct-gui-angular';
+  title = 'acct-gui-angular'
+
+  inputValue : string = 'testValue'
 
   constructor(protected router:Router, protected colorThemesService:ColorThemesService) {
     

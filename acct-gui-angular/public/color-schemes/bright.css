@@ -2,15 +2,16 @@
     --application-background-color: #EEE;
     --application-text-color: #111;
 
-    --input-border-color: #BBB;
-    --input-background-color: #FFF;
-    --input-text-color: #000;
-
-    --form-control-border: #BBB;
+    --form-control-border-color: #BBB;
+    --form-control-border-color-editable-invalid: #F00;
     --form-control-background-color: #CCC;
     --form-control-background-color-hover: #EEE;
+    --form-control-background-color-editable: #FFF;
+    --form-control-background-color-editable-disabled: #DDD;
     --form-control-text-color-enabled: #333;
     --form-control-text-color-disabled: #777;
+    --form-control-text-color-editable: #000;
+    --form-control-text-color-editable-hint: #AAA;
     --form-control-text-color-hover: #000;
 
     --red-background-color: #D55;

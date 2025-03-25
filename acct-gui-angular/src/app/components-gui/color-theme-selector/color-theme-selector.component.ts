@@ -31,7 +31,6 @@ export class ColorThemeSelectorComponent {
   }
 
   public getSelectedThemeName() : string {
-    console.log(this.colorThemesServices.getSelectedThemeName())
     return this.colorThemesServices.getSelectedThemeName()
   }
 

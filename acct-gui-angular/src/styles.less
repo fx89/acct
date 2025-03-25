@@ -4,33 +4,28 @@ body {
     color: var(--application-text-color);
 }
 
-select {
-    border-style: solid;
-    border-width: 1px;
-    border-color: var(--input-border-color);
-    background-color: var(--input-background-color);
-    color: var(--input-text-color);
-}
-
-input {
-    border-style: solid;
-    border-width: 1px;
-    border-color: var(--input-border-color);
-    background-color: var(--input-background-color);
-    color: var(--input-text-color);
-}
-
 .form-control {
     border-style: solid;
     border-width: 1px;
-    border-color: var(--form-control-border);
+    border-radius: 3px;
+    border-color: var(--form-control-border-color);
+}
+
+.clickable {
     background-color: var(--form-control-background-color);
     color: var(--form-control-text-color-enabled);
     cursor: pointer;
-    border-radius: 4px;
 }
 
-.form-control.hoverable :hover {
+.editable {
+    border-style: solid;
+    border-width: 1px;
+    background-color: var(--form-control-background-color-editable);
+    color: var(--form-control-text-color-editable);
+    outline: none;
+}
+
+.form-control.clickable.hoverable :hover {
     background-color: var(--form-control-background-color-hover);
     color: var(--form-control-text-color-hover);
     transition: 0.5s;
@@ -39,6 +34,18 @@ input {
 
 .form-control.disabled {
     color: var(--form-control-text-color-disabled);
+}
+
+.form-control.editable.disabled {
+    background-color: var(--form-control-background-color-editable-disabled);
+}
+
+.form-control.editable.hint {
+    color: var(--form-control-text-color-editable-hint);
+}
+
+.form-control.editable.invalid {
+    border-color: var(--form-control-border-color-editable-invalid);
 }
 
 .red {

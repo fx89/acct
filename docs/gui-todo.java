@@ -7,3 +7,5 @@
 // TODO: GUI-01007: GUI components: Accordion
 // TODO: GUI-01008: GUI components: Menu (vertical, folding into icons)
 // TODO: GUI-01009: GUI components: Table (fixed header, scrollable, sortable)
+// DONE: GUI-01010: GUI components: Input
+// TODO: GUI-01011: GUI components: Label

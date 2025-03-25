@@ -1,6 +1,10 @@
 <label id="{{ this.id }}_label" for="cars">Theme:</label>
 
-<select id="{{ this.id }}_dropdown" (change)="onThemeNameSelected($event)">
+<select
+    id="{{ this.id }}_dropdown"
+    (change)="onThemeNameSelected($event)"
+    class="form-control editable"
+>
     @for (themeName of this.getThemeNames(); track themeName) {
         <option value="{{ themeName }}" selected="{{ themeName == this.getSelectedThemeName() }}">
             {{ themeName }}
