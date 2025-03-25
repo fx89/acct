@@ -5,6 +5,8 @@
     --form-control-border-color: #555;
     --form-control-border-color-editable-invalid: #F00;
     --form-control-background-color: #333;
+    --form-control-background-color-alt: #111;
+    --form-control-background-color-alt-disabled: #333;
     --form-control-background-color-hover: #777;
     --form-control-background-color-editable: #000;
     --form-control-background-color-editable-disabled: #222;

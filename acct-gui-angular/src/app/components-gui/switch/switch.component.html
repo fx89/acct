@@ -1,0 +1,14 @@
+<div
+    id="{{this.id}}_outer_div"
+    [class]="{'form-control': true, 'clickable': true, 'enabled': this.isEnabled(), 'disabled': !this.isEnabled()}"
+    [style.width]="this.getWidth()"
+    [style.height]="this.getHeight()"
+    (click)="this.clickEventHandler()"
+>
+    <div
+        id="{{this.id}}_inner_div"
+        [class]="{'form-control': true, 'switch-inner-div': true, 'red': this.isRed(), 'blue': this.isBlue(), 'on': this.getValue(), 'off': !this.getValue()}"
+        style="width: 40%; height: 80%; padding: 0px; margin: 0px; margin-top: 2.5%;"
+    >
+    </div>
+</div>

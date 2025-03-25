@@ -13,6 +13,16 @@
 {{inputValue}}
 <br /><br />
 
+<app-switch
+  [(value)]="switchValue"
+  width="70px"
+  height="30px"
+  color="red"
+  [enabled]="true"
+></app-switch>
+{{ this.switchValue ? 'true' : 'false' }}
+<br /><br />
+
 <app-button
   value='Button text'
   textAlign="left"
@@ -20,7 +30,7 @@
   height="30px" 
   icon="favicon.ico"
   iconAlign="left"
-  [enabled]="false"
+  [enabled]="true"
   (onClick)="onButtonClick()"
   color="blue"
 ></app-button>
