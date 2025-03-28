@@ -1,0 +1,34 @@
+<div
+    id="{{ this.id }}"
+    [class]="{ 'form-control': true, 'card': true }"
+    [style.width]="this.getWidth()"
+    [style.height]="this.getHeight()"
+>
+    @if( this.isImageVisible() ) {
+        <img
+            id="{{ this.id }}_image"
+            src="{{ this.getImageRef() }}"
+            [style.width]="this.getImageWidth()"
+            [style.height]="this.getImageHeight()"
+            [style.float]="this.getImageFloat()"
+        >
+    }
+
+    @if( this.isContentVisible() ) {
+        <div
+            id="{{ this.id }}_content"
+            class="card-content"
+            [style.paddingLeft]="this.getContentPaddingLeft()"
+            [style.paddingRight]="this.getContentPaddingRight()"
+        >
+            <div
+                id="{{ this.id }}_content_title"
+                class="card-title"
+                [style.textAlign]="this.getImageFloat()"
+            >
+                {{ this.getTitle() }}
+            </div>
+            {{ this.getText() }}
+        </div>
+    }
+</div>

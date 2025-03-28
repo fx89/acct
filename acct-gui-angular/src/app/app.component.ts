@@ -6,6 +6,7 @@ import { ColorThemeSelectorComponent } from './components-gui/color-theme-select
 import { ButtonComponent } from './components-gui/button/button.component';
 import { InputComponent } from './components-gui/input/input.component';
 import { SwitchComponent } from './components-gui/switch/switch.component';
+import { CardComponent } from './components-gui/card/card.component';
 
 @Component({
   selector: 'app-root',
@@ -15,7 +16,8 @@ import { SwitchComponent } from './components-gui/switch/switch.component';
     ColorThemeSelectorComponent,
     ButtonComponent,
     InputComponent,
-    SwitchComponent
+    SwitchComponent,
+    CardComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.less'

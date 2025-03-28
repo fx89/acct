@@ -1,6 +1,13 @@
+:root {
+    --font-size-small: 13px;
+    --font-size-base: 16px;
+    --font-size-large: 18px;
+}
+
 body {
     background-color: var(--application-background-color);
-    font: small-caps 1em sans-serif;
+    font: small-caps 3em sans-serif;
+    font-size: var(--font-size-base);
     color: var(--application-text-color);
 }
 
@@ -74,4 +81,17 @@ body {
 .form-control.hoverable.blue :hover {
     background-color: var(--blue-background-color-hover) !important;
     color: var(--blue-text-color);
+}
+
+.card {
+    background-color: var(--card-background-color);
+}
+
+.card .card-content {
+    font-size: var(--font-size-small);
+}
+
+.card .card-content .card-title {
+    font-size: var(--font-size-base) !important;
+    border-bottom-color: var(--separator-color);
 }
