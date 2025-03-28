@@ -1,0 +1,31 @@
+<div
+    id="{{ this.id }}"
+    [class]="{ 'form-control': true, 'editable': true, 'progress-bar': true }"
+    [style.width]="this.getWidth()"
+    [style.height]="this.getHeight()"
+>
+    @if ( this.isLoading() ) {
+        <div
+            id="{{ this.id }}_loading"
+            class="progress-bar-loading"
+            [style.width]="this.getHeight()"
+        ></div>
+    }
+    @else {
+        <div
+            id="{{ this.id }}_progress"
+            [class]="{ 'progress-bar-progress': true, 'red': this.isRed(), 'blue': this.isBlue() }"
+            [style.width]="this.getValueStr()"
+        ></div>
+
+        @if ( this.isValueVisible() ) {
+            <div
+                id="{{ this.id }}_progress_value"
+                class="progress-bar-progress-value"
+                [style.lineHeight]="this.getHeight()"
+            >
+                {{ this.getRoundedValueStr() }}
+            </div>
+        }
+    }
+</div>

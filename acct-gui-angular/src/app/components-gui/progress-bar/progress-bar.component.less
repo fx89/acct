@@ -1,0 +1,32 @@
+.progress-bar {
+    position: relative;
+}
+
+.progress-bar-loading {
+    height: 100%;
+    position: relative;
+    top: 0px;
+    animation: progress-bar-loading-animation 1s ease-in-out;
+    animation-fill-mode: both; 
+    animation-iteration-count: infinite;
+}
+
+.progress-bar-progress {
+    padding: 0px;
+    margin: 0px;
+    height: 100%;
+}
+
+.progress-bar-progress-value {
+    width:100%;
+    height:100%;
+    position: absolute;
+    top: 0px;
+    text-align: center;
+}
+
+@keyframes progress-bar-loading-animation {
+    0% { width: 0%; left: 50%; height: 100%; border-radius: 50%; }
+    50% { width: 100%; left: 0%; height: 10%; top: 40%; border-radius: 30%; }
+    100% { width: 0%; left: 50%; height: 100%; border-radius: 50%; }
+  }

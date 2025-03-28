@@ -23,6 +23,14 @@
 {{ this.switchValue ? 'true' : 'false' }}
 <br /><br />
 
+<app-progress-bar
+  [loading]="!this.switchValue"
+  color="blue"
+  [value]="0.4823874320"
+  [valueVisible]="true"
+></app-progress-bar>
+<br /><br />
+
 <app-button
   value='Button text'
   textAlign="left"

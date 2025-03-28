@@ -2,6 +2,8 @@
     --font-size-small: 13px;
     --font-size-base: 16px;
     --font-size-large: 18px;
+
+    --form-control-border-radius: 3px;
 }
 
 body {
@@ -14,7 +16,7 @@ body {
 .form-control {
     border-style: solid;
     border-width: 1px;
-    border-radius: 3px;
+    border-radius: var(--form-control-border-radius);
     border-color: var(--form-control-border-color);
 }
 
@@ -95,3 +97,21 @@ body {
     font-size: var(--font-size-base) !important;
     border-bottom-color: var(--separator-color);
 }
+
+.form-control.progress-bar .progress-bar-loading {
+    background-color: var(--form-control-background-color);
+}
+
+.form-control.progress-bar .progress-bar-progress {
+    border-radius: var(--form-control-border-radius);
+    background-color: var(--form-control-background-color);
+}
+
+.form-control.progress-bar .progress-bar-progress-value {
+    font-size: var(--font-size-small);
+}
+
+
+
+
+

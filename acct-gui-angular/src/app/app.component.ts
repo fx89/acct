@@ -7,6 +7,7 @@ import { ButtonComponent } from './components-gui/button/button.component';
 import { InputComponent } from './components-gui/input/input.component';
 import { SwitchComponent } from './components-gui/switch/switch.component';
 import { CardComponent } from './components-gui/card/card.component';
+import { ProgressBarComponent } from './components-gui/progress-bar/progress-bar.component';
 
 @Component({
   selector: 'app-root',
@@ -17,7 +18,8 @@ import { CardComponent } from './components-gui/card/card.component';
     ButtonComponent,
     InputComponent,
     SwitchComponent,
-    CardComponent
+    CardComponent,
+    ProgressBarComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.less'
