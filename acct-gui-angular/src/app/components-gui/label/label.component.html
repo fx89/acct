@@ -1,0 +1,10 @@
+<div
+    id="{{ this.id }}"
+    [class]="{ 'label': true, 'small-font': this.isFontSmall(), 'large-font': this.isFontLarge(), 'red': this.isRed(), 'blue': this.isBlue(), 'flashing': this.isFlashing() }"
+    [style.width]="this.getWidth()"
+    [style.height]="this.getHeight()"
+    [style.lineHeight]="this.getHeight()"
+    [style.textAlign]="this.getTextAlign()"
+>
+    {{ this.getValue() }}
+</div>

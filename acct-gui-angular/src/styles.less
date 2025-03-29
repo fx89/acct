@@ -66,23 +66,33 @@ body {
 }
 
 .red {
-    background-color: var(--red-background-color) !important;
+    background-color: var(--red-background-color);
     color: var(--red-text-color);
 }
 
 .form-control.hoverable.red :hover {
-    background-color: var(--red-background-color-hover) !important;
+    background-color: var(--red-background-color-hover);
     color: var(--red-text-color);
 }
 
+.progress-bar-progress.red, .form-control.clickable .switch-inner-div.red {
+    background-color: var(--red-background-color) !important;
+    color: var(--red-text-color) !important;
+}
+
 .blue {
-    background-color: var(--blue-background-color) !important;
+    background-color: var(--blue-background-color);
     color: var(--blue-text-color);
 }
 
 .form-control.hoverable.blue :hover {
-    background-color: var(--blue-background-color-hover) !important;
+    background-color: var(--blue-background-color-hover);
     color: var(--blue-text-color);
+}
+
+.progress-bar-progress.blue, .form-control.clickable .switch-inner-div.blue {
+    background-color: var(--blue-background-color) !important;
+    color: var(--blue-text-color) !important;
 }
 
 .card {
@@ -111,6 +121,32 @@ body {
     font-size: var(--font-size-small);
 }
 
+.label {
+    border-radius: var(--form-control-border-radius);
+}
+
+.label.small-font {
+    font-size: var(--font-size-small);
+}
+
+.label.large-font {
+    font-size: var(--font-size-large);
+}
+
+.label.flashing {
+    animation: label-flashing-animation 1s ease-in-out;
+    animation-fill-mode: both; 
+    animation-iteration-count: infinite;
+}
+
+@keyframes label-flashing-animation {
+    0% {  }
+    50% { 
+        background-color: var(--flash-background-color);
+        color: var(--flash-text-color)
+    }
+    100% {  }
+}
 
 
 

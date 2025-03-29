@@ -8,7 +8,7 @@
 // TODO: GUI-01008: GUI components: Menu (vertical, folding into icons)
 // TODO: GUI-01009: GUI components: Table (fixed header, scrollable, sortable)
 // DONE: GUI-01010: GUI components: Input
-// TODO: GUI-01011: GUI components: Label
+// DONE: GUI-01011: GUI components: Label
 // DONE: GUI-01012: GUI components: Progress bar
 // TODO: GUI-01013: GUI components: Panel (optionally scrollable)
 // TODO: GUI-01014: GUI components: Modal overlay
