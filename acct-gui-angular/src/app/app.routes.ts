@@ -6,6 +6,7 @@ import { AccountsComponent } from './pages/accounts/accounts.component';
 import { CurrencyHistoryComponent } from './pages/currency-history/currency-history.component';
 import { UserInformationComponent } from './pages/user-information/user-information.component';
 import { CatalogComponent } from './pages/catalog/catalog.component';
+import { ShowcaseComponent } from './components-gui/showcase/showcase.component';
 
 export const routes: Routes = [
     {
@@ -35,5 +36,9 @@ export const routes: Routes = [
     {
         path: 'user-information',
         component: UserInformationComponent
+    },
+    {
+        path: 'components-showcase',
+        component: ShowcaseComponent
     },
 ];

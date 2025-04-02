@@ -10,7 +10,7 @@
 // DONE: GUI-01010: GUI components: Input
 // DONE: GUI-01011: GUI components: Label
 // DONE: GUI-01012: GUI components: Progress bar
-// TODO: GUI-01013: GUI components: Panel (optionally scrollable)
+// DONE: GUI-01013: GUI components: Panel (scrollable, optional title)
 // TODO: GUI-01014: GUI components: Modal overlay
 // TODO: GUI-01015: GUI components: Loading (optionally modal)
 // TODO: GUI-01016: GUI components: Dialog (optionally modal)

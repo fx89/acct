@@ -1,6 +1,6 @@
 .color-theme-bright {
     --application-background-color: #EEE;
-    --application-text-color: #111;
+    --application-text-color: #444;
 
     --form-control-border-color: #BBB;
     --form-control-border-color-editable-invalid: #F00;
@@ -19,6 +19,11 @@
     --separator-color: #B5B5B5;
 
     --card-background-color: #DDD;
+
+    --title-color: #000;
+
+    --panel-border-color: #CCCCCC;
+    --panel-background-color: #E5E5E5;
 
     --red-background-color: #D55;
     --red-background-color-hover: #F88;

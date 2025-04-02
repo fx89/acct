@@ -1,0 +1,33 @@
+<div
+    id="{{ this.id }}_parent"
+    [class]="{ 'panel': true, 'panel-parent': true }"
+    [style.width]="this.getWidth()"
+    [style.height]="this.getHeight()"
+    [style.minHeight]="this.getHeight()"
+    [style.maxHeight]="this.getHeight()"
+>
+    <!-- The panel title -->
+     @if ( this.isTitleVisible() ) {
+        <div
+            id="{{ this.id }}_title"
+            [class]="{ 'panel-title': true }"
+            [style.height]="'24px'"
+            [style.lineHeight]="'24px'"
+        >
+            {{ this.getTitle() }}
+        </div>
+    }
+
+    <div
+        id="{{ this.id }}_content"
+        [class]="{ 'panel-content': true }"
+        [style.height]="this.isTitleVisible() ? 'calc(' + this.getHeight() + ' - 24px)' : this.getHeight()"
+        [style.minHeight]="this.isTitleVisible() ? 'calc(' + this.getHeight() + ' - 24px)' : this.getHeight()"
+        [style.maxHeight]="this.isTitleVisible() ? 'calc(' + this.getHeight() + ' - 24px)' : this.getHeight()"
+    >
+        <ng-content></ng-content>
+    </div>
+
+
+</div>
+

@@ -1,6 +1,6 @@
 .color-theme-dark {
     --application-background-color: #111;
-    --application-text-color: hsl(0, 0%, 93%);
+    --application-text-color: #BBB;
 
     --form-control-border-color: #555;
     --form-control-border-color-editable-invalid: #F00;
@@ -19,6 +19,11 @@
     --separator-color: #454545;
 
     --card-background-color: #252525;
+
+    --title-color: #FFF;
+
+    --panel-border-color: #222222;
+    --panel-background-color: #151515;
 
     --red-background-color: #C00;
     --red-background-color-hover: #F55;

@@ -1,0 +1,119 @@
+<app-color-theme-selector></app-color-theme-selector>
+<br /><br />
+
+<app-input
+  [enabled]="true"
+  [(value)]="inputValue"
+  [valid]="true"
+  width="300px"
+  height="30px"
+  hint="Enter a value here"
+></app-input>
+<br /><br />
+{{inputValue}}
+<br /><br />
+
+<app-switch
+  [(value)]="switchValue"
+  width="70px"
+  height="30px"
+  color="red"
+  [enabled]="true"
+></app-switch>
+{{ this.switchValue ? 'true' : 'false' }}
+<br /><br />
+
+<app-progress-bar
+  [loading]="!this.switchValue"
+  color="blue"
+  [value]="0.4823874320"
+  [valueVisible]="true"
+></app-progress-bar>
+<br /><br />
+
+<app-button
+  value='Button text'
+  textAlign="left"
+  width="300px"
+  height="30px" 
+  icon="favicon.ico"
+  iconAlign="left"
+  [enabled]="true"
+  (onClick)="onButtonClick()"
+  color="blue"
+></app-button>
+<br /><br />
+
+<app-card
+  imageRef="pic.png"
+  imagePosition="left"
+></app-card>
+<br /><br />
+
+<app-label value="My Beautiful Label"          fontSize="small" color="none" textAlign="center" [flash]="false"></app-label>
+<app-label value="My Beautiful Red Label"      fontSize="small" color="red"  textAlign="center" [flash]="false"></app-label>
+<app-label value="My Beautiful Blue Label"     fontSize="small" color="blue" textAlign="center" [flash]="false"></app-label>
+<app-label value="My Beautiful Flashing Label" fontSize="small" color="none" textAlign="center" [flash]="true" ></app-label>
+<br /><br />
+
+<app-panel
+  width="500px"
+  height="200px"
+  title="The panel title"
+>
+  Test<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+  TEST<br />
+</app-panel>
