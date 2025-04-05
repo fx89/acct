@@ -1,4 +1,4 @@
-import { Component, input, InputSignal } from '@angular/core';
+import { Component, EventEmitter, input, InputSignal, Output } from '@angular/core';
 import {v4 as uuidv4} from 'uuid';
 
 @Component({
@@ -15,14 +15,18 @@ export class CardComponent {
   public id = uuidv4()
 
   // Properties
-  width         : InputSignal<string> = input("280px")
-  height        : InputSignal<string> = input("100px")
-  imageRef      : InputSignal<string> = input("")
-  imageWidth    : InputSignal<string> = input("100px")
-  imageHeight   : InputSignal<string> = input("100px")
-  imagePosition : InputSignal<string> = input("left")
-  title         : InputSignal<string> = input("Card title")
-  text          : InputSignal<string> = input("Card text Card text Card text Card text Card text")
+  width         : InputSignal<string>  = input("280px")
+  height        : InputSignal<string>  = input("100px")
+  imageRef      : InputSignal<string>  = input("")
+  imageWidth    : InputSignal<string>  = input("100px")
+  imageHeight   : InputSignal<string>  = input("100px")
+  imagePosition : InputSignal<string>  = input("left")
+  title         : InputSignal<string>  = input("Card title")
+  text          : InputSignal<string>  = input("Card text Card text Card text Card text Card text")
+  clickable     : InputSignal<boolean> = input(false)
+
+  // Events
+  @Output('onClick') onClickEventEmitter: EventEmitter<void> = new EventEmitter<void>()
 
   public getWidth() : string {
     return this.width()
@@ -101,6 +105,16 @@ export class CardComponent {
 
   public isContentVisible() : boolean {
     return this.isTitleVisible() || this.isTextVisible()
+  }
+
+  public isClickable() : boolean {
+    return this.clickable()
+  }
+
+  public onClick() : void {
+    if (this.isClickable()) {
+      this.onClickEventEmitter.emit();
+    }
   }
 
 }

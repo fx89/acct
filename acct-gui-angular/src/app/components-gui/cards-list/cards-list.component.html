@@ -1,0 +1,33 @@
+<app-panel
+    [id]="this.id + '_panel'"
+    [width]="this.getWidth()"
+    [height]="this.getHeight()"
+    [title]="this.getTitle()"
+>
+    @for (card of this.getCards(); track card) {
+        <div
+            [class]="{ 'cards-list-card-wrapper': true, 'selectable': this.isSelectable(), 'selected': this.isCardSelected(card) }"
+            [style.marginTop]="this.getCardSpacing()"
+        >
+            <app-card
+                [width]="this.getCardWidth()"
+                [height]="this.getCardHeight()"
+                [imageRef]="card.imageRef"
+                [imagePosition]="this.getCardImagePosition()"
+                [imageWidth]="this.getCardImageWidth()"
+                [imageHeight]="this.getCardImageHeight()"
+                [title]="card.title"
+                [text]="card.text"
+                [clickable]="this.isClickable() || this.isSelectable()"
+                (onClick)="this.onCardClicked(card)"
+            ></app-card>
+        </div>
+    }
+    @empty {
+        <div class="form-control-status-message cards-list-status-message">
+            {{ this.getEmptyMessage() }}
+        </div>
+    }
+
+
+</app-panel>

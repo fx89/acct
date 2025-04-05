@@ -15,10 +15,14 @@
     --form-control-text-color-editable: #000;
     --form-control-text-color-editable-hint: #AAA;
     --form-control-text-color-hover: #000;
+    --form-control-text-color-status-message: #AAA;
 
     --separator-color: #B5B5B5;
 
     --card-background-color: #DDD;
+    --card-background-color-hover: #CCC;
+    --card-background-color-selected: #BBB;
+    --card-background-color-selected-hover: #AAA;
 
     --title-color: #000;
 

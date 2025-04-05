@@ -1,8 +1,10 @@
 <div
     id="{{ this.id }}"
-    [class]="{ 'form-control': true, 'card': true }"
+    [class]="{ 'form-control': true, 'card': true}"
     [style.width]="this.getWidth()"
     [style.height]="this.getHeight()"
+    [style.cursor]="this.isClickable() ? 'pointer' : ''"
+    (click)="this.onClick()"
 >
     @if( this.isImageVisible() ) {
         <img

@@ -65,6 +65,10 @@ body {
     background-color: var(--form-control-background-color-alt-disabled);
 }
 
+.form-control-status-message {
+    color: var(--form-control-text-color-status-message);
+}
+
 .red {
     background-color: var(--red-background-color);
     color: var(--red-text-color);
@@ -97,6 +101,20 @@ body {
 
 .card {
     background-color: var(--card-background-color);
+}
+
+.cards-list-card-wrapper.selectable .card:hover {
+    background-color: var(--card-background-color-hover);
+    transition: 0.5s;
+}
+
+.cards-list-card-wrapper.selectable.selected .card {
+    background-color: var(--card-background-color-selected);
+}
+
+.cards-list-card-wrapper.selectable.selected .card:hover {
+    background-color: var(--card-background-color-selected-hover);
+    transition: 0.5s;
 }
 
 .card .card-content {

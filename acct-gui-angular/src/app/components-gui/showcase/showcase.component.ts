@@ -7,6 +7,8 @@ import { CardComponent } from '../card/card.component';
 import { ProgressBarComponent } from '../progress-bar/progress-bar.component';
 import { LabelComponent } from '../label/label.component';
 import { PanelComponent } from '../panel/panel.component';
+import { CardsListComponent } from '../cards-list/cards-list.component';
+import { CardData } from '../cards-list/card-data';
 
 @Component({
   selector: 'app-showcase',
@@ -18,7 +20,8 @@ import { PanelComponent } from '../panel/panel.component';
     CardComponent,
     ProgressBarComponent,
     LabelComponent,
-    PanelComponent
+    PanelComponent,
+    CardsListComponent
   ],
   templateUrl: './showcase.component.html',
   styleUrl: './showcase.component.less'
@@ -27,9 +30,42 @@ export class ShowcaseComponent {
 
   inputValue : string = 'testValue'
   switchValue : boolean = true
+  selectedCard : CardData | undefined
+
+  cardsListData : CardData[] = [
+    {
+      title: "Clickable card",
+      text: "This card says hello when clicked",
+      imageRef: "",
+      onClick: function() { alert('Hello') }
+    },
+    {
+      title: "Not clickable card",
+      text: "This card is not clickable",
+      imageRef: ""
+    },
+    {
+      title: "Another clickable card",
+      text: "This card says hello world when clicked",
+      imageRef: "",
+      onClick: () => alert('Hello world')
+    }
+  ]
+
+  public getCardsListData() : CardData[] {
+    return this.cardsListData
+  }
 
   public onButtonClick() : void {
     alert('da')
+  }
+
+  public onCardSelected(card : CardData) : void {
+    this.selectedCard = card
+  }
+
+  public getSelectedCardTitle() : string {
+    return <string> (this.selectedCard?.title)
   }
 
 }
