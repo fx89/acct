@@ -60,6 +60,23 @@
         (onClick)="onButtonClick()"
       ></app-card>
       <br /><br />
+
+      <app-select
+        [options]="this.selectOptions"
+        [cardHeightPx]="50"
+        [(selectedOption)]="this.selectSelectedOption"
+      ></app-select>
+      <app-label [value]="this.getSelectSelectedOptionValue()" textAlign="center"></app-label>
+      <br /><br />
+      <br /><br />
+      <br /><br />
+      <br /><br />
+      <br /><br />
+      <br /><br />
+      <br /><br />
+      <br /><br />
+      <br /><br />
+      <br /><br />
     </td>
     <td width="100">
 

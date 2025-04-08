@@ -23,13 +23,15 @@
             [style.paddingLeft]="this.getContentPaddingLeft()"
             [style.paddingRight]="this.getContentPaddingRight()"
         >
-            <div
-                id="{{ this.id }}_content_title"
-                class="card-title"
-                [style.textAlign]="this.getImageFloat()"
-            >
-                {{ this.getTitle() }}
-            </div>
+            @if( this.isTitleVisible() ) {
+                <div
+                    id="{{ this.id }}_content_title"
+                    class="card-title"
+                    [style.textAlign]="this.getImageFloat()"
+                >
+                    {{ this.getTitle() }}
+                </div>
+            }
             {{ this.getText() }}
         </div>
     }

@@ -1,0 +1,52 @@
+<div
+    id="{{ this.getWrappingDivId() }}"
+    class="select-control"
+>
+    <app-card
+        class="select-box"
+        [width]="this.getWidth()"
+        [height]="this.getHeight()"
+        [imageRef]="this.getSelectedOptionImageRef()"
+        [imagePosition]="this.getCardImagePosition()"
+        [imageWidth]="this.getHeight()"
+        [imageHeight]="this.getHeight()"
+        title=""
+        [text]="this.getSelectedOptionTitle()"
+        [clickable]="true"
+        (onClick)="onSelectButtonClicked()"
+    ></app-card>
+
+    <div
+        id="{{ this.id }}_select_button"
+        class="form-control clickable select-button"
+        [style.width]="this.getHeight()"
+        [style.height]="this.getHeight()"
+        [style.lineHeight]="this.getHeight()"
+        (click)="onSelectButtonClicked()"
+    >
+        &#x2B9F;
+    </div>
+
+    @if( this.isListVisible() ) {
+        <div
+            id="{{ this.id }}_select_options"
+            class="select-list"
+            [style.bottom]="this.isListOnTop() ? 'calc(' + this.getTotalCardPadding() + ' + ' + this.getHeight() + ')' : ''"
+        >
+            <app-cards-list
+                [width]="this.getWidth()"
+                [height]="this.getActualListHeight()"
+                [cardWidth]="'calc(' + this.getWidth() + ' - 25px)'"
+                [cardHeight]="this.getCardHeight()"
+                [cardImageWidth]="this.getCardImageWidth()"
+                [cardImageHeight]="this.getCardImageHeight()"
+                cardSpacing="5px"
+                [cards]="getOptions()"
+                [clickable]="true"
+                [selectable]="true"
+                (selectionChange)="this.onCardSelected($event)"
+            ></app-cards-list>
+        </div>
+    }
+
+</div>
