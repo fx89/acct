@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { Theme } from '../model-reusable/theme';
-import { setCookie, getCookie, deleteCookie } from '../utils-reusalbe/cookie-utils';
+import { setCookie, getCookie } from '../utils-reusalbe/cookie-utils';
 
 const THEMES_BASE_PATH: string = 'color-schemes';
 const THEMES_COOKIE_THEME_NAME: string = 'themes-service-selected-theme-name';
@@ -14,6 +14,8 @@ export class ColorThemesService {
   themes: Theme[] = []
 
   selectedThemeName: string = ""
+
+  themesLoadedEvent : EventEmitter<Theme[]> = new EventEmitter<Theme[]>()
 
   constructor(private http: HttpClient) { 
     // Begin loading the themes index
@@ -30,6 +32,9 @@ export class ColorThemesService {
 
       // Assign the selected theme or, if none selected, assign the first loaded theme
       this.setTheme(this.resolveUserThemeName())
+
+      // Emit the "themes loaded" event
+      this.themesLoadedEvent.emit(this.themes)
     });
   }
 
@@ -42,6 +47,10 @@ export class ColorThemesService {
 
   public getSelectedThemeName() : string {
     return this.selectedThemeName
+  }
+
+  public getThemesLoadedEvent() : EventEmitter<Theme[]> {
+    return this.themesLoadedEvent
   }
 
   /**

@@ -22,7 +22,7 @@ export class SelectComponent {
 
   // Input properties
   width             : InputSignal<string> = input("280px")
-  height            : InputSignal<string> = input("20px")
+  height            : InputSignal<string> = input("15px")
   cardImagePosition : InputSignal<string> = input("left")
   cardImageWidth    : InputSignal<string> = input("50px")
   cardImageHeight   : InputSignal<string> = input("50px")

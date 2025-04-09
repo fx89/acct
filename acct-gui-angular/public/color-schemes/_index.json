@@ -2,11 +2,13 @@
     "Bright": {
         "file": "bright.css",
         "description": "Default bright theme",
+        "icon": "color-schemes/bright.png",
         "selector": "color-theme-bright"
     },
     "Dark": {
         "file": "dark.css",
         "description": "Default dark theme",
+        "icon": "color-schemes/dark.png",
         "selector": "color-theme-dark"
     }
 }
