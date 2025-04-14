@@ -17,14 +17,14 @@
     --form-control-text-color-hover: #000;
     --form-control-text-color-status-message: #AAA;
 
-    --separator-color: #B5B5B5;
-
     --card-background-color: #DDD;
     --card-background-color-hover: #CCC;
     --card-background-color-selected: #BBB;
     --card-background-color-selected-hover: #AAA;
 
+    --separator-color: #B5B5B5;
     --title-color: #000;
+    --shadow-color: #888;
 
     --panel-border-color: #CCCCCC;
     --panel-background-color: #E5E5E5;

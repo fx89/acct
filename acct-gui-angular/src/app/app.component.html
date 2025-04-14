@@ -1,5 +1,5 @@
 
-@if ( router.url === '/' ) {
+@if ( router.url === '/') {
 
 
 
@@ -11,20 +11,20 @@
 
 } @else {
 
+  @if ( router.url !== '/components-showcase' ) {
 
+    <!-- --- This is the layout of everyt other page ------------------------------------------- -->
 
-<!-- --- This is the layout of everyt other page ------------------------------------------- -->
+    <gui-sidebar></gui-sidebar>
 
-  <gui-sidebar></gui-sidebar>
+    @for (configItem of this.router.config; track configItem) {
+      <div>{{ configItem.path }}</div>
+    }
 
-  @for (configItem of this.router.config; track configItem) {
-    <div>{{ configItem.path }}</div>
-  }
+    <!-- --- End of every other page ---------------------------------------------------------- -->
+
+  } 
 
   <router-outlet />
-
-<!-- --- End of every other page ---------------------------------------------------------- -->
-
-
 
 }

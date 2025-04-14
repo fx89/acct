@@ -1,0 +1,59 @@
+<div
+    id="{{ this.id }}"
+    [class]="{'bar': true, 'floating-bar': this.isFloating(), 'top': this.isTopBarType(), 'bottom': this.isBottomBarType(), 'autohiding': this.isAutoHiding()}"
+    [style.width]="'100%'"
+    [style.height]="this.getHeight()"
+    [style.top]="(this.isAutoHiding() && this.isTopBarType()) ? ('calc(-' + this.getHeight() + ' + ' + this.getStickOutHeight() + ')') : ''"
+    [style.bottom]="(this.isAutoHiding() && this.isBottomBarType()) ? ('calc(-' + this.getHeight() + ' + ' + this.getStickOutHeight() + ')') : ''"
+>
+    @if ( this.isBottomBarType() ) {
+        <!-- The top separator -->
+        <div
+            id="{{ this.id }}_separator_top"
+            class="bar bar-separator bar-separator-top"
+            [style.width]="'100%'"
+            [style.height]="this.getSeparatorHeight()"
+        ></div>
+    }
+
+    <!-- The content of the bar -->
+    <div
+        id="{{ this.id }}_content"
+        class="bar bar-content"
+        [style.height]="'calc(' + this.getHeight() + ' - ' + this.getSeparatorHeight() + ')'"
+        [style.width]="'100%'"
+    >
+        <table
+            id="{{ this.id }}_content_table"
+            style="width:100%; padding:3px;"
+            [style.height]="this.getHeight()"
+        >
+            <tr>
+                <td align="left" id="{{ this.id }}_content_table_left">
+                    <ng-content select="[left-content]"></ng-content>
+                </td>
+                <td align="right" id="{{ this.id }}_content_table_right">
+                    <ng-content select="[right-content]"></ng-content>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    @if ( this.isTopBarType() ) {
+        <!-- The bottom separator -->
+        <div
+            id="{{ this.id }}_separator_bottom"
+            class="bar bar-separator bar-separator-bottom"
+            [style.width]="'100%'"
+            [style.height]="this.getSeparatorHeight()"
+        ></div>
+    }
+</div>
+
+@if ( this.isTopBarType() && this.isFloating() && !this.isAutoHiding() ) {
+    <div
+        id="{{ this.id }}_page_spacer"
+        class="bar bar-page-spacer"
+        [style.height]="this.getHeight()"
+    ></div>
+}

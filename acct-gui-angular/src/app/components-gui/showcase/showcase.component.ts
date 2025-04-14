@@ -10,6 +10,7 @@ import { PanelComponent } from '../panel/panel.component';
 import { CardsListComponent } from '../cards-list/cards-list.component';
 import { CardData } from '../cards-list/card-data';
 import { SelectComponent } from '../select/select.component';
+import { BarComponent } from '../bar/bar.component';
 
 type ExtendedCardData = CardData & { additionalData : string }
 
@@ -25,7 +26,8 @@ type ExtendedCardData = CardData & { additionalData : string }
     LabelComponent,
     PanelComponent,
     CardsListComponent,
-    SelectComponent
+    SelectComponent,
+    BarComponent
   ],
   templateUrl: './showcase.component.html',
   styleUrl: './showcase.component.less'
