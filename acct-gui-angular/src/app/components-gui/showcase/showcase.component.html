@@ -4,184 +4,201 @@
   [autoHiding]="false"
 >
   <div left-content>
-    <h1>GUI Components Chowcase</h1>
+    <h1>GUI Components Showcase</h1>
   </div>
   <div right-content>
     <app-color-theme-selector></app-color-theme-selector>
   </div>
 </app-bar>
 
-<br /><br />
-<table>
-  <tr>
-    <td style="vertical-align: top">
-      <app-input
-        [enabled]="true"
-        [(value)]="inputValue"
-        [valid]="true"
-        width="300px"
-        height="30px"
-        hint="Enter a value here"
-      ></app-input>
-      <br /><br />
-      {{inputValue}}
-      <br /><br />
-      
-      <app-switch
-        [(value)]="switchValue"
-        width="70px"
-        height="30px"
-        color="red"
-        [enabled]="true"
-      ></app-switch>
-      {{ this.switchValue ? 'true' : 'false' }}
-      <br /><br />
-      
-      <app-progress-bar
-        [loading]="!this.switchValue"
-        color="blue"
-        [value]="0.4823874320"
-        [valueVisible]="true"
-      ></app-progress-bar>
-      <br /><br />
-      
-      <app-button
-        value='Button text'
-        textAlign="left"
-        width="300px"
-        height="30px" 
-        icon="favicon.ico"
-        iconAlign="left"
-        [enabled]="true"
-        (onClick)="onButtonClick()"
-        color="blue"
-      ></app-button>
-      <br /><br />
-      
-      <app-card
-        imageRef="pic.png"
-        imagePosition="left"
-      ></app-card>
-      <br /><br />
-      
-      <app-card
-        imageRef="pic.png"
-        imagePosition="right"
-        title="Clickable card"
-        [clickable]="true"
-        (onClick)="onButtonClick()"
-      ></app-card>
-      <br /><br />
 
-      <app-select
-        [options]="this.selectOptions"
-        [cardHeightPx]="50"
-        [(selectedOption)]="this.selectSelectedOption"
-      ></app-select>
-      <app-label [value]="this.getSelectSelectedOptionValue()" textAlign="center"></app-label>
-      <br /><br />
-      <br /><br />
-      <br /><br />
-      <br /><br />
-      <br /><br />
-      <br /><br />
-      <br /><br />
-      <br /><br />
-      <br /><br />
-      <br /><br />
-    </td>
-    <td width="100">
+<app-menu
+  [items]="this.getMenuItems()"
+  [(selectedItem)]="this.selectedMenuItem"
+  position="left"
+></app-menu>
 
-    </td>
-    <td style="vertical-align: top">
-      <app-label value="My Beautiful Label"          fontSize="small" color="none" textAlign="center" [flash]="false"></app-label>
-      <app-label value="My Beautiful Red Label"      fontSize="small" color="red"  textAlign="center" [flash]="false"></app-label>
-      <app-label value="My Beautiful Blue Label"     fontSize="small" color="blue" textAlign="center" [flash]="false"></app-label>
-      <app-label value="My Beautiful Flashing Label" fontSize="small" color="none" textAlign="center" [flash]="true" ></app-label>
-      <br /><br />
+<div style="float:left"> <!-- !!!!!!!!!!!!!!!!!!!!!!! float:left - for menu on the right !!!!!!!!!!!!!!!!!!!!!!! -->
+  <br />
+  <table>
+    <tr>
+      <td style="vertical-align: top">
+        <app-input
+          [enabled]="true"
+          [(value)]="inputValue"
+          [valid]="true"
+          width="300px"
+          height="30px"
+          hint="Enter a value here"
+        ></app-input>
+        <br /><br />
+        {{inputValue}}
+        <br /><br />
+        
+        <app-switch
+          [(value)]="switchValue"
+          width="70px"
+          height="30px"
+          color="red"
+          [enabled]="true"
+        ></app-switch>
+        {{ this.switchValue ? 'true' : 'false' }}
+        <br /><br />
+        
+        <app-progress-bar
+          [loading]="!this.switchValue"
+          color="blue"
+          [value]="0.4823874320"
+          [valueVisible]="true"
+        ></app-progress-bar>
+        <br /><br />
+        
+        <app-button
+          value='Button text'
+          textAlign="left"
+          width="300px"
+          height="30px" 
+          icon="favicon.ico"
+          iconAlign="left"
+          [enabled]="true"
+          (onClick)="onButtonClick()"
+          color="blue"
+        ></app-button>
+        <br /><br />
+        
+        <app-card
+          imageRef="pic.png"
+          imagePosition="left"
+        ></app-card>
+        <br /><br />
+        
+        <app-card
+          imageRef="pic.png"
+          imagePosition="right"
+          title="Clickable card"
+          [clickable]="true"
+          (onClick)="onButtonClick()"
+        ></app-card>
+        <br /><br />
+  
+        <app-select
+          [options]="this.selectOptions"
+          [cardHeightPx]="50"
+          [(selectedOption)]="this.selectSelectedOption"
+        ></app-select>
+        <app-label [value]="this.getSelectSelectedOptionValue()" textAlign="center"></app-label>
+        <br /><br />
+        <br /><br />
+        <br /><br />
+        <br /><br />
+        <br /><br />
+        <br /><br />
+        <br /><br />
+        <br /><br />
+        <br /><br />
+        <br /><br />
+      </td>
+      <td width="100">
+  
+      </td>
+      <td style="vertical-align: top">
+        <app-label value="My Beautiful Label"          fontSize="small" color="none" textAlign="center" [flash]="false"></app-label>
+        <app-label value="My Beautiful Red Label"      fontSize="small" color="red"  textAlign="center" [flash]="false"></app-label>
+        <app-label value="My Beautiful Blue Label"     fontSize="small" color="blue" textAlign="center" [flash]="false"></app-label>
+        <app-label value="My Beautiful Flashing Label" fontSize="small" color="none" textAlign="center" [flash]="true" ></app-label>
+        <br /><br />
+  
+        <app-panel
+          width="300px"
+          height="200px"
+          title="The panel title"
+        >
+          Test<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+          TEST<br />
+        </app-panel>
+        <br /><br />
+  
+        <app-cards-list
+          width="300px"
+          height="200px"
+          title="Cards list"
+          cardWidth="270px"
+          cardHeight="50px"
+          cardSpacing="5px"
+          [cards]="getCardsListData()"
+          [clickable]="true"
+          [selectable]="true"
+          (selectionChange)="this.onCardSelected($event)"
+        >
+        </app-cards-list>
+        <app-label [value]="this.getSelectedCardTitle()" color="blue" fontSize="small"></app-label>
+        
+        <br /><br />
+      </td>
+    </tr>
+  </table>
+</div>
 
-      <app-panel
-        width="500px"
-        height="200px"
-        title="The panel title"
-      >
-        Test<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-        TEST<br />
-      </app-panel>
-      <br /><br />
 
-      <app-cards-list
-        width="400px"
-        height="200px"
-        title="Cards list"
-        cardWidth="370px"
-        cardHeight="50px"
-        cardSpacing="5px"
-        [cards]="getCardsListData()"
-        [clickable]="true"
-        [selectable]="true"
-        (selectionChange)="this.onCardSelected($event)"
-      >
-      </app-cards-list>
-      <app-label [value]="this.getSelectedCardTitle()" color="blue" fontSize="small"></app-label>
-      
-      <br /><br />
-    </td>
-  </tr>
-</table>
+<app-menu
+  [items]="this.getMenuItems()"
+  [(selectedItem)]="this.selectedMenuItem"
+  position="right"
+  ></app-menu>
+ 
 
 <app-bar
   [barType]="'bottom'"
@@ -189,7 +206,7 @@
   [autoHiding]="false"
 >
   <div left-content>
-    <h1>GUI Components Chowcase</h1>
+    <h1>GUI Components Showcase</h1>
   </div>
   <div right-content>
     <h2>aaa</h2>

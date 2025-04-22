@@ -11,6 +11,8 @@ import { CardsListComponent } from '../cards-list/cards-list.component';
 import { CardData } from '../cards-list/card-data';
 import { SelectComponent } from '../select/select.component';
 import { BarComponent } from '../bar/bar.component';
+import { MenuComponent } from '../menu/menu.component';
+import { MenuItemData } from '../menu/menu-item-data';
 
 type ExtendedCardData = CardData & { additionalData : string }
 
@@ -27,7 +29,8 @@ type ExtendedCardData = CardData & { additionalData : string }
     PanelComponent,
     CardsListComponent,
     SelectComponent,
-    BarComponent
+    BarComponent,
+    MenuComponent
   ],
   templateUrl: './showcase.component.html',
   styleUrl: './showcase.component.less'
@@ -39,6 +42,7 @@ export class ShowcaseComponent {
   selectedCard : CardData | undefined
   selectedOption : CardData | undefined
   selectSelectedOption : ExtendedCardData | undefined
+  selectedMenuItem : MenuItemData | undefined
 
   cardsListData : CardData[] = [
     {
@@ -82,10 +86,45 @@ export class ShowcaseComponent {
     }
   ]
 
+  menuItems : MenuItemData[] = [
+    {
+      text: "No option",
+      imageRef: "pic.png",
+      onSelect: undefined,
+      onDeselect: undefined
+    },
+    {
+      text: "Angular icon",
+      imageRef: "favicon.ico",
+      onSelect: undefined,
+      onDeselect: undefined
+    },
+    {
+      text: "Dark icon",
+      imageRef: "color-schemes/dark.png",
+      onSelect: undefined,
+      onDeselect: undefined
+    },
+    {
+      text: "Bright icon",
+      imageRef: "color-schemes/bright.png",
+      onSelect: undefined,
+      onDeselect: undefined
+    },
+    {
+      text: "Still no option",
+      imageRef: "pic.png",
+      onSelect: undefined,
+      onDeselect: undefined
+    }
+  ]
+
+
 
   public ngOnInit() : void {
     this.selectedOption = this.cardsListData[0]
     this.selectSelectedOption = this.selectOptions[0]
+    this.selectedMenuItem = this.menuItems[2]
   }
 
   public getCardsListData() : CardData[] {
@@ -110,6 +149,10 @@ export class ShowcaseComponent {
 
   public selectSelectedOptionChange(event : any) : void {
     this.selectSelectedOption = <ExtendedCardData> event
+  }
+
+  public getMenuItems() : MenuItemData[] {
+    return this.menuItems
   }
 
 }

@@ -1,0 +1,99 @@
+<div
+    id="{{this.id}}_menu_container"
+    [class]="{'menu': true, 'menu_container': true, 'folded': this.isFolded(), 'left': this.isOnLeft(), 'right': this.isOnRight()}"
+    [style.minWidth]="'calc(' + (this.isShowingIcons() ? this.getIconWidth() : '0px') + ' + ' + (this.isFolding() ? this.getFoldingTriggerWidth() : '0px') + ')'"
+>
+    <!-- The menu content -->
+    <div
+        id="{{this.id}}_menu_content"
+        [class]="{'menu': true, 'menu_content': true, 'folded': this.isFolded()}"
+        [style.minWidth]="this.isShowingIcons() ? this.getIconWidth() : '0px'"
+        [style.width]="this.isFolding() ? ('calc(' + this.getWidth() + ' - ' + this.getFoldingTriggerWidth() + ')') : this.getWidth()"
+        [style.float]="this.isOnLeft() ? 'left' : 'right'"
+    >
+        @for (item of this.getItems(); track item) {
+            <div
+                [class]="{'menu': true, 'menu_content': true, 'item': true, 'selected': item === this.getSelectedItem()}"
+                [style.height]="this.getItemHeight()"
+                [style.width]="'100%'"
+                (click)="this.onMenuItemClick(item)"
+            >
+                <table cellspacing="0" cellpadding="0" style="width:100%;">
+                    <tr>
+                        @if ( this.isShowingIcons() && this.isOnRight() ) {
+                            <td>
+                                <img
+                                    [class]="{'menu': true, 'item_icon': true}"
+                                    [style.width]="this.getIconWidth()"
+                                    [style.height]="this.getItemHeight()"
+                                    [style.left]="'right'"
+                                    [src]="item.imageRef"
+                                >
+                            </td>
+                        }
+
+                        @if ( !this.isFolded() && this.isShowingContent() ) {
+                            <td
+                                [style.padding]="'5px'"
+                                [style.textAlign]="this.isOnLeft() ? 'left' : 'right'"
+                            >
+                                {{ item.text }}
+                            </td>
+                        }
+                        @if ( this.isShowingIcons() && this.isOnLeft() ) {
+                            <td>
+                                <img
+                                    [class]="{'menu': true, 'item_icon': true}"
+                                    [style.width]="this.getIconWidth()"
+                                    [style.height]="this.getItemHeight()"
+                                    [style.float]="'right'"
+                                    [src]="item.imageRef"
+                                >
+                            </td>
+                        }
+                    </tr>
+                </table>
+            </div>
+        }
+    </div>
+
+    @if ( this.isFolding() && this.isOnRight() ) {
+        <!-- The menu folding button -->
+        <div
+            id="{{this.id}}_menu_folding_trigger"
+            [class]="{'menu': true, 'folding_trigger': true, 'folded': this.isFolded(), 'left': false, 'right': true}"
+            [style.width]="this.getFoldingTriggerWidth()"
+            [style.height]="this.getFoldingTriggerHeight()"
+            [style.lineHeight]="this.getFoldingTriggerHeight()"
+            [style.marginTop]="'calc(calc(' + this.getItemHeight() + ' * ' + this.getItemsCount() + ' / 2) - calc(' + this.getFoldingTriggerHeight() + ' / 2))'"
+            [style.float]="'right'"
+            (click)="this.toggleFolding()"
+        >
+            @if ( this.isFolded() ) {
+                ⭰
+            } @else {
+                ⭲
+            }
+        </div>
+    }
+
+    @if ( this.isFolding() && this.isOnLeft() ) {
+        <!-- The menu folding button -->
+        <div
+            id="{{this.id}}_menu_folding_trigger"
+            [class]="{'menu': true, 'folding_trigger': true, 'folded': this.isFolded(), 'left': true, 'right': false}"
+            [style.width]="this.getFoldingTriggerWidth()"
+            [style.height]="this.getFoldingTriggerHeight()"
+            [style.lineHeight]="this.getFoldingTriggerHeight()"
+            [style.marginTop]="'calc(calc(' + this.getItemHeight() + ' * ' + this.getItemsCount() + ' / 2) - calc(' + this.getFoldingTriggerHeight() + ' / 2))'"
+            [style.float]="'left'"
+            (click)="this.toggleFolding()"
+        >
+            @if ( this.isFolded() ) {
+                ⭲
+            } @else {
+                ⭰
+            }
+        </div>
+    }
+</div>

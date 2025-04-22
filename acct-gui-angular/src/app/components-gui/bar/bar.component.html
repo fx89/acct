@@ -5,6 +5,7 @@
     [style.height]="this.getHeight()"
     [style.top]="(this.isAutoHiding() && this.isTopBarType()) ? ('calc(-' + this.getHeight() + ' + ' + this.getStickOutHeight() + ')') : ''"
     [style.bottom]="(this.isAutoHiding() && this.isBottomBarType()) ? ('calc(-' + this.getHeight() + ' + ' + this.getStickOutHeight() + ')') : ''"
+    [style.float]="'left'"
 >
     @if ( this.isBottomBarType() ) {
         <!-- The top separator -->

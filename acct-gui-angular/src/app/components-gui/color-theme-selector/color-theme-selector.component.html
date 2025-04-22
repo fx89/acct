@@ -6,6 +6,7 @@
         <td style="width: 5px"></td>
         <td>
             <app-select
+                width="230px"
                 [options]="this.getThemeCards()"
                 [(selectedOption)]="this.selectedThemeCard"
                 (selectedOptionChange)="this.onThemeCardSelected($event)"

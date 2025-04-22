@@ -217,3 +217,44 @@ h1, h2, h3, h4, h5, h6 {
 .bar .bar-separator.bar-separator-bottom {
     box-shadow: 0px 2px 3px var(--shadow-color);
 }
+
+.menu .menu_content .item {
+    background-color: var(--card-background-color);
+    border-color: var(--panel-border-color);
+}
+
+.menu .menu_content .item:hover {
+    background-color: var(--card-background-color-hover);
+    transition: 0.5s;
+}
+
+.menu .menu_content .item.selected {
+    background-color: var(--card-background-color-selected);
+    border-color: var(--form-control-border-color);
+}
+
+.menu .menu_content .item.selected:hover {
+    background-color: var(--card-background-color-selected-hover);
+    transition: 0.5s;
+}
+
+.menu .folding_trigger {
+    cursor: pointer;
+    font-size: var(--font-size-large);
+    background-color: var(--form-control-background-color);
+    color: var(--form-control-text-color-enabled);
+    transition: 0.5s;
+}
+
+.menu .menu_content .item .item_icon {
+    border-color: var(--panel-border-color);
+}
+
+.menu .menu_content .item.selected .item_icon {
+    border-color: var(--form-control-border-color);
+}
+
+.menu .folding_trigger:hover {
+    transition: 0.5s;
+    background-color: var(--form-control-background-color-hover);
+}
