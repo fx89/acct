@@ -187,6 +187,22 @@
         <app-label [value]="this.getSelectedCardTitle()" color="blue" fontSize="small"></app-label>
         
         <br /><br />
+
+        <app-tabs
+          position="left"
+          [tabs]="this.getTabs()"
+          [(selectedTab)]="this.selectedTab"
+        >
+          @if ( this.selectedTab?.text === "Tab Oneeeee !!!" ) {
+            This is the content of tab 1
+          }
+          @if ( this.selectedTab?.text === "Tab 2" ) {
+            This is the content of tab two
+          }
+          @if ( this.selectedTab?.text === "Tab 3" ) {
+            This is the content of tab 33333
+          }
+        </app-tabs>
       </td>
     </tr>
   </table>

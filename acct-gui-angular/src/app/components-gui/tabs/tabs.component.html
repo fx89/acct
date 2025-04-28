@@ -1,0 +1,63 @@
+<div
+    id="{{ this.id }}_tabs_container" class="tabs"
+    [style.width]="this.width()"
+    [style.height]="this.height()"
+>
+
+    @if ( this.isLeft() || this.isTop() ) {
+        <div
+            id="{{ this.id }}_tabs_buttons"
+            [class]="{ 'buttons': true, 'left': this.isLeft(), 'top': this.isTop() }"
+            [style.float]=" this.isLeft() ? 'left' : '' "
+        >
+            @for (tab of this.getTabs(); track tab) {
+                <span
+                    [class]="{'form-control': true, 'clickable': true, 'hoverable': true, 'tab': true, 'horizontal': this.isHorizontal(), 'vertical': this.isVertical(), 'selected': (tab === this.internalSelectedTab), 'top': this.isTop(), 'right': this.isRight(), 'bottom': this.isBottom(), 'left': this.isLeft()}"
+                    [style.float]="this.isLeft() ? 'left' : ''"
+                    [style.minWidth]="this.isVertical() ? this.getTabMaxWidth() : this.getTabMinWidth()"
+                    [style.maxWidth]="this.getTabMaxWidth()"
+                    (click)="this.onTabClick(tab)"
+                >
+                    {{ tab.text }}
+                </span>
+                @if ( this.isVertical() ) {
+                    <br />
+                }
+            }
+        </div>
+    }
+
+    <div
+        id="{{ this.id }}_tabs_content"
+        [class]="{ 'content': true, 'top': this.isTop(), 'right': this.isRight(), 'bottom': this.isBottom(), 'left': this.isLeft() }"
+        [style.float]=" this.isRight() ? 'left' : (this.isLeft() ? 'right' : '') "
+        [style.height]="'calc(calc(' + this.getHeight() + ' - 1em) - 10px)'"
+        [style.width]="this.isHorizontal() ? '100%' : 'calc(' + this.getWidth() + ' - ' + this.getTabMaxWidth() + ' - 26px)'"
+    >
+        <ng-content></ng-content>
+    </div>
+
+    @if ( this.isRight() || this.isBottom() ) {
+        <div
+            id="{{ this.id }}_tabs_buttons"
+            [class]="{ 'buttons': true, 'right': this.isRight(), 'bottom': this.isBottom() }"
+            [style.float]=" this.isRight() ? 'right' : '' "
+        >
+            @for (tab of this.getTabs(); track tab) {
+                <span
+                    [class]="{'form-control': true, 'clickable': true, 'hoverable': true, 'tab': true, 'horizontal': this.isHorizontal(), 'vertical': this.isVertical(), 'selected': (tab === this.internalSelectedTab), 'right': this.isRight(), 'bottom': this.isBottom()}"
+                    [style.float]="this.isRight() ? 'right' : ''"
+                    [style.minWidth]="this.isVertical() ? this.getTabMaxWidth() : this.getTabMinWidth()"
+                    [style.maxWidth]="this.getTabMaxWidth()"
+                    (click)="this.onTabClick(tab)"
+                >
+                    {{ tab.text }}
+                </span>
+                @if ( this.isVertical() ) {
+                    <br />
+                }
+            }
+        </div>
+    }
+
+</div>

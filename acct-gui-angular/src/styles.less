@@ -46,6 +46,13 @@ h1, h2, h3, h4, h5, h6 {
     border-radius: 4px;
 }
 
+.form-control.clickable.hoverable:hover {
+    background-color: var(--form-control-background-color-hover);
+    color: var(--form-control-text-color-hover);
+    transition: 0.5s;
+    border-radius: 4px;
+}
+
 .form-control.disabled {
     color: var(--form-control-text-color-disabled);
 }
@@ -257,4 +264,14 @@ h1, h2, h3, h4, h5, h6 {
 .menu .folding_trigger:hover {
     transition: 0.5s;
     background-color: var(--form-control-background-color-hover);
+}
+
+.tabs .tab.selected {
+    background-color: var(--card-background-color-selected);
+}
+
+.tabs .tab.selected:hover {
+    background-color: var(--form-control-background-color-hover);
+    color: var(--form-control-text-color-hover);
+    transition: 0.5s;
 }

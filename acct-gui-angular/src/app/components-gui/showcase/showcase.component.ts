@@ -13,6 +13,8 @@ import { SelectComponent } from '../select/select.component';
 import { BarComponent } from '../bar/bar.component';
 import { MenuComponent } from '../menu/menu.component';
 import { MenuItemData } from '../menu/menu-item-data';
+import { TabsComponent } from '../tabs/tabs.component';
+import { TabData } from '../tabs/TabData';
 
 type ExtendedCardData = CardData & { additionalData : string }
 
@@ -30,7 +32,8 @@ type ExtendedCardData = CardData & { additionalData : string }
     CardsListComponent,
     SelectComponent,
     BarComponent,
-    MenuComponent
+    MenuComponent,
+    TabsComponent
   ],
   templateUrl: './showcase.component.html',
   styleUrl: './showcase.component.less'
@@ -43,6 +46,7 @@ export class ShowcaseComponent {
   selectedOption : CardData | undefined
   selectSelectedOption : ExtendedCardData | undefined
   selectedMenuItem : MenuItemData | undefined
+  selectedTab : TabData | undefined
 
   cardsListData : CardData[] = [
     {
@@ -119,12 +123,34 @@ export class ShowcaseComponent {
     }
   ]
 
+  tabs : TabData[] = [
+    {
+      text: "Tab Oneeeee !!!",
+      imageRef: "pic.png",
+      onSelect: undefined,
+      onDeselect: undefined
+    },
+    {
+      text: "Tab 2",
+      imageRef: "pic.png",
+      onSelect: undefined,
+      onDeselect: undefined
+    },
+    {
+      text: "Tab 3",
+      imageRef: "pic.png",
+      onSelect: undefined,
+      onDeselect: undefined
+    }
+  ]
+
 
 
   public ngOnInit() : void {
     this.selectedOption = this.cardsListData[0]
     this.selectSelectedOption = this.selectOptions[0]
     this.selectedMenuItem = this.menuItems[2]
+    this.selectedTab = this.tabs[0]
   }
 
   public getCardsListData() : CardData[] {
@@ -153,6 +179,10 @@ export class ShowcaseComponent {
 
   public getMenuItems() : MenuItemData[] {
     return this.menuItems
+  }
+
+  public getTabs() : TabData[] {
+    return this.tabs
   }
 
 }
