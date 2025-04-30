@@ -16,11 +16,13 @@ export class TabsComponent {
   public id = uuidv4()
 
   // Properties
-  width       : InputSignal<string> = input("300px")
+  width       : InputSignal<string> = input("350px")
   height      : InputSignal<string> = input("200px")
   position    : InputSignal<string> = input("top") // top, right, bottom, left
   tabMinWidth : InputSignal<string> = input("80px")
   tabMaxWidth : InputSignal<string> = input("100px")
+  imageWidth  : InputSignal<string> = input("20px")
+  imageHeight : InputSignal<string> = input("20px")
 
   // Tabs
   tabs        : InputSignal<TabData[]> = input.required()
@@ -84,6 +86,14 @@ export class TabsComponent {
 
   getTabMaxWidth() : string {
     return this.tabMaxWidth()
+  }
+
+  getImageWidth() : string {
+    return this.imageWidth()
+  }
+
+  getImageHeight() : string {
+    return this.imageHeight()
   }
 
   isTop() : boolean {

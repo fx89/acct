@@ -16,8 +16,20 @@
                     [style.float]="this.isLeft() ? 'left' : ''"
                     [style.minWidth]="this.isVertical() ? this.getTabMaxWidth() : this.getTabMinWidth()"
                     [style.maxWidth]="this.getTabMaxWidth()"
+                    [style.display]="'inline-block'"
+                    [style.verticalAlign]="'middle'"
                     (click)="this.onTabClick(tab)"
                 >
+                    @if ( tab.imageRef ) {
+                        <img
+                            src="{{ tab.imageRef }}"
+                            [style.float]="this.isLeft() ? 'left' : ''"
+                            [style.width]="this.getImageWidth()"
+                            [style.height]="this.getImageHeight()"
+                            [style.marginRight]="'3px'"
+                            [style.verticalAlign]="'middle'"
+                        >
+                    }
                     {{ tab.text }}
                 </span>
                 @if ( this.isVertical() ) {
@@ -49,8 +61,20 @@
                     [style.float]="this.isRight() ? 'right' : ''"
                     [style.minWidth]="this.isVertical() ? this.getTabMaxWidth() : this.getTabMinWidth()"
                     [style.maxWidth]="this.getTabMaxWidth()"
+                    [style.display]="'inline-block'"
+                    [style.verticalAlign]="'middle'"
                     (click)="this.onTabClick(tab)"
                 >
+                    @if ( tab.imageRef ) {
+                        <img
+                            src="{{ tab.imageRef }}"
+                            [style.float]="this.isRight() ? 'left' : ''"
+                            [style.width]="this.getImageWidth()"
+                            [style.height]="this.getImageHeight()"
+                            [style.marginRight]="'3px'"
+                            [style.verticalAlign]="'middle'"
+                        >
+                    }
                     {{ tab.text }}
                 </span>
                 @if ( this.isVertical() ) {

@@ -2,6 +2,9 @@
     --application-background-color: #111;
     --application-text-color: #BBB;
 
+    --scrollbar-button-color: #555;
+    --scrollbar-background-color: #151515;
+
     --form-control-border-color: #555;
     --form-control-border-color-editable-invalid: #F00;
     --form-control-background-color: #333;
