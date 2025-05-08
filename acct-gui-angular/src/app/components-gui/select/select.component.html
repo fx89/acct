@@ -1,6 +1,7 @@
 <div
     id="{{ this.getWrappingDivId() }}"
     class="select-control"
+    [style.width]="'calc(' + this.getWidth() + ' + ' + this.getHeight() + ' + 5px)'"
 >
     <app-card
         class="select-box"

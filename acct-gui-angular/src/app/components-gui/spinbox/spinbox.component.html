@@ -1,0 +1,42 @@
+<div
+    id="{{ this.id }}_spinbox"
+    class="spinbox"
+>
+    <table cellspacing="0" cellpadding="0">
+        <tr>
+            <td>
+                <app-button
+                    [width]="'calc(' + this.getHeight() + ' * 1.0)'"
+                    [height]="this.getHeight()"
+                    textAlign="center"
+                    value="🢐"
+                    (onClick)="this.leftArrowClicked()"
+                ></app-button>
+            </td>
+            <td [style.width]="'4px'"></td>
+            <td>
+                <div
+                    id="{{ this.id }}_spinbox_label"
+                    [class]="{ 'spinbox-label': true, 'form-control': this.isBox(), 'editable': this.isBox(), 'label': this.isLabel()  }"
+                    [style.width]="'calc(' + this.getWidth() + ' - calc(' + this.getHeight() + ' * 2) + 8px)'"
+                    [style.height]="this.getHeight()"
+                    [style.lineHeight]="this.getHeight()"
+                    [style.verticalAlign]="'middle'"
+                >
+                    {{ this.getCurrentValueStr() }}
+                </div>   
+            </td>
+            <td [style.width]="'4px'"></td>
+            <td>
+                <div [style.width]="'2px'"></div>
+                <app-button
+                    [width]="'calc(' + this.getHeight() + ' * 1.0)'"
+                    [height]="this.getHeight()"
+                    textAlign="center"
+                    value="🢒"
+                    (onClick)="this.rightArrowClicked()"
+                ></app-button>
+            </td>
+        </tr>
+    </table>
+</div>

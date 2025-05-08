@@ -3,6 +3,7 @@ import {v4 as uuidv4} from 'uuid';
 import { CardComponent } from '../card/card.component';
 import { CardData } from '../cards-list/card-data';
 import { CardsListComponent } from '../cards-list/cards-list.component';
+import { getElementRect } from '../../utils-reusalbe/dom-utils';
 
 @Component({
   selector: 'app-select',
@@ -157,9 +158,7 @@ export class SelectComponent {
 
       // Compute the cards list position to be either on top of or under the selection box,
       // based on the position of the control relative to the viewport bottom
-
-      const element : HTMLElement | null = document.getElementById(this.getWrappingDivId())
-      const rect : DOMRect | undefined = element?.getBoundingClientRect()
+      const rect : DOMRect | undefined = getElementRect(this.getWrappingDivId())
       const windowHeight : number = window.innerHeight
 
       // If the list goes out of the viewport to the bottom, then put it on top of the 

@@ -14,6 +14,6 @@
 // TODO: GUI-01014: GUI components: Modal overlay
 // TODO: GUI-01015: GUI components: Loading (optionally modal)
 // TODO: GUI-01016: GUI components: Dialog (optionally modal)
-// TODO: GUI-01017: GUI components: Calendar
+// DONE: GUI-01017: GUI components: Calendar
 // DONE: GUI-01018: GUI components: Bar (top, bottom, floating, auto-hiding)
 // DONE: GUI-01019: GUI components: Tabs

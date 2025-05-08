@@ -89,13 +89,11 @@
         <app-label [value]="this.getSelectSelectedOptionValue()" textAlign="center"></app-label>
         <br /><br />
         <br /><br />
-        <br /><br />
-        <br /><br />
-        <br /><br />
-        <br /><br />
-        <br /><br />
-        <br /><br />
-        <br /><br />
+        <app-calendar
+          [isMondayFirstWeekDay]="true"
+          [(value)]="this.selectedDate"
+        ></app-calendar>
+        {{ this.selectedDate }}
         <br /><br />
       </td>
       <td width="100">
@@ -203,6 +201,12 @@
             This is the content of tab 33333
           }
         </app-tabs>
+
+        <app-calendar-button
+          [isMondayFirstWeekDay]="true"
+          [(value)]="this.selectedDate2"
+        ></app-calendar-button>
+        {{ this.selectedDate2 }}
       </td>
     </tr>
   </table>

@@ -15,6 +15,8 @@ import { MenuComponent } from '../menu/menu.component';
 import { MenuItemData } from '../menu/menu-item-data';
 import { TabsComponent } from '../tabs/tabs.component';
 import { TabData } from '../tabs/TabData';
+import { CalendarComponent } from '../calendar/calendar.component';
+import { CalendarButtonComponent } from '../calendar-button/calendar-button.component';
 
 type ExtendedCardData = CardData & { additionalData : string }
 
@@ -33,7 +35,9 @@ type ExtendedCardData = CardData & { additionalData : string }
     SelectComponent,
     BarComponent,
     MenuComponent,
-    TabsComponent
+    TabsComponent,
+    CalendarComponent,
+    CalendarButtonComponent
   ],
   templateUrl: './showcase.component.html',
   styleUrl: './showcase.component.less'
@@ -47,6 +51,8 @@ export class ShowcaseComponent {
   selectSelectedOption : ExtendedCardData | undefined
   selectedMenuItem : MenuItemData | undefined
   selectedTab : TabData | undefined
+  selectedDate : Date = new Date()
+  selectedDate2 : Date = new Date()
 
   cardsListData : CardData[] = [
     {

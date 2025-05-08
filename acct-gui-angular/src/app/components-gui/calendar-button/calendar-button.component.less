@@ -1,0 +1,45 @@
+.calendar-button-container {
+    position: relative;
+}
+
+.calendar-button-container .calendar-button {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+}
+
+.calendar-button-container .calendar-button .grid-icon {
+    width: calc(100% - 4px);
+    height: calc(100% - 4px);
+    margin: 2px;
+}
+
+.calendar-button-container .calendar-container {
+    position: absolute;
+    visibility: hidden;
+    top: -2000px;
+}
+
+.calendar-button-container .calendar-container.visible {
+    visibility: visible;
+}
+
+.calendar-button-container .calendar-container.top {
+    top: unset !important;
+    bottom: 31px;
+}
+
+.calendar-button-container .calendar-container.bottom {
+    top: 31px;
+    bottom: unset;
+}
+
+.calendar-button-container .calendar-container.left {
+    left: -240px;
+    right: unset;
+}
+
+.calendar-button-container .calendar-container.right {
+    left: 0px;
+    right: unset;
+}

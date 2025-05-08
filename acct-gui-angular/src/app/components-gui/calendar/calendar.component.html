@@ -1,0 +1,72 @@
+<div
+    id="{{ this.id }}_calendar"
+    [class]="{'form-control': true, 'panel': true, 'calendar': true}"
+    (click)="onCalendarClicked()"
+>
+    <div
+        id="{{ this.id }}_monthchooser"
+        [class]="{ 'card': true, 'monthchooser': true }"
+    >
+        <table class="monthchooser-table"><tr>
+            <td class="monthchooser-month-td">
+                <app-spinbox
+                    visualStyle="label"
+                    width="110px"
+                    height="20px"
+                    [minValue]="0"
+                    [maxValue]="11"
+                    [increment]="1"
+                    [value]="this.getMonthNumber()"
+                    (valueChange)="this.onMonthNumberChange($event)"
+                    [displayFunction]="this.monthDisplayFunction"
+                ></app-spinbox>
+            </td>
+            <td class="monthchooser-spacer-td"></td>
+            <td class="monthchooser-year-td">
+                <app-spinbox
+                    visualStyle="label"
+                    width="80px"
+                    height="20px"
+                    [minValue]="this.getMinYear()"
+                    [maxValue]="this.getMaxYear()"
+                    [increment]="1"
+                    [value]="this.getYear()"
+                    (valueChange)="this.onYearChange($event)"
+                ></app-spinbox>
+            </td>
+        </tr></table>
+    </div>
+    <div
+        id="{{ this.id }}_daychooser"
+        [class]="{ 'daychooser': true }"
+    >
+        <table class="daytable" style="width:100%">
+            <tr class="day-names-row">
+                @if ( !this.isMondayFirstWeekDay() ) {
+                    <td>Sun</td>
+                }
+                <td>Mon</td>
+                <td>Tue</td>
+                <td>Wed</td>
+                <td>Thu</td>
+                <td>Fri</td>
+                <td>Sat</td>
+                @if ( this.isMondayFirstWeekDay() ) {
+                    <td>Sun</td>
+                }
+            </tr>
+            @for (rowIndex of [0,1,2,3,4,5].keys(); track rowIndex) {
+                <tr class="day-numbers-row">
+                    @for (colIndex of [0,1,2,3,4,5,6].keys(); track colIndex ) {
+                        <td
+                            [class]="{ 'overflow-day': this.isDayNotInCurrentMonth(rowIndex, colIndex), 'selected': this.isDaySelected(rowIndex, colIndex) }"
+                            (click)="this.onDaySlotClick(rowIndex, colIndex)"
+                        >
+                            {{ this.getDayNumberAtIndex(rowIndex, colIndex) }}
+                        </td>
+                    }
+                </tr>
+            }
+        </table>
+    </div>
+</div>

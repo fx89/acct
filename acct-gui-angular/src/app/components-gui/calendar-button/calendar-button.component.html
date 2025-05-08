@@ -1,0 +1,34 @@
+<div
+    id="{{this.id}}_calendar_button_container"
+    class="calendar-button-container"
+>
+    <!-- Calendar button -->
+    <div
+        id="{{ this.getCalendarButtonId() }}"
+        class="calendar-button"
+        (click)="this.onCalendarButtonClick()"
+    >
+        <!-- Grid icon -->
+         <table cellspacing="3" cellpadding="0" class="grid-icon">
+            <tr><td> </td><td> </td><td> </td></tr>
+            <tr><td> </td><td> </td><td> </td></tr>
+            <tr><td> </td><td> </td><td> </td></tr>
+         </table>
+    </div>
+
+    <!-- Calendar container -->
+     <div
+        id="{{this.id}}_calendar_container"
+        [class]="{ 'calendar-container': true, 'visible': this.isVisible(), 'top': this.isTopOfButton(), 'bottom': this.isBottomOfButton(), 'left': this.isLeftOfButton(), 'right': this.isRightOfButton() }"
+     >
+        <app-calendar
+            [minYear]="this.minYear()"
+            [maxYear]="this.maxYear()"
+            [isMondayFirstWeekDay]="this.isMondayFirstWeekDay()"
+            [value]="this.currentValue"
+            (valueChange)="this.onCalendarValueChange($event)"
+            (calendarClicked)="this.onCalendarClicked()"
+        ></app-calendar>
+    </div>
+</div>
+
