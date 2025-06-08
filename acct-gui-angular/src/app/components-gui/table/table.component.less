@@ -1,0 +1,43 @@
+@table-component-horizontal-padding: 10px;
+@table-component-vertical-padding: 5px;
+
+.table-component thead th {
+    padding-left: @table-component-horizontal-padding;
+    padding-right: @table-component-horizontal-padding;
+    padding-top: @table-component-vertical-padding;
+    padding-bottom: @table-component-vertical-padding;
+    word-wrap: break-word;
+}
+
+.table-component td {
+    padding-left: @table-component-horizontal-padding;
+    padding-right: @table-component-horizontal-padding;
+    word-wrap: break-word;
+}
+
+.table-container {
+    display:inline-block;
+}
+
+.scrollable-table-container {
+    overflow-y: scroll;
+    scrollbar-width: thin;
+}
+
+.scrollable-table-overflow-header-cell {
+    width: 10px;
+    margin: 0px !important;
+    padding: 0px !important;
+}
+
+.table-component .sort-icon-cell {
+    width: 13px;
+    margin: 0px !important;
+    padding: 0px !important;
+    text-align: center !important;
+}
+
+.table-component .vertical-grid-lines:not(:first-child) {
+    border-left-style: solid;
+    border-left-width: 1px;
+}

@@ -84,7 +84,6 @@ local.properties
 /bazel-out
 /integration/bazel/bazel-*
 *.log
-node_modules
 
 # Include when developing application packages.
 pubspec.lock
@@ -145,3 +144,8 @@ dist/
 # Diagrams Net backup files
 *.bkp
 *.dtmp
+
+# Angular
+.angular
+node_modules
+dist

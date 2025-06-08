@@ -17,6 +17,9 @@ import { TabsComponent } from '../tabs/tabs.component';
 import { TabData } from '../tabs/TabData';
 import { CalendarComponent } from '../calendar/calendar.component';
 import { CalendarButtonComponent } from '../calendar-button/calendar-button.component';
+import { TableColumnDirective, TableComponent } from '../table/table.component';
+import { TableScrollDirection, TableScrollEvent } from '../table/table-scroll-event';
+import { TableColumnSortDirection, TableSortEvent } from '../table/table-sort-event';
 
 type ExtendedCardData = CardData & { additionalData : string }
 
@@ -37,7 +40,9 @@ type ExtendedCardData = CardData & { additionalData : string }
     MenuComponent,
     TabsComponent,
     CalendarComponent,
-    CalendarButtonComponent
+    CalendarButtonComponent,
+    TableComponent,
+    TableColumnDirective
   ],
   templateUrl: './showcase.component.html',
   styleUrl: './showcase.component.less'
@@ -150,6 +155,52 @@ export class ShowcaseComponent {
     }
   ]
 
+  tableData : any[] = [
+    {
+      propertyA: "A0",
+      propertyB: "B0",
+      propertyC: "C0"
+    },
+    {
+      propertyA: "A1",
+      propertyB: "B1",
+      propertyC: "C1"
+    },
+    {
+      propertyA: "A2",
+      propertyB: "B2",
+      propertyC: "C2"
+    }
+  ]
+
+  selectedTableRow : any = { propertyA: "nothing" }
+
+  scrollableTableData : any[] = [
+    { rowNumber: "00", itemName: "Item 00", itemValue: Math.random() * 100 },
+    { rowNumber: "01", itemName: "Item 01", itemValue: Math.random() * 100 },
+    { rowNumber: "02", itemName: "Item 02", itemValue: Math.random() * 100 },
+    { rowNumber: "03", itemName: "Item 03", itemValue: Math.random() * 100 },
+    { rowNumber: "04", itemName: "Item 04", itemValue: Math.random() * 100 },
+    { rowNumber: "05", itemName: "Item 05", itemValue: Math.random() * 100 },
+    { rowNumber: "06", itemName: "Item 06", itemValue: Math.random() * 100 },
+    { rowNumber: "07", itemName: "Item 07", itemValue: Math.random() * 100 },
+    { rowNumber: "08", itemName: "Item 08", itemValue: Math.random() * 100 },
+    { rowNumber: "09", itemName: "Item 09", itemValue: Math.random() * 100 },
+    { rowNumber: "10", itemName: "Item 10", itemValue: Math.random() * 100 },
+    { rowNumber: "11", itemName: "Item 11", itemValue: Math.random() * 100 },
+    { rowNumber: "12", itemName: "Item 12", itemValue: Math.random() * 100 },
+    { rowNumber: "13", itemName: "Item 13", itemValue: Math.random() * 100 },
+    { rowNumber: "14", itemName: "Item 14", itemValue: Math.random() * 100 },
+    { rowNumber: "15", itemName: "Item 15", itemValue: Math.random() * 100 },
+    { rowNumber: "16", itemName: "Item 16", itemValue: Math.random() * 100 }
+  ]
+
+  scrollableTableSelectedRow : any = this.scrollableTableData[0]
+
+  scrollableTableNumberFormat : Intl.NumberFormat = new Intl.NumberFormat('en-us', {minimumFractionDigits: 2})
+
+  scrollableTableScrollDirection : string = "none"
+  scrollableTableScrollPct       : number = 0
 
 
   public ngOnInit() : void {
@@ -157,6 +208,53 @@ export class ShowcaseComponent {
     this.selectSelectedOption = this.selectOptions[0]
     this.selectedMenuItem = this.menuItems[2]
     this.selectedTab = this.tabs[0]
+  }
+
+  public onScrollableTableScroll(tableScrollEvent:TableScrollEvent) : void {
+    if (tableScrollEvent.direction == TableScrollDirection.DOWN) {
+      this.scrollableTableScrollDirection = "DOWN"
+    }
+
+    if (tableScrollEvent.direction == TableScrollDirection.UP) {
+      this.scrollableTableScrollDirection = "UP"
+    }
+
+    this.scrollableTableScrollPct = tableScrollEvent.sliderPosPct
+  }
+
+  /**
+   * This sucks, but this is not production code, so who cares?
+   */
+  public onScrollableTableSort(tableSortEvent:TableSortEvent) : void {
+    tableSortEvent.columnSorts.forEach(columnSort => {
+      this.scrollableTableData = this.scrollableTableData.sort((rec1, rec2) => {
+        if (columnSort.columnNumber == 0) {
+          if (columnSort.sortDirection == TableColumnSortDirection.ASCENDING) {
+            return rec1.rowNumber - rec2.rowNumber
+          } else {
+            return rec2.rowNumber - rec1.rowNumber
+          }
+        }
+
+        if (columnSort.columnNumber == 1) {
+          if (columnSort.sortDirection == TableColumnSortDirection.ASCENDING) {
+            return rec1.itemName.localeCompare(rec2.itemName)
+          } else {
+            return rec2.itemName.localeCompare(rec1.itemName)
+          }
+        }
+
+        if (columnSort.columnNumber == 2) {
+          if (columnSort.sortDirection == TableColumnSortDirection.ASCENDING) {
+            return rec1.itemValue - rec2.itemValue
+          } else {
+            return rec2.itemValue - rec1.itemValue
+          }
+        }
+
+        return 0
+      })
+    })
   }
 
   public getCardsListData() : CardData[] {

@@ -335,3 +335,64 @@ h1, h2, h3, h4, h5, h6 {
 .calendar-button-container .calendar-button .grid-icon td {
     background-color: var(--application-text-color);
 }
+
+.table-component thead th {
+    background-color: var(--form-control-background-color);
+    border-bottom-style: solid;
+    border-bottom-width: 2px;
+    border-bottom-color: var(--form-control-border-color);
+}
+
+.table-component tbody.zebra-stripes :nth-child(odd) td {
+    background-color: var(--table-odd-row-backgroun-color);
+}
+
+.table-component tbody.zebra-stripes :nth-child(even) td {
+    background-color: var(--table-even-row-backgroun-color);
+}
+
+.table-component thead .first-cell {
+    border-top-left-radius: var(--form-control-border-radius);
+}
+
+.table-component thead .last-cell {
+    border-top-right-radius: var(--form-control-border-radius);
+}
+
+.table-component tbody.selectable-rows tr:hover td {
+    cursor: pointer;
+    background-color: var(--card-background-color-hover);
+    color: var(--form-control-text-color-hover);
+    transition: 0.5s;
+}
+
+.table-component tbody.selectable-rows tr td {
+    transition: 0.2s;
+}
+
+.table-component tbody.selectable-rows .selected td {
+    background-color: var(--card-background-color-selected);
+}
+
+.table-container.scrollable-table-container {
+    scrollbar-color: var(--scrollbar-button-color) var(--scrollbar-background-color);
+}
+
+.scrollable-table-header-row {
+    display: block;
+    height: calc(var(--font-size-large) + 12px);
+}
+
+.table-component th.vertical-grid-lines {
+    border-left-color: var(--form-control-background-color);
+}
+
+.table-component td.vertical-grid-lines {
+    border-left-color: var(--form-control-background-color-alt);
+}
+
+.table-component th.sort-icon-cell:hover {
+    background-color: var(--application-text-color) !important;
+    color: var(--application-background-color) !important;
+    transition: 0.2s;
+}

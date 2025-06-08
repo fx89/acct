@@ -210,6 +210,91 @@
       </td>
     </tr>
   </table>
+
+  Table:
+  <app-table
+    [zebraStripes]="true"
+    [selectableRows]="true"
+    [data]="tableData"
+    [(selectedRow)]="selectedTableRow"
+    [columnNames]="['Col 1', 'Col 2', 'Col 3', 'Col 4', 'Col 5']"
+    [columnWidths]="[100, 130, 0, 140]"
+    [headerStyles]="[
+      'text-align:left; width:100px', 
+      'text-align:left; width:130px', 
+      'background-color:var(--red-background-color)',
+      'width:140px'
+      ]"
+    [columnStyles]="[
+      '',
+      '',
+      'background-color:var(--blue-background-color)',
+      'text-align:center'
+    ]"
+  >
+    <ng-template tableColumn let-row="row">
+        {{ row.propertyA }}
+    </ng-template>
+    <ng-template tableColumn let-row="row">
+        {{ row.propertyB }}
+    </ng-template>
+    <ng-template tableColumn let-row="row">
+        {{ row.propertyC }}
+    </ng-template>
+    <ng-template tableColumn let-row="row">
+        {{ row.propertyA }} {{ row.propertyB }}
+    </ng-template>
+    <ng-template tableColumn let-row="row">
+        {{ row.propertyB }} {{ row.propertyC }}
+    </ng-template>
+  </app-table>
+  <br />
+  Selected row: {{ selectedTableRow.propertyA }}
+  <br />
+  <br />
+
+  Scrollable table:
+  <app-table
+    [zebraStripes]="true"
+    [verticalGridLines]="true"
+    [scrollable]="true"
+    [sortable]="true"
+    [selectableRows]="true"
+    [data]="scrollableTableData"
+    [(selectedRow)]="scrollableTableSelectedRow"
+    (scroll)="onScrollableTableScroll($event)"
+    (sort)="onScrollableTableSort($event)"
+    [columnNames]="['Row number', 'Item name', 'Item value']"
+    [columnWidths]="[100, 130]"
+    [headerStyles]="[
+      'text-align:left', 
+      'text-align:center', 
+      'background-color:var(--red-background-color)'
+      ]"
+    [columnStyles]="[
+      '',
+      'text-align:center;',
+      'background-color:var(--blue-background-color); text-align: right;'
+    ]"
+  >
+    <ng-template tableColumn let-row="row">
+        {{ row.rowNumber }}
+    </ng-template>
+    <ng-template tableColumn let-row="row">
+        {{ row.itemName }}
+    </ng-template>
+    <ng-template tableColumn let-row="row">
+        {{ scrollableTableNumberFormat.format(row.itemValue) }}
+    </ng-template>
+  </app-table>
+  <br />
+  Selected row: {{ scrollableTableSelectedRow.rowNumber }}<br />
+  <br />
+  <app-label [value]="'Scroll direction: ' + this.scrollableTableScrollDirection" textAlign="left"></app-label>
+  <app-label [value]="'Scroll pct: ' + this.scrollableTableScrollPct" textAlign="left"></app-label>
+  <br />
+  <br />
+
 </div>
 
 

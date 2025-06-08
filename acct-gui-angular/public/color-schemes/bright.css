@@ -42,4 +42,7 @@
 
     --flash-background-color: #AAA;
     --flash-text-color: #000;
+
+    --table-odd-row-backgroun-color: RGBA(200, 200, 200, 0.3);
+    --table-even-row-backgroun-color: RGBA(170, 170, 170, 0.3);
 }

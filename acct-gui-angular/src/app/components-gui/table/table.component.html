@@ -1,0 +1,104 @@
+<table cellspacing="0" cellpaddingh="0">
+    <tr><td class="scrollable-table-header-row">
+        <div
+            id="{{ this.id }}_header"
+            class="table-container"
+        >
+            <table
+                id="{{ this.id }}_header_table"
+                class="table-component"
+                cellspacing=0
+            >
+                <thead>
+                    @for (header of this.getHeaders(); track header) {
+                        <th
+                            [style]="header.headerStyle"
+                            [style.width]="header.columnWidthStyle"
+                            [class]="{ 
+                                'first-cell': header.isFirstCell,
+                                'last-cell': header.isLastCell && !this.isScrollable(),
+                                'vertical-grid-lines': this.hasVerticalGridLines()
+                            }"
+                        >
+                            {{ header.columnName }}
+                        </th>
+
+                        @if (this.isSortable()) {
+                            <th
+                                class="sort-icon-cell"
+                                style="cursor:pointer;"
+                                [style]="header.headerStyle"
+                                (click)="this.onSortIconCellClicked(header)"
+                            >
+                                @if (header.sortDirection == "NONE") {
+                                    ⯁
+                                }
+
+                                @if (header.sortDirection == "ASCENDING") {
+                                    ⯅
+                                }
+
+                                @if (header.sortDirection == "DESCENDING") {
+                                    ⯆
+                                }
+                            </th>
+                        }
+                    }
+                    @if (this.isScrollable()) {
+                        <th class="last-cell scrollable-table-overflow-header-cell">
+
+                        </th>
+                    }
+                </thead>
+            </table>
+        </div>
+    </td></tr>
+    <tr><td>
+        <div
+            id="{{ this.tableBodyElementId }}"
+            [class]="{ 'table-container': true, 'scrollable-table-container': this.isScrollable() }"
+            [style.height]="this.getScrollHeight()"
+            (scroll)="onContentScroll($event)"
+        >
+            <table
+                id="{{ this.id }}_body_table" 
+                class="table-component"
+                cellspacing=0
+            >
+                <tbody [class]="{ 
+                    'zebra-stripes'  : this.isZebraStriping(),
+                    'selectable-rows': this.areRowsSelectable()
+                }" >
+                    @for (row of this.getData(); track row) {
+                        <tr
+                            [class]="{ 'selected': (row == this.cachedSelectedRow) }"
+                        >
+                            @for (column of this.getColumns(); track column) {
+                                <td
+                                    [style]="column.columnStyle"
+                                    [style.width]="column.columnWidthStyle"
+                                    (click)="this.onRowClicked(row)"
+                                    [class]="{ 'vertical-grid-lines': this.hasVerticalGridLines() }"
+                                >
+                                    <ng-container
+                                        [ngTemplateOutlet]="column.columnTemplate"
+                                        [ngTemplateOutletContext]="{row: row}"
+                                    ></ng-container>
+                                </td>
+
+                                @if (this.isSortable()) {
+                                    <td
+                                        class="sort-icon-cell"
+                                        [style]="column.columnStyle"
+                                    >
+
+                                    </td>
+                                }
+                            }
+                        </tr>   
+                    }
+                </tbody>
+            </table>
+        </div>
+    </td></tr>
+</table>

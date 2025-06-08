@@ -6,7 +6,7 @@
 // DONE: GUI-01006: GUI components: Color theme chooser
 // TODO: GUI-01007: GUI components: Accordion
 // DONE: GUI-01008: GUI components: Menu (vertical, folding into icons)
-// TODO: GUI-01009: GUI components: Table (fixed header, scrollable, sortable)
+// DONE: GUI-01009: GUI components: Table (fixed header, scrollable, sortable)
 // DONE: GUI-01010: GUI components: Input
 // DONE: GUI-01011: GUI components: Label
 // DONE: GUI-01012: GUI components: Progress bar
