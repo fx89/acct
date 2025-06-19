@@ -1,4 +1,6 @@
 .color-theme-bright {
+    --modal-overlay-background-color: rgba(0,0,0,0.9);
+
     --application-background-color: #EEE;
     --application-text-color: #444;
 

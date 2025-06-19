@@ -20,6 +20,7 @@ import { CalendarButtonComponent } from '../calendar-button/calendar-button.comp
 import { TableColumnDirective, TableComponent } from '../table/table.component';
 import { TableScrollDirection, TableScrollEvent } from '../table/table-scroll-event';
 import { TableColumnSortDirection, TableSortEvent } from '../table/table-sort-event';
+import { ModalOverlayComponent } from '../modal-overlay/modal-overlay.component';
 
 type ExtendedCardData = CardData & { additionalData : string }
 
@@ -42,7 +43,8 @@ type ExtendedCardData = CardData & { additionalData : string }
     CalendarComponent,
     CalendarButtonComponent,
     TableComponent,
-    TableColumnDirective
+    TableColumnDirective,
+    ModalOverlayComponent
   ],
   templateUrl: './showcase.component.html',
   styleUrl: './showcase.component.less'
@@ -58,6 +60,8 @@ export class ShowcaseComponent {
   selectedTab : TabData | undefined
   selectedDate : Date = new Date()
   selectedDate2 : Date = new Date()
+
+  modalOverlayVisible : boolean = false
 
   cardsListData : CardData[] = [
     {
@@ -287,6 +291,14 @@ export class ShowcaseComponent {
 
   public getTabs() : TabData[] {
     return this.tabs
+  }
+
+  public onOpenModalOverlayButtonClick() : void {
+    this.modalOverlayVisible = true
+  }
+
+  public onCloseModalOverlayButtonClick() : void {
+    this.modalOverlayVisible = false
   }
 
 }

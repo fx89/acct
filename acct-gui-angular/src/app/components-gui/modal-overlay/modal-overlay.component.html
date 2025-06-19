@@ -1,0 +1,11 @@
+<div
+    id="{{ this.id }}"
+    class="modal-overlay"
+    [style.visibility]="this.isVisible() ? 'visible' : 'hidden'"
+>
+    <div class="modal-overlay-backdrop"></div>
+
+    <div class="modal-overlay-content">
+        <ng-content></ng-content>
+    </div>
+</div>

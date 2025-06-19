@@ -1,4 +1,6 @@
 .color-theme-dark {
+    --modal-overlay-background-color: rgba(0,0,0,0.9);
+
     --application-background-color: #111;
     --application-text-color: #BBB;
 

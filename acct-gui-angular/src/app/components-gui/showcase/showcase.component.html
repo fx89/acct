@@ -207,6 +207,16 @@
           [(value)]="this.selectedDate2"
         ></app-calendar-button>
         {{ this.selectedDate2 }}
+
+        <br /><br /><br />
+
+        <app-button
+          value='Open modal overlay'
+          (onClick)="onOpenModalOverlayButtonClick()"
+          color="blue"
+          width="300px"
+          height="30px"
+        ></app-button>
       </td>
     </tr>
   </table>
@@ -317,3 +327,13 @@
     <h2>aaa</h2>
   </div>
 </app-bar>
+
+<app-modal-overlay [visible]="this.modalOverlayVisible">
+  <app-button
+    value='Click to close the modal overlay'
+    textAlign="center"
+    (onClick)="onCloseModalOverlayButtonClick()"
+    width="300px"
+    height="30px" 
+  ></app-button>
+</app-modal-overlay>
