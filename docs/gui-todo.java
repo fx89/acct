@@ -12,8 +12,9 @@
 // DONE: GUI-01012: GUI components: Progress bar
 // DONE: GUI-01013: GUI components: Panel (scrollable, optional title)
 // DONE: GUI-01014: GUI components: Modal overlay
-// TODO: GUI-01015: GUI components: Loading (optionally modal)
-// TODO: GUI-01016: GUI components: Dialog (optionally modal)
+// TODO: GUI-01015: GUI components: Loading
+// DONE: GUI-01016: GUI components: Dialog
 // DONE: GUI-01017: GUI components: Calendar
 // DONE: GUI-01018: GUI components: Bar (top, bottom, floating, auto-hiding)
 // DONE: GUI-01019: GUI components: Tabs
+// DONE: GUI-01020: GUI components: Message box

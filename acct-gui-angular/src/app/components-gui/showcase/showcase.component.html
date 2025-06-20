@@ -217,6 +217,22 @@
           width="300px"
           height="30px"
         ></app-button>
+
+        <app-button
+          value='Open test dialog'
+          (onClick)="onOpenTestDialogButtonClick()"
+          color="blue"
+          width="300px"
+          height="30px"
+        ></app-button>
+
+        <app-button
+          value='Open message box'
+          (onClick)="onOpenMessageBoxButtonClick()"
+          color="blue"
+          width="300px"
+          height="30px"
+        ></app-button>
       </td>
     </tr>
   </table>
@@ -337,3 +353,30 @@
     height="30px" 
   ></app-button>
 </app-modal-overlay>
+
+<app-dialog
+  title="Test dialog"
+  [visible]="this.testDialogVisible"
+>
+  This is a test dialog<br />
+  <br />
+  <app-button
+    value='Close test dialog'
+    textAlign="center"
+    (onClick)="onCloseTestDialogButtonClick()"
+    color="blue"
+    width="300px"
+    height="30px"
+  ></app-button>
+</app-dialog>
+
+<app-msgbox
+  title="Message box"
+  text="This is a message box with 3 buttons: one fires the affirmative response event, another fires the 
+    negative responseevent and the last ones closes the message box without doing anything."
+  [(visible)]="this.messageBoxVisible"
+  [type]="messageBoxType"
+  height="160px"
+  (onAffirmativeResponse)="this.onMessageBoxAffirmativeResponse()"
+  (onNegativeResponse)="this.onMessageBoxNegativeResponse()"
+></app-msgbox>

@@ -1,0 +1,14 @@
+<div id="{{ this.id }}" class="dialog">
+    <app-modal-overlay [visible]="this.isVisible()">
+        <app-panel
+          [width]="this.getWidth()"
+          [height]="this.getHeight()"
+          [title]="this.getTitle()"
+          [titleStyle]="this.getTitleStyle()"
+        >
+            <div class="dialog-content">
+                <ng-content></ng-content>
+            </div>
+        </app-panel>
+    </app-modal-overlay>
+</div>

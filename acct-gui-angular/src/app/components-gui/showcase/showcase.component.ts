@@ -21,6 +21,9 @@ import { TableColumnDirective, TableComponent } from '../table/table.component';
 import { TableScrollDirection, TableScrollEvent } from '../table/table-scroll-event';
 import { TableColumnSortDirection, TableSortEvent } from '../table/table-sort-event';
 import { ModalOverlayComponent } from '../modal-overlay/modal-overlay.component';
+import { DialogComponent } from '../dialog/dialog.component';
+import { MsgboxComponent } from '../msgbox/msgbox.component';
+import { MsgboxType } from '../msgbox/msgbox-type';
 
 type ExtendedCardData = CardData & { additionalData : string }
 
@@ -44,7 +47,9 @@ type ExtendedCardData = CardData & { additionalData : string }
     CalendarButtonComponent,
     TableComponent,
     TableColumnDirective,
-    ModalOverlayComponent
+    ModalOverlayComponent,
+    DialogComponent,
+    MsgboxComponent
   ],
   templateUrl: './showcase.component.html',
   styleUrl: './showcase.component.less'
@@ -62,6 +67,9 @@ export class ShowcaseComponent {
   selectedDate2 : Date = new Date()
 
   modalOverlayVisible : boolean = false
+  testDialogVisible : boolean = false
+  messageBoxVisible : boolean = false
+  messageBoxType : MsgboxType = MsgboxType.YES_NO_CANCEL
 
   cardsListData : CardData[] = [
     {
@@ -299,6 +307,26 @@ export class ShowcaseComponent {
 
   public onCloseModalOverlayButtonClick() : void {
     this.modalOverlayVisible = false
+  }
+
+  public onOpenTestDialogButtonClick() : void {
+    this.testDialogVisible = true
+  }
+
+  public onCloseTestDialogButtonClick() : void {
+    this.testDialogVisible = false
+  }
+
+  public onOpenMessageBoxButtonClick() : void {
+    this.messageBoxVisible = true
+  }
+
+  public onMessageBoxAffirmativeResponse() : void  {
+    alert("Affirmative response clicked")
+  }
+
+  public onMessageBoxNegativeResponse() : void {
+    alert("Negative response clicked")
   }
 
 }

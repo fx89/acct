@@ -14,9 +14,10 @@ export class PanelComponent {
    */
   public id = uuidv4()
 
-  width  : InputSignal<string> = input("500px")
-  height : InputSignal<string> = input("400px")
-  title  : InputSignal<string> = input("")
+  width      : InputSignal<string> = input("500px")
+  height     : InputSignal<string> = input("400px")
+  title      : InputSignal<string> = input("")
+  titleStyle : InputSignal<string> = input("")
 
   getWidth() : string {
     return this.width()
@@ -28,6 +29,10 @@ export class PanelComponent {
 
   getTitle() : string {
     return this.title()
+  }
+
+  getTitleStyle() : string {
+    return this.titleStyle()
   }
 
   isTitleVisible() : boolean {
