@@ -13,13 +13,26 @@
 
   @if ( router.url !== '/components-showcase' ) {
 
-    <!-- --- This is the layout of everyt other page ------------------------------------------- -->
+    <!-- --- This is the layout of every other page ------------------------------------------- -->
 
-    <gui-sidebar></gui-sidebar>
+    <app-bar
+      barType="top"
+      [floating]="true"
+      [autoHiding]="true"
+    >
+      <div left-content>
+        <h1>{{ this.getSelectedMenuItemText() }}</h1>
+      </div>
+      <div right-content>
+        <app-color-theme-selector></app-color-theme-selector>
+      </div>
+    </app-bar>
 
-    @for (configItem of this.router.config; track configItem) {
-      <div>{{ configItem.path }}</div>
-    }
+    <app-menu
+      [items]="this.menuItems"
+      position="left"
+      [(selectedItem)]="this.selectedMenuItem"
+    ></app-menu>
 
     <!-- --- End of every other page ---------------------------------------------------------- -->
 

@@ -1,5 +1,5 @@
 // TODO: APP-01001: Main page: Cards menu
-// TODO: APP-01002: Main page: App menu
+// DONE: APP-01002: Main page: App menu
 
 // TODO: APP-02001: Dashboard page: General layout
 // TODO: APP-02002: Dashboard page: Dashboard table
