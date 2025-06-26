@@ -34,3 +34,6 @@
 // TODO: APP-08002: User information page: User information display
 // TODO: APP-08003: User information page: Account deletion
 // TODO: APP-08004: User information page: Permissiosn viewer
+
+// DONE: APP-09001: Login form: Login service
+// TODO: APP-09002: Login form: Design and functionality

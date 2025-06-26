@@ -1,0 +1,20 @@
+# Log in using the custom login endpoint, to get the authorization code
+export ACCT_USER_ACCESS_TOKEN=$(\
+    curl \
+        --insecure \
+        -v \
+        -H 'Content-Type: application/json' \
+        --data-raw '
+            {
+                "clientId"     : "frontend-client",
+                "clientSecret" : "lkjdwsf23odnwqkld23odfbqweorh23oihd",
+                "username"     : "admin",
+                "password"     : "admin"
+            }
+        ' \
+        -X POST 'http://localhost:9001/service/authorization/v1/custom-login' \
+        | jq -j '.userAccessToken' \
+)
+
+# The user access token is now available
+echo $ACCT_USER_ACCESS_TOKEN

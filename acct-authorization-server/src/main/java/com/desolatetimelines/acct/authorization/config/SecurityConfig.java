@@ -16,6 +16,7 @@ import org.springframework.security.oauth2.server.authorization.config.annotatio
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -34,6 +35,8 @@ public class SecurityConfig {
     private static final int JWK_SIZE = 2048;
     private static final String TOKEN_PATH = "/oauth2/token";
 
+    public static final String CUSTOM_LOGIN_PATH = "/custom-login";
+
     @Bean
     @Order(1)
     SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -51,10 +54,19 @@ public class SecurityConfig {
         http.authorizeHttpRequests(authorizeRequests ->
                 authorizeRequests
                     .requestMatchers(HttpMethod.POST, TOKEN_PATH).permitAll()
+                    .requestMatchers(HttpMethod.OPTIONS, TOKEN_PATH).permitAll()
+                    .requestMatchers(HttpMethod.POST, CUSTOM_LOGIN_PATH).permitAll()
+                    .requestMatchers(HttpMethod.OPTIONS, CUSTOM_LOGIN_PATH).permitAll()
                     .anyRequest().authenticated()
             )
             .formLogin(withDefaults())
-            .csrf(AbstractHttpConfigurer::disable);
+            .csrf(AbstractHttpConfigurer::disable)
+            .cors(corsConfigurer ->
+                corsConfigurer.configurationSource(request ->
+                    new CorsConfiguration()
+                        .applyPermitDefaultValues()
+                )
+            );
 
         return http.build();
     }

@@ -7,8 +7,13 @@ import { CurrencyHistoryComponent } from './pages/currency-history/currency-hist
 import { UserInformationComponent } from './pages/user-information/user-information.component';
 import { CatalogComponent } from './pages/catalog/catalog.component';
 import { ShowcaseComponent } from './components-gui/showcase/showcase.component';
+import { LoginFormComponent } from './components-acct/login-form/login-form.component';
 
 export const routes: Routes = [
+    {
+        path: 'login',
+        component: LoginFormComponent
+    },
     {
         path: 'main',
         component: MainComponent,

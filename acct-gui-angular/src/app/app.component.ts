@@ -5,6 +5,7 @@ import { MenuComponent } from './components-gui/menu/menu.component';
 import { MenuItemData } from './components-gui/menu/menu-item-data';
 import { ColorThemeSelectorComponent } from './components-gui/color-theme-selector/color-theme-selector.component';
 import { BarComponent } from './components-gui/bar/bar.component';
+import { LoginFormComponent } from './components-acct/login-form/login-form.component';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +13,8 @@ import { BarComponent } from './components-gui/bar/bar.component';
     RouterOutlet,
     MenuComponent,
     ColorThemeSelectorComponent,
-    BarComponent
+    BarComponent,
+    LoginFormComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.less'
