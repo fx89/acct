@@ -26,8 +26,9 @@ export class InputComponent {
   hint     : InputSignal<string>  = input("")
 
   // Events
-  @Output() valueChange : EventEmitter<string> = new EventEmitter<string>()
-  @Output() submit      : EventEmitter<string> = new EventEmitter<string>()
+  @Output() valueChange    : EventEmitter<string> = new EventEmitter<string>()
+  @Output() onValueChanged : EventEmitter<string> = new EventEmitter<string>()
+  @Output() submit         : EventEmitter<string> = new EventEmitter<string>()
 
   // Private properties
   public currentValue : string = ""
@@ -42,6 +43,7 @@ export class InputComponent {
   keyupEventHandler(event:KeyboardEvent, value:string) : void {
     this.currentValue = value
     this.valueChange.emit(this.currentValue)
+    this.onValueChanged.emit(this.currentValue)
 
     if (event.key == "Enter") {
       this.submit.emit(this.currentValue)

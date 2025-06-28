@@ -1,1 +1,207 @@
-<p>user-information works!</p>
+<div style="margin-left:calc(50vw - (730px / 2))">
+    <table><tr><td>
+        <table cellspacing="2" style="border:0px; padding:0px; margin:0px;">
+            <tr>
+                <td>
+                    <!-- The icon panel -->
+                    <app-panel
+                        width="200px"
+                        height="221px"
+                    >
+                        <table cellspacing="10">
+                            <tr>
+                                <td>
+                                    <!-- The currently selected icon display -->
+                                    <div style="width:175px; height:150px; background:#000;">
+
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <!-- Spacer -->
+                                    <div style="height:5px;"></div>
+
+                                    <!-- The Select Icon button -->
+                                    <app-button
+                                        value='Select Icon'
+                                        textAlign="center"
+                                        (onClick)="this.showIconSelectorDialog()"
+                                        color="blue"
+                                        width="175px"
+                                        height="30px"
+                                    ></app-button>
+                                </td>
+                            </tr>
+                        </table>
+                    </app-panel>
+                </td>
+                <td>
+                    <!-- The name and default workspace panel -->
+                    <app-panel
+                        width="500px"
+                        height="102px"
+                    >
+                        <table cellspacing="10">
+                            <tr>
+                                <td style="width:130px">Name</td>
+                                <td>
+                                    <app-input
+                                        [enabled]="true"
+                                        [(value)]="this.userHumanReadableName"
+                                        [valid]="true"
+                                        width="220px"
+                                        height="30px"
+                                        hint="Enter your name"
+                                    ></app-input>
+                                </td>
+                                <td>
+                                    <app-button
+                                        value='Save'
+                                        textAlign="center"
+                                        (onClick)="this.saveName()"
+                                        color="blue"
+                                        width="100px"
+                                        height="30px"
+                                    ></app-button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Default workspace</td>
+                                <td>
+                                    <app-select
+                                        [options]="this.availableWorkspaces"
+                                        [cardHeightPx]="50"
+                                        [(selectedOption)]="this.selectedWorkspace"
+                                        width="200px"
+                                    ></app-select>
+                                </td>
+                                <td>
+                                    <app-button
+                                        value='Save'
+                                        textAlign="center"
+                                        (onClick)="this.saveDefaultWorkspace()"
+                                        color="blue"
+                                        width="100px"
+                                        height="30px"
+                                    ></app-button>
+                                </td>
+                            </tr>
+                        </table>
+                    </app-panel>
+
+                    <!-- Spacer -->
+                    <div style="height:5px"></div>
+
+                    <!-- The password change panel -->
+                    <app-panel
+                        width="500px"
+                        height="102px"
+                    >
+                        <table cellspacing="10">
+                            <tr>
+                                <td style="width:130px">Password</td>
+                                <td>
+                                    <app-input
+                                        [enabled]="true"
+                                        [(value)]="this.userPassword"
+                                        (onValueChanged)="this.onPasswordFieldChangedEvent()"
+                                        [masked]="true"
+                                        width="220px"
+                                        height="30px"
+                                        hint="Enter your password here"
+                                    ></app-input>
+                                </td>
+                                <td>
+                                    <!-- Nothig to put here -->
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Confirm password</td>
+                                <td>
+                                    <app-input
+                                        [enabled]="true"
+                                        [(value)]="this.userPasswordConfirmation"
+                                        (onValueChanged)="this.onPasswordFieldChangedEvent()"
+                                        [masked]="true"
+                                        [valid]="this.userPasswordConfirmationValid"
+                                        width="220px"
+                                        height="30px"
+                                        hint="Enter your password again"
+                                    ></app-input>
+                                </td>
+                                <td>
+                                    <app-button
+                                        value='Save'
+                                        textAlign="center"
+                                        (onClick)="this.savePassword()"
+                                        color="red"
+                                        width="100px"
+                                        height="30px"
+                                    ></app-button>
+                                </td>
+                            </tr>
+                        </table>
+                    </app-panel>
+                </td>
+            </tr>
+        </table>
+
+        <table cellspacing="2" style="border:0px; padding:0px; margin:0px;">
+            <tr><td>
+                <!-- The groups and privileges panel -->
+                <app-panel
+                    title="Groups"
+                    width="725px"
+                    height="90px"
+                >
+                    {{ this.commaSeparatedGroupNames }}
+                </app-panel>
+
+                <!-- Spacer -->
+                <div style="height:5px;"></div>
+
+                <!-- The commands panel -->
+                <app-panel
+                    width="725px"
+                    height="50px"
+                >
+                    <div style="height:5px"></div>
+                    <table style="width:100%"><tr>
+                        <td>
+                            <app-button
+                                value="Delete Personal Account"
+                                textAlign="center"
+                                color="red"
+                                (onClick)="showDeletePersonalAccountMessageBox()"
+                                width="250px"
+                                height="30px"
+                            ></app-button>
+                        </td>
+                        <td style="width:250px">
+                            <app-button
+                                value="View Assigned Permissions"
+                                textAlign="center"
+                                (onClick)="showAssignedPermissionsDialog()"
+                                width="250px"
+                                height="30px"
+                            ></app-button>
+                        </td>
+                    </tr></table>
+                </app-panel>
+            </td></tr>
+        </table>
+    </td></tr></table>
+</div>
+
+
+<app-msgbox
+  title="Account Deletion Confirmation"
+  text="This change is irreversible. You will lose access to the application and you will lose your data. Are you sure 
+        you want to delete your account?"
+  [(visible)]="this.deletePersonalDataMessageBoxVisible"
+  [type]="this.deletePersonalDataMessageBoxType"
+  height="160px"
+  (onAffirmativeResponse)="this.deletePersonalAccountConfirmed()"
+  (onNegativeResponse)="this.deletePersonalAccountCancelled()"
+></app-msgbox>

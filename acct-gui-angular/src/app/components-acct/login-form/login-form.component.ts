@@ -45,7 +45,7 @@ export class LoginFormComponent implements OnInit {
 
   onFormSubmit() : void {
     this.loginService.login(this.username, this.password).subscribe({
-      next: userAccessToken => {
+      next: () => {
         this.resetErrorSate()
         this.labelMessage = SUCCESS_LABEL_MESSAGE
         this.success = true
