@@ -1,1 +1,81 @@
-<p>login-form works!</p>
+<div class="center">
+    <app-panel
+        width="500px"
+        height="300px"
+        title="User authentication"
+        titleStyle="text-align: center"
+    >
+        <!-- spacer -->
+        <div style="height:40px"></div>
+
+        <!-- input fields -->
+        <table cellspacing="10" class="center-horizontally">
+            <tr>
+                <td>
+                    Username
+                </td>
+                <td>
+                    <app-input
+                        [enabled]="true"
+                        [(value)]="this.username"
+                        [valid]="!this.isError()"
+                        width="250px"
+                        height="30px"
+                        hint="username"
+                        (submit)="this.onFormSubmit()"
+                    ></app-input>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Password
+                </td>
+                <td>
+                    <app-input
+                        [enabled]="true"
+                        [(value)]="this.password"
+                        [valid]="!this.isError()"
+                        [masked]="true"
+                        (submit)="this.onFormSubmit()"
+                        width="250px"
+                        height="30px"
+                        hint="password"
+                    ></app-input>
+                </td>
+            </tr>
+        </table>
+
+        <!-- spacer -->
+        <div style="height:20px"></div>
+
+        <!-- submit button -->
+        <div class="center-horizontally">
+            <app-button
+                value='Log in'
+                textAlign="center"
+                (onClick)="this.onFormSubmit()"
+                color="blue"
+                width="200px"
+                height="30px"
+            ></app-button>
+         </div>
+
+         <!-- spacer -->
+        <div style="height:20px"></div>
+
+        <!-- status label -->
+        <div class="center-horizontally">
+            <app-label
+                width="350px"
+                height="25px"
+                [value]="this.labelMessage"
+                fontSize="small"
+                [color]="this.isError() ? 'red' : (this.isSuccess() ? 'green' : 'none')"
+                textAlign="center"
+                [flash]="false"
+            ></app-label>
+        </div>
+
+    </app-panel>
+</div>
+

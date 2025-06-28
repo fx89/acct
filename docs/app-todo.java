@@ -36,4 +36,4 @@
 // TODO: APP-08004: User information page: Permissiosn viewer
 
 // DONE: APP-09001: Login form: Login service
-// TODO: APP-09002: Login form: Design and functionality
+// DONE: APP-09002: Login form: Design and functionality

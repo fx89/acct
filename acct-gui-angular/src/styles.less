@@ -86,6 +86,16 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--red-text-color);
 }
 
+.green {
+    background-color: var(--green-background-color);
+    color: var(--green-text-color);
+}
+
+.blue {
+    background-color: var(--blue-background-color);
+    color: var(--blue-text-color);
+}
+
 .form-control.hoverable.red :hover {
     background-color: var(--red-background-color-hover);
     color: var(--red-text-color);
@@ -94,11 +104,6 @@ h1, h2, h3, h4, h5, h6 {
 .progress-bar-progress.red, .form-control.clickable .switch-inner-div.red {
     background-color: var(--red-background-color) !important;
     color: var(--red-text-color) !important;
-}
-
-.blue {
-    background-color: var(--blue-background-color);
-    color: var(--blue-text-color);
 }
 
 .form-control.hoverable.blue :hover {
@@ -399,4 +404,25 @@ h1, h2, h3, h4, h5, h6 {
 
 .modal-overlay .modal-overlay-backdrop {
     background-color: var(--modal-overlay-background-color);
+}
+
+.center-horizontally {
+    max-width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.center {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%);
+}
+
+.center-horizontally {
+    max-width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
 }

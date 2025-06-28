@@ -14,38 +14,41 @@ export class InputComponent {
    * The ID of the component is unique in the page
    */
   public id = uuidv4()
+  public inputElementId = this.id + "_input"
 
   // Properties
-  enabled : InputSignal<boolean> = input(true)
-  valid   : InputSignal<boolean> = input(true)
-  value   : InputSignal<string>  = input("")
-  width   : InputSignal<string>  = input("100%")
-  height  : InputSignal<string>  = input("1.3em")
-  hint    : InputSignal<string>  = input("")
+  enabled  : InputSignal<boolean> = input(true)
+  valid    : InputSignal<boolean> = input(true)
+  masked   : InputSignal<boolean> = input(false)
+  value    : InputSignal<string>  = input("")
+  width    : InputSignal<string>  = input("100%")
+  height   : InputSignal<string>  = input("1.3em")
+  hint     : InputSignal<string>  = input("")
 
   // Events
   @Output() valueChange : EventEmitter<string> = new EventEmitter<string>()
+  @Output() submit      : EventEmitter<string> = new EventEmitter<string>()
 
   // Private properties
-  private currentValue : string = ""
+  public currentValue : string = ""
   private isFocused : boolean = false
 
 
 
   ngOnInit() {
-    if (this.isHintVisible()) {
-      this.currentValue = this.getHint()
-    } else {
-      this.currentValue = this.value()
+   this.currentValue = this.value()
+  }
+
+  keyupEventHandler(event:KeyboardEvent, value:string) : void {
+    this.currentValue = value
+    this.valueChange.emit(this.currentValue)
+
+    if (event.key == "Enter") {
+      this.submit.emit(this.currentValue)
     }
   }
 
-  keyupEventHandler(value: string) : void {
-    this.currentValue = value
-    this.valueChange.emit(this.currentValue)
-  }
-
-  public focusEventHandler() : void {  
+  public focusEventHandler() : void {
     this.isFocused = true
   }
 
@@ -75,6 +78,10 @@ export class InputComponent {
 
   public getHint() : string {
     return this.hint()
+  }
+
+  public getInputType() : string {
+    return this.masked() ? "password" : "text"
   }
 
   public isHintVisible() : boolean {

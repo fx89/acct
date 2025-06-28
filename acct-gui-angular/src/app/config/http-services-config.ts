@@ -30,7 +30,7 @@ export function provideHttpServicesConfig() {
                 serviceName     : "acct-authorization",
                 servicePath     : "/service/authorization/v1",
                 urlsResolver    : new AcctAuthorizationServiceUrlResolver(),
-                preRequestHooks : [ authorizingHttpConnectorPreRequestHook ] // Requests to the authorization service do not need to be authorized
+                preRequestHooks : [ ] // Requests to the authorization service do not need to be authorized
             },
             {
                 serviceName     : "acct-user-management-service",

@@ -47,6 +47,10 @@ export class LabelComponent {
     return this.color() === "blue"
   }
 
+  isGreen() : boolean {
+    return this.color() === "green"
+  }
+
   isFontSmall() : boolean {
     return this.fontSize() === "small"
   }
