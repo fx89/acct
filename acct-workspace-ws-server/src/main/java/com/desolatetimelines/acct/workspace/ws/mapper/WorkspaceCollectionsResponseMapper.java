@@ -16,7 +16,7 @@ public abstract class WorkspaceCollectionsResponseMapper {
                 .withUserWorkspaces(
                     WorkspaceDetailsMapper.fromAcctWorkspacesCollection(acctWorkspacesByOwnership.userWorkspaces())
                 )
-                .withGroupWorkspace(
+                .withGroupWorkspaces(
                     WorkspaceDetailsMapper.fromAcctWorkspacesCollection(acctWorkspacesByOwnership.groupWorkspaces())
                 )
                 .withPublicWorkspaces(

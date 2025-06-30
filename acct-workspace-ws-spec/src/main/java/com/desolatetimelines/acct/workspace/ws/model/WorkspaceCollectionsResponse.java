@@ -7,14 +7,14 @@ import java.util.Collection;
  * grouped into 3 categories: user workspaces, group workspaces and public workspaces.
  *
  * @param userWorkspaces   A collection of workspaces directly-accessible to the owner
- * @param groupWorkspace   A collection of workspaces owned by a group that the owner is part of
+ * @param groupWorkspaces  A collection of workspaces owned by a group that the owner is part of
  * @param publicWorkspaces A collection of workspaces that are publicly accessible
  */
 public record WorkspaceCollectionsResponse(
 
     Collection<WorkspaceDetails> userWorkspaces,
 
-    Collection<WorkspaceDetails> groupWorkspace,
+    Collection<WorkspaceDetails> groupWorkspaces,
 
     Collection<WorkspaceDetails> publicWorkspaces
 
@@ -29,7 +29,7 @@ public record WorkspaceCollectionsResponse(
      */
     public static final class WorkspaceCollectionsResponseBuilder {
         private Collection<WorkspaceDetails> userWorkspaces;
-        private Collection<WorkspaceDetails> groupWorkspace;
+        private Collection<WorkspaceDetails> groupWorkspaces;
         private Collection<WorkspaceDetails> publicWorkspaces;
 
         private WorkspaceCollectionsResponseBuilder() {
@@ -47,13 +47,13 @@ public record WorkspaceCollectionsResponse(
         }
 
         /**
-         * Sets the {@code groupWorkspace} and returns a reference to this Builder enabling method chaining.
+         * Sets the {@code groupWorkspaces} and returns a reference to this Builder enabling method chaining.
          *
-         * @param groupWorkspace the {@code groupWorkspace} to set
+         * @param groupWorkspaces the {@code groupWorkspaces} to set
          * @return a reference to this Builder
          */
-        public WorkspaceCollectionsResponseBuilder withGroupWorkspace(Collection<WorkspaceDetails> groupWorkspace) {
-            this.groupWorkspace = groupWorkspace;
+        public WorkspaceCollectionsResponseBuilder withGroupWorkspaces(Collection<WorkspaceDetails> groupWorkspaces) {
+            this.groupWorkspaces = groupWorkspaces;
             return this;
         }
 
@@ -74,7 +74,7 @@ public record WorkspaceCollectionsResponse(
          * @return a {@code WorkspaceCollectionsResponse} built with parameters of this {@code WorkspaceCollectionsResponse.Builder}
          */
         public WorkspaceCollectionsResponse build() {
-            return new WorkspaceCollectionsResponse(userWorkspaces, groupWorkspace, publicWorkspaces);
+            return new WorkspaceCollectionsResponse(userWorkspaces, groupWorkspaces, publicWorkspaces);
         }
     }
 }
