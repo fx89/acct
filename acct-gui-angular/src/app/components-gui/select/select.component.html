@@ -1,5 +1,5 @@
 <div
-    id="{{ this.getWrappingDivId() }}"
+    id="{{ this.wrappingDivId }}"
     class="select-control"
     [style.width]="'calc(' + this.getWidth() + ' + ' + this.getHeight() + ' + 5px)'"
 >
@@ -27,27 +27,26 @@
     >
         &#x2B9F;
     </div>
+</div>
 
-    @if( this.isListVisible() ) {
-        <div
-            id="{{ this.id }}_select_options"
-            class="select-list"
-            [style.bottom]="this.isListOnTop() ? 'calc(' + this.getTotalCardPadding() + ' + ' + this.getHeight() + ')' : ''"
-        >
-            <app-cards-list
-                [width]="this.getWidth()"
-                [height]="this.getActualListHeight()"
-                [cardWidth]="'calc(' + this.getWidth() + ' - 25px)'"
-                [cardHeight]="this.getCardHeight()"
-                [cardImageWidth]="this.getCardImageWidth()"
-                [cardImageHeight]="this.getCardImageHeight()"
-                cardSpacing="5px"
-                [cards]="getOptions()"
-                [clickable]="true"
-                [selectable]="true"
-                (selectionChange)="this.onCardSelected($event)"
-            ></app-cards-list>
-        </div>
-    }
-
+<div
+    id="{{ this.selectOptionsListId }}"
+    class="select-list"
+    [style.visibility]="this.isListVisible() ? 'visible' : 'hidden'"
+    [style.left]="'100px'"
+    [style.top]="'100px'"
+>
+    <app-cards-list
+        [width]="this.getWidth()"
+        [height]="this.getActualListHeight()"
+        [cardWidth]="'calc(' + this.getWidth() + ' - 25px)'"
+        [cardHeight]="this.getCardHeight()"
+        [cardImageWidth]="this.getCardImageWidth()"
+        [cardImageHeight]="this.getCardImageHeight()"
+        cardSpacing="5px"
+        [cards]="getOptions()"
+        [clickable]="true"
+        [selectable]="true"
+        (selectionChange)="this.onCardSelected($event)"
+    ></app-cards-list>
 </div>

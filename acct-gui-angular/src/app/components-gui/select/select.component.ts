@@ -20,6 +20,8 @@ export class SelectComponent {
    * The ID of the component is unique in the page
    */
   public id = uuidv4()
+  public selectOptionsListId = this.id + "_select_options"
+  public wrappingDivId = this.id + "_select"
 
   // Input properties
   width             : InputSignal<string> = input("280px")
@@ -40,7 +42,7 @@ export class SelectComponent {
   // Internal properties
   listVisible         : boolean = false
   listJustMadeVisible : boolean = false
-  listOnTop           : boolean = false
+
 
   // Injectables
   renderer : Renderer2
@@ -109,16 +111,8 @@ export class SelectComponent {
     return this.getTotalCardPaddingPx() + 'px'
   }
 
-  public getWrappingDivId() : string {
-    return this.id + "_select"
-  }
-
   public isListVisible() : boolean {
     return this.listVisible
-  }
-
-  public isListOnTop() : boolean {
-    return this.listOnTop
   }
 
   public getActualListHeightPx() : number {
@@ -155,21 +149,8 @@ export class SelectComponent {
         this.listJustMadeVisible = true
       }, 100)
 
-
-      // Compute the cards list position to be either on top of or under the selection box,
-      // based on the position of the control relative to the viewport bottom
-      const rect : DOMRect | undefined = getElementRect(this.getWrappingDivId())
-      const windowHeight : number = window.innerHeight
-
-      // If the list goes out of the viewport to the bottom, then put it on top of the 
-      // selection box
-      if ((rect?.bottom || 0) + this.getActualListHeightPx() > windowHeight) { 
-        this.listOnTop = true
-      }
-      // If the list does not go out of the viewport to the bottom, then put it on the bottom
-      else {
-        this.listOnTop = false
-      }
+      // Reposition the select options list
+      this.repositionSelectOptionsList()
     }
   }
 
@@ -179,6 +160,40 @@ export class SelectComponent {
 
     // Emit the change event for the selected card / option
     this.selectedOptionChange.emit(card)
+  }
+
+  private repositionSelectOptionsList() : void {
+    // Get a reference to the document element
+    const selectOptionsListElement : HTMLElement | null = document.getElementById(this.selectOptionsListId)
+
+    // If there's a select options list element on screen, then reposition it
+    if (selectOptionsListElement) {
+      // Get the wrapping div element
+      const wrappingDivElementRect : DOMRect | undefined = getElementRect(this.wrappingDivId)
+
+      // If there's a wrapping div element on screen, then reposition the select options list
+      // element relative to the wrapping div element
+      if (wrappingDivElementRect) {
+        // The X position is exactly the wrapping div element's left boundary
+        selectOptionsListElement.style.left = wrappingDivElementRect.left + "px"
+
+        // The top position is either the bottom boundary of the wrapping div element
+        // or the uppoer boundary minus the list height, depending on the scroll position
+        if (wrappingDivElementRect.bottom + selectOptionsListElement.offsetHeight > window.innerHeight) {
+          selectOptionsListElement.style.top = (wrappingDivElementRect.top - selectOptionsListElement.offsetHeight) + "px"
+        } else {
+          selectOptionsListElement.style.top = wrappingDivElementRect.bottom + "px"
+        }
+      }
+      
+
+      // Set the X position of the select options list
+      //selectOptionsListElement.style.left = wrappingDivElement?.style.left || "0px"
+      //console.log(wrappingDivElement)
+
+      // Compute the cards list position to be either on top of or under the selection box,
+      // based on the position of the control relative to the viewport bottom
+    }
   }
 
   public ngOnInit() : void {
