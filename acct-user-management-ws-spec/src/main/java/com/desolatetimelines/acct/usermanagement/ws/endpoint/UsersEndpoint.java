@@ -25,11 +25,27 @@ public interface UsersEndpoint {
     AcctUserUUIDResponse saveUser(AcctUserCreationRequest request);
 
     /**
+     * Sets the human-readable name of the current user
+     *
+     * @param userNameUpdateRequest container for the userName property
+     */
+    AcctStatusResponse setCurrentUserName(AcctUserNameUpdateRequest userNameUpdateRequest);
+
+    /**
+     * Sets the default workspace UUID for the current user
+     *
+     * @param userDefaultWorkspaceUpdateRequest container for the default workspace UUID property
+     */
+    AcctStatusResponse setCurrentUserDefaultWorkspace(
+        AcctUserDefaultWorkspaceUpdateRequest userDefaultWorkspaceUpdateRequest
+    );
+
+    /**
      * Sets the password of the current user to the given value
      *
      * @param passwordSettingRequest container for the given value
      */
-    void setCurrentUserPassword(AcctCurrentUserPasswordSettingRequest passwordSettingRequest);
+    AcctStatusResponse setCurrentUserPassword(AcctCurrentUserPasswordSettingRequest passwordSettingRequest);
 
     /**
      * Retrieves the details of the current user

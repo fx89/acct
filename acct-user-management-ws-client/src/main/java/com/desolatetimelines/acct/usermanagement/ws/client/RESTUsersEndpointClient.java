@@ -6,6 +6,8 @@ import com.desolatetimelines.acct.usermanagement.ws.model.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 @FeignClient(
     contextId = "${USER_MANAGEMENT_APPLICATION_NAME}-users",
     name = "${USER_MANAGEMENT_APPLICATION_NAME}/${USER_MANAGEMENT_SERVER_CONTEXT_PATH}/users"
@@ -21,11 +23,22 @@ public interface RESTUsersEndpointClient extends UsersEndpoint {
     AcctUserUUIDResponse saveUser(@RequestBody AcctUserCreationRequest request);
 
     @Override
+    @PostMapping(value = "/currentUser/userName", produces = APPLICATION_JSON_VALUE)
+    AcctStatusResponse setCurrentUserName(
+        @RequestBody AcctUserNameUpdateRequest userNameUpdateRequest
+    );
+
+    @PostMapping(value = "/currentUser/defaultWorkspace", produces = APPLICATION_JSON_VALUE)
+    AcctStatusResponse setCurrentUserDefaultWorkspace(
+        @RequestBody AcctUserDefaultWorkspaceUpdateRequest userDefaultWorkspaceUpdateRequest
+    );
+
+    @Override
     @GetMapping(value = "")
     void deleteUser(@RequestParam("userUUID") String userUUID);
 
     @Override
-    default void setCurrentUserPassword(AcctCurrentUserPasswordSettingRequest passwordSettingRequest) {
+    default AcctStatusResponse setCurrentUserPassword(AcctCurrentUserPasswordSettingRequest passwordSettingRequest) {
         throw new UnsupportedOperationException("This operation is not intended for back-end clients");
     }
 

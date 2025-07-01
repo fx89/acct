@@ -1,5 +1,7 @@
 import { authorizingHttpConnectorPreRequestHook } from './hooks-http-services/authorization-hook'
 import { HttpConnectorBaseURLsResolver } from '../services-reusable/http-connectors.service'
+import { Router } from '@angular/router'
+import { HttpClientWrapperMethodlessRequest } from '../services-reusable/http-client-wrapper.service'
 
 /**
  * Provides the base URLs for the authorization service.
@@ -20,12 +22,21 @@ class AcctUserManagementServiceUrlResolver implements HttpConnectorBaseURLsResol
 }
 
 /**
+ * Provides the base URLs for the workspace service.
+ */
+class AcctWorkspaceServiceUrlResolver implements HttpConnectorBaseURLsResolver {
+    resolveBaseURLs(): string | string[] {
+        return "http://localhost:8085"
+    }
+}
+
+/**
  * Provides the HttpServicesConfig injectable for the app configuration
  */
 export function provideHttpServicesConfig() {
     return {
         provide: 'HttpServicesConfig',
-        useValue:  [
+        useFactory: (router:Router) =>  [
             {
                 serviceName     : "acct-authorization",
                 servicePath     : "/service/authorization/v1",
@@ -33,15 +44,27 @@ export function provideHttpServicesConfig() {
                 preRequestHooks : [ ] // Requests to the authorization service do not need to be authorized
             },
             {
-                serviceName     : "acct-user-management-service",
+                serviceName     : "acct-user-management",
                 servicePath     : "/service/user-management/v1",
                 urlsResolver    : new AcctUserManagementServiceUrlResolver(),
                 preRequestHooks : [
-                    authorizingHttpConnectorPreRequestHook // Requests to this service need to be authorized
+                    // Requests to this service need to be authorized
+                    (request:HttpClientWrapperMethodlessRequest<any>) => 
+                        authorizingHttpConnectorPreRequestHook(request, router)
+                ]
+            },
+            {
+                serviceName     : "acct-workspace",
+                servicePath     : "/service/workspace/v1",
+                urlsResolver    : new AcctWorkspaceServiceUrlResolver(),
+                preRequestHooks : [
+                    // Requests to this service need to be authorized
+                    (request:HttpClientWrapperMethodlessRequest<any>) => 
+                        authorizingHttpConnectorPreRequestHook(request, router)
                 ]
             }
         ],
-        deps: [  ]
+        deps: [ Router ]
     }
 }
 

@@ -1,5 +1,5 @@
 import { AccessToken } from "../model-acct/access-token"
-import { localObjectStorage } from "../utils-reusalbe/storage-utils"
+import { sessionObjectStorage } from "../utils-reusalbe/storage-utils"
 
 /**
  * The key under which the access token can be found within the local storage
@@ -7,16 +7,16 @@ import { localObjectStorage } from "../utils-reusalbe/storage-utils"
 const LOCAL_STORAGE_ACCESS_TOKEN_KEY : string = "ACCESS_TOKEN"
 
 /**
- * Interface for the localStorage, specialized on ACCT data types
+ * Interface for the sessionStorage, specialized on ACCT data types
  */
-class AcctLocalStore {
+class AcctSessionStorage {
 
     /**
      * Stores the referenced access token into the local storage.
      * @param accessToken the referenced access token
      */
     public storeAccessToken(accessToken : AccessToken) : void {
-        localObjectStorage().setItem(LOCAL_STORAGE_ACCESS_TOKEN_KEY, accessToken)
+        sessionObjectStorage().setItem(LOCAL_STORAGE_ACCESS_TOKEN_KEY, accessToken)
     }
 
     /**
@@ -24,7 +24,7 @@ class AcctLocalStore {
      * Returns false otherwise.
      */
     public checkAccessTokenStored() : boolean {
-        return localObjectStorage().hasItem(LOCAL_STORAGE_ACCESS_TOKEN_KEY)
+        return sessionObjectStorage().hasItem(LOCAL_STORAGE_ACCESS_TOKEN_KEY)
     }
 
     /**
@@ -32,17 +32,17 @@ class AcctLocalStore {
      * an access token stored into the local storage, then null is returned.
      */
     public retrieveAccessToken() : AccessToken | null {
-        return localObjectStorage().getItem(LOCAL_STORAGE_ACCESS_TOKEN_KEY)
+        return sessionObjectStorage().getItem(LOCAL_STORAGE_ACCESS_TOKEN_KEY)
     }
 
 }
 
-const acctLocalStorage : AcctLocalStore = new AcctLocalStore()
+const acctSessionStorage : AcctSessionStorage = new AcctSessionStorage()
 
 /**
- * Provides a reference to the AcctLocalStore, which is an
+ * Provides a reference to the AcctSessionStore, which is an
  * interface for the localStorage, specialized on ACCT data types.
  */
-export function acctLocalStore() : AcctLocalStore {
-    return acctLocalStorage
+export function acctSessionStore() : AcctSessionStorage {
+    return acctSessionStorage
 }

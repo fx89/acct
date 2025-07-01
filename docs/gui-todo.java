@@ -18,3 +18,4 @@
 // DONE: GUI-01018: GUI components: Bar (top, bottom, floating, auto-hiding)
 // DONE: GUI-01019: GUI components: Tabs
 // DONE: GUI-01020: GUI components: Message box
+// TODO: GUI-01021: GUI components: Toast

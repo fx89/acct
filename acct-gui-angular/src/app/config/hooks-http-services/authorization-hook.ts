@@ -1,6 +1,7 @@
+import { Router } from "@angular/router"
 import { AccessToken } from "../../model-acct/access-token"
 import { HttpClientWrapperMethodlessRequest, setRequestHeader } from "../../services-reusable/http-client-wrapper.service"
-import { acctLocalStore } from "../../stores-acct/acct-local-storage"
+import { acctSessionStore } from "../../stores-acct/acct-session-storage"
 import { currentTimestampInSeconds } from "../../utils-reusalbe/date-utils"
 
 const AUTH_HEADER_KEY : string = "Authorization"
@@ -18,11 +19,12 @@ const AUTH_TOKEN_TYPE : string = "Bearer"
  * @returns the modifeid version of the referenced request
  */
 export function authorizingHttpConnectorPreRequestHook(
-    request : HttpClientWrapperMethodlessRequest<any>
+    request : HttpClientWrapperMethodlessRequest<any>,
+    router  : Router
 ) : HttpClientWrapperMethodlessRequest<any>
 {
     // If there is an access token stored
-    if (acctLocalStore().checkAccessTokenStored()) {
+    if (acctSessionStore().checkAccessTokenStored()) {
         // Get the stored acess token
         const accessToken : AccessToken = retrieveStoredAccessToken()
 
@@ -42,12 +44,15 @@ export function authorizingHttpConnectorPreRequestHook(
     }
 
     // Redirect to the login form
+    router.navigate(['/login'])
+
+    // And throw an exception, just in case
     throw "Not logged in or session expired"
 }
 
 function retrieveStoredAccessToken() : AccessToken {
     // Retrieve the access token (if any)
-    const accessToken : AccessToken | null = acctLocalStore().retrieveAccessToken()
+    const accessToken : AccessToken | null = acctSessionStore().retrieveAccessToken()
 
     // If the access token was retrieved, then return a reference
     if (accessToken) {

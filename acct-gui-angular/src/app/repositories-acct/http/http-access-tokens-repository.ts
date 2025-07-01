@@ -4,11 +4,8 @@ import { AcctAccessTokensRepository } from "../access-tokens-repository";
 
 export class HttpAcctAccessTokensRepository extends AcctAccessTokensRepository {
 
-    private readonly httpConnector : HttpConnector
-
-    constructor(httpConnectorsService:HttpConnectorsService) {
+    constructor(private readonly httpConnector : HttpConnector) {
         super();
-        this.httpConnector = httpConnectorsService.getHttpConnectorByServiceName('acct-authorization')
     }
 
     public createUserAccessToken(

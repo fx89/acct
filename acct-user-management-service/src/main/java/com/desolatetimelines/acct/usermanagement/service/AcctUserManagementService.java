@@ -165,6 +165,7 @@ public class AcctUserManagementService {
      * @param userUUID                 the given user UUID
      * @param newUserEncryptedPassword the given encrypted password
      */
+    @Transactional
     public void setUserPassword(String userUUID, String newUserEncryptedPassword) {
         // Get the user. If the user does not exist, throw a "not found" exception.
         final AcctUser acctUser =
@@ -173,6 +174,26 @@ public class AcctUserManagementService {
 
         // Set the user's encrypted password
         acctUser.setUserEncryptedPassword(newUserEncryptedPassword);
+
+        // Save the user
+        dataService.saveUser(acctUser);
+    }
+
+    /**
+     * Sets the human-readable name of the user with the given user UUID to the given userName
+     *
+     * @param userUUID    the given user UUID
+     * @param newUserName the given userName
+     */
+    @Transactional
+    public void setUserName(String userUUID, String newUserName) {
+        // Get the user. If the user does not exist, throw a "not found" exception.
+        final AcctUser acctUser =
+            dataService.findUserByUserUUID(userUUID)
+                .orElseThrow(() -> new AcctUserManagementNotFoundException("User not found"));
+
+        // Set the user's encrypted password
+        acctUser.setUserName(newUserName);
 
         // Save the user
         dataService.saveUser(acctUser);

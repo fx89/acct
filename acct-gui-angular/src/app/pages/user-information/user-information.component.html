@@ -205,3 +205,27 @@
   (onAffirmativeResponse)="this.deletePersonalAccountConfirmed()"
   (onNegativeResponse)="this.deletePersonalAccountCancelled()"
 ></app-msgbox>
+
+<app-msgbox
+  title="Password update confirmation"
+  text="Your new password has been set."
+  [(visible)]="this.passwordUpdateConfirmationMessageBoxVisible"
+  [type]="this.passwordUpdateConfirmationMessageBoxType"
+  height="160px"
+></app-msgbox>
+
+<app-msgbox
+  title="User name update confirmation"
+  text="Your human-readable name has been updated."
+  [(visible)]="this.humanReadableNameUpdateConfirmationMessageBoxVisible"
+  [type]="this.humanReadableNameUpdateConfirmationMessageBoxType"
+  height="160px"
+></app-msgbox>
+
+<app-msgbox
+  title="User default workspace update confirmation"
+  text="Your default workspace has been updated."
+  [(visible)]="this.defaultWorkspaceUpdateConfirmationMessageBoxVisible"
+  [type]="this.humanReadableNameUpdateConfirmationMessageBoxType"
+  height="160px"
+></app-msgbox>

@@ -3,7 +3,7 @@ import { AcctAccessTokensRepository } from '../repositories-acct/access-tokens-r
 import { Observable } from 'rxjs';
 import { AccessToken, DecodedAccessToken } from '../model-acct/access-token';
 import { errorPipingObservableTransform } from '../utils-reusalbe/rxjs-utils';
-import { acctLocalStore } from '../stores-acct/acct-local-storage';
+import { acctSessionStore } from '../stores-acct/acct-session-storage';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +17,7 @@ export class LoginService {
   constructor(
     private acctAccessTokensRepository : AcctAccessTokensRepository
   ) { 
-    
+
   }
 
   /**
@@ -47,7 +47,7 @@ export class LoginService {
         }
 
         // Store the access token object for the session
-        acctLocalStore().storeAccessToken(accessToken)
+        acctSessionStore().storeAccessToken(accessToken)
 
         // Return a reference to the access token object
         return accessToken

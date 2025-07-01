@@ -1,9 +1,15 @@
+
+const EMPTY_KEY_PREFIX : string = ""
+
+const KEY_PREFIX_SEPARATOR : string = "___"
+
+
 /**
  * Wraps the Storage class, to provide serialization support and extended features
  */
 class ObjectStorage {
 
-    constructor (private storage : Storage) {
+    constructor (private storage : Storage, private keysPrefix : string) {
 
     }
 
@@ -13,7 +19,7 @@ class ObjectStorage {
      * @param object the referenced object
      */
     public setItem<T>(key : string, object : T) : void {
-        this.storage.setItem(key, JSON.stringify(object))
+        this.storage.setItem(this.computeStorageKey(key), JSON.stringify(object))
     }
 
     /**
@@ -23,7 +29,7 @@ class ObjectStorage {
      */
     public getItem<T>(key : string) : T | null {
         // Get the serialized item (if any)
-        const serializedItem : any = this.storage.getItem(key)
+        const serializedItem : any = this.storage.getItem(this.computeStorageKey(key))
 
         // If the serialized item exists in the store, then deserialize it and return a reference
         if (serializedItem) {
@@ -40,7 +46,7 @@ class ObjectStorage {
      * @returns true if the key exists, false otherwise
      */
     public hasItem(key : string) : boolean {
-        return (this.storage.getItem(key) ? true : false)
+        return (this.storage.getItem(this.computeStorageKey(key)) ? true : false)
     }
 
     /**
@@ -48,7 +54,7 @@ class ObjectStorage {
      * @param key the given key
      */
     public removeItem(key : string) : void {
-        this.storage.removeItem(key)
+        this.storage.removeItem(this.computeStorageKey(key))
     }
 
     /**
@@ -72,22 +78,34 @@ class ObjectStorage {
     public clear() : void {
         this.storage.clear()
     }
+
+    private computeStorageKey(key:string) : string {
+        if (this.keysPrefix === "") {
+            return key
+        }
+
+        return this.keysPrefix + KEY_PREFIX_SEPARATOR + key
+    }
 }
 
 /**
  * Returns the sessionStorage as an ObjectStorage class that performs serialization
  * and deserialization when storing and retrieving objects and provides additional
- * features.
+ * features. One such feature is grouping items by a the given keyPrefix, so that,
+ * if two objects are stored from two different services, but with the same key,
+ * the storage may distinguish between them. This is useful for in-memory repositories.
  */
-export function sessionObjectStorage() : ObjectStorage {
-    return new ObjectStorage(sessionStorage)
+export function sessionObjectStorage(keyPrefix?:string) : ObjectStorage {
+    return new ObjectStorage(sessionStorage, keyPrefix ?? EMPTY_KEY_PREFIX)
 }
 
 /**
  * Returns the localStorage as an ObjectStorage class that performs serialization
  * and deserialization when storing and retrieving objects and provides additional
- * features.
+ * features. One such feature is grouping items by a the given keyPrefix, so that,
+ * if two objects are stored from two different services, but with the same key,
+ * the storage may distinguish between them. This is useful for in-memory repositories.
  */
-export function localObjectStorage() : ObjectStorage {
-    return new ObjectStorage (localStorage)
+export function localObjectStorage(keyPrefix?:string) : ObjectStorage {
+    return new ObjectStorage (localStorage, keyPrefix ?? EMPTY_KEY_PREFIX)
 }

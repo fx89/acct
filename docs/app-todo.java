@@ -24,7 +24,7 @@
  TODO: APP-07003: Deposits to capitalize: Deposits to capitalize table
  TODO: APP-07004: Deposits to capitalize: Capitalization functionality
  DONE: APP-08001: User information page: Page layout
- TODO: APP-08002: User information page: User information display
+ DONE: APP-08002: User information page: User information display
  TODO: APP-08003: User information page: Account deletion
  TODO: APP-08004: User information page: Permissions viewer
  TODO: APP-08005: User information page: Icon selector

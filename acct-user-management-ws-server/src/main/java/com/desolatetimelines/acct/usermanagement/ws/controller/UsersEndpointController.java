@@ -1,12 +1,12 @@
 package com.desolatetimelines.acct.usermanagement.ws.controller;
 
+import com.desolatetimelines.acct.common.model.Page;
+import com.desolatetimelines.acct.common.ws.mapper.AcctPageInfoMapper;
 import com.desolatetimelines.acct.common.ws.model.AcctPage;
 import com.desolatetimelines.acct.usermanagement.data.model.AcctUserCreationParameters;
 import com.desolatetimelines.acct.usermanagement.model.AcctUser;
-import com.desolatetimelines.acct.common.model.Page;
 import com.desolatetimelines.acct.usermanagement.service.AcctUserManagementService;
 import com.desolatetimelines.acct.usermanagement.ws.endpoint.UsersEndpoint;
-import com.desolatetimelines.acct.common.ws.mapper.AcctPageInfoMapper;
 import com.desolatetimelines.acct.usermanagement.ws.mapper.AcctUserDetailsMapper;
 import com.desolatetimelines.acct.usermanagement.ws.mapper.AcctUserInfoMapper;
 import com.desolatetimelines.acct.usermanagement.ws.model.*;
@@ -16,6 +16,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.function.Consumer;
 
 import static com.desolatetimelines.acct.usermanagement.privilegesprovider.model.UserManagementPrivilegeIds.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -65,24 +67,51 @@ public class UsersEndpointController implements UsersEndpoint, UsersPrivateEndpo
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + USERS_SAVE + "')")
+    @PostMapping(value = "/currentUser/userName", produces = APPLICATION_JSON_VALUE)
+    public AcctStatusResponse setCurrentUserName(
+        @RequestBody AcctUserNameUpdateRequest userNameUpdateRequest
+    ) {
+        doWithUserDetails(userDetails ->
+            userManagementService.setUserName(userDetails.userUUID(), userNameUpdateRequest.userName())
+        );
+
+        // Return the OK response
+        return AcctStatusResponse.newAcctOkResponse();
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + USERS_SAVE + "')")
+    @PostMapping(value = "/currentUser/defaultWorkspace", produces = APPLICATION_JSON_VALUE)
+    public AcctStatusResponse setCurrentUserDefaultWorkspace(
+        @RequestBody AcctUserDefaultWorkspaceUpdateRequest userDefaultWorkspaceUpdateRequest
+    ) {
+        doWithUserDetails(userDetails ->
+            userManagementService.setUserDefaultWorkspace(
+                userDetails.userUUID(),
+                userDefaultWorkspaceUpdateRequest.defaultWorkspaceUUID()
+            )
+        );
+
+        // Return the OK response
+        return AcctStatusResponse.newAcctOkResponse();
+    }
+
+    @Override
     @PreAuthorize("hasAnyAuthority('SCOPE_" + USERS_RESET_PASSWORD + "')")
     @PostMapping(value = "/currentUser", produces = APPLICATION_JSON_VALUE)
-    public void setCurrentUserPassword(@RequestBody AcctCurrentUserPasswordSettingRequest passwordSettingRequest) {
-        // If the JWT user access token was provided then the process can continue
-        if (SecurityContextHolder.getContext().getAuthentication().getCredentials() instanceof Jwt jwt) {
-            // Read the access token
-            final AcctUserDetails userDetails = helper.findUserDetailsByJwt(jwt, false);
-
-            // Once the userUUID of the current user was identified, the password can be reset
+    public AcctStatusResponse setCurrentUserPassword(
+        @RequestBody AcctCurrentUserPasswordSettingRequest passwordSettingRequest
+    ) {
+        doWithUserDetails(userDetails ->
             userManagementService.setUserPassword(
                 userDetails.userUUID(),
                 passwordSettingRequest.userEncryptedPassword()
-            );
-        }
-        // If no access token was provided, or if the wrong kind of access token was provided, then fail
-        else {
-            throw new IllegalArgumentException("Wrong access token was provided or no access token was provided at all");
-        }
+            )
+        );
+
+        // Return the OK status
+        return AcctStatusResponse.newAcctOkResponse();
     }
 
     @Override
@@ -151,5 +180,19 @@ public class UsersEndpointController implements UsersEndpoint, UsersPrivateEndpo
         @RequestBody AcctWorkspaceUUIDRequest workspaceUUIDRequest
     ) {
         userManagementService.setUserDefaultWorkspace(userUUID, workspaceUUIDRequest.workspaceUUID());
+    }
+
+    private void doWithUserDetails(Consumer<AcctUserDetails> todo) {
+        // If the JWT user access token was provided then the process can continue
+        if (SecurityContextHolder.getContext().getAuthentication().getCredentials() instanceof Jwt jwt) {
+            // Read the access token
+            final AcctUserDetails userDetails = helper.findUserDetailsByJwt(jwt, false);
+
+            todo.accept(userDetails);
+        }
+        // If no access token was provided, or if the wrong kind of access token was provided, then fail
+        else {
+            throw new IllegalArgumentException("Wrong access token was provided or no access token was provided at all");
+        }
     }
 }

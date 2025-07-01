@@ -106,7 +106,14 @@ Example request URL:
 Example request body:
 ```
 {
-    "userEncryptedPassword": "edij230djqwe40rj2d"
+    "userEncryptedPassword": "{bcrypt}$2b$10$KOrGdIHYnBcr3gO2zA.FBu9Pmv3k/LufAMPuMiYJvUTLCyme7S.5C"
+}
+```
+
+Example response body:
+```
+{
+    "status": "ok"
 }
 ```
 
