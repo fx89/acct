@@ -4,3 +4,4 @@
 // DONE: BUG-00004: REST APIs require authentication for preflight requests
 // DONE: BUG-00005: WorkspaceCollectionsResponse: inconsistent field names
 // DONE: BUG-00006: Bar (top, bottom, floating, auto-hiding): the spacer between the bar and the rest of the content is visible
+// DONE: BUG-00007: Input component: value not updating upon change

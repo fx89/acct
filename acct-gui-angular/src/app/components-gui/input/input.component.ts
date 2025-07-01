@@ -1,4 +1,4 @@
-import { Component, input, InputSignal, Output, EventEmitter } from '@angular/core'; 
+import { Component, input, InputSignal, Output, EventEmitter, OnChanges } from '@angular/core'; 
 import {v4 as uuidv4} from 'uuid';
 
 @Component({
@@ -8,7 +8,7 @@ import {v4 as uuidv4} from 'uuid';
   styleUrl: './input.component.less',
   standalone: true
 })
-export class InputComponent {
+export class InputComponent implements OnChanges {
 
   /**
    * The ID of the component is unique in the page
@@ -36,7 +36,7 @@ export class InputComponent {
 
 
 
-  ngOnInit() {
+  ngOnChanges() {
    this.currentValue = this.value()
   }
 
