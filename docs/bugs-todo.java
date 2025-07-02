@@ -6,4 +6,4 @@
 // DONE: BUG-00006: Bar (top, bottom, floating, auto-hiding): the spacer between the bar and the rest of the content is visible
 // DONE: BUG-00007: Input component: value not updating upon change
 // TODO: BUG-00008: Authorization server: soft-deleted users can still log in
-// TODO: BUG-00009: User management service: Soft-deletion does not set the soft_deleted_date in the database
+// DONE: BUG-00009: User management service: Soft-deletion does not set the soft_deleted_date in the database

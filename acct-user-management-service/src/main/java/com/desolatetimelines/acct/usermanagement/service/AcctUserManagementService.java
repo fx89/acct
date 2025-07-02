@@ -246,6 +246,7 @@ public class AcctUserManagementService {
 
         // Set the softDeleted flag to true
         acctUser.setSoftDeleted(softDeleted);
+        acctUser.setSoftDeletedDate(Instant.now());
 
         // Save the user
         dataService.saveUser(acctUser);
