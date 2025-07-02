@@ -27,6 +27,7 @@ public class AcctSecurityServicePrivilegesProvider implements AcctServicePrivile
                 REPORT_OWNERS_SAVE.getAcctPrivilege(),
                 REPORT_OWNERS_DELETE.getAcctPrivilege(),
                 PRIVILEGES_READ.getAcctPrivilege(),
+                OWN_PRIVILEGES_READ.getAcctPrivilege(),
                 PRIVILEGES_SAVE.getAcctPrivilege(),
                 PRIVILEGES_DELETE.getAcctPrivilege()
             );

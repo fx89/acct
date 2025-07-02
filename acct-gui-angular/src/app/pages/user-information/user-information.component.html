@@ -211,7 +211,7 @@
   text="Your new password has been set."
   [(visible)]="this.passwordUpdateConfirmationMessageBoxVisible"
   [type]="this.passwordUpdateConfirmationMessageBoxType"
-  height="160px"
+  height="115px"
 ></app-msgbox>
 
 <app-msgbox
@@ -219,7 +219,7 @@
   text="Your human-readable name has been updated."
   [(visible)]="this.humanReadableNameUpdateConfirmationMessageBoxVisible"
   [type]="this.humanReadableNameUpdateConfirmationMessageBoxType"
-  height="160px"
+  height="115px"
 ></app-msgbox>
 
 <app-msgbox
@@ -227,5 +227,14 @@
   text="Your default workspace has been updated."
   [(visible)]="this.defaultWorkspaceUpdateConfirmationMessageBoxVisible"
   [type]="this.humanReadableNameUpdateConfirmationMessageBoxType"
-  height="160px"
+  height="115px"
+></app-msgbox>
+
+<app-msgbox
+  title="Assigned privileges"
+  [text]="this.commaSeparatedPrivilegeNames"
+  [(visible)]="this.privilegesMessageBoxVisible"
+  [type]="this.privilegesMessageBoxType"
+  width="500px"
+  height="360px"
 ></app-msgbox>

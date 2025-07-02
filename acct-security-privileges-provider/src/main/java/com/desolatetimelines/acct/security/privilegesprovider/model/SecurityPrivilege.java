@@ -77,6 +77,13 @@ public enum SecurityPrivilege {
             .withPrivilegeDescription("")
             .build()
     ),
+    OWN_PRIVILEGES_READ(
+        AcctPrivilege.builder()
+            .withPrivilegeId(SecurityPrivilegeIds.OWN_PRIVILEGES_READ)
+            .withPrivilegeName("")
+            .withPrivilegeDescription("")
+            .build()
+    ),
     PRIVILEGES_SAVE(
         AcctPrivilege.builder()
             .withPrivilegeId(SecurityPrivilegeIds.PRIVILEGES_SAVE)

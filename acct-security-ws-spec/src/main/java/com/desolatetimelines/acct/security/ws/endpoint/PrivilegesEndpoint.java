@@ -40,4 +40,10 @@ public interface PrivilegesEndpoint {
      */
     Collection<String> getPrivilegesAssignedToUser(String userUUID);
 
+    /**
+     * Returns a list of privilege IDs for all the privileges assigned to all the groups
+     * mapped to the current user
+     */
+    Collection<String> getPrivilegesAssignedToCurrentUser();
+
 }

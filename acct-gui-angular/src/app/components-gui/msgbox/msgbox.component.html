@@ -7,10 +7,13 @@
     >
         <div
             class="msgbox-content"
-            [style.height]="'calc(' + this.getHeight() + ' - 75px)'"
+            [style.height]="'calc(' + this.getHeight() + ' - 85px)'"
         >
             {{ this.getText() }}
         </div>
+
+        <!-- Spacer -->
+        <div style="height:10px;"></div>
 
         <div class="msgbox-buttons">
             @if ( this.isOkButton() ) {

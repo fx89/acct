@@ -31,6 +31,15 @@ class AcctWorkspaceServiceUrlResolver implements HttpConnectorBaseURLsResolver {
 }
 
 /**
+ * Provides the base URLs for the security service.
+ */
+class AcctSecurityServiceUrlResolver implements HttpConnectorBaseURLsResolver {
+    resolveBaseURLs(): string | string[] {
+        return "http://localhost:8082"
+    }
+}
+
+/**
  * Provides the HttpServicesConfig injectable for the app configuration
  */
 export function provideHttpServicesConfig() {
@@ -57,6 +66,16 @@ export function provideHttpServicesConfig() {
                 serviceName     : "acct-workspace",
                 servicePath     : "/service/workspace/v1",
                 urlsResolver    : new AcctWorkspaceServiceUrlResolver(),
+                preRequestHooks : [
+                    // Requests to this service need to be authorized
+                    (request:HttpClientWrapperMethodlessRequest<any>) => 
+                        authorizingHttpConnectorPreRequestHook(request, router)
+                ]
+            },
+            {
+                serviceName     : "acct-security",
+                servicePath     : "/service/security/v1",
+                urlsResolver    : new AcctSecurityServiceUrlResolver(),
                 preRequestHooks : [
                     // Requests to this service need to be authorized
                     (request:HttpClientWrapperMethodlessRequest<any>) => 

@@ -6,6 +6,8 @@ import com.desolatetimelines.acct.security.ws.endpoint.model.GroupPrivileges;
 import com.desolatetimelines.acct.security.ws.endpoint.model.Privilege;
 import com.desolatetimelines.acct.security.ws.mapper.AcctPrivilegeMapper;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -66,6 +68,24 @@ public class PrivilegesController implements PrivilegesEndpoint {
     @GetMapping(value = "/userPrivileges", produces = APPLICATION_JSON_VALUE)
     public Collection<String> getPrivilegesAssignedToUser(@RequestParam("userUUID") String userUUID) {
         return securityService.getPrivilegesAssignedToUser(userUUID);
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + OWN_PRIVILEGES_READ + "')")
+    @GetMapping(value = "/currentUserPrivileges", produces = APPLICATION_JSON_VALUE)
+    public Collection<String> getPrivilegesAssignedToCurrentUser() {
+        // If the JWT user access token was provided then the process can continue
+        if (SecurityContextHolder.getContext().getAuthentication().getCredentials() instanceof Jwt jwt) {
+            // Read the userUUID from the access token
+            final String userUUID = (String) jwt.getClaims().get("userUUID");
+
+            // Get and return the privileges
+            return getPrivilegesAssignedToUser(userUUID);
+        }
+        // If no access token was provided, or if the wrong kind of access token was provided, then fail
+        else {
+            throw new IllegalArgumentException("Wrong access token was provided or no access token was provided at all");
+        }
     }
 
 }

@@ -38,4 +38,8 @@ public interface RESTPrivilegesEndpointClient extends PrivilegesEndpoint {
     @Override
     @GetMapping(value = "/userPrivileges", produces = APPLICATION_JSON_VALUE)
     Collection<String> getPrivilegesAssignedToUser(@RequestParam("userUUID") String userUUID);
+
+    @Override
+    @GetMapping(value = "/currentUserPrivileges", produces = APPLICATION_JSON_VALUE)
+    public Collection<String> getPrivilegesAssignedToCurrentUser();
 }

@@ -14,6 +14,7 @@ public abstract class SecurityPrivilegeIds {
     public static final String REPORT_OWNERS_SAVE = "REPORT_OWNERS_SAVE";
     public static final String REPORT_OWNERS_DELETE = "REPORT_OWNERS_DELETE";
     public static final String PRIVILEGES_READ = "PRIVILEGES_READ";
+    public static final String OWN_PRIVILEGES_READ = "OWN_PRIVILEGES_READ";
     public static final String PRIVILEGES_SAVE = "PRIVILEGES_SAVE";
     public static final String PRIVILEGES_DELETE = "PRIVILEGES_DELETE";
 

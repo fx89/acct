@@ -10,6 +10,7 @@ import { WorkspaceService } from '../../services-acct/workspace.service';
 import { Workspace } from '../../model-acct/workspace';
 import { UserManagementService } from '../../services-acct/user-management.service';
 import { UserDetails } from '../../model-acct/user-details';
+import { SecurityService } from '../../services-acct/security.service';
 
 type WorkspaceCardData = CardData & { workspace : Workspace }
 
@@ -39,6 +40,9 @@ export class UserInformationComponent implements AfterViewInit {
   defaultWorkspaceUpdateConfirmationMessageBoxType : MsgboxType = MsgboxType.OK_ONLY
   defaultWorkspaceUpdateConfirmationMessageBoxVisible : boolean = false
 
+  privilegesMessageBoxType: MsgboxType = MsgboxType.OK_ONLY
+  privilegesMessageBoxVisible : boolean = false
+
   currentUserDetails : UserDetails | undefined
 
   userHumanReadableName : string = ""
@@ -49,12 +53,15 @@ export class UserInformationComponent implements AfterViewInit {
 
   commaSeparatedGroupNames : string = ""
 
+  commaSeparatedPrivilegeNames : string = ""
+
   availableWorkspaces : WorkspaceCardData[] = []
   selectedWorkspace : WorkspaceCardData = this.availableWorkspaces[0]
 
   constructor(
     private workspaceService : WorkspaceService,
-    private userManagementService : UserManagementService
+    private userManagementService : UserManagementService,
+    private securityService : SecurityService
   ) {
 
   }
@@ -166,7 +173,16 @@ export class UserInformationComponent implements AfterViewInit {
   }
 
   showAssignedPermissionsDialog() : void {
-
+    this.securityService.findPrivilegesAssignedToCurrentUser().subscribe({
+      next: (privileges) => {
+        this.commaSeparatedPrivilegeNames = privileges.join(", ")
+        this.privilegesMessageBoxVisible = true
+      },
+      error: (error) => {
+          // TODO: toast component
+          throw(error)
+        }
+    })
   }
 
   showIconSelectorDialog() : void {
