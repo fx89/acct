@@ -111,13 +111,15 @@ public class AcctUserManagementService {
     }
 
     /**
-     * Find the user with the given login name and return the details, or throw an exception
+     * Find the user with the given login name and return the details, or throw an exception.
+     * Soft-deleted users are treated as non-existing.
      *
      * @param userLoginName the given login name
      */
     public AcctUserDetails findUserDetailsByUserLoginName(String userLoginName) {
         return
             dataService.retrieveUserDetailsByUserLoginName(userLoginName)
+                .map(userDetails -> userDetails.userAccount().getSoftDeleted() ? null : userDetails)
                 .orElseThrow(() -> new AcctUserManagementNotFoundException("User not found"));
     }
 
