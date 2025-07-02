@@ -3,6 +3,8 @@ import { Observable } from 'rxjs';
 import { UserDetails } from '../model-acct/user-details';
 import { AcctUsersRepository } from '../repositories-acct/users-repository';
 import bcrypt from "bcryptjs"
+import { errorPipingObservableTransform } from '../utils-reusalbe/rxjs-utils';
+import { acctSessionStore } from '../stores-acct/acct-session-storage';
 /**
  * Interface to the User Management service
  */
@@ -48,6 +50,19 @@ export class UserManagementService {
    */
   public saveCurrentUserDefaultWorkspaceUUID(defaultWorkspaceUUID:string) : Observable<void> {
     return this.usersRepository.saveCurrentUserDefaultWorkspaceUUID(defaultWorkspaceUUID)
+  }
+
+  /**
+   * Soft deletes the current user. Upon success, removes the JWT from the session store.
+   */
+  public softDeleteCurrentUser() : Observable<void> {
+    return errorPipingObservableTransform(
+      this.usersRepository.softDeleteCurrentUser(),
+      status => {
+        acctSessionStore().removeAccessToken()
+        return status
+      }
+    )
   }
 
   private encryptPassword(userPassword:string) : string {

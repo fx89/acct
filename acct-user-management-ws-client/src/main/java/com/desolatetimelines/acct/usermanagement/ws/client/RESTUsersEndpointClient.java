@@ -38,6 +38,10 @@ public interface RESTUsersEndpointClient extends UsersEndpoint {
     void deleteUser(@RequestParam("userUUID") String userUUID);
 
     @Override
+    @DeleteMapping(value = "/currentUser/softDelete")
+    AcctStatusResponse deleteCurrentUser();
+
+    @Override
     default AcctStatusResponse setCurrentUserPassword(AcctCurrentUserPasswordSettingRequest passwordSettingRequest) {
         throw new UnsupportedOperationException("This operation is not intended for back-end clients");
     }

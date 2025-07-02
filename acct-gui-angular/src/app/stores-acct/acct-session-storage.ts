@@ -4,7 +4,7 @@ import { sessionObjectStorage } from "../utils-reusalbe/storage-utils"
 /**
  * The key under which the access token can be found within the local storage
  */
-const LOCAL_STORAGE_ACCESS_TOKEN_KEY : string = "ACCESS_TOKEN"
+const SESSION_STORAGE_ACCESS_TOKEN_KEY : string = "ACCESS_TOKEN"
 
 /**
  * Interface for the sessionStorage, specialized on ACCT data types
@@ -16,7 +16,7 @@ class AcctSessionStorage {
      * @param accessToken the referenced access token
      */
     public storeAccessToken(accessToken : AccessToken) : void {
-        sessionObjectStorage().setItem(LOCAL_STORAGE_ACCESS_TOKEN_KEY, accessToken)
+        sessionObjectStorage().setItem(SESSION_STORAGE_ACCESS_TOKEN_KEY, accessToken)
     }
 
     /**
@@ -24,7 +24,7 @@ class AcctSessionStorage {
      * Returns false otherwise.
      */
     public checkAccessTokenStored() : boolean {
-        return sessionObjectStorage().hasItem(LOCAL_STORAGE_ACCESS_TOKEN_KEY)
+        return sessionObjectStorage().hasItem(SESSION_STORAGE_ACCESS_TOKEN_KEY)
     }
 
     /**
@@ -32,7 +32,11 @@ class AcctSessionStorage {
      * an access token stored into the local storage, then null is returned.
      */
     public retrieveAccessToken() : AccessToken | null {
-        return sessionObjectStorage().getItem(LOCAL_STORAGE_ACCESS_TOKEN_KEY)
+        return sessionObjectStorage().getItem(SESSION_STORAGE_ACCESS_TOKEN_KEY)
+    }
+
+    public removeAccessToken() : void {
+        return sessionObjectStorage().removeItem(SESSION_STORAGE_ACCESS_TOKEN_KEY)
     }
 
 }

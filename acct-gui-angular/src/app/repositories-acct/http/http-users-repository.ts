@@ -92,5 +92,20 @@ export class HttpAcctUsersRepository extends AcctUsersRepository {
             )
         })
     }
+
+    public override softDeleteCurrentUser(): Observable<void> {
+        return new Observable<void>(subscriber => {
+            this.httpConnector.delete(
+                {
+                    url: "/users/currentUser/softDelete"
+                },
+                createBodyProcessingHttpClientWrapperHandlers(
+                    subscriber,
+                    (responseBody:void) => responseBody,
+                    "Current user not deleted."
+                )
+            )
+        })
+    }
     
 }

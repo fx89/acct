@@ -46,6 +46,14 @@ public enum UserManagementPrivilege {
             .build()
     ),
 
+    CURRENT_USER_SOFT_DELETE(
+        AcctPrivilege.builder()
+            .withPrivilegeId(UserManagementPrivilegeIds.CURRENT_USER_SOFT_DELETE)
+            .withPrivilegeName("Soft-delete current user")
+            .withPrivilegeDescription("Allows Marking the current user as deleted")
+            .build()
+    ),
+
     USERS_UNDELETE(
         AcctPrivilege.builder()
             .withPrivilegeId(UserManagementPrivilegeIds.USERS_UNDELETE)

@@ -14,4 +14,6 @@ export abstract class AcctUsersRepository {
 
     public abstract saveCurrentUserDefaultWorkspaceUUID(defaultWorkspaceUUID:string) : Observable<void>
 
+    public abstract softDeleteCurrentUser() : Observable<void>
+
 }

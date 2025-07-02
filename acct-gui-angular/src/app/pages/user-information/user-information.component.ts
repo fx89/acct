@@ -11,6 +11,7 @@ import { Workspace } from '../../model-acct/workspace';
 import { UserManagementService } from '../../services-acct/user-management.service';
 import { UserDetails } from '../../model-acct/user-details';
 import { SecurityService } from '../../services-acct/security.service';
+import { Router } from '@angular/router';
 
 type WorkspaceCardData = CardData & { workspace : Workspace }
 
@@ -31,6 +32,9 @@ export class UserInformationComponent implements AfterViewInit {
   deletePersonalDataMessageBoxType : MsgboxType = MsgboxType.YES_NO
   deletePersonalDataMessageBoxVisible : boolean = false
 
+  personalDataDeletionConfirmationMessageBoxType : MsgboxType = MsgboxType.OK_ONLY
+  personalDataDeletionConfirmationMessageBoxVisible : boolean = false
+
   passwordUpdateConfirmationMessageBoxType : MsgboxType = MsgboxType.OK_ONLY
   passwordUpdateConfirmationMessageBoxVisible : boolean = false
 
@@ -42,6 +46,7 @@ export class UserInformationComponent implements AfterViewInit {
 
   privilegesMessageBoxType: MsgboxType = MsgboxType.OK_ONLY
   privilegesMessageBoxVisible : boolean = false
+
 
   currentUserDetails : UserDetails | undefined
 
@@ -59,6 +64,7 @@ export class UserInformationComponent implements AfterViewInit {
   selectedWorkspace : WorkspaceCardData = this.availableWorkspaces[0]
 
   constructor(
+    private router : Router,
     private workspaceService : WorkspaceService,
     private userManagementService : UserManagementService,
     private securityService : SecurityService
@@ -118,12 +124,20 @@ export class UserInformationComponent implements AfterViewInit {
     this.userPasswordConfirmationValid = (this.userPassword == this.userPasswordConfirmation)
   }
 
-  deletePersonalAccountConfirmed() : void {
-    console.log("deleting")
+  softDeletePersonalAccountConfirmed() : void {
+    this.userManagementService.softDeleteCurrentUser().subscribe({
+      next: () => {
+        this.personalDataDeletionConfirmationMessageBoxVisible = true
+      },
+      error: (error) => {
+        // TODO: toast component
+          throw(error)
+      }
+    })
   }
 
-  deletePersonalAccountCancelled() : void {
-    console.log("not deleting")
+  softDeletePersonalAccountAcknowledged() : void {
+    this.router.navigate(['/login'])
   }
 
   saveName() : void {

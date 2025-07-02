@@ -3,6 +3,7 @@ package com.desolatetimelines.acct.usermanagement.ws.controller;
 import com.desolatetimelines.acct.common.model.Page;
 import com.desolatetimelines.acct.common.ws.mapper.AcctPageInfoMapper;
 import com.desolatetimelines.acct.common.ws.model.AcctPage;
+import com.desolatetimelines.acct.common.ws.model.AcctUserClaims;
 import com.desolatetimelines.acct.usermanagement.data.model.AcctUserCreationParameters;
 import com.desolatetimelines.acct.usermanagement.model.AcctUser;
 import com.desolatetimelines.acct.usermanagement.service.AcctUserManagementService;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.function.Consumer;
 
+import static com.desolatetimelines.acct.common.ws.util.AcctJwtUtils.extractCurrentUserClaims;
 import static com.desolatetimelines.acct.usermanagement.privilegesprovider.model.UserManagementPrivilegeIds.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -145,6 +147,21 @@ public class UsersEndpointController implements UsersEndpoint, UsersPrivateEndpo
     public void deleteUser(@RequestParam("userUUID") String userUUID) {
         userManagementService.softDeleteUserByUserUUID(userUUID);
     }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend','SCOPE_" + CURRENT_USER_SOFT_DELETE + "')")
+    @DeleteMapping(value = "/currentUser/softDelete")
+    public AcctStatusResponse deleteCurrentUser() {
+        // Extract the user claims from the JWT
+        final AcctUserClaims userClaims = extractCurrentUserClaims();
+
+        // Delete the user with the userUUID contained in the user claims
+        userManagementService.softDeleteUserByUserUUID(userClaims.userUUID());
+
+        // Return the OK status
+        return AcctStatusResponse.newAcctOkResponse();
+    }
+
 
     @Override
     @PreAuthorize("hasAnyAuthority('SCOPE_backend','SCOPE_" + USERS_UNDELETE + "')")

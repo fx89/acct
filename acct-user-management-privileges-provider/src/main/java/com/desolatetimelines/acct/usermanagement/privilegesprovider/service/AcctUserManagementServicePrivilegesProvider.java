@@ -22,6 +22,7 @@ public class AcctUserManagementServicePrivilegesProvider implements AcctServiceP
                 USERS_SAVE_CURRENT.getAcctPrivilege(),
                 USERS_SAVE.getAcctPrivilege(),
                 USERS_SOFT_DELETE.getAcctPrivilege(),
+                CURRENT_USER_SOFT_DELETE.getAcctPrivilege(),
                 USERS_UNDELETE.getAcctPrivilege(),
                 USERS_RESET_PASSWORD.getAcctPrivilege(),
                 GROUPS_READ_OWN.getAcctPrivilege(),

@@ -6,7 +6,7 @@
                     <!-- The icon panel -->
                     <app-panel
                         width="200px"
-                        height="221px"
+                        height="223px"
                     >
                         <table cellspacing="10">
                             <tr>
@@ -40,7 +40,7 @@
                     <!-- The name and default workspace panel -->
                     <app-panel
                         width="500px"
-                        height="102px"
+                        height="104px"
                     >
                         <table cellspacing="10">
                             <tr>
@@ -170,7 +170,7 @@
                     <table style="width:100%"><tr>
                         <td>
                             <app-button
-                                value="Delete Personal Account"
+                                value="Soft-delete Personal Account"
                                 textAlign="center"
                                 color="red"
                                 (onClick)="showDeletePersonalAccountMessageBox()"
@@ -197,13 +197,13 @@
 
 <app-msgbox
   title="Account Deletion Confirmation"
-  text="This change is irreversible. You will lose access to the application and you will lose your data. Are you sure 
-        you want to delete your account?"
+  text="Are you sure you want to delete your account? Your user will be soft-deleted. You will lose access to 
+        the application until an administrator will re-activate your account. If your account is not re-activated 
+        within 6 months, then it will be deleted automatically."
   [(visible)]="this.deletePersonalDataMessageBoxVisible"
   [type]="this.deletePersonalDataMessageBoxType"
-  height="160px"
-  (onAffirmativeResponse)="this.deletePersonalAccountConfirmed()"
-  (onNegativeResponse)="this.deletePersonalAccountCancelled()"
+  height="180px"
+  (onAffirmativeResponse)="this.softDeletePersonalAccountConfirmed()"
 ></app-msgbox>
 
 <app-msgbox
@@ -237,4 +237,13 @@
   [type]="this.privilegesMessageBoxType"
   width="500px"
   height="360px"
+></app-msgbox>
+
+<app-msgbox
+  title="Account has been deleted"
+  text="Your account has been soft-deleted. You will now be re-directed to the login screen."
+  [(visible)]="this.personalDataDeletionConfirmationMessageBoxVisible"
+  [type]="this.personalDataDeletionConfirmationMessageBoxType"
+  height="125px"
+  (onAffirmativeResponse)="this.softDeletePersonalAccountAcknowledged()"
 ></app-msgbox>

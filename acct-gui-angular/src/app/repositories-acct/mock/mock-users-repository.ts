@@ -22,5 +22,9 @@ export class MockAcctUsersRepository extends AcctUsersRepository {
     public override saveCurrentUserDefaultWorkspaceUUID(defaultWorkspaceUUID: string): Observable<void> {
         throw new Error("Method not implemented.");
     }
+
+    public override softDeleteCurrentUser(): Observable<void> {
+        throw new Error("Method not implemented.");
+    }
     
 }
