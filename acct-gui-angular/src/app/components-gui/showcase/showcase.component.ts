@@ -24,6 +24,7 @@ import { ModalOverlayComponent } from '../modal-overlay/modal-overlay.component'
 import { DialogComponent } from '../dialog/dialog.component';
 import { MsgboxComponent } from '../msgbox/msgbox.component';
 import { MsgboxType } from '../msgbox/msgbox-type';
+import { PictureFrameComponent } from '../picture-frame/picture-frame.component';
 
 type ExtendedCardData = CardData & { additionalData : string }
 
@@ -49,7 +50,8 @@ type ExtendedCardData = CardData & { additionalData : string }
     TableColumnDirective,
     ModalOverlayComponent,
     DialogComponent,
-    MsgboxComponent
+    MsgboxComponent,
+    PictureFrameComponent
   ],
   templateUrl: './showcase.component.html',
   styleUrl: './showcase.component.less'

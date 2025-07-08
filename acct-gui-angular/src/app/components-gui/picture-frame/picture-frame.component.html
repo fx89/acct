@@ -1,0 +1,43 @@
+<div 
+    id="{{ this.id }}_picture_frame"
+    class="picture-frame"
+    [style.width]="this.getWidth()"
+    [style.height]="this.getHeight()"
+>
+    <!-- The top label (if any) -->
+     @if ( this.isTitleOnTop() ) {
+        <div
+            id="{{ this.id }}_picture_frame_title"
+            class="picture-frame-title top-title"
+            [style.margin-top]="'7px'"
+            [style.margin-bottom]="'7px'"
+        >
+            {{ this.getTitle() }}
+        </div>
+     }
+
+    <!-- The picture -->
+    <img
+        style="background-color: #000"
+        [src]="this.getPictureSource()"
+        alt=" "
+        [style.width]="'calc(' + this.getWidth() + ' - 26px)'"
+        [style.height]="'calc(' + this.getHeight() + ' - 26px' + (this.hasTitle() ? ' - 11px - 7px' : '') + ')'"
+        [style.margin-left]="'13px'"
+        [style.margin-top]="this.isTitleOnBottom() ? '13px' : ''"
+        [style.margin-bottom]="this.isTitleOnTop() ? '13px' : ''"
+        class="picture-frame-picture"
+    >
+
+    <!-- The bottom label (if any) -->
+     @if ( this.isTitleOnBottom() ) {
+        <div
+            id="{{ this.id }}_picture_frame_title"
+            class="picture-frame-title bottom-title"
+            [style.margin-top]="'3px'"
+        >
+            {{ this.getTitle() }}
+        </div>
+     }
+
+</div>
