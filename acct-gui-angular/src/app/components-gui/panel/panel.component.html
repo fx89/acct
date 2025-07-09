@@ -20,11 +20,13 @@
     }
 
     <div
-        id="{{ this.id }}_content"
+        appScrollableContent
+        id="{{ this.panelContentElementId }}"
         [class]="{ 'panel-content': true }"
         [style.height]="this.isTitleVisible() ? 'calc(' + this.getHeight() + ' - 24px)' : this.getHeight()"
         [style.minHeight]="this.isTitleVisible() ? 'calc(' + this.getHeight() + ' - 24px)' : this.getHeight()"
         [style.maxHeight]="this.isTitleVisible() ? 'calc(' + this.getHeight() + ' - 24px)' : this.getHeight()"
+        (contentScroll)="this.onScroll($event)"
     >
         <ng-content></ng-content>
     </div>

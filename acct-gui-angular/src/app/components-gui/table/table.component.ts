@@ -1,9 +1,8 @@
-import { AfterContentInit, AfterViewInit, Component, ContentChildren, Directive, EventEmitter, InputSignal, OnInit, Output, QueryList, TemplateRef, ViewChild, input } from '@angular/core';
+import { AfterContentInit, Component, ContentChildren, Directive, EventEmitter, InputSignal, Output, QueryList, TemplateRef, ViewChild, input } from '@angular/core';
 import {v4 as uuidv4} from 'uuid';
-import { TableScrollDirection, TableScrollEvent } from './table-scroll-event';
 import { CommonModule } from '@angular/common';
-import { DelayedTrigger } from '../../utils-reusalbe/delayed-trigger';
 import { TableColumnSort, TableColumnSortDirection, TableSortEvent } from './table-sort-event';
+import { ScrollableContentDirective, ScrollEvent } from '../directives/scrollable-content.directive';
 
 const DEFAULT_COLUMN_WIDTH: number = 70
 
@@ -29,11 +28,14 @@ export class TableColumnDirective {
 
 @Component({
   selector: 'app-table',
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    ScrollableContentDirective
+  ],
   templateUrl: './table.component.html',
   styleUrl: './table.component.less'
 })
-export class TableComponent implements OnInit, AfterContentInit {
+export class TableComponent {
 
   /**
    * The ID of the component is unique in the page
@@ -66,7 +68,7 @@ export class TableComponent implements OnInit, AfterContentInit {
   // Events
   @Output() rowSelected       : EventEmitter<any>              = new EventEmitter<any>
   @Output() selectedRowChange : EventEmitter<any>              = new EventEmitter<any>
-  @Output() scroll            : EventEmitter<TableScrollEvent> = new EventEmitter<TableScrollEvent>
+  @Output() scroll            : EventEmitter<ScrollEvent>      = new EventEmitter<ScrollEvent>
   @Output() sort              : EventEmitter<TableSortEvent>   = new EventEmitter<TableSortEvent>
 
   // Columns
@@ -82,32 +84,11 @@ export class TableComponent implements OnInit, AfterContentInit {
   // Column widths
   private cachedColumnWidths: number[] = []
 
-  // Scrollable table body
-  private tableBodyElement : HTMLElement | undefined = undefined
-
-  // Delayed trigger for the scroll event
-  scrollEventTrigger : DelayedTrigger = new DelayedTrigger(250, () => this.fireScrollEvent())
-
-  // State of the scrollable table body
-  private previousScrollPct : number = 0
-
-  ngOnInit() : void {
-    
-  }
-
   ngAfterContentInit() : void {
     this.initColumnWidths()
     this.initColumns()
     this.initHeaders()
     this.initSelectedRow()
-  }
-
-  ngAfterViewInit() : void {
-    this.initTableBodyElement()
-  }
-
-  initTableBodyElement() {
-    this.tableBodyElement = document.getElementById(this.tableBodyElementId) || undefined
   }
 
   initColumnWidths() : void {
@@ -249,35 +230,8 @@ export class TableComponent implements OnInit, AfterContentInit {
     return sortDirection
   }
 
-  onContentScroll(event:Event) : void {
-    //const target = event.target as HTMLElement
-    if (this.isScrollable() && this.tableBodyElement) {
-      this.scrollEventTrigger.fire()
-    }
-  }
-
-  fireScrollEvent() : void {
-    if (this.tableBodyElement) {
-      // Get the current scroll position
-      const currentScrollPct : number =
-        this.tableBodyElement.scrollTop / (this.tableBodyElement.scrollHeight - this.tableBodyElement.clientHeight)
-
-      // Compute the scroll direction by comparing the current scrill position to the previous scroll position
-      const scrollDirection : TableScrollDirection =
-        this.previousScrollPct < currentScrollPct
-          ? TableScrollDirection.DOWN
-          : TableScrollDirection.UP
-
-      // Store the state
-      this.previousScrollPct = currentScrollPct
-
-      // Fire the event
-      this.scroll.emit({
-        direction: scrollDirection,
-        sliderPosPct: currentScrollPct
-      })
-    }
-    
+  onContentScroll(event:ScrollEvent) : void {
+    this.scroll.emit(event)
   }
 
   isHeaderFrozen() : boolean {

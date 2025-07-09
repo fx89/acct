@@ -55,10 +55,11 @@
     </td></tr>
     <tr><td>
         <div
+            appScrollableContent
             id="{{ this.tableBodyElementId }}"
             [class]="{ 'table-container': true, 'scrollable-table-container': this.isScrollable() }"
             [style.height]="this.getScrollHeight()"
-            (scroll)="onContentScroll($event)"
+            (contentScroll)="onContentScroll($event)"
         >
             <table
                 id="{{ this.id }}_body_table" 

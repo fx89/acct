@@ -18,13 +18,13 @@ import { TabData } from '../tabs/TabData';
 import { CalendarComponent } from '../calendar/calendar.component';
 import { CalendarButtonComponent } from '../calendar-button/calendar-button.component';
 import { TableColumnDirective, TableComponent } from '../table/table.component';
-import { TableScrollDirection, TableScrollEvent } from '../table/table-scroll-event';
 import { TableColumnSortDirection, TableSortEvent } from '../table/table-sort-event';
 import { ModalOverlayComponent } from '../modal-overlay/modal-overlay.component';
 import { DialogComponent } from '../dialog/dialog.component';
 import { MsgboxComponent } from '../msgbox/msgbox.component';
 import { MsgboxType } from '../msgbox/msgbox-type';
 import { PictureFrameComponent } from '../picture-frame/picture-frame.component';
+import { ScrollDirection, ScrollEvent } from '../directives/scrollable-content.directive';
 
 type ExtendedCardData = CardData & { additionalData : string }
 
@@ -216,6 +216,9 @@ export class ShowcaseComponent {
   scrollableTableScrollDirection : string = "none"
   scrollableTableScrollPct       : number = 0
 
+  scrollablePanelScrollDirection : string = "none"
+  scrollablePanelScrollPct       : number = 0
+
 
   public ngOnInit() : void {
     this.selectedOption = this.cardsListData[0]
@@ -224,12 +227,21 @@ export class ShowcaseComponent {
     this.selectedTab = this.tabs[0]
   }
 
-  public onScrollableTableScroll(tableScrollEvent:TableScrollEvent) : void {
-    if (tableScrollEvent.direction == TableScrollDirection.DOWN) {
+  public onCardListScroll(scrollEvent:ScrollEvent) : void {
+    console.log(scrollEvent)
+  }
+
+  public onScrollablePanelScroll(scrollEvent:ScrollEvent) : void {
+    this.scrollablePanelScrollDirection = scrollEvent.direction
+    this.scrollablePanelScrollPct = scrollEvent.sliderPosPct
+  }
+
+  public onScrollableTableScroll(tableScrollEvent:ScrollEvent) : void {
+    if (tableScrollEvent.direction == ScrollDirection.DOWN) {
       this.scrollableTableScrollDirection = "DOWN"
     }
 
-    if (tableScrollEvent.direction == TableScrollDirection.UP) {
+    if (tableScrollEvent.direction == ScrollDirection.UP) {
       this.scrollableTableScrollDirection = "UP"
     }
 
@@ -301,6 +313,14 @@ export class ShowcaseComponent {
 
   public getTabs() : TabData[] {
     return this.tabs
+  }
+
+  public getScrollablePanelScrollDirection() : string {
+    return this.scrollablePanelScrollDirection
+  }
+
+  public getScrollablePanelScrollPct() : string {
+    return this.scrollablePanelScrollPct.toString()
   }
 
   public onOpenModalOverlayButtonClick() : void {

@@ -110,6 +110,7 @@
           width="300px"
           height="200px"
           title="The panel title"
+          (scroll)="onScrollablePanelScroll($event)"
         >
           Test<br />
           TEST<br />
@@ -167,6 +168,8 @@
           TEST<br />
           TEST<br />
         </app-panel>
+        <app-label [value]="'Scroll direction: ' + this.getScrollablePanelScrollDirection()"></app-label>
+        <app-label [value]="'Scroll pct: ' + this.getScrollablePanelScrollPct()"></app-label>
         <br /><br />
   
         <app-cards-list
@@ -180,6 +183,7 @@
           [clickable]="true"
           [selectable]="true"
           (selectionChange)="this.onCardSelected($event)"
+          (scroll)="this.onCardListScroll($event)"
         >
         </app-cards-list>
         <app-label [value]="this.getSelectedCardTitle()" color="blue" fontSize="small"></app-label>
