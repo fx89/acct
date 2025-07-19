@@ -1,4 +1,4 @@
-import { AfterContentInit, Component, ContentChildren, Directive, EventEmitter, InputSignal, Output, QueryList, TemplateRef, ViewChild, input } from '@angular/core';
+import { Component, ContentChildren, Directive, EventEmitter, InputSignal, Output, QueryList, TemplateRef, input } from '@angular/core';
 import {v4 as uuidv4} from 'uuid';
 import { CommonModule } from '@angular/common';
 import { TableColumnSort, TableColumnSortDirection, TableSortEvent } from './table-sort-event';

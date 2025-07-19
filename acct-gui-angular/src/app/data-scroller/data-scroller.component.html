@@ -1,0 +1,79 @@
+<div
+    id="{{this.id}}"
+    class="data-scroller"
+    [style.width]="this.getWidth()"
+    [style.height]="this.getHeight()"
+>
+
+    <!-- The filter bar -->
+     @if( this.isFilterBarVisible() ) {
+        <div
+            id="{{this.filterBarId}}"
+            [style.width]="'100&'"
+            [style.height]="'30px'"
+        >
+            <table style="width:100%"><tr>
+                <!-- Filters (if any are given) -->
+                @for (filter of this.filtersArray; track filter) {
+                    <td>
+                        <table><tr>
+                            <td>{{ filter.filterName }}</td>
+                            <td>
+                                <app-select
+                                    width="200px"
+                                    [options]="filter.possibleValueCards"
+                                    [cardHeightPx]="50"
+                                    [(selectedOption)]="filter.selectedCardData"
+                                    (selectedOptionChange)="this.onFilterValueChange()"
+                                ></app-select>
+                            </td>
+                        </tr></table>
+                    </td>
+                }
+
+                <!-- Search box (if configured to be displayed) -->
+                @if (this.isSearchBarVisible()) {
+                    <td style="width:200px">
+                        <app-input
+                            [(value)]="this.searchBoxValue"
+                            width="200px"
+                            height="31px"
+                            [hint]="this.getSearchBoxHint()"
+                            (onValueChanged)="this.onSearchBarValueChanged($event)"
+                        ></app-input>
+                    </td>
+                }
+            </tr></table>
+        </div>
+
+        <!-- Spacer -->
+        <div style="height:13px"></div>
+     }
+
+     <!-- The scrolling panel -->
+    <app-panel
+        [width]="this.getWidth()"
+        [height]="'calc(' + this.getHeight() + ' - ' + (this.isFilterBarVisible() ? '43px' : '0px') + ')'"
+        [title]="this.title()"
+        (scroll)="onPanelScroll($event)"
+    >
+        @if (this.hasItemDirective()) {
+            @for (itemContainer of this.data; track itemContainer) {
+                <!-- Each item within the panel has a container that makes it hoverable and selectable -->
+                <div
+                    [class]="{ 
+                        'data-scroller-item-container': true,
+                        'selectable': this.isSelectable(),
+                        'selected': itemContainer.selected
+                    }"
+                    (click)="this.onItemContainerClick(itemContainer)"
+                >
+                    <ng-container
+                        [ngTemplateOutlet]="this.itemDirective"
+                        [ngTemplateOutletContext]="{item: itemContainer.item}"
+                    ></ng-container>
+                </div>
+            }
+        }
+    </app-panel>
+</div>

@@ -25,8 +25,17 @@ import { MsgboxComponent } from '../msgbox/msgbox.component';
 import { MsgboxType } from '../msgbox/msgbox-type';
 import { PictureFrameComponent } from '../picture-frame/picture-frame.component';
 import { ScrollDirection, ScrollEvent } from '../directives/scrollable-content.directive';
+import { Observable } from 'rxjs';
+import { DataScrollerComponent, DataScrollerFilter, DataScrollerItemDirective, DataScrollerPageRequest, DataScrollerPageResponse } from '../../data-scroller/data-scroller.component';
+import { v4 as uuidv4 } from 'uuid';
 
 type ExtendedCardData = CardData & { additionalData : string }
+
+interface DataScrollerSourceDataRecord {
+  id   : number,
+  name : string,
+  uuid : string
+}
 
 @Component({
   selector: 'app-showcase',
@@ -51,7 +60,9 @@ type ExtendedCardData = CardData & { additionalData : string }
     ModalOverlayComponent,
     DialogComponent,
     MsgboxComponent,
-    PictureFrameComponent
+    PictureFrameComponent,
+    DataScrollerComponent,
+    DataScrollerItemDirective
   ],
   templateUrl: './showcase.component.html',
   styleUrl: './showcase.component.less'
@@ -219,12 +230,45 @@ export class ShowcaseComponent {
   scrollablePanelScrollDirection : string = "none"
   scrollablePanelScrollPct       : number = 0
 
+  dataScrollerSourceData : DataScrollerSourceDataRecord[] = []
+  dataScrollerSelectedData : DataScrollerSourceDataRecord[] = []
+
+  dataScrollerFilters : DataScrollerFilter[] = [
+    {
+      filterName: "Category",
+      possibleValueCards: [
+        {
+          title: "Category 1",
+          text: "Values between 0 and 9"
+        },
+        {
+          title: "Category 2",
+          text: "Values between 10 and 19"
+        },
+        {
+          title: "Category N",
+          text: "Values from 20 onwards"
+        }
+      ]
+    }
+  ]
 
   public ngOnInit() : void {
     this.selectedOption = this.cardsListData[0]
     this.selectSelectedOption = this.selectOptions[0]
     this.selectedMenuItem = this.menuItems[2]
     this.selectedTab = this.tabs[0]
+    this.initDataScrollerSourceData()
+  }
+
+  private initDataScrollerSourceData() : void {
+    for (let i:number = 0 ; i < 300 ; i++) {
+      this.dataScrollerSourceData.push({
+        id: i,
+        name: "a_" + i,
+        uuid: uuidv4()
+      })
+    }
   }
 
   public onCardListScroll(scrollEvent:ScrollEvent) : void {
@@ -281,6 +325,38 @@ export class ShowcaseComponent {
         return 0
       })
     })
+  }
+
+  dataScrollerPageRequestCallback : ((pageRequest:DataScrollerPageRequest) => Observable<DataScrollerPageResponse<DataScrollerSourceDataRecord>>) =
+    (pageRequest:DataScrollerPageRequest) => {
+      return new Observable<DataScrollerPageResponse<DataScrollerSourceDataRecord>>(subscriber => {
+        const startIndex = pageRequest.pageNumber * pageRequest.pageSize
+        const endIndex = Math.min(startIndex + pageRequest.pageSize, this.dataScrollerSourceData.length)
+
+        const slice = 
+          this.dataScrollerSourceData
+            .filter(e => !pageRequest.searchBoxValue || pageRequest.searchBoxValue == "" || e.name.indexOf(pageRequest.searchBoxValue) > -1)
+            .filter(e => pageRequest.appliedFiltersValues.length == 0 || 
+              (pageRequest.appliedFiltersValues[0].selectedCardData.title == "Category 1" && e.id >= 0 && e.id < 10) ||
+              (pageRequest.appliedFiltersValues[0].selectedCardData.title == "Category 2" && e.id >= 10 && e.id < 20) ||
+              (pageRequest.appliedFiltersValues[0].selectedCardData.title == "Category N" && e.id >= 20)
+            )
+            .slice(startIndex, endIndex)
+
+        subscriber.next({
+          dataSetSize : slice.length,
+          pageData    : slice
+        })
+
+        subscriber.complete()
+      })
+    }
+
+  dataScrollerElementUniqueKeyFunction : (element:DataScrollerSourceDataRecord) => string =
+    (element:DataScrollerSourceDataRecord) => element.uuid
+
+  dataScrollerSelectionChange(dataScrollerSelectedData : DataScrollerSourceDataRecord[]) : void {
+    this.dataScrollerSelectedData = dataScrollerSelectedData
   }
 
   public getCardsListData() : CardData[] {

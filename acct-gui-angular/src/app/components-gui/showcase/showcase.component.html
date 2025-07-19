@@ -346,6 +346,29 @@
     </td>
   </tr></table>
 
+  <br /><br />
+
+  <app-data-scroller
+    width="500px"
+    height="300px"
+    [pageSize]="70"
+    [allowSelect]="true"
+    [allowMultiSelect]="true"
+    (selectionChange)="this.dataScrollerSelectionChange($event)"
+    [filters]="this.dataScrollerFilters"
+    searchBoxHint="Search here"
+    [pageRequestCallback]="this.dataScrollerPageRequestCallback"
+    [elementUniqueKeyFunction]="this.dataScrollerElementUniqueKeyFunction"
+  >
+    <ng-template dataScrollerItem let-item="item">
+        {{ item.name }}
+    </ng-template>
+  </app-data-scroller>
+  <br />
+  Selected items: <br />
+  @for (selectedItem of this.dataScrollerSelectedData ; track selectedItem) {
+    {{ selectedItem.name }} - {{ selectedItem.uuid }} <br />
+  }
 </div>
 
 

@@ -3,6 +3,7 @@ import { CardData } from './card-data';
 import { PanelComponent } from '../panel/panel.component';
 import { CardComponent } from '../card/card.component';
 import {v4 as uuidv4} from 'uuid';
+import { ScrollEvent } from '../directives/scrollable-content.directive';
 
 @Component({
   selector: 'app-cards-list',
@@ -41,6 +42,7 @@ export class CardsListComponent {
 
   // Events
   @Output() selectionChange : EventEmitter<CardData> = new EventEmitter<CardData>()
+  @Output() scroll : EventEmitter<ScrollEvent> = new EventEmitter<ScrollEvent>
 
   // Internal properties
   selectedCard : CardData | undefined
@@ -114,6 +116,10 @@ export class CardsListComponent {
     if (this.isClickable() && this.isCardClickable(card) && card.onClick) {
       card.onClick()
     }
+  }
+
+  onScroll(scrollEvent : ScrollEvent) : void {
+    this.scroll.emit(scrollEvent)
   }
 
 }

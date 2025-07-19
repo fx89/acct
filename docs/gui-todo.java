@@ -21,3 +21,4 @@
 // TODO: GUI-01021: GUI components: Toast
 // DONE: GUI-01022: GUI components: Picture frame
 // DONE: GUI-01023: GUI components: Panel: scroll event
+// DONE: GUI-01024: GUI components: Data scroller

@@ -40,3 +40,16 @@ export function distinctElementsArray<T,K>(array:T[], keyExtractor?:((t:T)=>K)) 
     // Return a reference to the new array
     return ret
 }
+
+/**
+ * Removes the referenced element from the referenced array. If the referenced
+ * element does not exist in the referenced array, then nothing happens.
+ * @param array     the referenced array
+ * @param element   the referenced element
+ */
+export function removeArrayElement(array:any[], element:any) : void {
+    const index = array.indexOf(element, 0);
+    if (index > -1) {
+      array.splice(index, 1);
+    }
+}

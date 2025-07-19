@@ -437,3 +437,27 @@ h1, h2, h3, h4, h5, h6 {
 .picture-frame .picture-frame-picture {
     border-radius: var(--form-control-border-radius);
 }
+
+.data-scroller .data-scroller-item-container {
+    transition: 0.5s;
+    border-radius: 5px;
+}
+
+.data-scroller .data-scroller-item-container.selectable:hover {
+    transition: 0.5s;
+    border-radius: 5px;
+    background-color: var(--card-background-color-selected-hover);
+}
+
+.data-scroller .data-scroller-item-container.selectable.selected {
+    transition: 0.5s;
+    background-color: var(--card-background-color-selected);
+    border-radius: 5px;
+    
+}
+
+.data-scroller .data-scroller-item-container.selectable.selected:hover {
+    transition: 0.5s;
+    background-color: var(--card-background-color-selected-hover);
+    border-radius: 5px;
+}

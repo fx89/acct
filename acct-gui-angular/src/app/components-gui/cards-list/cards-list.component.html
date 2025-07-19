@@ -3,6 +3,7 @@
     [width]="this.getWidth()"
     [height]="this.getHeight()"
     [title]="this.getTitle()"
+    (scroll)="this.onScroll($event)"
 >
     @for (card of this.getCards(); track card) {
         <div

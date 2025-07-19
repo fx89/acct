@@ -4,6 +4,6 @@
 export interface CardData {
     title: string;
     text: string;
-    imageRef: string;
+    imageRef?: string;
     onClick?: () => void;
   }
