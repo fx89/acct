@@ -1,0 +1,1 @@
+alter table "icon" alter column icon_base64 type text;

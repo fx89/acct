@@ -17,7 +17,7 @@ export class CardComponent {
   // Properties
   width         : InputSignal<string>  = input("280px")
   height        : InputSignal<string>  = input("100px")
-  imageRef      : InputSignal<string>  = input("")
+  imageRef      : InputSignal<string|undefined>  = input(<string|undefined>"")
   imageWidth    : InputSignal<string>  = input("100px")
   imageHeight   : InputSignal<string>  = input("100px")
   imagePosition : InputSignal<string>  = input("left")
@@ -37,7 +37,7 @@ export class CardComponent {
   }
 
   public getImageRef() : string {
-    return this.imageRef()
+    return this.imageRef() ?? ""
   }
 
   public getImageWidth() : string {

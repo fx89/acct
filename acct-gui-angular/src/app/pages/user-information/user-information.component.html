@@ -13,7 +13,10 @@
                                 <td>
                                     <!-- The currently selected icon display -->
                                     <div style="width:175px; height:150px; background:#000;">
-
+                                        <img
+                                            style="width:175px; height:150px; border-style:none;"
+                                            [src]="this.userIconBase64"
+                                        >
                                     </div>
                                 </td>
                             </tr>
@@ -26,7 +29,7 @@
                                     <app-button
                                         value='Select Icon'
                                         textAlign="center"
-                                        (onClick)="this.showIconSelectorDialog()"
+                                        (onClick)="this.showIconsManager()"
                                         color="blue"
                                         width="175px"
                                         height="30px"
@@ -247,3 +250,21 @@
   height="125px"
   (onAffirmativeResponse)="this.softDeletePersonalAccountAcknowledged()"
 ></app-msgbox>
+
+<app-dialog
+  title="Select an existing icon or add a new one"
+  width="700px"
+  height="500px"
+  [visible]="this.iconsManagerVisible"
+>
+    <app-icons-manager
+        width="100%"
+        height="100%"
+        iconWidth="190px"
+        iconHeight="190px"
+        [allowUpload]="true"
+        [allowDelete]="false"
+        [pageSize]="9"
+        (selectionChange)="this.onIconSelected($event)"
+    ></app-icons-manager>
+</app-dialog>

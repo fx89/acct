@@ -26,7 +26,7 @@ import { MsgboxType } from '../msgbox/msgbox-type';
 import { PictureFrameComponent } from '../picture-frame/picture-frame.component';
 import { ScrollDirection, ScrollEvent } from '../directives/scrollable-content.directive';
 import { Observable } from 'rxjs';
-import { DataScrollerComponent, DataScrollerFilter, DataScrollerItemDirective, DataScrollerPageRequest, DataScrollerPageResponse } from '../../data-scroller/data-scroller.component';
+import { DataScrollerComponent, DataScrollerFilter, DataScrollerItemDirective, DataScrollerPageRequest, DataScrollerPageResponse } from '../data-scroller/data-scroller.component';
 import { v4 as uuidv4 } from 'uuid';
 
 type ExtendedCardData = CardData & { additionalData : string }

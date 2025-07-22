@@ -93,6 +93,29 @@ export class HttpAcctUsersRepository extends AcctUsersRepository {
         })
     }
 
+    public override saveCurrentUserIconUUID(userIconUUID:string) : Observable<void> {
+        return new Observable<void>(subscriber => {
+            this.httpConnector.post(
+                {
+                    url: "/users/currentUser/icon",
+                    data: {
+                        headers: {
+                            'Content-Type' : 'application/json'
+                        },
+                        body: {
+                            userIconUUID : userIconUUID
+                        }
+                    }
+                },
+                createBodyProcessingHttpClientWrapperHandlers(
+                    subscriber,
+                    (responseBody:void) => responseBody,
+                    "Password not updated."
+                )
+            )
+        })
+    }
+
     public override softDeleteCurrentUser(): Observable<void> {
         return new Observable<void>(subscriber => {
             this.httpConnector.delete(

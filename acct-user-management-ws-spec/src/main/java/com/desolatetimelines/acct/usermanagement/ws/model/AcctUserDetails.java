@@ -44,6 +44,25 @@ public record AcctUserDetails(
         private AcctUserDetailsBuilder() {
         }
 
+        public AcctUserDetailsBuilder withTemplate(AcctUserDetails template) {
+            // Update the properties
+            this
+                .withUserUUID(template.userUUID())
+                .withUserLoginName(template.userLoginName())
+                .withDefaultWorkspaceUUID(template.defaultWorkspaceUUID())
+                .withUserName(template.userName())
+                .withUserIconUUID(template.userIconUUID())
+                .withUserEncryptedPassword(template.userEncryptedPassword());
+
+            // Add the groups (if any)
+            if (template.userGroups() != null) {
+                template.userGroups().forEach(this::withUserGroup);
+            }
+
+            // Return a reference
+            return this;
+        }
+
         /**
          * Sets the {@code userUUID} and returns a reference to this Builder enabling method chaining.
          *
@@ -72,7 +91,7 @@ public record AcctUserDetails(
          * @param userEncryptedPassword the {@code userEncryptedPassword} to set
          * @return a reference to this Builder
          */
-        public AcctUserDetailsBuilder withUserEncryptedPasswordName(String userEncryptedPassword) {
+        public AcctUserDetailsBuilder withUserEncryptedPassword(String userEncryptedPassword) {
             this.userEncryptedPassword = userEncryptedPassword;
             return this;
         }

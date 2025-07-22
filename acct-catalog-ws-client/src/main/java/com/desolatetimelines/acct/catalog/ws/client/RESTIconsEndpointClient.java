@@ -3,6 +3,7 @@ package com.desolatetimelines.acct.catalog.ws.client;
 import com.desolatetimelines.acct.catalog.ws.endpoint.IconsEndpoint;
 import com.desolatetimelines.acct.catalog.ws.model.*;
 import com.desolatetimelines.acct.common.ws.model.AcctPage;
+import com.desolatetimelines.acct.common.ws.model.AcctStatusResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +23,7 @@ public interface RESTIconsEndpointClient extends IconsEndpoint {
     IconUUIDResponse createIcon(@RequestBody IconCreateRequest request);
 
     @Override
-    @GetMapping(value = "", produces = APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/iconCategories", produces = APPLICATION_JSON_VALUE)
     Collection<String> getIconCategories();
 
     @Override
@@ -47,6 +48,6 @@ public interface RESTIconsEndpointClient extends IconsEndpoint {
 
     @DeleteMapping(value = "")
     @Override
-    void deleteIcons(@RequestBody IconDeleteRequest request);
+    AcctStatusResponse deleteIcons(@RequestBody IconDeleteRequest request);
 
 }

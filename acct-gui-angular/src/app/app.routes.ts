@@ -89,7 +89,7 @@ export const routes: Routes = [
         component: CatalogComponent,
         data: {
             menuItem: {
-                text: "Catalong",
+                text: "Catalog",
                 imageRef: "menu-icons/catalog.png"
             }
         }

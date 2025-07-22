@@ -12,6 +12,10 @@ import { UserManagementService } from '../../services-acct/user-management.servi
 import { UserDetails } from '../../model-acct/user-details';
 import { SecurityService } from '../../services-acct/security.service';
 import { Router } from '@angular/router';
+import { IconsManagerComponent } from '../../components-acct/icons-manager/icons-manager.component';
+import { DialogComponent } from '../../components-gui/dialog/dialog.component';
+import { IconProperties } from '../../model-acct/icon-properties';
+import { CatalogService } from '../../services-acct/catalog.service';
 
 type WorkspaceCardData = CardData & { workspace : Workspace }
 
@@ -22,7 +26,9 @@ type WorkspaceCardData = CardData & { workspace : Workspace }
     ButtonComponent,
     MsgboxComponent,
     InputComponent,
-    SelectComponent
+    SelectComponent,
+    IconsManagerComponent,
+    DialogComponent
   ],
   templateUrl: './user-information.component.html',
   styleUrl: './user-information.component.less'
@@ -47,10 +53,13 @@ export class UserInformationComponent implements AfterViewInit {
   privilegesMessageBoxType: MsgboxType = MsgboxType.OK_ONLY
   privilegesMessageBoxVisible : boolean = false
 
+  iconsManagerVisible : boolean = false
 
   currentUserDetails : UserDetails | undefined
 
   userHumanReadableName : string = ""
+
+  userIconBase64 : string = ""
 
   userPassword : string = ""
   userPasswordConfirmation : string = ""
@@ -67,7 +76,8 @@ export class UserInformationComponent implements AfterViewInit {
     private router : Router,
     private workspaceService : WorkspaceService,
     private userManagementService : UserManagementService,
-    private securityService : SecurityService
+    private securityService : SecurityService,
+    private catalogService : CatalogService
   ) {
 
   }
@@ -76,9 +86,23 @@ export class UserInformationComponent implements AfterViewInit {
     // Get the current user information
     this.userManagementService.findCurrentUserDetails().subscribe({
       next : userDetails => {
+        // Update the user properties
         this.currentUserDetails = userDetails
         this.userHumanReadableName = this.currentUserDetails.userName
         this.commaSeparatedGroupNames = this.currentUserDetails.userGroups.map(userGroup => userGroup.groupName).join(",")
+
+        // If the user icon is set, then load the bytes
+        if (userDetails.userIconUUID && userDetails.userIconUUID != "") {
+          this.catalogService.loadIconBytesBase64(userDetails.userIconUUID).subscribe({
+            next: userIconBase64 => {
+              this.userIconBase64 = userIconBase64
+            },
+            error: err => {
+              // TODO: Toast
+              console.log(err)
+            }
+          })
+        }
       },
       error : error => {
         // TODO: toast component
@@ -97,8 +121,6 @@ export class UserInformationComponent implements AfterViewInit {
         throw(error)
       }
     })
-
-
   }
 
   private workspacesToWorkspaceCardDataArray(workspaces:Workspace[]) : WorkspaceCardData[] {
@@ -122,6 +144,32 @@ export class UserInformationComponent implements AfterViewInit {
 
   onPasswordFieldChangedEvent() : void {
     this.userPasswordConfirmationValid = (this.userPassword == this.userPasswordConfirmation)
+  }
+
+  onIconSelected(icon:IconProperties) : void {
+    // Update the user's icon data
+    this.userManagementService.saveCurrentUserIconUUID(icon.iconUUID).subscribe({
+      // Upon successful save, trigger a reload and hide the icons manager
+      next: () => {
+        // Load the icon
+        this.catalogService.loadIconBytesBase64(icon.iconUUID).subscribe({
+          next: userIconBase64 => {
+            this.userIconBase64 = userIconBase64
+          },
+          error: err => {
+            // TODO: Toast
+            console.log(err)
+          }
+        })
+
+        // Hide the icons manager
+        this.hideIconsManager()
+      },
+      error: err => {
+        // TODO: Toast
+        console.log(err)
+      }
+    })
   }
 
   softDeletePersonalAccountConfirmed() : void {
@@ -199,8 +247,12 @@ export class UserInformationComponent implements AfterViewInit {
     })
   }
 
-  showIconSelectorDialog() : void {
+  showIconsManager() : void {
+    this.iconsManagerVisible = true
+  }
 
+  hideIconsManager() : void {
+    this.iconsManagerVisible = false
   }
 
 }

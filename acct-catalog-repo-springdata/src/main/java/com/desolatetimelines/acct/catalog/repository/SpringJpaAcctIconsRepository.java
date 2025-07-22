@@ -82,7 +82,7 @@ public class SpringJpaAcctIconsRepository implements AcctIconsRepository {
                     """)
                 .setMaxResults(pageSize)
                 .setFirstResult(pageNumber * pageSize)
-                .setParameter("iconNamePattern", "%" + iconNamePattern + "%")
+                .setParameter("iconNamePattern", iconNamePattern == null ? null : "%" + iconNamePattern + "%")
                 .setParameter("iconCategoryName", iconCategoryName)
                 .getResultList();
 

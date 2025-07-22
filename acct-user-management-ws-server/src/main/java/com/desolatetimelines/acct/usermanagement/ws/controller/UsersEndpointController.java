@@ -3,6 +3,7 @@ package com.desolatetimelines.acct.usermanagement.ws.controller;
 import com.desolatetimelines.acct.common.model.Page;
 import com.desolatetimelines.acct.common.ws.mapper.AcctPageInfoMapper;
 import com.desolatetimelines.acct.common.ws.model.AcctPage;
+import com.desolatetimelines.acct.common.ws.model.AcctStatusResponse;
 import com.desolatetimelines.acct.common.ws.model.AcctUserClaims;
 import com.desolatetimelines.acct.usermanagement.data.model.AcctUserCreationParameters;
 import com.desolatetimelines.acct.usermanagement.model.AcctUser;
@@ -109,6 +110,23 @@ public class UsersEndpointController implements UsersEndpoint, UsersPrivateEndpo
             userManagementService.setUserPassword(
                 userDetails.userUUID(),
                 passwordSettingRequest.userEncryptedPassword()
+            )
+        );
+
+        // Return the OK status
+        return AcctStatusResponse.newAcctOkResponse();
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_" + USERS_SAVE + "')")
+    @PostMapping(value = "/currentUser/icon", produces = APPLICATION_JSON_VALUE)
+    public AcctStatusResponse setCurrentUserIcon(
+        @RequestBody AcctUserIconUpdateRequest iconSettingRequest
+    ) {
+        doWithUserDetails(userDetails ->
+            userManagementService.setUserIcon(
+                userDetails.userUUID(),
+                iconSettingRequest.userIconUUID()
             )
         );
 

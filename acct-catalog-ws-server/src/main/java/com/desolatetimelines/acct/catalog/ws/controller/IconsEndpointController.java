@@ -5,6 +5,7 @@ import com.desolatetimelines.acct.catalog.service.AcctCatalogService;
 import com.desolatetimelines.acct.catalog.ws.endpoint.IconsEndpoint;
 import com.desolatetimelines.acct.catalog.ws.model.*;
 import com.desolatetimelines.acct.common.ws.model.AcctPage;
+import com.desolatetimelines.acct.common.ws.model.AcctStatusResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,6 +36,7 @@ public class IconsEndpointController implements IconsEndpoint {
                 catalogService.createIcon(
                     request.iconName(),
                     request.iconCategoryName(),
+                    request.iconMimeType(),
                     request.iconBase64()
                 ).getIconUUID()
             );
@@ -96,8 +98,9 @@ public class IconsEndpointController implements IconsEndpoint {
     @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + ICONS_DELETE + "')")
     @DeleteMapping(value = "")
     @Override
-    public void deleteIcons(@RequestBody IconDeleteRequest request) {
+    public AcctStatusResponse deleteIcons(@RequestBody IconDeleteRequest request) {
         catalogService.deleteIcons(request.iconUUIDs());
+        return AcctStatusResponse.newAcctOkResponse();
     }
 
 }

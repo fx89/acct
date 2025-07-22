@@ -40,26 +40,26 @@ public class AcctUsersEndpointControllerHelperService {
      * @param withGroups set this option to true to retrieve the groups
      */
     public AcctUserDetails findUserDetailsByJwt(Jwt jwt, boolean withGroups) {
-        // Get the claims available in the access token
+        // Get the userUUID claim from the access token
         final String userUUID = (String) jwt.getClaims().get("userUUID");
-        final String userName = (String) jwt.getClaims().get("humanReadableName");
-        final String userLoginName = (String) jwt.getClaims().get("sub");
-        final String userIconUUID = (String) jwt.getClaims().get("iconUUID");
-        final String defaultWorkspaceUUID = (String) jwt.getClaims().get("defaultWorkspaceUUID");
 
         // If the userUUID claim is not part of the access token then the process cannot continue
         if (userUUID == null) {
             throw new IllegalArgumentException("The access token does not contain the [userUUID] claim");
         }
 
-        // Compose the object
+        // Get the user details from the data store
+        final com.desolatetimelines.acct.usermanagement.data.model.AcctUserDetails userDetails =
+            userManagementService.findUserDetailsByUserUserUUID(userUUID);
+
+        // Compose the object based on the user details
         final AcctUserDetails.AcctUserDetailsBuilder builder =
             AcctUserDetails.builder()
-                .withUserUUID(userUUID)
-                .withUserName(userName)
-                .withUserLoginName(userLoginName)
-                .withUserIconUUID(userIconUUID)
-                .withDefaultWorkspaceUUID(defaultWorkspaceUUID);
+                .withUserUUID(userDetails.userAccount().getUserUUID())
+                .withUserName(userDetails.userAccount().getUserName())
+                .withUserLoginName(userDetails.userAccount().getUserLoginName())
+                .withUserIconUUID(userDetails.userAccount().getUserIconUUID())
+                .withDefaultWorkspaceUUID(userDetails.userAccount().getDefaultWorkspaceUUID());
 
         // If groups are requested, add the groups
         if (withGroups) {

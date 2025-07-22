@@ -65,6 +65,10 @@ export class UserManagementService {
     )
   }
 
+  public saveCurrentUserIconUUID(userIconUUID : string) : Observable<void> {
+    return this.usersRepository.saveCurrentUserIconUUID(userIconUUID)
+  }
+
   private encryptPassword(userPassword:string) : string {
     const saltRounds : number = 10
     const salt : string = bcrypt.genSaltSync(saltRounds)

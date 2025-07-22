@@ -1,10 +1,13 @@
 import { environment } from "../../environments/environment.development"
 import { AcctAccessTokensRepository } from "../repositories-acct/access-tokens-repository"
 import { HttpAcctAccessTokensRepository } from "../repositories-acct/http/http-access-tokens-repository"
+import { HttpAcctIconsRepository } from "../repositories-acct/http/http-icons-repository"
 import { HttpAcctPrivilegesRepository } from "../repositories-acct/http/http-privileges-repository"
 import { HttpAcctUsersRepository } from "../repositories-acct/http/http-users-repository"
 import { HttpAcctWorkspacesRepository } from "../repositories-acct/http/http-workspaces-repository"
+import { AcctIconsRepository } from "../repositories-acct/icons-repository"
 import { MockAcctAccessTokensRepository } from "../repositories-acct/mock/mock-access-tokens-repository"
+import { MockAcctIconsRepository } from "../repositories-acct/mock/mock-icons-repository"
 import { MockAcctUsersRepository } from "../repositories-acct/mock/mock-users-repository"
 import { MockAcctWorkspacesRepository } from "../repositories-acct/mock/mock-workspaces-repository"
 import { AcctPrivilegesRepository } from "../repositories-acct/privileges-repository"
@@ -50,6 +53,16 @@ export function provideAcctPrivilegesRepository() {
         new MockAcctAccessTokensRepository(),
         httpConnectorsService => new HttpAcctPrivilegesRepository(
                 httpConnectorsService.getHttpConnectorByServiceName('acct-security')
+            )
+    )
+}
+
+export function provideAcctIconsRepository() {
+    return provideRepository(
+        AcctIconsRepository,
+        new MockAcctIconsRepository(),
+        httpConnectorsService => new HttpAcctIconsRepository(
+                httpConnectorsService.getHttpConnectorByServiceName('acct-catalog')
             )
     )
 }

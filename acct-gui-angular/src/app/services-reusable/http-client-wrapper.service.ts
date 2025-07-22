@@ -136,6 +136,11 @@ export type HttpClientWrapperErrorHandler<ERR> = (errorResponse: HttpClientWrapp
 export type HttpClientWrapperProgressHandler = (progress: HttpClientWrapperRequestProgress) => void
 
 /**
+ * Defines the response types that the HTTP client is able to produce
+ */
+export type HttpClientWrapperResponseType = 'arraybuffer' | 'blob' | 'json' | 'text'
+
+/**
  * Specifies the handlers for the success, error and progress events of the HttpClient
  */
 export interface HttpClientWrapperHandlers<RES,ERR> {
@@ -143,6 +148,11 @@ export interface HttpClientWrapperHandlers<RES,ERR> {
   errorHandler?    : HttpClientWrapperErrorHandler<ERR>
   progressHandler? : HttpClientWrapperProgressHandler
 }
+
+/**
+ * The response type expected from the client if not explicitly specified
+ */
+const DEFAULT_RESPONSE_TYPE : HttpClientWrapperResponseType = 'json'
 
 /**
  * Provides a high-level interface for basic HttpClient functionality.
@@ -163,8 +173,9 @@ export class HttpClientWrapperService {
    * @param handlers the given handlers
    */
   public request<REQ,RES,ERR>(
-    request   : HttpClientWrapperRequest<REQ>,
-    handlers? : HttpClientWrapperHandlers<RES,ERR>
+    request       : HttpClientWrapperRequest<REQ>,
+    handlers?     : HttpClientWrapperHandlers<RES,ERR>,
+    responseType? : HttpClientWrapperResponseType
   ) : void
   {
     const observableResponse : Observable<HttpEvent<any>> =
@@ -176,7 +187,8 @@ export class HttpClientWrapperService {
           params         : request.data?.params,
           body           : request.data?.body,
           reportProgress : true,
-          observe        : 'events'
+          observe        : 'events',
+          responseType   : (responseType ? responseType : DEFAULT_RESPONSE_TYPE)
         }
       )
 
@@ -261,15 +273,17 @@ export class HttpClientWrapperService {
    * @param handlers the given handlers
    */
   public get<RES,ERR>(
-    request   : HttpClientWrapperMethodlessRequest<undefined>,
-    handlers? : HttpClientWrapperHandlers<RES,ERR>
+    request       : HttpClientWrapperMethodlessRequest<undefined>,
+    handlers?     : HttpClientWrapperHandlers<RES,ERR>,
+    responseType? : HttpClientWrapperResponseType
   ) : void {
     this.request(
       new HttpClientWrapperGetRequest(
         request.url,
         request.data
       ),
-      handlers
+      handlers,
+      responseType
     )
   }
 

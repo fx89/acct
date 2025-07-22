@@ -2,6 +2,7 @@ package com.desolatetimelines.acct.catalog.ws.endpoint;
 
 import com.desolatetimelines.acct.catalog.ws.model.*;
 import com.desolatetimelines.acct.common.ws.model.AcctPage;
+import com.desolatetimelines.acct.common.ws.model.AcctStatusResponse;
 
 import java.util.Collection;
 
@@ -19,7 +20,8 @@ public interface IconsEndpoint {
     IconUUIDResponse createIcon(IconCreateRequest request);
 
     /**
-     * Returns a collection of the names of all the icon categories that are registered within the catalogS
+     * Returns a collection of the names of all the icon categories that are registered within the catalog
+     * service
      */
     Collection<String> getIconCategories();
 
@@ -59,6 +61,6 @@ public interface IconsEndpoint {
      *
      * @param request container for the given collection of icon UUIDs
      */
-    void deleteIcons(IconDeleteRequest request);
+    AcctStatusResponse deleteIcons(IconDeleteRequest request);
 
 }

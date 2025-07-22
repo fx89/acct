@@ -6,10 +6,12 @@ package com.desolatetimelines.acct.catalog.ws.model;
  *
  * @param iconUUID the unique identifier of the icon across the ACCT ecosystem
  * @param iconName the human-readable name that uniquely identifies the icon in its category
+ * @param mimeType the mime type of the file
  */
 public record IconProperties(
     String iconUUID,
-    String iconName
+    String iconName,
+    String mimeType
 ) {
 
     public static IconPropertiesBuilder builder() {
@@ -19,6 +21,7 @@ public record IconProperties(
     public static final class IconPropertiesBuilder {
         private String iconUUID;
         private String iconName;
+        private String mimeType;
 
         private IconPropertiesBuilder() {
         }
@@ -33,8 +36,13 @@ public record IconProperties(
             return this;
         }
 
+        public IconPropertiesBuilder withMimeType(String mimeType) {
+            this.mimeType = mimeType;
+            return this;
+        }
+
         public IconProperties build() {
-            return new IconProperties(iconUUID, iconName);
+            return new IconProperties(iconUUID, iconName, mimeType);
         }
     }
 }

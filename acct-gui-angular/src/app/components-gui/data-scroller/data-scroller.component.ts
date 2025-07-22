@@ -1,13 +1,13 @@
 import { AfterContentInit, Component, ContentChildren, Directive, EventEmitter, input, InputSignal, OnChanges, OnInit, Output, QueryList, SimpleChanges, TemplateRef } from '@angular/core';
-import { CardData } from '../components-gui/cards-list/card-data';
-import { PanelComponent } from '../components-gui/panel/panel.component';
+import { CardData } from '../cards-list/card-data';
+import { PanelComponent } from '../panel/panel.component';
 import { v4 as uuidv4 } from 'uuid';
-import { ScrollDirection, ScrollEvent } from '../components-gui/directives/scrollable-content.directive';
+import { ScrollDirection, ScrollEvent } from '../directives/scrollable-content.directive';
 import { Observable } from 'rxjs';
-import { SelectComponent } from '../components-gui/select/select.component';
-import { InputComponent } from '../components-gui/input/input.component';
+import { SelectComponent } from '../select/select.component';
+import { InputComponent } from '../input/input.component';
 import { CommonModule } from '@angular/common';
-import { removeArrayElement } from '../utils-reusalbe/array-utils';
+import { removeArrayElement } from '../../utils-reusalbe/array-utils';
 
 /**
  * Defines the properties an UI element that is displayed as a dropdown combobox and
@@ -169,6 +169,11 @@ export class DataScrollerComponent implements OnInit, OnChanges, AfterContentIni
    */
   elementUniqueKeyFunction : InputSignal<(element:any) => any> = input.required()
 
+  /**
+   * When this event is triggered, the data scroller reloads the current page
+   */
+  pageReloadEventEmitter : InputSignal<EventEmitter<void>|undefined> = input()
+
   // Events
   @Output() selectionChange : EventEmitter<any[]> = new EventEmitter<any[]>
 
@@ -213,6 +218,7 @@ export class DataScrollerComponent implements OnInit, OnChanges, AfterContentIni
     this.initFilters()
     this.selectable = this.allowSelect() || this.allowMultiSelect()
     this.multiSelectable = this.allowSelect() && this.allowMultiSelect()
+    this.initPageReloadEventListener()
   }
 
   ngAfterContentInit() : void {
@@ -237,6 +243,21 @@ export class DataScrollerComponent implements OnInit, OnChanges, AfterContentIni
   initItemDirective() : void {
     if (this.itemDirectives && this.itemDirectives.length > 0) {
       this.itemDirective = <TemplateRef<any>>(this.itemDirectives.get(0)?.templateRef)
+    }
+  }
+
+  initPageReloadEventListener() : void {
+    // Get the reload event (if any)
+    const pageReloadEvent : EventEmitter<void> | undefined = this.pageReloadEventEmitter()
+
+    // If the reload event is defined, then subscribe to it
+    if (pageReloadEvent) {
+      pageReloadEvent.asObservable().subscribe({
+        next: () => {
+          this.reset()
+          this.requestPage()
+        }
+      })
     }
   }
 

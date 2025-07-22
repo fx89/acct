@@ -9,8 +9,9 @@
      @if( this.isFilterBarVisible() ) {
         <div
             id="{{this.filterBarId}}"
-            [style.width]="'100&'"
-            [style.height]="'30px'"
+            [style.width]="'100%'"
+            [style.height]="'35px'"
+            class="data-scroller-filter-bar"
         >
             <table style="width:100%"><tr>
                 <!-- Filters (if any are given) -->
@@ -34,13 +35,18 @@
                 <!-- Search box (if configured to be displayed) -->
                 @if (this.isSearchBarVisible()) {
                     <td style="width:200px">
-                        <app-input
-                            [(value)]="this.searchBoxValue"
-                            width="200px"
-                            height="31px"
-                            [hint]="this.getSearchBoxHint()"
-                            (onValueChanged)="this.onSearchBarValueChanged($event)"
-                        ></app-input>
+                        <table><tr>
+                            <td>Search</td>
+                            <td>
+                                <app-input
+                                    [(value)]="this.searchBoxValue"
+                                    width="200px"
+                                    height="31px"
+                                    [hint]="this.getSearchBoxHint()"
+                                    (onValueChanged)="this.onSearchBarValueChanged($event)"
+                                ></app-input>
+                            </td>
+                        </tr></table>
                     </td>
                 }
             </tr></table>

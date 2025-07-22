@@ -5,11 +5,13 @@ package com.desolatetimelines.acct.catalog.ws.model;
  *
  * @param iconName         The name to be given to the icon (must be unique per category)
  * @param iconCategoryName The name of the icon category the icon is to be mapped to (can be a new category name)
+ * @param iconMimeType     The mime type of the icon file
  * @param iconBase64       The base64-encoded bytes of the icon's image file
  */
 public record IconCreateRequest(
     String iconName,
     String iconCategoryName,
+    String iconMimeType,
     String iconBase64
 ) {
 }

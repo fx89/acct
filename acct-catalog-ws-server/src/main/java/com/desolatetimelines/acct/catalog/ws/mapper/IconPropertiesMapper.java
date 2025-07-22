@@ -18,6 +18,7 @@ public abstract class IconPropertiesMapper {
             IconProperties.builder()
                 .withIconUUID(acctIcon.getIconUUID())
                 .withIconName(acctIcon.getIconName())
+                .withMimeType(acctIcon.getMimeType())
                 .build();
     }
 

@@ -23,6 +23,10 @@ export class MockAcctUsersRepository extends AcctUsersRepository {
         throw new Error("Method not implemented.");
     }
 
+    public override saveCurrentUserIconUUID(userIconUUID:string) : Observable<void> {
+        throw new Error("Method not implemented.");
+    }
+
     public override softDeleteCurrentUser(): Observable<void> {
         throw new Error("Method not implemented.");
     }

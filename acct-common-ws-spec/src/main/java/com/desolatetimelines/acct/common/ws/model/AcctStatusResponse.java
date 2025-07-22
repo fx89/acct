@@ -1,4 +1,4 @@
-package com.desolatetimelines.acct.usermanagement.ws.model;
+package com.desolatetimelines.acct.common.ws.model;
 
 /**
  * Generic status response for endpoints that have nothing else to return

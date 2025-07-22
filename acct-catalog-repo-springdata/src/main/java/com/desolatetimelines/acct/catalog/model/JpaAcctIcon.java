@@ -25,6 +25,9 @@ public class JpaAcctIcon implements AcctIcon {
     @Column(name = "icon_uuid")
     private String iconUUID;
 
+    @Column(name = "mime_type")
+    private String mimeType;
+
     @Column(name = "icon_base64")
     private String iconBytesBase64;
 
@@ -54,6 +57,16 @@ public class JpaAcctIcon implements AcctIcon {
     @Override
     public void setIconName(String iconName) {
         this.iconName = iconName;
+    }
+
+    @Override
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    @Override
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
     }
 
     @Override

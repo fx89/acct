@@ -182,6 +182,27 @@ public class AcctUserManagementService {
     }
 
     /**
+     * Sets the icon UUID reference of the user identified by the given user UUID
+     * to the given value
+     *
+     * @param userUUID        the given user UUID
+     * @param newUserIconUUID the given value
+     */
+    @Transactional
+    public void setUserIcon(String userUUID, String newUserIconUUID) {
+        // Get the user. If the user does not exist, throw a "not found" exception.
+        final AcctUser acctUser =
+            dataService.findUserByUserUUID(userUUID)
+                .orElseThrow(() -> new AcctUserManagementNotFoundException("User not found"));
+
+        // Set the user's encrypted password
+        acctUser.setUserIconUUID(newUserIconUUID);
+
+        // Save the user
+        dataService.saveUser(acctUser);
+    }
+
+    /**
      * Sets the human-readable name of the user with the given user UUID to the given userName
      *
      * @param userUUID    the given user UUID

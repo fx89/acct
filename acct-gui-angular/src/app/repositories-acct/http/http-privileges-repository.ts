@@ -12,15 +12,15 @@ export class HttpAcctPrivilegesRepository extends AcctPrivilegesRepository {
     public override findPrivilegesAssignedToCurrentUser(): Observable<string[]> {
         return new Observable<string[]>(subscriber => {
             this.httpConnector.get(
-            {
-                url: "/privileges/currentUserPrivileges"
-            },
-            createBodyProcessingHttpClientWrapperHandlers(
-                subscriber,
-                (responseBody:string[]) => responseBody,
-                "Password not updated."
+                {
+                    url: "/privileges/currentUserPrivileges"
+                },
+                createBodyProcessingHttpClientWrapperHandlers(
+                    subscriber,
+                    (responseBody:string[]) => responseBody,
+                    "Password not updated."
+                )
             )
-        )
         })
     }
     

@@ -1,6 +1,7 @@
 package com.desolatetimelines.acct.usermanagement.ws.endpoint;
 
 import com.desolatetimelines.acct.common.ws.model.AcctPage;
+import com.desolatetimelines.acct.common.ws.model.AcctStatusResponse;
 import com.desolatetimelines.acct.usermanagement.ws.model.*;
 
 /**
@@ -46,6 +47,13 @@ public interface UsersEndpoint {
      * @param passwordSettingRequest container for the given value
      */
     AcctStatusResponse setCurrentUserPassword(AcctCurrentUserPasswordSettingRequest passwordSettingRequest);
+
+    /**
+     * Sets the icon of the current user to the given value
+     *
+     * @param iconSettingRequest container for the given value
+     */
+    AcctStatusResponse setCurrentUserIcon(AcctUserIconUpdateRequest iconSettingRequest);
 
     /**
      * Retrieves the details of the current user

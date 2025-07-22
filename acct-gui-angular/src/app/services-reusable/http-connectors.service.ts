@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
-import { HttpClientWrapperHandlers, HttpClientWrapperMethodlessRequest, HttpClientWrapperRequest, HttpClientWrapperResponse, HttpClientWrapperService } from './http-client-wrapper.service';
+import { HttpClientWrapperHandlers, HttpClientWrapperMethodlessRequest, HttpClientWrapperRequest, HttpClientWrapperResponse, HttpClientWrapperResponseType, HttpClientWrapperService } from './http-client-wrapper.service';
 import { NumericSequence } from '../utils-reusalbe/numeric-sequence';
 import { Subscriber } from 'rxjs';
 
@@ -71,8 +71,9 @@ export class HttpConnector {
    * @param handlers the given handlers
    */
   public get<RES,ERR>(
-    request   : HttpClientWrapperMethodlessRequest<undefined>,
-    handlers? : HttpClientWrapperHandlers<RES,ERR>
+    request   :     HttpClientWrapperMethodlessRequest<undefined>,
+    handlers? :     HttpClientWrapperHandlers<RES,ERR>,
+    responseType? : HttpClientWrapperResponseType
   ) : void
   {
     // Process the pre-request hooks
@@ -81,7 +82,8 @@ export class HttpConnector {
     // Execute the request
     this.httpClientWrapper.get(
       this.updateHttpClientWrapperMethodlessRequestUrl(request, this.resolveBaseUrl(), this.servicePath),
-      handlers
+      handlers,
+      responseType
     )
   }
 

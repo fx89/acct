@@ -1,0 +1,134 @@
+<div
+  id="{{ this.id }}"
+  [style.width]="this.getWidth()"
+  [style.height]="this.getHeight()"
+  class="icons-manager"
+>
+  <!-- The  data scroller -->
+  <app-data-scroller
+    width="calc(100% - 20px)"
+    height="350px"
+    [pageSize]="this.getPageSize()"
+    [allowSelect]="this.isSelectAllowed()"
+    [allowMultiSelect]="this.isMultiSelectAllowed()"
+    (selectionChange)="this.dataScrollerSelectionChange($event)"
+    [filters]="this.dataScrollerFilters"
+    searchBoxHint="Icon name"
+    [pageRequestCallback]="this.dataScrollerPageRequestCallback"
+    [elementUniqueKeyFunction]="this.dataScrollerElementUniqueKeyFunction"
+    [pageReloadEventEmitter]="this.dataScrollerReloadEventEmitter"
+  >
+    <ng-template dataScrollerItem let-item="item">
+      <app-picture-frame
+        [src]="item.iconBase64"
+        [width]="this.getIconWidth()"
+        [height]="this.getIconHeight()"
+        [titlePos]="'bottom'"
+        [title]="item.iconProperties.iconName"
+      ></app-picture-frame>
+    </ng-template>
+  </app-data-scroller>
+
+  <br /><br />
+
+  <!-- The actions bar -->
+  <div
+    id="{{ this.id }}-actions-bar"
+    class="icons-manager-actions-bar"
+    [style.width]="'100%'"
+    [style.padding-top]="'10px'"
+  >
+    <table style="width:100%"><tr>
+      <td>
+        @if (this.isUploadAllowed()) {
+          <app-button
+            value='Add new icon'
+            textAlign="center"
+            (onClick)="onAddNewIconButtonClick()"
+            width="100px"
+            height="30px"
+            color="blue"
+            [enabled]="this.isIconsCategorySelected()"
+          ></app-button>
+        }
+      </td>
+      <td style="width:210px;">
+        @if (this.isDeleteAllowed()) {
+          <app-button
+            value='Delete selected icons'
+            textAlign="center"
+            (onClick)="onDeleteSelectedIconsButtonClick()"
+            width="200px"
+            height="30px"
+            color="red"
+            [enabled]="this.isIconsCategorySelected()"
+          ></app-button>
+        }
+      </td>
+    </tr></table>
+  </div>
+
+  <!-- The upload dialog -->
+  <app-dialog
+    title="Upload new icon"
+    [height]="'150px'"
+    [visible]="this.isIconUploadDialogVisible()"
+  >
+    <table>
+      <tr>
+        <td>
+          Picture
+        </td>
+        <td style="width:10px"></td>
+        <td>
+          <input type="file" class="file-input" (change)="onPictureFileSelected($event)" #fileUpload>
+        </td>
+      </tr>
+      <tr><td></td><td></td><td></td></tr>
+      <tr>
+        <td>
+          Name
+        </td>
+        <td></td>
+        <td>
+          <app-input
+            [(value)]="this.newPictureName"
+            [valid]="this.isNewPictureNameValid()"
+            width="300px"
+            height="30px"
+            hint="Input picture name"
+          ></app-input>
+        </td>
+    </table>
+
+    <!-- Spacer -->
+     <div style="height:10px;"></div>
+ 
+    <div style="width:100%;" class="center-horizontally">
+      <table><tr>
+        <td>
+          <app-button
+            value='Upload'
+            textAlign="left"
+            width="100px"
+            height="30px" 
+            icon="button-icons/upload.png"
+            iconAlign="left"
+            [enabled]="this.isNewPictureSavingAllowed()"
+            (onClick)="onNewPictureUploadButtonClick()"
+            color="blue"
+          ></app-button>
+        </td>
+        <td>
+          <app-button
+            value='Cancel'
+            textAlign="center"
+            width="100px"
+            height="30px" 
+            (onClick)="onNewPictureUploadCancelButtonClick()"
+          ></app-button>
+        </td>
+      </tr></table>
+    </div>
+  </app-dialog>
+</div>

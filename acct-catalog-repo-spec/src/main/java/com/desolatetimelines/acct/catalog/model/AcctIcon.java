@@ -13,6 +13,10 @@ public interface AcctIcon {
 
     void setIconName(String iconName);
 
+    String getMimeType();
+
+    void setMimeType(String mimeType);
+
     String getIconBytesBase64();
 
     void setIconBytesBase64(String iconBytesBase64);

@@ -1,6 +1,7 @@
 package com.desolatetimelines.acct.usermanagement.ws.client;
 
 import com.desolatetimelines.acct.common.ws.model.AcctPage;
+import com.desolatetimelines.acct.common.ws.model.AcctStatusResponse;
 import com.desolatetimelines.acct.usermanagement.ws.endpoint.UsersEndpoint;
 import com.desolatetimelines.acct.usermanagement.ws.model.*;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -42,9 +43,14 @@ public interface RESTUsersEndpointClient extends UsersEndpoint {
     AcctStatusResponse deleteCurrentUser();
 
     @Override
+    @PostMapping(value = "/currentUser", produces = APPLICATION_JSON_VALUE)
     default AcctStatusResponse setCurrentUserPassword(AcctCurrentUserPasswordSettingRequest passwordSettingRequest) {
         throw new UnsupportedOperationException("This operation is not intended for back-end clients");
     }
+
+    @Override
+    @PostMapping(value = "/currentUser/icon", produces = APPLICATION_JSON_VALUE)
+    AcctStatusResponse setCurrentUserIcon(AcctUserIconUpdateRequest iconSettingRequest);
 
     @Override
     default AcctUserDetails getCurrentUser() {

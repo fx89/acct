@@ -130,10 +130,16 @@ public class AcctCatalogService {
      *
      * @param iconName         The name that uniquely identifies the icon within its category
      * @param iconCategoryName The name of the category that contains the icon (if it doesn't exist, it's created)
+     * @param iconMimeType     The mime type of the picture file
      * @param iconBytesBase64  The base64-encoded bytes of the icon
      */
     @Transactional
-    public AcctIcon createIcon(String iconName, String iconCategoryName, String iconBytesBase64) {
+    public AcctIcon createIcon(
+        String iconName,
+        String iconCategoryName,
+        String iconMimeType,
+        String iconBytesBase64
+    ) {
         // Create the icon
         final AcctIcon newIcon = dataService.createNewIcon();
 
@@ -147,6 +153,7 @@ public class AcctCatalogService {
 
         // Assign the other properties
         newIcon.setIconName(iconName);
+        newIcon.setMimeType(iconMimeType);
         newIcon.setIconBytesBase64(iconBytesBase64);
 
         // Persist the icon and return a reference

@@ -40,6 +40,17 @@ class AcctSecurityServiceUrlResolver implements HttpConnectorBaseURLsResolver {
 }
 
 /**
+ * Provides the base URLs for the catalog service.
+ */
+class AcctCatalogServiceUrlResolver implements HttpConnectorBaseURLsResolver {
+    resolveBaseURLs(): string | string[] {
+        return "http://localhost:8086"
+    }
+}
+
+
+
+/**
  * Provides the HttpServicesConfig injectable for the app configuration
  */
 export function provideHttpServicesConfig() {
@@ -76,6 +87,16 @@ export function provideHttpServicesConfig() {
                 serviceName     : "acct-security",
                 servicePath     : "/service/security/v1",
                 urlsResolver    : new AcctSecurityServiceUrlResolver(),
+                preRequestHooks : [
+                    // Requests to this service need to be authorized
+                    (request:HttpClientWrapperMethodlessRequest<any>) => 
+                        authorizingHttpConnectorPreRequestHook(request, router)
+                ]
+            },
+            {
+                serviceName     : "acct-catalog",
+                servicePath     : "/service/catalog/v1",
+                urlsResolver    : new AcctCatalogServiceUrlResolver(),
                 preRequestHooks : [
                     // Requests to this service need to be authorized
                     (request:HttpClientWrapperMethodlessRequest<any>) => 

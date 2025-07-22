@@ -1,0 +1,1 @@
+alter table "icon" add mime_type varchar(200);

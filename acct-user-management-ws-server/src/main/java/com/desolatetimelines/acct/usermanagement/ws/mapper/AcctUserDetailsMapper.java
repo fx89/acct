@@ -24,7 +24,7 @@ public abstract class AcctUserDetailsMapper {
                 .withUserName(dataLayerUserDetails.userAccount().getUserName())
                 .withUserLoginName(dataLayerUserDetails.userAccount().getUserLoginName())
                 .withUserIconUUID(dataLayerUserDetails.userAccount().getUserIconUUID())
-                .withUserEncryptedPasswordName(dataLayerUserDetails.userAccount().getUserEncryptedPassword())
+                .withUserEncryptedPassword(dataLayerUserDetails.userAccount().getUserEncryptedPassword())
                 .withDefaultWorkspaceUUID(dataLayerUserDetails.userAccount().getDefaultWorkspaceUUID());
 
         // Add the group details
