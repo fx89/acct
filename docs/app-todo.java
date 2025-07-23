@@ -30,5 +30,31 @@
  DONE: APP-08005: User information page: Icon selector
  DONE: APP-09001: Login form: Login service
  DONE: APP-09002: Login form: Design and functionality
+ DONE: APP-09003: Catalog page: Page layout
+ TODO: APP-09004: Catalog page: Banks: list
+ TODO: APP-09005: Catalog page: Banks: Add new bank
+ TODO: APP-09006: Catalog page: Banks: Delete selected banks
+ TODO: APP-09007: Catalog page: Currencies: layout
+ TODO: APP-09008: Catalog page: Currencies: currencies list
+ TODO: APP-09009: Catalog page: Currencies: currencies list: add new currency
+ TODO: APP-09010: Catalog page: Currencies: currencies list: delete selected currencies
+ TODO: APP-09011: Catalog page: Currencies: monitored currencies: table
+ TODO: APP-09012: Catalog page: Currencies: monitored currencies: add new monitored currency
+ TODO: APP-09013: Catalog page: Currencies: monitored currencies: delete selected monitored currency
+ TODO: APP-09014: Catalog page: Currencies: monitored currencies: edit selected monitored currency
+ TODO: APP-09015: Catalog page: Currencies: monitored currencies: collect manually
+ TODO: APP-09016: Catalog page: Income or expense items: categories: list
+ TODO: APP-09017: Catalog page: Income or expense items: categories: add new category
+ TODO: APP-09018: Catalog page: Income or expense items: categories: remove selected category
+ TODO: APP-09019: Catalog page: Income or expense items: categories: edit selcted category
+ TODO: APP-09020: Catalog page: Income or expense items: subcategories: list
+ TODO: APP-09021: Catalog page: Income or expense items: subcategories: add new subcategory
+ TODO: APP-09022: Catalog page: Income or expense items: subcategories: delete selected subcategory
+ TODO: APP-09023: Catalog page: Income or expense items: subcategories: edit selcted subcategory
+ TODO: APP-09024: Catalog page: Icons: icon categories: list
+ TODO: APP-09025: Catalog page: Icons: icon categories: add new icon category
+ TODO: APP-09026: Catalog page: Icons: icon categories: delete selected icon category
+ TODO: APP-09027: Catalog page: Icons: icon categories: rename selected icon category
+ TODO: APP-09028: Catalog page: Icons: delete selected icons
 */
 

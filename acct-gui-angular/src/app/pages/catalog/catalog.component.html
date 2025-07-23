@@ -1,1 +1,31 @@
-<p>catalog works!</p>
+<app-tabs
+    position="top"
+    [width]="'calc(100% - 10px)'"
+    [height]="'500px'"
+    [tabMaxWidth]="'300px'"
+    [tabs]="this.tabs"
+    [(selectedTab)]="this.selectedTab"
+>
+    @if ( this.selectedTab?.text === "Banks" ) {
+        <app-banks></app-banks>
+    }
+    @else if ( this.selectedTab?.text === "Currencies" ) {
+        <app-currencies></app-currencies>
+    }
+    @else if ( this.selectedTab?.text === "Income or Expense Items" ) {
+        <app-income-or-expense-items></app-income-or-expense-items>
+    }
+    @else if ( this.selectedTab?.text === "Icons" ) {
+        <app-icons></app-icons>
+    }
+    @else {
+        <div class="center">
+            <app-label
+                value="Plese select a tab"
+                textAlign="center"
+                fontSize="large"
+                [flash]="true"
+            ></app-label>
+        </div>
+    }
+</app-tabs>
