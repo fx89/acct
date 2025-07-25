@@ -330,6 +330,9 @@ export class IconsManagerComponent implements OnChanges, OnInit {
     .subscribe({
       // Upon successful termination, reload the icons list
       next: () => {
+        // Reset the selected icons
+        this.selectedIcons = []
+
         // Reload the content of the data scroller
         this.dataScrollerReloadEventEmitter.emit()
       },

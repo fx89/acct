@@ -384,6 +384,7 @@ export class DataScrollerComponent implements OnInit, OnChanges, AfterContentIni
   }
 
   private reset() : void {
+    this.deselectAll()
     this.lastLoadedPageNumber = -1
     this.data = []
   }
