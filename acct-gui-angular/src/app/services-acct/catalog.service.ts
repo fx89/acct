@@ -32,11 +32,23 @@ export class CatalogService {
     return this.iconsRepository.createIcon(request)
   }
 
+  public createIconCategory(iconCategoryName:string) : Observable<void> {
+    return this.iconsRepository.createIconCategory(iconCategoryName)
+  }
+
   /**
    * Returns an array of the names of all the registered icon categories
    */
   public findIconCategories(): Observable<string[]> {
     return this.iconsRepository.findIconCategories()
+  }
+
+  /**
+   * Deletes the icon category with the given name
+   * @param iconCategoryName the given name
+   */
+  public deleteIconCategory(iconCategoryName:string) : Observable<void> {
+    return this.iconsRepository.deleteIconCategory(iconCategoryName)
   }
 
   /**

@@ -2,6 +2,7 @@ package com.desolatetimelines.acct.catalog.repository;
 
 import com.desolatetimelines.acct.catalog.model.AcctIconCategory;
 
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 
@@ -37,5 +38,12 @@ public interface AcctIconCategoriesRepository {
      * @param iconCategoryName the given name
      */
     Optional<AcctIconCategory> findByIconCategoryName(String iconCategoryName);
+
+    /**
+     * Deletes the {@link AcctIconCategory icon categories} in the referenced collection
+     *
+     * @param iconCategories the referenced collection
+     */
+    void delete(Collection<AcctIconCategory> iconCategories);
 
 }

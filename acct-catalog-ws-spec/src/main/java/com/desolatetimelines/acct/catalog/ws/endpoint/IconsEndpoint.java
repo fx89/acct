@@ -12,18 +12,32 @@ import java.util.Collection;
 public interface IconsEndpoint {
 
     /**
+     * Returns a collection of the names of all the icon categories that are registered within the catalog
+     * service
+     */
+    Collection<String> getIconCategories();
+
+    /**
+     * Adds a new icon category to the catalog.
+     *
+     * @param iconCategoryRequest request object that contains the name of the icon category to be created
+     */
+    AcctStatusResponse createIconCategory(IconCategoryRequest iconCategoryRequest);
+
+    /**
+     * Deletes the referenced icon category from the catalog
+     *
+     * @param iconCategoryName The name of the icon category to be deleted
+     */
+    AcctStatusResponse deleteIconCategory(String iconCategoryName);
+
+    /**
      * Creates a new icon with the details given in the request
      *
      * @param request the request
      * @return a container for the UUID of the newly created icon
      */
     IconUUIDResponse createIcon(IconCreateRequest request);
-
-    /**
-     * Returns a collection of the names of all the icon categories that are registered within the catalog
-     * service
-     */
-    Collection<String> getIconCategories();
 
     /**
      * Returns a count of the icons that match the given name pattern and that belong to

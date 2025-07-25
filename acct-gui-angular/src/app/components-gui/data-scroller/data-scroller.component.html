@@ -28,6 +28,17 @@
                                     (selectedOptionChange)="this.onFilterValueChange()"
                                 ></app-select>
                             </td>
+                            @if( this.isManageButtonVisible(filter) ) {
+                                <td>
+                                    <app-button
+                                        width="30px"
+                                        height="30px"
+                                        value=""
+                                        [icon]="filter.manageButtonIconRef ?? ''"
+                                        (onClick)="this.onFilterManageButtonClick(filter)"
+                                    ></app-button>
+                                </td>
+                            }
                         </tr></table>
                     </td>
                 }

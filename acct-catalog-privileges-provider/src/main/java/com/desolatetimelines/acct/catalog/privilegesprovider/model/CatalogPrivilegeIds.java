@@ -8,6 +8,8 @@ public class CatalogPrivilegeIds {
     public static final String ICONS_READ = "ICONS_READ";
     public static final String ICONS_DELETE = "ICONS_DELETE";
     public static final String ICONS_GET_CATEGORIES = "ICONS_GET_CATEGORIES";
+    public static final String ICONS_SAVE_CATEGORIES = "ICONS_SAVE_CATEGORIES";
+    public static final String ICONS_DELETE_CATEGORIES = "ICONS_DELETE_CATEGORIES";
     public static final String ITEM_CATEGORIES_SAVE = "ITEM_CATEGORIES_SAVE";
     public static final String ITEM_CATEGORIES_READ = "ITEM_CATEGORIES_READ";
     public static final String ITEM_CATEGORIES_DELETE = "ITEM_CATEGORIES_DELETE";

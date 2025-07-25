@@ -10,6 +10,7 @@ import { PictureFrameComponent } from '../../components-gui/picture-frame/pictur
 import { ButtonComponent } from '../../components-gui/button/button.component';
 import { DialogComponent } from '../../components-gui/dialog/dialog.component';
 import { InputComponent } from '../../components-gui/input/input.component';
+import { ItemsManagerCardPropertyExtractor, ItemsManagerComponent, ItemsManagerDataItem, ItemsManagerDataSet, ItemsManagerNewItemFormDirective } from '../items-manager/items-manager.component';
 
 /**
  * Contains both properties (meta-data) and the base64-encoded bytes of the icon
@@ -27,6 +28,13 @@ interface IconData {
 }
 
 /**
+ * Container used for passing the icon category name to and from the items manager
+ */
+interface IconCategoryNameContainer {
+  iconCategoryName : string
+}
+
+/**
  * The size of the page if not configured
  */
 const DEFAULT_PAGE_SIZE : number = 30
@@ -39,7 +47,9 @@ const DEFAULT_PAGE_SIZE : number = 30
     DataScrollerItemDirective,
     ButtonComponent,
     DialogComponent,
-    InputComponent
+    InputComponent,
+    ItemsManagerComponent,
+    ItemsManagerNewItemFormDirective
   ],
   templateUrl: './icons-manager.component.html',
   styleUrl: './icons-manager.component.less'
@@ -52,9 +62,10 @@ export class IconsManagerComponent implements OnChanges, OnInit {
   public id = uuidv4()
 
   // Settings
-  allowUpload   : InputSignal<boolean> = input(false)
-  allowDelete   : InputSignal<boolean> = input(false)
-  pageSize      : InputSignal<number>  = input(DEFAULT_PAGE_SIZE)
+  allowUpload           : InputSignal<boolean> = input(false)
+  allowDelete           : InputSignal<boolean> = input(false)
+  allowManageCategories : InputSignal<boolean> = input(false)
+  pageSize              : InputSignal<number>  = input(DEFAULT_PAGE_SIZE)
 
   // Properties
   width         : InputSignal<string>  = input("400px")
@@ -65,7 +76,7 @@ export class IconsManagerComponent implements OnChanges, OnInit {
 
   // Private properties
   uploadAllowed      : boolean = false
-  deleteAllowed     : boolean = false
+  deleteAllowed      : boolean = false
   widthStr           : string = ""
   heightStr          : string = ""
   iconWidthStr       : string = ""
@@ -76,11 +87,15 @@ export class IconsManagerComponent implements OnChanges, OnInit {
 
   // Dialog visibility switches
   iconUploadDialogVisible : boolean = false
+  iconCategoriesManagerVisible : boolean = false
 
   // Picture upload dialog-related properties
   newPictureName     : string = ""
   newPictureMimeType : string = ""
   newPictureContent  : string = ""
+
+  // Icon category creation-related properties
+  newIconCategoryName : string = ""
  
   /**
    * The selected icons category (if any)
@@ -130,11 +145,70 @@ export class IconsManagerComponent implements OnChanges, OnInit {
     
   }
 
+  iconCategoriesListProducer : () => Observable<ItemsManagerDataSet> =
+    () => this.catalogService.findIconCategories()
+
+  iconCategoryCardTextExtractor : ItemsManagerCardPropertyExtractor = (iconCategoryName:string) => iconCategoryName
+
+  iconCategoriesListSelectedItem : string = ""
+
+  iconCategoryDeletionConsumer : ((item:ItemsManagerDataItem<string>) => Observable<void>) =
+    (iconCategoryName:string) => {
+      return new Observable<void>(subscriber => {
+        // Delete the icon category
+        this.catalogService.deleteIconCategory(iconCategoryName).subscribe({
+          // Re-initialize the data scroller filters upon completion
+          next: () => {
+            this.initDataScrollerFilters()
+            subscriber.next()
+            subscriber.complete()
+          },
+          error: err => subscriber.error(err)
+        })
+      })
+    }
+
+  newIconCategorySupplier : (() => IconCategoryNameContainer) = () => {
+    return {
+      iconCategoryName: ""
+    }
+  }
+
+  iconCategorySavingConsumer : ((iconCategoryNameContainer:IconCategoryNameContainer) => Observable<void>) =
+    (iconCategoryNameContainer:IconCategoryNameContainer) => {
+      return new Observable<void>(subscriber => {
+        // Create the icon category
+        this.catalogService.createIconCategory(iconCategoryNameContainer.iconCategoryName).subscribe({
+          // Re-initialize the data scroller filters upon completion
+          next: () => {
+            this.initDataScrollerFilters()
+            subscriber.next()
+            subscriber.complete()
+          }, 
+          error: err => subscriber.error(err)
+        })
+      })
+    }
+
+  iconCategoryValidator : ((iconCategoryNameContainer:IconCategoryNameContainer) => boolean) =
+    (iconCategoryNameContainer:IconCategoryNameContainer) => iconCategoryNameContainer?.iconCategoryName != ""
+
   /**
    * Retrieve the icons category from the catalog service.
    * Upon retrieval, populate the categories filter.
    */
-  initDataScrollerFilters() : void {
+  private initDataScrollerFilters() : void {
+    // Init the manage button
+    if (this.allowManageCategories()) {
+      this.dataScrollerFilters[0].manageButtonIconRef = "button-icons/list.png"
+      this.dataScrollerFilters[0].manageButtonAction = () => this.showIconCategoriesManager()
+    }
+
+    // Init the icon categories list
+    this.initIconCategoriesList()
+  }
+
+  private initIconCategoriesList() : void {
     this.catalogService.findIconCategories().subscribe({
       next: iconCategoryNames => {
         this.dataScrollerFilters[0].possibleValueCards = 
@@ -285,12 +359,20 @@ export class IconsManagerComponent implements OnChanges, OnInit {
     this.hideIconUploadDialog()
   }
 
+  onIconCategoryCardsSelectionChange(card : CardData) : void {
+
+  }
+
   private showIconUploadDialog() : void {
     this.iconUploadDialogVisible = true
   }
 
   private hideIconUploadDialog() : void {
     this.iconUploadDialogVisible = false
+  }
+
+  private showIconCategoriesManager() : void {
+    this.iconCategoriesManagerVisible = true
   }
 
   private clearSelectedPicture() : void {
@@ -345,6 +427,10 @@ export class IconsManagerComponent implements OnChanges, OnInit {
 
   isIconUploadDialogVisible() : boolean {
     return this.iconUploadDialogVisible
+  }
+
+  isIconCategoriesManagerVisible() : boolean {
+    return this.iconCategoriesManagerVisible
   }
 
   isNewPictureNameValid() : boolean {

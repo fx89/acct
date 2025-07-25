@@ -14,6 +14,8 @@ public class AcctCatalogErrorCodesRegistryService extends AbstractErrorCodesRegi
 
     public String ICON_IN_USE;
 
+    public String ICON_CATEGORY_NOT_FOUND;
+
     public String INCOME_OR_EXPENSE_ITEM_CATEGORY_NOT_FOUND;
 
     public String INCOME_OR_EXPENSE_ITEM_CATEGORY_ALREADY_EXISTS;
@@ -157,6 +159,12 @@ public class AcctCatalogErrorCodesRegistryService extends AbstractErrorCodesRegi
             CAT_NAME_BUSINESS_RULES_VALIDATION,
             "One or more currencies are in use",
             "An operation was requested for one or more currencies which are in use by various services"
+        );
+
+        ICON_CATEGORY_NOT_FOUND = resolveErrorCode(
+            CAT_NAME_NOT_FOUND,
+            "Icon category not found",
+            "The icon category with the given name was not found"
         );
     }
 

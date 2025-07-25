@@ -19,12 +19,20 @@ import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 public interface RESTIconsEndpointClient extends IconsEndpoint {
 
     @Override
-    @PostMapping(value = "", produces = APPLICATION_JSON_VALUE)
-    IconUUIDResponse createIcon(@RequestBody IconCreateRequest request);
-
-    @Override
     @GetMapping(value = "/iconCategories", produces = APPLICATION_JSON_VALUE)
     Collection<String> getIconCategories();
+
+    @Override
+    @PostMapping(value = "/iconCategories", produces = APPLICATION_JSON_VALUE)
+    AcctStatusResponse createIconCategory(@RequestBody IconCategoryRequest iconCategoryRequest);
+
+    @Override
+    @DeleteMapping(value = "/iconCategories", produces = APPLICATION_JSON_VALUE)
+    AcctStatusResponse deleteIconCategory(@RequestParam(name = "iconCategoryName") String iconCategoryName);
+
+    @Override
+    @PostMapping(value = "", produces = APPLICATION_JSON_VALUE)
+    IconUUIDResponse createIcon(@RequestBody IconCreateRequest request);
 
     @Override
     @GetMapping(value = "/count", produces = APPLICATION_JSON_VALUE)

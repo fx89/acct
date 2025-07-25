@@ -14,17 +14,29 @@ import { IconQueryParams } from "../model-acct/icon-query-params";
 export abstract class AcctIconsRepository {
 
     /**
+     * Returns an array of the names of all the registered icon categories
+     */
+    abstract findIconCategories() : Observable<string[]>
+
+    /**
+     * Creates a new icon category with the given name
+     * @param iconCategoryName the given name
+     */
+    abstract createIconCategory(iconCategoryName:string) : Observable<void>
+
+    /**
+     * Deletes the icon category with the given name
+     * @param iconCategoryName the given name
+     */
+    abstract deleteIconCategory(iconCategoryName:string) : Observable<void>
+
+    /**
      * Creates a new icon with the details given in the request
      * 
      * @param request the request
      * @returns a container for the UUID of the newly created icon
      */
     abstract createIcon(request:IconCreateRequest) : Observable<IconUUIDResponse>
-
-    /**
-     * Returns an array of the names of all the registered icon categories
-     */
-    abstract findIconCategories() : Observable<string[]>
 
     /**
      * Returns a count of the icons that match the given name pattern and that belong to

@@ -125,6 +125,38 @@ public class AcctCatalogService {
     }
 
     /**
+     * Creates a new {@link AcctIconCategory icon category} with the given name
+     *
+     * @param iconCategoryName the given name
+     * @return a reference to the newly created icon category
+     */
+    @SuppressWarnings("UnusedReturnValue")
+    public AcctIconCategory createIconCategory(String iconCategoryName) {
+        final AcctIconCategory iconCategory = dataService.createNewIconCategory();
+        iconCategory.setIconCategoryName(iconCategoryName);
+        return dataService.saveIconCategory(iconCategory);
+    }
+
+    /**
+     * Removes the {@link AcctIconCategory icon category} with the given name
+     * from the catalog. The category has to be empty for this to work.
+     *
+     * @param iconCategoryName the given name
+     */
+    public void deleteIconCategory(String iconCategoryName) {
+        // Find the icon category. Throw an exception if not found.
+        final AcctIconCategory iconCategory =
+            dataService.findIconCategoryByIconCategoryName(iconCategoryName)
+                .orElseThrow(() -> new AcctCatalogServiceIconCategoryNotFoundException(
+                    errors, iconCategoryName)
+                );
+
+        // Delete the icon category
+        dataService.deleteIconCategory(iconCategory);
+    }
+
+
+    /**
      * Creates an {@link AcctIcon icon} with the given details and returns a reference to the
      * newly created entity
      *

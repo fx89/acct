@@ -39,7 +39,7 @@
     <app-cards-list
         [width]="this.getWidth()"
         [height]="this.getActualListHeight()"
-        [cardWidth]="'calc(' + this.getWidth() + ' - 25px)'"
+        [cardWidth]="'calc(calc(' + this.getWidth() + ' - 25px) - ' + (this.hasOverflow() ? '20px' : '0px') + ')'"
         [cardHeight]="this.getCardHeight()"
         [cardImageWidth]="this.getCardImageWidth()"
         [cardImageHeight]="this.getCardImageHeight()"

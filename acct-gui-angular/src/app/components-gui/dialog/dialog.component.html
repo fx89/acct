@@ -9,6 +9,20 @@
             <div class="dialog-content">
                 <ng-content></ng-content>
             </div>
+
+            @if( this.hasCloseButton() ) {
+                <div class="dialog-close-button-container">
+                    <app-button
+                        value='x'
+                        textAlign="center"
+                        width="30px"
+                        height="18px" 
+                        [enabled]="true"
+                        (onClick)="this.onCloseButtonClick()"
+                        color="red"
+                        ></app-button>
+                </div>
+            }
         </app-panel>
     </app-modal-overlay>
 </div>

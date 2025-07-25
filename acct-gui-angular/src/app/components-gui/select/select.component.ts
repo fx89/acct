@@ -115,6 +115,17 @@ export class SelectComponent {
     return this.listVisible
   }
 
+  public hasOverflow() : boolean {
+    const givenHeight = this.cardListHeightPx()
+    const listHeight = (this.cardHeightPx() + this.getTotalCardPaddingPx()) * this.getOptionsCount()
+
+    if (givenHeight < listHeight) {
+      return true
+    }
+
+    return false
+  }
+
   public getActualListHeightPx() : number {
     const givenHeight = this.cardListHeightPx()
     const listHeight = (this.cardHeightPx() + this.getTotalCardPaddingPx()) * this.getOptionsCount()

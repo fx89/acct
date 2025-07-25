@@ -18,6 +18,67 @@ export class HttpAcctIconsRepository extends AcctIconsRepository {
         super()
     }
 
+    override findIconCategories(): Observable<string[]> {
+        return new Observable<string[]>(subscriber => {
+            this.httpConnector.get(
+                {
+                    url: "/icons/iconCategories"
+                },
+                createBodyProcessingHttpClientWrapperHandlers(
+                    subscriber,
+                    (responseBody:string[]) => responseBody,
+                    "Icon categories not found."
+                )
+            )
+        })
+    }
+
+    override createIconCategory(iconCategoryName:string) : Observable<void> {
+        return new Observable<void>(subscriber => {
+            this.httpConnector.post(
+                {
+                    url: "/icons/iconCategories",
+                    data: {
+                        body: {
+                            iconCategoryName: iconCategoryName
+                        }
+                    }
+                },
+                {
+                    responseHandler: response => {
+                        subscriber.next()
+                        subscriber.complete()
+                    },
+                    errorHandler: error => {
+                        subscriber.error(error)
+                    }
+                }
+            )
+        })
+    }
+
+    override deleteIconCategory(iconCategoryName:string) : Observable<void> {
+        return new Observable<void>(subscriber => {
+            this.httpConnector.delete(
+                {
+                    url: "/icons/iconCategories",
+                    data: {
+                        params: {
+                            iconCategoryName: iconCategoryName
+                        }
+                    }
+                },
+                {
+                    responseHandler: () => {
+                        subscriber.next()
+                        subscriber.complete()
+                    },
+                    errorHandler: error => subscriber.error(error)
+                }
+            )
+        })
+    }
+
     override createIcon(request: IconCreateRequest): Observable<IconUUIDResponse> {
         return new Observable<IconUUIDResponse>(subscriber => {
             this.httpConnector.post(
@@ -31,21 +92,6 @@ export class HttpAcctIconsRepository extends AcctIconsRepository {
                     subscriber,
                     (responseBody:IconUUIDResponse) => responseBody,
                     "Icon not created."
-                )
-            )
-        })
-    }
-
-    override findIconCategories(): Observable<string[]> {
-        return new Observable<string[]>(subscriber => {
-            this.httpConnector.get(
-                {
-                    url: "/icons/iconCategories"
-                },
-                createBodyProcessingHttpClientWrapperHandlers(
-                    subscriber,
-                    (responseBody:string[]) => responseBody,
-                    "Icon categories not found."
                 )
             )
         })

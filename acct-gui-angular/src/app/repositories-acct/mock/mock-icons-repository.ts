@@ -11,11 +11,19 @@ import { AcctIconsRepository } from "../icons-repository";
 
 export class MockAcctIconsRepository extends AcctIconsRepository {
 
-    override createIcon(request: IconCreateRequest): Observable<IconUUIDResponse> {
+    override findIconCategories(): Observable<string[]> {
         throw new Error("Method not implemented.");
     }
 
-    override findIconCategories(): Observable<string[]> {
+    override createIconCategory(iconCategoryName:string) : Observable<void> {
+        throw new Error("Method not implemented.");
+    }
+
+    override deleteIconCategory(iconCategoryName:string) : Observable<void> {
+        throw new Error("Method not implemented.");
+    }
+
+    override createIcon(request: IconCreateRequest): Observable<IconUUIDResponse> {
         throw new Error("Method not implemented.");
     }
 

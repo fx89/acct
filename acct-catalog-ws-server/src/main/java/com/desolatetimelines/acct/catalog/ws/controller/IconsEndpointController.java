@@ -28,6 +28,37 @@ public class IconsEndpointController implements IconsEndpoint {
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + ICONS_GET_CATEGORIES + "')")
+    @GetMapping(value = "/iconCategories", produces = APPLICATION_JSON_VALUE)
+    public Collection<String> getIconCategories() {
+        return
+            catalogService.getIconCategories()
+                .stream()
+                .map(AcctIconCategory::getIconCategoryName)
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + ICONS_SAVE_CATEGORIES + "')")
+    @PostMapping(value = "/iconCategories", produces = APPLICATION_JSON_VALUE)
+    public AcctStatusResponse createIconCategory(
+        @RequestBody IconCategoryRequest iconCategoryRequest
+    ) {
+        catalogService.createIconCategory(iconCategoryRequest.iconCategoryName());
+        return AcctStatusResponse.newAcctOkResponse();
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + ICONS_DELETE_CATEGORIES + "')")
+    @DeleteMapping(value = "/iconCategories", produces = APPLICATION_JSON_VALUE)
+    public AcctStatusResponse deleteIconCategory(
+        @RequestParam(name = "iconCategoryName") String iconCategoryName
+    ) {
+        catalogService.deleteIconCategory(iconCategoryName);
+        return AcctStatusResponse.newAcctOkResponse();
+    }
+
+    @Override
     @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + ICONS_SAVE + "')")
     @PostMapping(value = "", produces = APPLICATION_JSON_VALUE)
     public IconUUIDResponse createIcon(@RequestBody IconCreateRequest request) {
@@ -40,17 +71,6 @@ public class IconsEndpointController implements IconsEndpoint {
                     request.iconBase64()
                 ).getIconUUID()
             );
-    }
-
-    @Override
-    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + ICONS_GET_CATEGORIES + "')")
-    @GetMapping(value = "/iconCategories", produces = APPLICATION_JSON_VALUE)
-    public Collection<String> getIconCategories() {
-        return
-            catalogService.getIconCategories()
-                .stream()
-                .map(AcctIconCategory::getIconCategoryName)
-                .collect(Collectors.toSet());
     }
 
     @Override

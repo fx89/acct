@@ -7,7 +7,7 @@
   <!-- The  data scroller -->
   <app-data-scroller
     width="calc(100% - 20px)"
-    height="350px"
+    [height]="'calc(' + this.getHeight() + ' - 90px)'"
     [pageSize]="this.getPageSize()"
     [allowSelect]="this.isSelectAllowed()"
     [allowMultiSelect]="this.isMultiSelectAllowed()"
@@ -130,5 +130,49 @@
         </td>
       </tr></table>
     </div>
+  </app-dialog>
+
+  <!-- The icon categories manager -->
+  <app-dialog
+    title="Manage icon categories"
+    [width]="'400px'"
+    [height]="'400px'"
+    [(visible)]="this.iconCategoriesManagerVisible"
+    [closeButton]="true"
+  >
+    <app-items-manager
+      width="375px"
+      height="350px"
+      cardWidth="338px"
+      cardHeight="30px"
+      addDialogWidth="500px"
+      addDialogHeight="130px"
+      [dataSetProducer]="this.iconCategoriesListProducer"
+      [cardTextExtractor]="this.iconCategoryCardTextExtractor"
+      [itemDeletionConsumer]="this.iconCategoryDeletionConsumer"
+      [newItemSupplier]="this.newIconCategorySupplier"
+      [itemSavingConsumer]="this.iconCategorySavingConsumer"
+      [itemPropertiesValidator]="this.iconCategoryValidator"
+      [(selection)]="this.iconCategoriesListSelectedItem"
+    >
+      <ng-template itemsManagerNewItemForm let-item="item">
+        <table style="width:100%"><tr>
+          <td>
+            New icon category name
+          </td>
+          <td style="width:10px">
+
+          </td>
+          <td>
+            <app-input
+              [(value)]="item.iconCategoryName"
+              width="300px"
+              height="30px"
+              hint="Input icon category name"
+            ></app-input>
+          </td>
+        </tr></table>
+      </ng-template>
+    </app-items-manager>
   </app-dialog>
 </div>

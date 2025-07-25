@@ -35,6 +35,20 @@ public enum CatalogPrivilege {
             .withPrivilegeDescription("Allows listing the names of all icon categories registered in the catalog")
             .build()
     ),
+    ICONS_SAVE_CATEGORIES(
+        AcctPrivilege.builder()
+            .withPrivilegeId(CatalogPrivilegeIds.ICONS_SAVE_CATEGORIES)
+            .withPrivilegeName("Save icon categories")
+            .withPrivilegeDescription("Allows registering new icon categories in the catalog")
+            .build()
+    ),
+    ICONS_DELETE_CATEGORIES(
+        AcctPrivilege.builder()
+            .withPrivilegeId(CatalogPrivilegeIds.ICONS_DELETE_CATEGORIES)
+            .withPrivilegeName("Delete icon categories")
+            .withPrivilegeDescription("Allows removing icon categories from the catalog")
+            .build()
+    ),
     ITEM_CATEGORIES_SAVE(
         AcctPrivilege.builder()
             .withPrivilegeId(CatalogPrivilegeIds.ITEM_CATEGORIES_SAVE)

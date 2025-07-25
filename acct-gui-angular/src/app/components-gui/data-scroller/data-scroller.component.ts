@@ -8,6 +8,7 @@ import { SelectComponent } from '../select/select.component';
 import { InputComponent } from '../input/input.component';
 import { CommonModule } from '@angular/common';
 import { removeArrayElement } from '../../utils-reusalbe/array-utils';
+import { ButtonComponent } from '../button/button.component';
 
 /**
  * Defines the properties an UI element that is displayed as a dropdown combobox and
@@ -23,6 +24,18 @@ export interface DataScrollerFilter {
    * Array of cards representing the possible values for the filter
    */
   possibleValueCards : CardData[]
+
+  /**
+   * The path to the icon to be rendered on top of the manage button. If this path
+   * is defined, then the maanage button is rendered.
+   */
+  manageButtonIconRef? : string
+
+  /**
+   * A function that is called when the manage button is pressed. If this function
+   * is defined, then the manage button is rendered.
+   */
+  manageButtonAction? : () => void
 }
 
 /**
@@ -125,7 +138,8 @@ export class DataScrollerItemDirective {
     CommonModule,
     PanelComponent,
     SelectComponent,
-    InputComponent
+    InputComponent,
+    ButtonComponent
   ],
   templateUrl: './data-scroller.component.html',
   styleUrl: './data-scroller.component.less'
@@ -338,6 +352,12 @@ export class DataScrollerComponent implements OnInit, OnChanges, AfterContentIni
     }
   }
 
+  onFilterManageButtonClick(filter:DataScrollerFilter) : void {
+    if (filter.manageButtonAction) {
+      filter.manageButtonAction()
+    }
+  }
+
   /**
    * De-selects all elements in both the UI state and the selected items array
    */
@@ -444,6 +464,18 @@ export class DataScrollerComponent implements OnInit, OnChanges, AfterContentIni
 
   isMultiSelectable() : boolean {
     return this.multiSelectable
+  }
+
+  isManageButtonVisible(filter:DataScrollerFilter) : boolean {
+    if (filter.manageButtonAction) {
+      return true
+    }
+
+    if (filter.manageButtonIconRef) {
+      return true
+    }
+
+    return false
   }
 
   hasItemDirective() : boolean {

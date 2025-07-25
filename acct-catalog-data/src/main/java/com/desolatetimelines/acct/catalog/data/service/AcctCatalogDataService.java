@@ -6,6 +6,7 @@ import com.desolatetimelines.acct.common.model.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -174,6 +175,15 @@ public class AcctCatalogDataService {
      */
     public void deleteIcons(Collection<AcctIcon> icons) {
         iconsRepository.delete(icons);
+    }
+
+    /**
+     * Deletes the referenced {@link AcctIconCategory icon category}
+     *
+     * @param iconCategory the refernced icon category
+     */
+    public void deleteIconCategory(AcctIconCategory iconCategory) {
+        iconCategoriesRepository.delete(List.of(iconCategory));
     }
 
     /**

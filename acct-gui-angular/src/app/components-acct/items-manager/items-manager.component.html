@@ -1,0 +1,114 @@
+<div
+    id="{{ this.id }}"
+    class="items-manager"
+    [style.width]="this.getWidth()"
+    [style.height]="this.getHeight()"
+>
+    <!-- The data set -->
+    <app-cards-list
+      [width]="this.getWidth()"
+      [height]="'calc(' + this.getHeight() + ' - 45px)'"
+      [cardWidth]="this.getCardWidth()"
+      [cardHeight]="this.getCardHeight()"
+      [cardSpacing]="this.getCardSpacing()"
+      [cards]="this.dataSet"
+      [selectable]="true"
+      (selectionChange)="this.onCardSelected($event)"
+    >
+    </app-cards-list>
+
+    <!-- Spacer -->
+     <div style="height:5px"></div>
+
+    <!-- The action buttons -->
+    <table style="width:100%; margin-left:8px;"><tr>
+        <td>
+            <app-button
+                value='Create new'
+                textAlign="left"
+                width="130px"
+                height="30px" 
+                icon="button-icons/plus.png"
+                iconAlign="left"
+                [enabled]="true"
+                (onClick)="onCreateNewButtonClick()"
+                color="blue"
+            ></app-button>
+        </td>
+        <td style="width:150px">
+            <app-button
+                value='Delete selected'
+                textAlign="left"
+                width="160px"
+                height="30px" 
+                icon="button-icons/minus.png"
+                iconAlign="left"
+                [enabled]="this.isDeleteSelectedButtonEnabled()"
+                (onClick)="onDeleteSelectedButtonClick()"
+                color="red"
+            ></app-button>
+        </td>
+    </tr></table>
+
+    <!-- The new item creation dialog -->
+     <app-dialog
+        title="Add new item"
+        [width]="this.getAddDialogWidth()"
+        [height]="this.getAddDialogHeight()"
+        [(visible)]="this.newItemCreationDialogVisible"
+        [closeButton]="true"
+    >
+        <!-- The content -->
+        <div
+            [style.width]="'100%'"
+            [style.height]="'calc(' + this.getAddDialogHeight() + ' - 80px)'"
+        >
+            @if( this.isNewItemFormTemplateDefined() && this.newItem ) {
+                <ng-container
+                    [ngTemplateOutlet]="this.newItemFormTemplateRef"
+                    [ngTemplateOutletContext]="{item: this.newItem}"
+                ></ng-container>
+            }
+        </div>
+
+        <!-- The action buttons -->
+        <table style="width:100%"><tr>
+            <td>
+                <app-button
+                    value='Save'
+                    textAlign="left"
+                    width="80px"
+                    height="30px" 
+                    icon="button-icons/save.png"
+                    iconAlign="left"
+                    [enabled]="this.isNewItemValid(this.newItem)"
+                    (onClick)="onNewItemSaveButtonClick()"
+                    color="blue"
+                ></app-button>
+            </td>
+            <td style="width:90px">
+                <app-button
+                    value='Cancel'
+                    textAlign="left"
+                    width="90px"
+                    height="30px" 
+                    icon="button-icons/cancel.png"
+                    iconAlign="left"
+                    [enabled]="true"
+                    (onClick)="onNewItemCancelButtonClick()"
+                    color="red"
+                ></app-button>
+            </td>
+        </tr></table>
+    </app-dialog>
+
+    <!-- The deletion confirmation message box -->
+     <app-msgbox
+        title="Confirm item deletion"
+        text="Are you sure you want to delete the selected item?"
+        [(visible)]="this.itemDeletionConfirmationMessageBoxVisible"
+        [type]="this.itemDeletionConfirmationMessageBoxType"
+        height="130px"
+        (onAffirmativeResponse)="this.onItemDeletionConfirmation()"
+    ></app-msgbox>
+</div>
