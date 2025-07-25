@@ -118,8 +118,8 @@ public class IconsEndpointController implements IconsEndpoint {
     @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + ICONS_DELETE + "')")
     @DeleteMapping(value = "")
     @Override
-    public AcctStatusResponse deleteIcons(@RequestBody IconDeleteRequest request) {
-        catalogService.deleteIcons(request.iconUUIDs());
+    public AcctStatusResponse deleteIcons(@RequestParam(name = "iconUUIDs") Collection<String> iconUUIDs) {
+        catalogService.deleteIcons(iconUUIDs);
         return AcctStatusResponse.newAcctOkResponse();
     }
 

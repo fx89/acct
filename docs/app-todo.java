@@ -54,6 +54,6 @@
  DONE: APP-09024: Catalog page: Icons: icon categories: list
  DONE: APP-09025: Catalog page: Icons: icon categories: add new icon category
  DONE: APP-09026: Catalog page: Icons: icon categories: delete selected icon category
- TODO: APP-09027: Catalog page: Icons: delete selected icons
+ DONE: APP-09027: Catalog page: Icons: delete selected icons
 */
 

@@ -56,6 +56,6 @@ public interface RESTIconsEndpointClient extends IconsEndpoint {
 
     @DeleteMapping(value = "")
     @Override
-    AcctStatusResponse deleteIcons(@RequestBody IconDeleteRequest request);
+    AcctStatusResponse deleteIcons(@RequestParam(name = "iconUUIDs") Collection<String> iconUUIDs);
 
 }

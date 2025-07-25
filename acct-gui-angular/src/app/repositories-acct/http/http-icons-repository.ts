@@ -1,7 +1,6 @@
 import { Observable } from "rxjs";
 import { AcctPage } from "../../model-acct/acct-page";
 import { IconCreateRequest } from "../../model-acct/icon-create-request";
-import { IconDeleteRequest } from "../../model-acct/icon-delete-request";
 import { IconProperties } from "../../model-acct/icon-properties";
 import { IconUUIDResponse } from "../../model-acct/icon-uuid-response";
 import { IconsCountResponse } from "../../model-acct/icons-count-response";
@@ -177,8 +176,26 @@ export class HttpAcctIconsRepository extends AcctIconsRepository {
         })
     }
     
-    override deleteIcons(request: IconDeleteRequest): Observable<void> {
-        throw new Error("Method not implemented.");
+    override deleteIcons(iconUUIDs : string[]): Observable<void> {
+        return new Observable<void>(subscriber => {
+            this.httpConnector.delete(
+                {
+                    url: "/icons",
+                    data: {
+                        params: {
+                            iconUUIDs: iconUUIDs
+                        }
+                    }
+                },
+                {
+                    responseHandler: () => {
+                        subscriber.next()
+                        subscriber.complete()
+                    },
+                    errorHandler: err => subscriber.error(err)
+                }
+            )
+        })
     }
 
 }

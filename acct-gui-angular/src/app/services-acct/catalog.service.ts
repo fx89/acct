@@ -8,7 +8,6 @@ import { IconsCountResponse } from '../model-acct/icons-count-response';
 import { AcctPageRequest } from '../model-acct/page-request';
 import { AcctPage } from '../model-acct/acct-page';
 import { IconProperties } from '../model-acct/icon-properties';
-import { IconDeleteRequest } from '../model-acct/icon-delete-request';
 
 /**
  * Provides access to functions of the catalog service
@@ -87,10 +86,10 @@ export class CatalogService {
   /**
    * Deletes the icons identified by the UUIDs in the given collection of icon UUIDs
    * 
-   * @param request container for the given collection of icon UUIDs
+   * @param iconUUIDs the given collection of icon UUIDs
    */
-  public deleteIcons(request: IconDeleteRequest): Observable<void> {
-    return this.iconsRepository.deleteIcons(request)
+  public deleteIcons(iconUUIDs : string[]): Observable<void> {
+    return this.iconsRepository.deleteIcons(iconUUIDs)
   }
 
 }

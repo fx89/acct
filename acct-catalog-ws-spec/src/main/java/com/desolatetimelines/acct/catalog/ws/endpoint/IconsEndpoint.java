@@ -73,8 +73,8 @@ public interface IconsEndpoint {
     /**
      * Deletes the icons identified by the UUIDs in the given collection of icon UUIDs
      *
-     * @param request container for the given collection of icon UUIDs
+     * @param iconUUIDs the given collection of icon UUIDs
      */
-    AcctStatusResponse deleteIcons(IconDeleteRequest request);
+    AcctStatusResponse deleteIcons(Collection<String> iconUUIDs);
 
 }

@@ -1,7 +1,6 @@
 import { Observable } from "rxjs";
 import { AcctPage } from "../../model-acct/acct-page";
 import { IconCreateRequest } from "../../model-acct/icon-create-request";
-import { IconDeleteRequest } from "../../model-acct/icon-delete-request";
 import { IconProperties } from "../../model-acct/icon-properties";
 import { IconUUIDResponse } from "../../model-acct/icon-uuid-response";
 import { IconsCountResponse } from "../../model-acct/icons-count-response";
@@ -39,7 +38,7 @@ export class MockAcctIconsRepository extends AcctIconsRepository {
         throw new Error("Method not implemented.");
     }
     
-    override deleteIcons(request: IconDeleteRequest): Observable<void> {
+    override deleteIcons(conUUIDs : string[]): Observable<void> {
         throw new Error("Method not implemented.");
     }
 

@@ -11,6 +11,8 @@ import { ButtonComponent } from '../../components-gui/button/button.component';
 import { DialogComponent } from '../../components-gui/dialog/dialog.component';
 import { InputComponent } from '../../components-gui/input/input.component';
 import { ItemsManagerCardPropertyExtractor, ItemsManagerComponent, ItemsManagerDataItem, ItemsManagerDataSet, ItemsManagerNewItemFormDirective } from '../items-manager/items-manager.component';
+import { MsgboxType } from '../../components-gui/msgbox/msgbox-type';
+import { MsgboxComponent } from '../../components-gui/msgbox/msgbox.component';
 
 /**
  * Contains both properties (meta-data) and the base64-encoded bytes of the icon
@@ -49,7 +51,8 @@ const DEFAULT_PAGE_SIZE : number = 30
     DialogComponent,
     InputComponent,
     ItemsManagerComponent,
-    ItemsManagerNewItemFormDirective
+    ItemsManagerNewItemFormDirective,
+    MsgboxComponent
   ],
   templateUrl: './icons-manager.component.html',
   styleUrl: './icons-manager.component.less'
@@ -84,10 +87,12 @@ export class IconsManagerComponent implements OnChanges, OnInit {
   selectAllowed      : boolean = false
   multiSelectAllowed : boolean = false
   pageSizeNum        : number = DEFAULT_PAGE_SIZE
+  selectedIcons      : IconData[] = []
 
   // Dialog visibility switches
   iconUploadDialogVisible : boolean = false
   iconCategoriesManagerVisible : boolean = false
+  iconsDeletionConfirmationMessageBoxVisible : boolean = false
 
   // Picture upload dialog-related properties
   newPictureName     : string = ""
@@ -97,6 +102,9 @@ export class IconsManagerComponent implements OnChanges, OnInit {
   // Icon category creation-related properties
   newIconCategoryName : string = ""
  
+  // Icons deletion confirmation message box type
+  iconsDeletionConfirmationMessageBoxType : MsgboxType = MsgboxType.YES_NO
+
   /**
    * The selected icons category (if any)
    */
@@ -296,6 +304,10 @@ export class IconsManagerComponent implements OnChanges, OnInit {
     (element:IconData) => element.iconProperties.iconUUID
 
   dataScrollerSelectionChange(selectedIcons : IconData[]) : void {
+    // Update the selected icons array
+    this.selectedIcons = selectedIcons
+
+    // If there is at least one icon selected, then emit the selection change event
     if (selectedIcons.length > 0) {
       this.selectionChange.emit(selectedIcons[0].iconProperties)
     }
@@ -306,7 +318,26 @@ export class IconsManagerComponent implements OnChanges, OnInit {
   }
 
   onDeleteSelectedIconsButtonClick() : void {
-    // TODO: implement
+    this.showIconsDeletionConfirmationMessageBox()
+  }
+
+  onIconsDeletionConfirmationMessageBoxAffirmativeResponse() : void {
+    // Compile the icon UUIDs array as the array of the UUIDs of all the selected icons
+    const iconUUIDs : string[] = this.selectedIcons.map(icon => icon.iconProperties.iconUUID)
+
+    // Call the deletion functionality
+    this.catalogService.deleteIcons(iconUUIDs)
+    .subscribe({
+      // Upon successful termination, reload the icons list
+      next: () => {
+        // Reload the content of the data scroller
+        this.dataScrollerReloadEventEmitter.emit()
+      },
+      error: err => {
+        // TODO: toast
+        console.log(err)
+      }
+    })
   }
 
   onPictureFileSelected(event : Event) : void {
@@ -359,10 +390,6 @@ export class IconsManagerComponent implements OnChanges, OnInit {
     this.hideIconUploadDialog()
   }
 
-  onIconCategoryCardsSelectionChange(card : CardData) : void {
-
-  }
-
   private showIconUploadDialog() : void {
     this.iconUploadDialogVisible = true
   }
@@ -373,6 +400,10 @@ export class IconsManagerComponent implements OnChanges, OnInit {
 
   private showIconCategoriesManager() : void {
     this.iconCategoriesManagerVisible = true
+  }
+
+  private showIconsDeletionConfirmationMessageBox()  {
+    this.iconsDeletionConfirmationMessageBoxVisible = true
   }
 
   private clearSelectedPicture() : void {
@@ -423,6 +454,10 @@ export class IconsManagerComponent implements OnChanges, OnInit {
 
   isIconsCategorySelected() : boolean {
     return this.selectedIconCategoryName != ""
+  }
+
+  isSelectedIconsArrayPopulated() : boolean {
+    return this.selectedIcons?.length > 0
   }
 
   isIconUploadDialogVisible() : boolean {

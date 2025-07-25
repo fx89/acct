@@ -61,7 +61,7 @@
             width="200px"
             height="30px"
             color="red"
-            [enabled]="this.isIconsCategorySelected()"
+            [enabled]="this.isIconsCategorySelected() && this.isSelectedIconsArrayPopulated()"
           ></app-button>
         }
       </td>
@@ -175,4 +175,14 @@
       </ng-template>
     </app-items-manager>
   </app-dialog>
+
+  <!-- The deletion confirmation message box -->
+  <app-msgbox
+    title="Confirm deletion of selected icons"
+    text="Are you sure you want to delete the selected icons?"
+    [(visible)]="this.iconsDeletionConfirmationMessageBoxVisible"
+    [type]="this.iconsDeletionConfirmationMessageBoxType"
+    height="160px"
+    (onAffirmativeResponse)="this.onIconsDeletionConfirmationMessageBoxAffirmativeResponse()"
+  ></app-msgbox>
 </div>

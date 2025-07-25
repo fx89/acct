@@ -4,7 +4,6 @@ import { IconProperties } from "../model-acct/icon-properties";
 import { AcctPage } from "../model-acct/acct-page";
 import { IconCreateRequest } from "../model-acct/icon-create-request";
 import { IconUUIDResponse } from "../model-acct/icon-uuid-response";
-import { IconDeleteRequest } from "../model-acct/icon-delete-request";
 import { AcctPageRequest } from "../model-acct/page-request";
 import { IconQueryParams } from "../model-acct/icon-query-params";
 
@@ -70,6 +69,6 @@ export abstract class AcctIconsRepository {
      * 
      * @param request container for the given collection of icon UUIDs
      */
-    abstract deleteIcons(request:IconDeleteRequest) : Observable<void>
+    abstract deleteIcons(conUUIDs : string[]) : Observable<void>
 
 }
