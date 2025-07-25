@@ -1,1 +1,46 @@
-<p>income-or-expense-items works!</p>
+<table style="width:100%; height:100%"><tr>
+    <td style="width:45%;">
+        <!-- The income or expense item categories manager -->
+        <div style="width:100%; text-align:center; margin-top:15px; padding-bottom:10px;">
+            Income or Expense Item Categories
+        </div>
+        <app-items-manager
+            width="100%"
+            height="calc(100% - 20px)"
+            cardWidth="calc(100% - 30px)"
+            cardHeight="60px"
+            addDialogWidth="500px"
+            addDialogHeight="130px"
+            [dataSetProducer]="this.incomeOrExpenseItemCategoriesListProducer"
+            [cardImageRefExtractor]="this.incomeOrExpenseItemCategoryCardImageRefExtractor"
+            [cardTitleExtractor]="this.incomeOrExpenseItemCategoryCardTitleExtractor"
+            [cardTextExtractor]="this.incomeOrExpenseItemCategoryCardTextExtractor"
+            [itemDeletionConsumer]="this.incomeOrExpenseItemCategoryDeletionConsumer"
+            [newItemSupplier]="this.newIncomeOrExpenseItemCategorySupplier"
+            [itemSavingConsumer]="this.incomeOrExpenseItemCategorySavingConsumer"
+            [itemPropertiesValidator]="this.incomeOrExpenseItemCategoryValidator"
+            [(selection)]="this.incomeOrExpenseItemCategoriesListSelectedItem"
+        >
+            <ng-template itemsManagerNewItemForm let-item="item">
+            <table style="width:100%"><tr>
+                <td>
+                    New icon category name
+                </td>
+                <td style="width:10px"></td>
+                <td>
+                <app-input
+                    [(value)]="item.iconCategoryName"
+                    width="300px"
+                    height="30px"
+                    hint="Input icon category name"
+                ></app-input>
+                </td>
+            </tr></table>
+            </ng-template>
+        </app-items-manager>
+    </td>
+    <td style="width:10%"></td>
+    <td style="width:45%">
+        <!-- The income or expense item subcategories manager -->
+    </td>
+</tr></table>

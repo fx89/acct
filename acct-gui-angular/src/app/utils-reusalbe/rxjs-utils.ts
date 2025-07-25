@@ -1,4 +1,4 @@
-import { Observable } from "rxjs";
+import { forkJoin, Observable, ObservableInput, Subscriber } from "rxjs";
 
 /**
  * Creates an observable, of the given data type, that completes without producing anything.
@@ -31,15 +31,72 @@ export function errorPipingObservableTransform<IN,OUT>(
 {
     return new Observable<OUT>(subscriber => {
         observable.subscribe({
-            next(item:IN) {
-                subscriber.next(transform(item))
-            },
-            error(err:any) {
-                subscriber.error(err)
-            },
-            complete() {
-                subscriber.complete()
-            },
+            next: (item:IN) => subscriber.next(transform(item)),
+            error: (err:any) => subscriber.error(err),
+            complete: () => subscriber.complete(),
+        })
+    })
+}
+
+/**
+ * Subscribes to the referenced observable to apply the referenced consumer as the "next"
+ * callback. Errors are piped. The "complete" signal is expected to be snet by the referenced
+ * comsumer.
+ * 
+ * @param observable the referenced observable
+ * @param consumer   the referenced consumer
+ * @returns 
+ */
+export function errorPipingObservableOperation<IN,OUT>(
+    observable : Observable<IN>,
+    consumer   : (item:IN, subscriber:Subscriber<OUT>) => void
+) : Observable<OUT> {
+    return new Observable<OUT>(subscriber => {
+        observable.subscribe({
+            next: (item:IN) => consumer(item, subscriber),
+            error: (err:any) => subscriber.error(err)
+        })
+    })
+}
+
+/**
+ * Subscribes to the referenced observable and executes the referenced consumer on the observed
+ * data item. If the referenced observable completes or produces erros, these are automatically
+ * piped to the referenced subscriber.
+ * 
+ * @param observable the referenced observable
+ * @param subscriber the referenced subscriber
+ * @param consumer   the referenced consumer, which takes item produced by the referenced observable
+ *                   and the referenced subscriber as parameters
+ */
+export function errorPipingObservableConsumer<IN,OUT>(
+    observable : Observable<IN>,
+    subscriber : Subscriber<OUT>,
+    consumer   : (item:IN, subscriber:Subscriber<OUT>) => void
+) : void {
+    observable.subscribe({
+        next: (item:IN) => consumer(item, subscriber),
+        error: (err:any) => subscriber.error(err),
+        complete: () => subscriber.complete()
+    })
+}
+
+/**
+ * Subscribes to the referenced observable to apply the referenced error consumer as
+ * error callback function. The next and complete callbacks are piped.
+ * 
+ * @param observable    the referenced observable
+ * @param errorConsumer the referenced error consumer
+ */
+export function errorConsumingObservableOperation<IN,ERR>(
+    observable : Observable<IN>,
+    errorConsumer : ((err:ERR) => void)
+){
+    return new Observable<IN>(subscriber => {
+        observable.subscribe({
+            next: (data:IN) => subscriber.next(data),
+            complete: () => subscriber.complete(),
+            error: err => errorConsumer(err)
         })
     })
 }

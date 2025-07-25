@@ -43,7 +43,7 @@
  TODO: APP-09013: Catalog page: Currencies: monitored currencies: delete selected monitored currency
  TODO: APP-09014: Catalog page: Currencies: monitored currencies: edit selected monitored currency
  TODO: APP-09015: Catalog page: Currencies: monitored currencies: collect manually
- TODO: APP-09016: Catalog page: Income or expense items: categories: list
+ DONE: APP-09016: Catalog page: Income or expense items: categories: list
  TODO: APP-09017: Catalog page: Income or expense items: categories: add new category
  TODO: APP-09018: Catalog page: Income or expense items: categories: remove selected category
  TODO: APP-09019: Catalog page: Income or expense items: categories: edit selcted category
