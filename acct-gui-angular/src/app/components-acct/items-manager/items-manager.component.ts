@@ -68,6 +68,9 @@ export class ItemsManagerComponent implements OnInit, AfterContentInit {
   // Message box types
   itemDeletionConfirmationMessageBoxType : MsgboxType = MsgboxType.YES_NO
 
+  // Force reload event
+  forceReloadEventEmitter : InputSignal<EventEmitter<void>> = input(new EventEmitter<void>())
+
   // Functions
   dataSetProducerFunction         : () => Observable<ItemsManagerDataSet> = () => new Observable<ItemsManagerDataSet>()
   cardImageRefExtractorFunction   : ItemsManagerCardPropertyExtractor = () => ""
@@ -141,6 +144,7 @@ export class ItemsManagerComponent implements OnInit, AfterContentInit {
 
   // Events
   @Output() selectionChange : EventEmitter<ItemsManagerDataItem<any>> = new EventEmitter<ItemsManagerDataItem<any>>()
+  @Output() onSelectionChanged : EventEmitter<ItemsManagerDataItem<any>> = new EventEmitter<ItemsManagerDataItem<any>>()
 
   // Content children
   @ContentChildren(ItemsManagerNewItemFormDirective)
@@ -167,6 +171,7 @@ export class ItemsManagerComponent implements OnInit, AfterContentInit {
     this.initProperties()
     this.initFunctions()
     this.initDataSet()
+    this.initForceReloadEventHandler()
   }
 
   ngAfterContentInit(): void {
@@ -216,6 +221,10 @@ export class ItemsManagerComponent implements OnInit, AfterContentInit {
     })
   }
 
+  private initForceReloadEventHandler() : void {
+    this.forceReloadEventEmitter().asObservable().subscribe(() => this.initDataSet())
+  }
+
   private createCards(data:ItemsManagerDataSet) : void {
     // Reset the data set
     this.dataSet = []
@@ -234,6 +243,7 @@ export class ItemsManagerComponent implements OnInit, AfterContentInit {
   onCardSelected(card:CardData) : void {
     this.selectedCard = card as ItemCardData;
     this.selectionChange.emit(this.selectedCard.item)
+    this.onSelectionChanged.emit(this.selectedCard.imageRef)
   }
 
   onCreateNewButtonClick() : void {

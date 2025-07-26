@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter } from '@angular/core';
 import { ItemsManagerCardPropertyExtractor, ItemsManagerComponent, ItemsManagerDataItem, ItemsManagerDataSet, ItemsManagerNewItemFormDirective } from '../../../components-acct/items-manager/items-manager.component';
 import { Observable } from 'rxjs';
 import { InputComponent } from '../../../components-gui/input/input.component';
@@ -9,6 +9,7 @@ import { ButtonComponent } from '../../../components-gui/button/button.component
 import { DialogComponent } from '../../../components-gui/dialog/dialog.component';
 import { IconsManagerComponent } from '../../../components-acct/icons-manager/icons-manager.component';
 import { IconProperties } from '../../../model-acct/icon-properties';
+import { IconifiedIncomeOrExpenseItemSubcategory } from '../../../model-acct/income-or-expense-item-subcategory';
 
 @Component({
   selector: 'app-income-or-expense-items',
@@ -121,9 +122,56 @@ export class IncomeOrExpenseItemsComponent {
     }
 
   /**
+   * Lets the subcategory manager know that the selected category has changed
+   */
+  incomeOrExpenseItemCategoriesListSelectionChanged() : void {
+    this.subcategoriesListForceReloadEventEmitter.emit()
+  }
+
+  /**
    * The selected income or expense item category
    */
   incomeOrExpenseItemCategoriesListSelectedItem? : IncomeOrExpenseItemCategory
+
+  subcategoriesListForceReloadEventEmitter : EventEmitter<void> = new EventEmitter<void>()
+
+  incomeOrExpenseItemSubcategoriesListProducer : (() => Observable<ItemsManagerDataSet>) =
+    () => new Observable<ItemsManagerDataSet>(subscriber => {
+      if (this.incomeOrExpenseItemCategoriesListSelectedItem) {
+        if (this.incomeOrExpenseItemCategoriesListSelectedItem.incomeOrExpenseItemCategoryUUID) {
+          this.catalogService.findIncomeOrExpenseItemSubcategories(
+            this.incomeOrExpenseItemCategoriesListSelectedItem.incomeOrExpenseItemCategoryUUID
+          ).subscribe({
+            next: data => {
+              subscriber.next(data)
+              subscriber.complete()
+            },
+            error: err => {
+              // TODO: toast
+              console.log(err)
+            }
+          })
+        }
+      } else {
+        subscriber.next([])
+        subscriber.complete()
+      }
+    })
+
+  incomeOrExpenseItemSubcategoryCardImageRefExtractor : ItemsManagerCardPropertyExtractor =
+    (subucategory:IconifiedIncomeOrExpenseItemSubcategory) => subucategory.imageData
+
+  /**
+   * Extracts the card title for the income or expense item categories item manager
+   */
+  incomeOrExpenseItemSubcategoryCardTitleExtractor : ItemsManagerCardPropertyExtractor =
+    (subucategory:IconifiedIncomeOrExpenseItemSubcategory) => subucategory.incomeOrExpenseItemSubcategoryName
+
+  /**
+   * Extracts the card text for the income or expense item categories item manager
+   */
+  incomeOrExpenseItemSubcategoryCardTextExtractor : ItemsManagerCardPropertyExtractor = 
+    (subucategory:IconifiedIncomeOrExpenseItemSubcategory) => subucategory.incomeOrExpenseItemSubcategoryDescription
 
   // Dialog visibility switches
   categoryIconsManagerVisible : boolean = false

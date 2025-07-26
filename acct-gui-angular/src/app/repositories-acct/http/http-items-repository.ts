@@ -2,6 +2,7 @@ import { Observable } from "rxjs";
 import { IncomeOrExpenseItemCategory } from "../../model-acct/income-or-expense-item-category";
 import { AcctItemsRepository } from "../items-repository";
 import { createBodyProcessingHttpClientWrapperHandlers, HttpConnector } from "../../services-reusable/http-connectors.service";
+import { IncomeOrExpenseItemSubcategory } from "../../model-acct/income-or-expense-item-subcategory";
 
 /**
  * Implementation of the items repository that uses the HTTP client abstraction layer to
@@ -77,6 +78,30 @@ export class HttpAcctItemsRepository extends AcctItemsRepository {
                 {
                     responseHandler: () => {
                         subscriber.next()
+                        subscriber.complete()
+                    },
+                    errorHandler: err => subscriber.error(err)
+                }
+            )
+        })
+    }
+
+    override findIncomeOrExpenseItemSubcategories(
+        incomeOrExpenseItemCategoryUUID:string
+    ) : Observable<IncomeOrExpenseItemSubcategory[]> {
+        return new Observable<IncomeOrExpenseItemSubcategory[]>(subscriber => {
+            this.httpConnector.get(
+                {
+                    url: "/items/subcategories",
+                    data: {
+                        params: {
+                            incomeOrExpenseItemCategoryUUID: incomeOrExpenseItemCategoryUUID
+                        }
+                    }
+                },
+                {
+                    responseHandler: (response:any) => {    
+                        subscriber.next(response.body)
                         subscriber.complete()
                     },
                     errorHandler: err => subscriber.error(err)

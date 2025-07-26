@@ -11,6 +11,9 @@ import { IconProperties } from '../model-acct/icon-properties';
 import { AcctItemsRepository } from '../repositories-acct/items-repository';
 import { IconifiedIncomeOrExpenseItemCategory, IncomeOrExpenseItemCategory } from '../model-acct/income-or-expense-item-category';
 import { errorPipingObservableConsumer, errorPipingObservableOperation, errorPipingObservableTransform } from '../utils-reusalbe/rxjs-utils';
+import { IconifiedIncomeOrExpenseItemSubcategory, IncomeOrExpenseItemSubcategory } from '../model-acct/income-or-expense-item-subcategory';
+
+const ERROR_PLACEHOLDER_ICON_URL : string = "generic-icons/failed.png"
 
 /**
  * Provides access to functions of the catalog service
@@ -151,6 +154,47 @@ export class CatalogService {
     throw new Error("The referenced income or expense item category does not have an UUID")
   }
 
+  public findIncomeOrExpenseItemSubcategories(
+    incomeOrExpenseItemCategoryUUID:string
+  ) : Observable<IconifiedIncomeOrExpenseItemSubcategory[]> {
+    return errorPipingObservableOperation(
+        this.itemsRepository.findIncomeOrExpenseItemSubcategories(incomeOrExpenseItemCategoryUUID),
+        (dataSet:IncomeOrExpenseItemSubcategory[], mainSubscriber) => {
+          // Convert to an iconified set and filter
+          const iconifiedDataSet : IconifiedIncomeOrExpenseItemSubcategory[] = 
+            dataSet as IconifiedIncomeOrExpenseItemSubcategory[]
+
+          // Start loading the icons for each element in the data set that has an icon reference
+          const iconLoadingTasks : ObservableInput<void>[] =
+            iconifiedDataSet
+              .filter(subcategory => subcategory.incomeOrExpenseItemSubcategoryIconUUID)
+              .map(subcategory =>
+                this.applyIcon(
+                  () => subcategory.incomeOrExpenseItemSubcategoryIconUUID,
+                  (imageData) => subcategory.imageData = imageData
+                )
+              )
+
+          // Add a dummy operation so that the iconLoadingTasks array still has something to execute
+          // even if the iconifiedDataSet is empty
+          iconLoadingTasks.push(new Observable<void>(subscriber => {
+            subscriber.next()
+            subscriber.complete()
+          }))
+
+          // Wait for all the loading tasks to complete
+          errorPipingObservableConsumer(
+            forkJoin(iconLoadingTasks), // This is how we wait
+            mainSubscriber,
+            () => {
+              mainSubscriber.next(iconifiedDataSet)
+              mainSubscriber.complete()
+            }
+          )
+        }
+      )
+  }
+
   /**
    * Loads the icon identified by the UUID given by the referenced UUID extractor function.
    * When the loading is done, the icon data is fed into the referenced data setter. An
@@ -162,14 +206,22 @@ export class CatalogService {
     iconUUIDExtractor:(() => string | undefined),
     iconDataSetter:((data:string) => void)
   ) : Observable<void> {
-    return errorPipingObservableOperation(
-      this.loadIconBytesBase64(iconUUIDExtractor() ?? ""),
-      (imageData:string, subscriber) => {
-        iconDataSetter(imageData)
-        subscriber.next()
-        subscriber.complete()
-      }
-    )
+    return new Observable<void>(subscriber => {
+      this.loadIconBytesBase64(iconUUIDExtractor() ?? "").subscribe({
+        // If the icon was loaded successfully, then set the icon data
+        next: imageData => {
+          iconDataSetter(imageData)
+          subscriber.next()
+          subscriber.complete()
+        },
+        // If the icon was not loaded successfully, then set the placeholder icon
+        error: () => {
+          iconDataSetter(ERROR_PLACEHOLDER_ICON_URL)
+          subscriber.next()
+          subscriber.complete()
+        }
+      })
+    })
   }
 
 }

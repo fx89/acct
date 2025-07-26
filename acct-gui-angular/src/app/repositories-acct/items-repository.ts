@@ -1,5 +1,6 @@
 import { Observable } from "rxjs";
 import { IncomeOrExpenseItemCategory } from "../model-acct/income-or-expense-item-category";
+import { IncomeOrExpenseItemSubcategory } from "../model-acct/income-or-expense-item-subcategory";
 
 /**
  * Allows creating, reading, updating and deleting income or expense item categories and subcategories
@@ -25,4 +26,12 @@ export abstract class AcctItemsRepository {
      * @param incomeOrExpenseItemCategoryUUIDs the referenced list of income or expense iten category UUIDs
      */
     abstract deleteIncomeOrExpenseItemCategories(incomeOrExpenseItemCategoryUUIDs:string[]) : Observable<void>
+
+    /**
+     * Returns an observable that produces a list of all the income or expense item sub-categories registered
+     * in the catalog under the category with the given income or expense item category UUID
+     * 
+     * @param incomeOrExpenseItemCategoryUUID the given income or expense item category UUID
+     */
+    abstract findIncomeOrExpenseItemSubcategories(incomeOrExpenseItemCategoryUUID:string) : Observable<IncomeOrExpenseItemSubcategory[]>
 }
