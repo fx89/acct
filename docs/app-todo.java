@@ -45,7 +45,7 @@
  TODO: APP-09015: Catalog page: Currencies: monitored currencies: collect manually
  DONE: APP-09016: Catalog page: Income or expense items: categories: list
  DONE: APP-09017: Catalog page: Income or expense items: categories: add new category
- TODO: APP-09018: Catalog page: Income or expense items: categories: remove selected category
+ DONE: APP-09018: Catalog page: Income or expense items: categories: remove selected category
  TODO: APP-09019: Catalog page: Income or expense items: categories: edit selcted category
  TODO: APP-09020: Catalog page: Income or expense items: subcategories: list
  TODO: APP-09021: Catalog page: Income or expense items: subcategories: add new subcategory

@@ -141,6 +141,16 @@ export class CatalogService {
     return this.itemsRepository.saveIncomeOrExpenseItemCategory(incomeOrExpenseItemCategory)
   }
 
+  public deleteIncomeOrExpenseItemCategory(incomeOrExpenseItemCategory:IncomeOrExpenseItemCategory) : Observable<void> {
+    if (incomeOrExpenseItemCategory?.incomeOrExpenseItemCategoryUUID) {
+      const uuids : string[] = []
+      uuids.push(incomeOrExpenseItemCategory.incomeOrExpenseItemCategoryUUID)
+      return this.itemsRepository.deleteIncomeOrExpenseItemCategories(uuids)
+    }
+
+    throw new Error("The referenced income or expense item category does not have an UUID")
+  }
+
   /**
    * Loads the icon identified by the UUID given by the referenced UUID extractor function.
    * When the loading is done, the icon data is fed into the referenced data setter. An

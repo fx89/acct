@@ -62,5 +62,27 @@ export class HttpAcctItemsRepository extends AcctItemsRepository {
             )
         })
     }
+
+    override deleteIncomeOrExpenseItemCategories(incomeOrExpenseItemCategoryUUIDs:string[]) : Observable<void> {
+        return new Observable<void>(subscriber => {
+            this.httpConnector.delete(
+                {
+                    url: "/items/categories",
+                    data: {
+                        params: {
+                            categories: incomeOrExpenseItemCategoryUUIDs
+                        }
+                    }
+                },
+                {
+                    responseHandler: () => {
+                        subscriber.next()
+                        subscriber.complete()
+                    },
+                    errorHandler: err => subscriber.error(err)
+                }
+            )
+        })
+    }
     
 }

@@ -15,4 +15,8 @@ export class MockAcctItemsRepository extends AcctItemsRepository {
         throw new Error("Method not implemented.");
     }
 
+    override deleteIncomeOrExpenseItemCategories(incomeOrExpenseItemCategoryUUIDs:string[]) : Observable<void> {
+        throw new Error("Method not implemented.");
+    }
+
 }

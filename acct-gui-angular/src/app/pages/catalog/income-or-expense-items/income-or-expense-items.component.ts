@@ -64,7 +64,13 @@ export class IncomeOrExpenseItemsComponent {
    * Deletes an income or expense item category for the income or expense item categories items manager
    */
   incomeOrExpenseItemCategoryDeletionConsumer : ((item:ItemsManagerDataItem<IncomeOrExpenseItemCategory>) => Observable<void>) =
-    () => new Observable<void>()
+    (item:ItemsManagerDataItem<IncomeOrExpenseItemCategory>) => errorConsumingObservableOperation(
+      this.catalogService.deleteIncomeOrExpenseItemCategory(item),
+      err => {
+        // TODO: toast
+        console.log(err)
+      }
+    )
 
   /**
    * Initializes a new, unsaved, income or expense item category for the items manager
