@@ -23,56 +23,56 @@
             (onSelectionChanged)="this.incomeOrExpenseItemCategoriesListSelectionChanged()"
         >
             <ng-template itemsManagerNewItemForm let-item="item">
-            <table style="width:100%">
-                <tr>
-                    <td>
-                        Name
-                    </td>
-                    <td style="width:10px"></td>
-                    <td>
-                        <app-input
-                            [(value)]="item.incomeOrExpenseItemCategoryName"
-                            width="300px"
-                            height="30px"
-                            hint="Input icon category name"
-                        ></app-input>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Description
-                    </td>
-                    <td></td>
-                    <td>
-                        <app-input
-                            [(value)]="item.incomeOrExpenseItemCategoryDescription"
-                            width="300px"
-                            height="30px"
-                            hint="Input icon category description"
-                        ></app-input>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Icon
-                    </td>
-                    <td></td>
-                    <td>
-                        <app-button
-                            value='Choose icon'
-                            textAlign="center"
-                            (onClick)="onChooseCategoryIconClick()"
-                            color="blue"
-                            width="300px"
-                            height="30px"
-                        ></app-button>
-                        <img
-                            style="width:300px;height:250px;background-color:#000;background-size:contain;"
-                            [src]="item.imageData"
-                        >
-                    </td>
-                </tr>
-            </table>
+                <table style="width:100%">
+                    <tr>
+                        <td>
+                            Name
+                        </td>
+                        <td style="width:10px"></td>
+                        <td>
+                            <app-input
+                                [(value)]="item.incomeOrExpenseItemCategoryName"
+                                width="300px"
+                                height="30px"
+                                hint="Input category name"
+                            ></app-input>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Description
+                        </td>
+                        <td></td>
+                        <td>
+                            <app-input
+                                [(value)]="item.incomeOrExpenseItemCategoryDescription"
+                                width="300px"
+                                height="30px"
+                                hint="Input category description"
+                            ></app-input>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Icon
+                        </td>
+                        <td></td>
+                        <td>
+                            <app-button
+                                value='Choose icon'
+                                textAlign="center"
+                                (onClick)="onChooseCategoryIconClick()"
+                                color="blue"
+                                width="300px"
+                                height="30px"
+                            ></app-button>
+                            <img
+                                style="width:300px;height:250px;background-color:#000;background-size:contain;"
+                                [src]="item.imageData"
+                            >
+                        </td>
+                    </tr>
+                </table>
             </ng-template>
         </app-items-manager>
     </td>
@@ -95,13 +95,62 @@
             [cardTitleExtractor]="this.incomeOrExpenseItemSubcategoryCardTitleExtractor"
             [cardTextExtractor]="this.incomeOrExpenseItemSubcategoryCardTextExtractor"
             [itemDeletionConsumer]="this.incomeOrExpenseItemCategoryDeletionConsumer"
-            [newItemSupplier]="this.newIncomeOrExpenseItemCategorySupplier"
-            [itemSavingConsumer]="this.incomeOrExpenseItemCategorySavingConsumer"
-            [itemPropertiesValidator]="this.incomeOrExpenseItemCategoryValidator"
+            [newItemSupplier]="this.newIncomeOrExpenseItemSubcategorySupplier"
+            [itemSavingConsumer]="this.incomeOrExpenseItemSubcategorySavingConsumer"
+            [itemPropertiesValidator]="this.incomeOrExpenseItemSubcategoryValidator"
             [(selection)]="this.incomeOrExpenseItemCategoriesListSelectedItem"
         >
             <ng-template itemsManagerNewItemForm let-item="item">
-                AAA
+                <table style="width:100%">
+                    <tr>
+                        <td>
+                            Name
+                        </td>
+                        <td style="width:10px"></td>
+                        <td>
+                            <app-input
+                                [(value)]="item.incomeOrExpenseItemSubcategoryName"
+                                width="300px"
+                                height="30px"
+                                hint="Input sub-category name"
+                            ></app-input>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Description
+                        </td>
+                        <td></td>
+                        <td>
+                            <app-input
+                                [(value)]="item.incomeOrExpenseItemSubcategoryDescription"
+                                width="300px"
+                                height="30px"
+                                hint="Input sub-category description"
+                            ></app-input>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Icon
+                        </td>
+                        <td></td>
+                        <td>
+                            <app-button
+                                value='Choose icon'
+                                textAlign="center"
+                                (onClick)="onChooseSubcategoryIconClick()"
+                                color="blue"
+                                width="300px"
+                                height="30px"
+                            ></app-button>
+                            <img
+                                style="width:300px;height:250px;background-color:#000;background-size:contain;"
+                                [src]="item.imageData"
+                            >
+                        </td>
+                    </tr>
+                </table>
             </ng-template>
         </app-items-manager>
     </td>
@@ -123,5 +172,24 @@
         [allowDelete]="false"
         [pageSize]="9"
         (selectionChange)="this.onCategoryIconSelected($event)"
+    ></app-icons-manager>
+</app-dialog>
+
+<!-- The income or expense item sub-category icon chooser -->
+<app-dialog
+  title="Select an existing icon or add a new one"
+  width="700px"
+  height="500px"
+  [visible]="this.subcategoryIconsManagerVisible"
+>
+    <app-icons-manager
+        width="100%"
+        height="450px"
+        iconWidth="190px"
+        iconHeight="190px"
+        [allowUpload]="true"
+        [allowDelete]="false"
+        [pageSize]="9"
+        (selectionChange)="this.onSubcategoryIconSelected($event)"
     ></app-icons-manager>
 </app-dialog>

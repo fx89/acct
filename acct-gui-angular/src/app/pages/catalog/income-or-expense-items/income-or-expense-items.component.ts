@@ -9,7 +9,7 @@ import { ButtonComponent } from '../../../components-gui/button/button.component
 import { DialogComponent } from '../../../components-gui/dialog/dialog.component';
 import { IconsManagerComponent } from '../../../components-acct/icons-manager/icons-manager.component';
 import { IconProperties } from '../../../model-acct/icon-properties';
-import { IconifiedIncomeOrExpenseItemSubcategory } from '../../../model-acct/income-or-expense-item-subcategory';
+import { IconifiedIncomeOrExpenseItemSubcategory, IncomeOrExpenseItemSubcategory } from '../../../model-acct/income-or-expense-item-subcategory';
 
 @Component({
   selector: 'app-income-or-expense-items',
@@ -33,6 +33,8 @@ export class IncomeOrExpenseItemsComponent {
   }
 
   selectedIncomeOrExpenseItemCategory! : IconifiedIncomeOrExpenseItemCategory
+
+  selectedIncomeOrExpenseItemSubcategory! : IconifiedIncomeOrExpenseItemSubcategory
  
   /**
    * Produces the list of income of expense item categories for the items manager
@@ -96,7 +98,7 @@ export class IncomeOrExpenseItemsComponent {
    */
   incomeOrExpenseItemCategorySavingConsumer : ((category:IncomeOrExpenseItemCategory) => Observable<void>) =
     (category:IncomeOrExpenseItemCategory) => errorConsumingObservableOperation(
-      this.catalogService.createIncomeOrExpenseItemCategory(category),
+      this.catalogService.saveIncomeOrExpenseItemCategory(category),
       err => {
         // TODO: toast
         console.log(err)
@@ -162,19 +164,71 @@ export class IncomeOrExpenseItemsComponent {
     (subucategory:IconifiedIncomeOrExpenseItemSubcategory) => subucategory.imageData
 
   /**
-   * Extracts the card title for the income or expense item categories item manager
+   * Extracts the card title for the income or expense item sub-categories item manager
    */
   incomeOrExpenseItemSubcategoryCardTitleExtractor : ItemsManagerCardPropertyExtractor =
     (subucategory:IconifiedIncomeOrExpenseItemSubcategory) => subucategory.incomeOrExpenseItemSubcategoryName
 
   /**
-   * Extracts the card text for the income or expense item categories item manager
+   * Extracts the card text for the income or expense item sub-categories item manager
    */
   incomeOrExpenseItemSubcategoryCardTextExtractor : ItemsManagerCardPropertyExtractor = 
     (subucategory:IconifiedIncomeOrExpenseItemSubcategory) => subucategory.incomeOrExpenseItemSubcategoryDescription
 
+  /**
+   * Validates an income or expense item sub-category for the items manager, before saving
+   */
+  incomeOrExpenseItemSubcategoryValidator : ((subcategory:IncomeOrExpenseItemSubcategory) => boolean) =
+    (subcategory:IncomeOrExpenseItemSubcategory) => {
+      if (subcategory) {
+        if (subcategory.incomeOrExpenseItemSubcategoryName) {
+          if (subcategory.incomeOrExpenseItemSubcategoryDescription) {
+            if (subcategory.incomeOrExpenseItemSubcategoryIconUUID) {
+              return true
+            }
+          }
+        }
+      }
+
+      return false
+    }
+
+  /**
+   * Initializes a new, unsaved, income or expense item sub-category for the items manager
+   */
+  newIncomeOrExpenseItemSubcategorySupplier : (() => IncomeOrExpenseItemSubcategory) = () => {
+    // Create the category
+    const subcategory = {
+      incomeOrExpenseItemSubcategoryName: "",
+      incomeOrExpenseItemSubcategoryDescription: "",
+      incomeOrExpenseItemSubcategoryIconUUID: ""
+    }
+
+    // Store the sub-category as an iconified sub-category
+    this.selectedIncomeOrExpenseItemSubcategory = subcategory as IconifiedIncomeOrExpenseItemSubcategory
+
+    // Return a reference to the newly created sub-category
+    return subcategory
+  }
+
+  /**
+   * Saves an income or expense item sub-category for the items manager
+   */
+  incomeOrExpenseItemSubcategorySavingConsumer : ((subcategory:IncomeOrExpenseItemSubcategory) => Observable<void>) =
+    (subcategory:IncomeOrExpenseItemSubcategory) => errorConsumingObservableOperation(
+      this.catalogService.saveIncomeOrExpenseItemSubcategory(
+        this.incomeOrExpenseItemCategoriesListSelectedItem?.incomeOrExpenseItemCategoryUUID ?? "",
+        subcategory
+      ),
+      err => {
+        // TODO: toast
+        console.log(err)
+      }
+    )
+
   // Dialog visibility switches
   categoryIconsManagerVisible : boolean = false
+  subcategoryIconsManagerVisible : boolean = false
 
   onChooseCategoryIconClick() : void {
     this.showCategoryIconsManager()
@@ -194,12 +248,38 @@ export class IncomeOrExpenseItemsComponent {
     this.hideCategoryIconsManager()
   }
 
+  onChooseSubcategoryIconClick() : void {
+    this.showSubcategoryIconsManager()
+  }
+
+  onSubcategoryIconSelected(icon:IconProperties) : void {
+    // Set the icon UUID
+    this.selectedIncomeOrExpenseItemSubcategory.incomeOrExpenseItemSubcategoryIconUUID = icon.iconUUID
+
+    // Apply the icon
+    this.catalogService.applyIcon(
+      () => this.selectedIncomeOrExpenseItemSubcategory.incomeOrExpenseItemSubcategoryIconUUID,
+      imageData => this.selectedIncomeOrExpenseItemSubcategory.imageData = imageData
+    ).subscribe()
+
+    // Hide the dialog
+    this.hideSubcategoryIconsManager()
+  }
+
   private showCategoryIconsManager() : void {
     this.categoryIconsManagerVisible = true
   }
 
   private hideCategoryIconsManager() : void {
     this.categoryIconsManagerVisible = false
+  }
+
+  private showSubcategoryIconsManager() : void {
+    this.subcategoryIconsManagerVisible = true
+  }
+
+  private hideSubcategoryIconsManager() : void {
+    this.subcategoryIconsManagerVisible = false
   }
 
 }

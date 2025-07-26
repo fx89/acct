@@ -140,7 +140,7 @@ export class CatalogService {
    * 
    * @param incomeOrExpenseItemCategory the referenced income or expense item category
    */
-  public createIncomeOrExpenseItemCategory(incomeOrExpenseItemCategory:IncomeOrExpenseItemCategory) : Observable<void> {
+  public saveIncomeOrExpenseItemCategory(incomeOrExpenseItemCategory:IncomeOrExpenseItemCategory) : Observable<void> {
     return this.itemsRepository.saveIncomeOrExpenseItemCategory(incomeOrExpenseItemCategory)
   }
 
@@ -193,6 +193,22 @@ export class CatalogService {
           )
         }
       )
+  }
+
+  /**
+   * Saves the referenced income or expense item sub-category into the repository
+   * 
+   * @param incomeOrExpenseItemCategoryUUID the UUID of the parent category, under which the sub-category is saved
+   * @param incomeOrExpenseItemSubcategory  the referenced income or expense item sub-category
+   */
+  public saveIncomeOrExpenseItemSubcategory(
+    incomeOrExpenseItemCategoryUUID : string,
+    incomeOrExpenseItemSubcategory  :IncomeOrExpenseItemSubcategory
+  ) : Observable<void> {
+    return this.itemsRepository.saveIncomeOrExpenseItemSubcategory(
+      incomeOrExpenseItemCategoryUUID,
+      incomeOrExpenseItemSubcategory
+    )
   }
 
   /**

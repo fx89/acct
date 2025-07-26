@@ -24,4 +24,11 @@ export class MockAcctItemsRepository extends AcctItemsRepository {
         throw new Error("Method not implemented.");
     }
 
+    override saveIncomeOrExpenseItemSubcategory(
+        incomeOrExpenseItemCategoryUUID : string,
+        incomeOrExpenseItemSubcategory  :IncomeOrExpenseItemSubcategory
+    ) : Observable<void> {
+        throw new Error("Method not implemented.");
+    }
+
 }

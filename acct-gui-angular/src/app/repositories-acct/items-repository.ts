@@ -34,4 +34,16 @@ export abstract class AcctItemsRepository {
      * @param incomeOrExpenseItemCategoryUUID the given income or expense item category UUID
      */
     abstract findIncomeOrExpenseItemSubcategories(incomeOrExpenseItemCategoryUUID:string) : Observable<IncomeOrExpenseItemSubcategory[]>
+
+    /**
+     * Saves the referenced income or expense item sub-category into the repository, under category referenced
+     * using the given incomeOrExpenseItemCategoryUUID
+     * 
+     * @param incomeOrExpenseItemCategoryUUID the given incomeOrExpenseItemCategoryUUID
+     * @param incomeOrExpenseItemSubcategory  the referenced income or expense item sub-category
+     */
+    abstract saveIncomeOrExpenseItemSubcategory(
+        incomeOrExpenseItemCategoryUUID : string,
+        incomeOrExpenseItemSubcategory  : IncomeOrExpenseItemSubcategory
+    ) : Observable<void>
 }

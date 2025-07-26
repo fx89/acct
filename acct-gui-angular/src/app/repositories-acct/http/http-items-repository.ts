@@ -57,8 +57,8 @@ export class HttpAcctItemsRepository extends AcctItemsRepository {
                 },
                 createBodyProcessingHttpClientWrapperHandlers(
                     subscriber,
-                    (responseBody:IncomeOrExpenseItemCategory[]) => responseBody,
-                    "Income or expense item categories not created."
+                    (responseBody) => responseBody,
+                    "Income or expense item category not created."
                 )
             )
         })
@@ -106,6 +106,43 @@ export class HttpAcctItemsRepository extends AcctItemsRepository {
                     },
                     errorHandler: err => subscriber.error(err)
                 }
+            )
+        })
+    }
+
+    override saveIncomeOrExpenseItemSubcategory(
+        incomeOrExpenseItemCategoryUUID : string,
+        incomeOrExpenseItemSubcategory : IncomeOrExpenseItemSubcategory
+    ) : Observable<void> {
+        return new Observable<void>(subscriber => {
+            // Create parameters object
+            const params : Record<string, string | number | boolean | ReadonlyArray<string | number | boolean>> = {}
+
+            // Add the category UUID parameter
+            params["incomeOrExpenseItemCategoryUUID"] = incomeOrExpenseItemCategoryUUID
+
+            // If the sub-category has an UUID, then add it to the parameters object
+            if (incomeOrExpenseItemSubcategory.incomeOrExpenseItemSubcategoryUUID) {
+                params["incomeOrExpenseItemSubcategoryUUID"] = incomeOrExpenseItemSubcategory.incomeOrExpenseItemSubcategoryUUID
+            }
+
+            this.httpConnector.put(
+                {
+                    url: "/items/subcategories",
+                    data: {
+                        params: params,
+                        body: {
+                            incomeOrExpenseItemSubcategoryName        : incomeOrExpenseItemSubcategory.incomeOrExpenseItemSubcategoryName,
+                            incomeOrExpenseItemSubcategoryDescription : incomeOrExpenseItemSubcategory.incomeOrExpenseItemSubcategoryDescription,
+                            incomeOrExpenseItemSubcategoryIconUUID    : incomeOrExpenseItemSubcategory.incomeOrExpenseItemSubcategoryIconUUID
+                        }
+                    }
+                },
+                createBodyProcessingHttpClientWrapperHandlers(
+                    subscriber,
+                    (responseBody) => responseBody,
+                    "Income or expense item sub-category not created."
+                )
             )
         })
     }

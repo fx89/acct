@@ -464,7 +464,7 @@ public class AcctCatalogService {
                 incomeOrExpenseItemSubcategoryUUID,
                 dataService::findIncomeOrExpenseItemSubcategoryByIncomeOrExpenseItemSubcategoryUUID,
                 dataService::createNewIncomeOrExpenseItemSubcategory,
-                AcctIncomeOrExpenseItemSubcategory::setIncomeOrExpenseItemSubcategoryIconUUID
+                AcctIncomeOrExpenseItemSubcategory::setIncomeOrExpenseItemSubcategoryUUID
             );
 
         // If the category was not found, throw an exception
