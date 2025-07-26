@@ -133,6 +133,15 @@ export class CatalogService {
   }
 
   /**
+   * Saves the referenced income or expense item category into the repository
+   * 
+   * @param incomeOrExpenseItemCategory the referenced income or expense item category
+   */
+  public createIncomeOrExpenseItemCategory(incomeOrExpenseItemCategory:IncomeOrExpenseItemCategory) : Observable<void> {
+    return this.itemsRepository.saveIncomeOrExpenseItemCategory(incomeOrExpenseItemCategory)
+  }
+
+  /**
    * Loads the icon identified by the UUID given by the referenced UUID extractor function.
    * When the loading is done, the icon data is fed into the referenced data setter. An
    * observable is returned, to let the consumer know when the operation is finished.
@@ -143,17 +152,14 @@ export class CatalogService {
     iconUUIDExtractor:(() => string | undefined),
     iconDataSetter:((data:string) => void)
   ) : Observable<void> {
-    return new Observable<void>(subscriber => {
-        errorPipingObservableConsumer(
-          this.loadIconBytesBase64(iconUUIDExtractor() ?? ""),
-          subscriber,
-          (imageData:string, subscriber) => {
-            iconDataSetter(imageData)
-            subscriber.next()
-            subscriber.complete()
-          }
-        )
-      })
+    return errorPipingObservableOperation(
+      this.loadIconBytesBase64(iconUUIDExtractor() ?? ""),
+      (imageData:string, subscriber) => {
+        iconDataSetter(imageData)
+        subscriber.next()
+        subscriber.complete()
+      }
+    )
   }
 
 }

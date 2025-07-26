@@ -11,4 +11,11 @@ export abstract class AcctItemsRepository {
      */
     abstract findAllIncomeOrExpenseItemCategories() : Observable<IncomeOrExpenseItemCategory[]>
 
+    /**
+     * Saves the referenced income or expense item category into the repository
+     * 
+     * @param incomeOrExpenseItemCategory the referenced income or expense item category
+     */
+    abstract saveIncomeOrExpenseItemCategory(incomeOrExpenseItemCategory:IncomeOrExpenseItemCategory) : Observable<void>
+
 }

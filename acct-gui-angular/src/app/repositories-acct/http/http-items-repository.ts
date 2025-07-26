@@ -29,5 +29,38 @@ export class HttpAcctItemsRepository extends AcctItemsRepository {
             )
         })
     }
+
+    override saveIncomeOrExpenseItemCategory(
+        incomeOrExpenseItemCategory:IncomeOrExpenseItemCategory
+    ) : Observable<void> {
+        return new Observable<void>(subscriber => {
+            // Create parameters object
+            const params : Record<string, string | number | boolean | ReadonlyArray<string | number | boolean>> = {}
+
+            // If the category has an UUID, then add it to the parameters object
+            if (incomeOrExpenseItemCategory.incomeOrExpenseItemCategoryUUID) {
+                params["incomeOrExpenseItemCategoryUUID"] = incomeOrExpenseItemCategory.incomeOrExpenseItemCategoryUUID
+            }
+
+            this.httpConnector.put(
+                {
+                    url: "/items/categories",
+                    data: {
+                        params: params,
+                        body: {
+                            incomeOrExpenseItemCategoryName        : incomeOrExpenseItemCategory.incomeOrExpenseItemCategoryName,
+                            incomeOrExpenseItemCategoryDescription : incomeOrExpenseItemCategory.incomeOrExpenseItemCategoryDescription,
+                            incomeOrExpenseItemCategoryIconUUID    : incomeOrExpenseItemCategory.incomeOrExpenseItemCategoryIconUUID
+                        }
+                    }
+                },
+                createBodyProcessingHttpClientWrapperHandlers(
+                    subscriber,
+                    (responseBody:IncomeOrExpenseItemCategory[]) => responseBody,
+                    "Income or expense item categories not created."
+                )
+            )
+        })
+    }
     
 }
