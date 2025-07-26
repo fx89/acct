@@ -46,4 +46,12 @@ export abstract class AcctItemsRepository {
         incomeOrExpenseItemCategoryUUID : string,
         incomeOrExpenseItemSubcategory  : IncomeOrExpenseItemSubcategory
     ) : Observable<void>
+
+    /**
+     * Deletes the income or expense item sub-categories having the UUIDs in the referenced list of
+     * income or expense iten sub-category UUIDs
+     * 
+     * @param incomeOrExpenseItemSubcategoryUUIDs the referenced list of income or expense iten sub-category UUIDs
+     */
+    abstract deleteIncomeOrExpenseItemSubcategories(incomeOrExpenseItemSubcategoryUUIDs:string[]) : Observable<void>
 }

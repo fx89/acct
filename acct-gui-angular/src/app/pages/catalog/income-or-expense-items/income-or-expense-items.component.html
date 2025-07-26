@@ -94,11 +94,11 @@
             [cardImageRefExtractor]="this.incomeOrExpenseItemSubcategoryCardImageRefExtractor"
             [cardTitleExtractor]="this.incomeOrExpenseItemSubcategoryCardTitleExtractor"
             [cardTextExtractor]="this.incomeOrExpenseItemSubcategoryCardTextExtractor"
-            [itemDeletionConsumer]="this.incomeOrExpenseItemCategoryDeletionConsumer"
+            [itemDeletionConsumer]="this.incomeOrExpenseItemSubcategoryDeletionConsumer"
             [newItemSupplier]="this.newIncomeOrExpenseItemSubcategorySupplier"
             [itemSavingConsumer]="this.incomeOrExpenseItemSubcategorySavingConsumer"
             [itemPropertiesValidator]="this.incomeOrExpenseItemSubcategoryValidator"
-            [(selection)]="this.incomeOrExpenseItemCategoriesListSelectedItem"
+            [(selection)]="this.incomeOrExpenseItemSubcategoriesListSelectedItem"
         >
             <ng-template itemsManagerNewItemForm let-item="item">
                 <table style="width:100%">

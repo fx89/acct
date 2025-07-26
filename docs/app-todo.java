@@ -49,7 +49,7 @@
  TODO: APP-09019: Catalog page: Income or expense items: categories: edit selcted category
  DONE: APP-09020: Catalog page: Income or expense items: subcategories: list
  DONE: APP-09021: Catalog page: Income or expense items: subcategories: add new subcategory
- TODO: APP-09022: Catalog page: Income or expense items: subcategories: delete selected subcategory
+ DONE: APP-09022: Catalog page: Income or expense items: subcategories: delete selected subcategory
  TODO: APP-09023: Catalog page: Income or expense items: subcategories: edit selcted subcategory
  DONE: APP-09024: Catalog page: Icons: icon categories: list
  DONE: APP-09025: Catalog page: Icons: icon categories: add new icon category

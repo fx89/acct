@@ -135,8 +135,20 @@ export class IncomeOrExpenseItemsComponent {
    */
   incomeOrExpenseItemCategoriesListSelectedItem? : IncomeOrExpenseItemCategory
 
+  /**
+   * The selected income or expense item sub-category
+   */
+  incomeOrExpenseItemSubcategoriesListSelectedItem? : IncomeOrExpenseItemSubcategory
+
+  /**
+   * Event emitter that triggers the reload of the sub-categories list when a category is selected
+   */
   subcategoriesListForceReloadEventEmitter : EventEmitter<void> = new EventEmitter<void>()
 
+  /**
+   * Returns an observable that produces the list of sub-categories registered in the catalog under
+   * the selected category
+   */
   incomeOrExpenseItemSubcategoriesListProducer : (() => Observable<ItemsManagerDataSet>) =
     () => new Observable<ItemsManagerDataSet>(subscriber => {
       if (this.incomeOrExpenseItemCategoriesListSelectedItem) {
@@ -160,6 +172,9 @@ export class IncomeOrExpenseItemsComponent {
       }
     })
 
+  /**
+   * Extracts the card image for the income or expense item sub-categories item manager
+   */
   incomeOrExpenseItemSubcategoryCardImageRefExtractor : ItemsManagerCardPropertyExtractor =
     (subucategory:IconifiedIncomeOrExpenseItemSubcategory) => subucategory.imageData
 
@@ -220,6 +235,18 @@ export class IncomeOrExpenseItemsComponent {
         this.incomeOrExpenseItemCategoriesListSelectedItem?.incomeOrExpenseItemCategoryUUID ?? "",
         subcategory
       ),
+      err => {
+        // TODO: toast
+        console.log(err)
+      }
+    )
+
+  /**
+   * Deletes an income or expense item category for the income or expense item categories items manager
+   */
+  incomeOrExpenseItemSubcategoryDeletionConsumer : ((item:ItemsManagerDataItem<IncomeOrExpenseItemSubcategory>) => Observable<void>) =
+    (item:ItemsManagerDataItem<IncomeOrExpenseItemSubcategory>) => errorConsumingObservableOperation(
+      this.catalogService.deleteIncomeOrExpenseItemSubcategory(item),
       err => {
         // TODO: toast
         console.log(err)

@@ -144,6 +144,11 @@ export class CatalogService {
     return this.itemsRepository.saveIncomeOrExpenseItemCategory(incomeOrExpenseItemCategory)
   }
 
+  /**
+   * Deletes the referenced category from the catalog
+   * 
+   * @param incomeOrExpenseItemCategory the referenced category
+   */
   public deleteIncomeOrExpenseItemCategory(incomeOrExpenseItemCategory:IncomeOrExpenseItemCategory) : Observable<void> {
     if (incomeOrExpenseItemCategory?.incomeOrExpenseItemCategoryUUID) {
       const uuids : string[] = []
@@ -209,6 +214,21 @@ export class CatalogService {
       incomeOrExpenseItemCategoryUUID,
       incomeOrExpenseItemSubcategory
     )
+  }
+
+  /**
+   * Deletes the referenced sub-category from the catalog
+   * 
+   * @param incomeOrExpenseItemSubcategory the referenced sub-category
+   */
+  public deleteIncomeOrExpenseItemSubcategory(incomeOrExpenseItemSubcategory:IncomeOrExpenseItemSubcategory) : Observable<void> {
+    if (incomeOrExpenseItemSubcategory?.incomeOrExpenseItemSubcategoryUUID) {
+      const uuids : string[] = []
+      uuids.push(incomeOrExpenseItemSubcategory.incomeOrExpenseItemSubcategoryUUID)
+      return this.itemsRepository.deleteIncomeOrExpenseItemSubcategories(uuids)
+    }
+
+    throw new Error("The referenced income or expense item category does not have an UUID")
   }
 
   /**
