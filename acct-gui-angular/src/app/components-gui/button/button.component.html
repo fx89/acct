@@ -1,6 +1,16 @@
 <div
     id="{{ this.id }}_button"
-    [class]="{'form-control': true, 'clickable': true, 'hoverable': this.isEnabled(), 'red': this.isRed(), 'blue': this.isBlue(), 'disabled': !this.isEnabled()}"
+    [class]="{
+        'form-control': true,
+        'clickable': true,
+        'hoverable': this.isEnabled(),
+        'red': this.isRed(), 
+        'blue': this.isBlue(),
+        'green': this.isGreen(),
+        'disabled': !this.isEnabled(),
+        'small-font': this.isFontSmall(),
+        'large-font': this.isFontLarge()
+    }"
     [style.width]="this.getWidth()"
     [style.height]="this.getHeight()"
     [style.lineHeight]="this.getHeight()"

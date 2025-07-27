@@ -3,6 +3,8 @@ import { IncomeOrExpenseItemCategory } from "../../model-acct/income-or-expense-
 import { AcctItemsRepository } from "../items-repository";
 import { createBodyProcessingHttpClientWrapperHandlers, HttpConnector } from "../../services-reusable/http-connectors.service";
 import { IncomeOrExpenseItemSubcategory } from "../../model-acct/income-or-expense-item-subcategory";
+import { IncomeOrExpenseItem } from "../../model-acct/income-or-expense-item";
+import { complete } from "../../utils-reusalbe/rxjs-utils";
 
 /**
  * Implementation of the items repository that uses the HTTP client abstraction layer to
@@ -101,8 +103,7 @@ export class HttpAcctItemsRepository extends AcctItemsRepository {
                 },
                 {
                     responseHandler: (response:any) => {    
-                        subscriber.next(response.body)
-                        subscriber.complete()
+                        complete(subscriber, response.body)
                     },
                     errorHandler: err => subscriber.error(err)
                 }
@@ -155,6 +156,86 @@ export class HttpAcctItemsRepository extends AcctItemsRepository {
                     data: {
                         params: {
                             incomeOrExpenseItemSubcategoryUUIDs: incomeOrExpenseItemSubcategoryUUIDs
+                        }
+                    }
+                },
+                {
+                    responseHandler: () => {
+                        subscriber.next()
+                        subscriber.complete()
+                    },
+                    errorHandler: err => subscriber.error(err)
+                }
+            )
+        })
+    }
+
+    override findIncomeOrExpenseItems(incomeOrExpenseItemSubcategoryUUID:string) : Observable<IncomeOrExpenseItem[]> {
+        return new Observable<IncomeOrExpenseItem[]>(subscriber => {
+            this.httpConnector.get(
+                {
+                    url: "/items",
+                    data: {
+                        params: {
+                            incomeOrExpenseItemSubcategoryUUID: incomeOrExpenseItemSubcategoryUUID
+                        }
+                    }
+                },
+                {
+                    responseHandler: (response:any) => {    
+                        complete(subscriber, response.body)
+                    },
+                    errorHandler: err => subscriber.error(err)
+                }
+            )
+        })
+    }
+
+    override saveIncomeOrExpenseItem(
+        incomeOrExpenseItemSubcategoryUUID : string,
+        incomeOrExpenseItem  : IncomeOrExpenseItem
+    ) : Observable<void> {
+        return new Observable<void>(subscriber => {
+            // Create parameters object
+            const params : Record<string, string | number | boolean | ReadonlyArray<string | number | boolean>> = {}
+
+            // Add the category UUID parameter
+            params["incomeOrExpenseItemSubcategoryUUID"] = incomeOrExpenseItemSubcategoryUUID
+
+            // If the sub-category has an UUID, then add it to the parameters object
+            if (incomeOrExpenseItem.incomeOrExpenseItemUUID) {
+                params["incomeOrExpenseItem"] = incomeOrExpenseItem.incomeOrExpenseItemUUID
+            }
+
+            this.httpConnector.put(
+                {
+                    url: "/items",
+                    data: {
+                        params: params,
+                        body: {
+                            incomeOrExpenseItemName        : incomeOrExpenseItem.incomeOrExpenseItemName,
+                            incomeOrExpenseItemDescription : incomeOrExpenseItem.incomeOrExpenseItemDescription,
+                            incomeOrExpenseItemIconUUID    : incomeOrExpenseItem.incomeOrExpenseItemIconUUID
+                        }
+                    }
+                },
+                createBodyProcessingHttpClientWrapperHandlers(
+                    subscriber,
+                    (responseBody) => responseBody,
+                    "Income or expense item not created."
+                )
+            )
+        })
+    }
+
+    override deleteIncomeOrExpenseItems(incomeOrExpenseItemUUIDs:string[]) : Observable<void> {
+        return new Observable<void>(subscriber => {
+            this.httpConnector.delete(
+                {
+                    url: "/items",
+                    data: {
+                        params: {
+                            incomeOrExpenseItemUUIDs: incomeOrExpenseItemUUIDs
                         }
                     }
                 },

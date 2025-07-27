@@ -23,6 +23,7 @@ export class ButtonComponent implements OnInit {
   icon      : InputSignal<string> = input("")
   iconAlign : InputSignal<string> = input("left")
   color     : InputSignal<string> = input('none')
+  fontSize  : InputSignal<string>  = input("normal")
 
   // Internal properties
   valueDefined : boolean = false
@@ -82,8 +83,20 @@ export class ButtonComponent implements OnInit {
     return this.isEnabled() && this.color() == "blue"
   }
 
+  public isGreen() : boolean {
+    return this.isEnabled() && this.color() == "green"
+  }
+
   public isValueDefined() : boolean {
     return this.valueDefined
+  }
+
+  isFontSmall() : boolean {
+    return this.fontSize() === "small"
+  }
+
+  isFontLarge() : boolean {
+    return this.fontSize() === "large"
   }
 
   public onClick() : void {

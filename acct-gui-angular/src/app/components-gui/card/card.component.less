@@ -4,16 +4,25 @@
     margin: 0px;
     padding-top: 9px;
     padding-bottom: 9px;
+    position: relative;
 }
 
-.card .card-content {
+.card-content {
     padding-top: 0px;
     padding-bottom: 0px;
 }
 
-.card .card-content .card-title {
+.card-content .card-title {
     font-weight: bold;
     border-bottom-style: solid;
     border-bottom-width: 1px;
     margin-bottom: 5px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.card-actions {
+    position: absolute;
+    right: 7px;
+    top: 1px;
 }

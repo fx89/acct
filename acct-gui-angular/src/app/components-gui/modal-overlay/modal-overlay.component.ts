@@ -1,4 +1,4 @@
-import { AfterContentChecked, Component, input, InputSignal } from '@angular/core';
+import { AfterContentChecked, AfterContentInit, AfterViewInit, Component, input, InputSignal } from '@angular/core';
 import {v4 as uuidv4} from 'uuid';
 
 @Component({
@@ -7,7 +7,7 @@ import {v4 as uuidv4} from 'uuid';
   templateUrl: './modal-overlay.component.html',
   styleUrl: './modal-overlay.component.less'
 })
-export class ModalOverlayComponent implements AfterContentChecked {
+export class ModalOverlayComponent implements AfterViewInit {
 
   /**
    * The ID of the component is unique in the page
@@ -21,7 +21,7 @@ export class ModalOverlayComponent implements AfterContentChecked {
     return this.visible()
   }
 
-  ngAfterContentChecked(): void {
+  ngAfterViewInit(): void {
     const element : HTMLElement | null = document.getElementById(this.id)
 
     if (element) {

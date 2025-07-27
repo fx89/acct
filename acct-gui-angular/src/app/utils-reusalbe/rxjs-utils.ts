@@ -91,12 +91,66 @@ export function errorPipingObservableConsumer<IN,OUT>(
 export function errorConsumingObservableOperation<IN,ERR>(
     observable : Observable<IN>,
     errorConsumer : ((err:ERR) => void)
-){
+) : Observable<IN> {
     return new Observable<IN>(subscriber => {
         observable.subscribe({
             next: (data:IN) => subscriber.next(data),
             complete: () => subscriber.complete(),
             error: err => errorConsumer(err)
         })
+    })
+}
+
+/**
+ * Sends the given value to the referenced subscriber and then sends the complete() signal
+ * 
+ * @param subscriber the referenced subscriber
+ * @param value      the given value
+ */
+export function complete<T>(subscriber:Subscriber<T>, value:T) : void {
+    subscriber.next(value)
+    subscriber.complete()
+}
+
+/**
+ * Pipes one of two observables, depending on the result of the referenced condition.
+ * If the referenced condition evaluates to true, then the observableIfTrue is piped.
+ * If the referenced condition evaluates to false, then the observableIfFalse is piped.
+ * Errors are piped either way.
+ * 
+ * @param condition         the referenced condition
+ * @param observableIfTrue 
+ * @param observableIfFalse 
+ */
+export function errorPipingConditionalObservable<T>(
+    condition : (() => boolean),
+    observableIfTrue : () => Observable<T>,
+    observableIfFalse : () => Observable<T>
+) {
+    return new Observable<T>(subscriber => {
+        if (condition()) {
+            errorPipingObservableConsumer(
+                observableIfTrue(),
+                subscriber,
+                (item, subscriber) => complete(subscriber, item)
+            )
+        } else {
+            errorPipingObservableConsumer(
+                observableIfFalse(),
+                subscriber,
+                (item, subscriber) => complete(subscriber, item)
+            )
+        }
+    })
+}
+
+/**
+ * Creates an observable that produces the referenced item
+ * 
+ * @param item the referenced item
+ */
+export function newObservalbe<T>(item:T) : Observable<T> {
+    return new Observable<T>(subscriber => {
+        complete(subscriber, item)
     })
 }

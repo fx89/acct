@@ -21,6 +21,7 @@
                 [text]="card.text"
                 [clickable]="this.isClickable() || this.isSelectable()"
                 (onClick)="this.onCardClicked(card)"
+                [actions]="this.cardActionButtons"
             ></app-card>
         </div>
     }

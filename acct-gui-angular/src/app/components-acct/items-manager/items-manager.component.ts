@@ -1,6 +1,6 @@
 import { AfterContentInit, AfterViewChecked, AfterViewInit, Component, ContentChildren, Directive, EventEmitter, input, InputSignal, OnInit, Output, QueryList, TemplateRef } from '@angular/core';
 import {v4 as uuidv4} from 'uuid';
-import { CardsListComponent } from '../../components-gui/cards-list/cards-list.component';
+import { CardsListComponent, ItemAwareCardActionButton } from '../../components-gui/cards-list/cards-list.component';
 import { CardData } from '../../components-gui/cards-list/card-data';
 import { Observable } from 'rxjs';
 import { ButtonComponent } from '../../components-gui/button/button.component';
@@ -8,6 +8,10 @@ import { MsgboxComponent } from '../../components-gui/msgbox/msgbox.component';
 import { MsgboxType } from '../../components-gui/msgbox/msgbox-type';
 import { DialogComponent } from '../../components-gui/dialog/dialog.component';
 import { CommonModule } from '@angular/common';
+
+const EDIT_BUTTON_ICON_REF : string = "button-icons/edit.png"
+
+const CHILDREN_BUTTON_ICON_REF : string = "button-icons/children.png"
 
 /**
  * Generic item type for the items in the data set managed by the items manager
@@ -24,6 +28,11 @@ export type ItemsManagerDataSet = ItemsManagerDataItem<any>[]
  * required for populating cards in the cards list component of the items manager
  */
 export type ItemsManagerCardPropertyExtractor = (item:ItemsManagerDataItem<any>) => string
+
+/**
+ * Defines the signature of the callback to be provided for card action buttons
+ */
+export type ItemsManagerCardAction = (item:ItemsManagerDataItem<any>) => void
 
 /**
  * Extends the CardData type with the represented item
@@ -126,6 +135,27 @@ export class ItemsManagerComponent implements OnInit, AfterContentInit {
    */
   itemPropertiesValidator : InputSignal<(item:ItemsManagerDataItem<any>) => boolean> = input.required()
 
+  /**
+   * Action to be performed when the edit button is clicked. If not defined, then the edit button
+   * is not shown.
+   */
+  editAction : InputSignal<ItemsManagerCardAction> = input(<ItemsManagerCardAction><unknown>undefined)
+
+  /**
+   * Action to be performed when the children button is clicked. If not defined, then the children
+   * button is not shown.
+   */
+  childrenAction : InputSignal<ItemsManagerCardAction> = input(<ItemsManagerCardAction><unknown>undefined)
+
+  /**
+   * Set this to true to display the action button icons
+   */
+  actionButtonIcons : InputSignal<boolean> = input(false)
+
+  /**
+   * Set this to true to display text on the action buttons
+   */
+  actionButtonText : InputSignal<boolean> = input(true)
 
   /**
    * The data set
@@ -163,6 +193,10 @@ export class ItemsManagerComponent implements OnInit, AfterContentInit {
 
   newItemFormTemplateRef! : TemplateRef<any>
 
+  cardActionButtons : ItemAwareCardActionButton<ItemCardData>[] = []
+  private cardEditAction! : ItemsManagerCardAction
+  private cardChildrenAction! : ItemsManagerCardAction
+
   // Dialog visibility switches
   itemDeletionConfirmationMessageBoxVisible : boolean = false
   newItemCreationDialogVisible : boolean = false
@@ -170,6 +204,7 @@ export class ItemsManagerComponent implements OnInit, AfterContentInit {
   ngOnInit() : void {
     this.initProperties()
     this.initFunctions()
+    this.initCardActionButtons()
     this.initDataSet()
     this.initForceReloadEventHandler()
   }
@@ -197,6 +232,65 @@ export class ItemsManagerComponent implements OnInit, AfterContentInit {
     this.newItemSupplierFunction         = this.newItemSupplier()
     this.itemSavingFunction              = this.itemSavingConsumer()
     this.itemPropertiesValidatorFunction = this.itemPropertiesValidator()
+  }
+
+  private initCardActionButtons() : void {
+    // Initialize the action buttons array as an empty array
+    this.cardActionButtons = []
+
+    // If the edit action was set, then add the edit button
+    if (this.editAction()) {
+      this.cardActionButtons.push({
+        onClick: (cardData:ItemCardData) => this.cardEditButtonClicked(cardData),
+        width: this.computeEditActionButtonWidth(),
+        color: "none",
+        text: (this.actionButtonText() ? "Edit" : ""),
+        icon: (this.actionButtonIcons() ? EDIT_BUTTON_ICON_REF : "")
+      })
+
+      this.cardEditAction = this.editAction()
+    }
+
+    // If the children action was set, then add the children button
+    if (this.childrenAction()) {
+      this.cardActionButtons.push({
+        onClick: (cardData:ItemCardData) => this.cardChildrenButtonClicked(cardData),
+        width: this.computeChildrenActionButtonWidth(),
+        color: "none",
+        text: (this.actionButtonText() ? "Children" : ""),
+        icon: (this.actionButtonIcons() ? CHILDREN_BUTTON_ICON_REF : "")
+      })
+
+      this.cardChildrenAction = this.childrenAction()
+    }
+  }
+
+  private computeEditActionButtonWidth() : string {
+    let width = 0
+
+    if (this.actionButtonIcons()) {
+      width += 22
+    }
+
+    if (this.actionButtonText()) {
+      width += 30
+    }
+
+    return width + "px"
+  }
+
+  private computeChildrenActionButtonWidth() : string {
+    let width = 0
+
+    if (this.actionButtonIcons()) {
+      width += 22
+    }
+
+    if (this.actionButtonText()) {
+      width += 55
+    }
+
+    return width + "px"
   }
 
   private initNewItemFormTemplateRef() : void {
@@ -286,6 +380,14 @@ export class ItemsManagerComponent implements OnInit, AfterContentInit {
 
   onNewItemCancelButtonClick() : void {
     this.hideNewItemCreationDialog()
+  }
+
+  cardEditButtonClicked(cardData:ItemCardData) : void {
+    this.cardEditAction(cardData.item)
+  }
+
+  cardChildrenButtonClicked(cardData:ItemCardData) : void {
+    this.cardChildrenAction(cardData.item)
   }
 
   private showItemDeletionConfirmationMessageBox() : void {

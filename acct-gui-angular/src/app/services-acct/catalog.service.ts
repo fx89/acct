@@ -12,6 +12,7 @@ import { AcctItemsRepository } from '../repositories-acct/items-repository';
 import { IconifiedIncomeOrExpenseItemCategory, IncomeOrExpenseItemCategory } from '../model-acct/income-or-expense-item-category';
 import { errorPipingObservableConsumer, errorPipingObservableOperation, errorPipingObservableTransform } from '../utils-reusalbe/rxjs-utils';
 import { IconifiedIncomeOrExpenseItemSubcategory, IncomeOrExpenseItemSubcategory } from '../model-acct/income-or-expense-item-subcategory';
+import { IconifiedIncomeOrExpenseItem, IncomeOrExpenseItem } from '../model-acct/income-or-expense-item';
 
 const ERROR_PLACEHOLDER_ICON_URL : string = "generic-icons/failed.png"
 
@@ -228,7 +229,79 @@ export class CatalogService {
       return this.itemsRepository.deleteIncomeOrExpenseItemSubcategories(uuids)
     }
 
-    throw new Error("The referenced income or expense item category does not have an UUID")
+    throw new Error("The referenced income or expense item sub-category does not have an UUID")
+  }
+
+  public findIncomeOrExpenseItems(
+    incomeOrExpenseItemSubcategoryUUID:string
+  ) : Observable<IconifiedIncomeOrExpenseItem[]> {
+    return errorPipingObservableOperation(
+        this.itemsRepository.findIncomeOrExpenseItems(incomeOrExpenseItemSubcategoryUUID),
+        (dataSet:IncomeOrExpenseItem[], mainSubscriber) => {
+          // Convert to an iconified set and filter
+          const iconifiedDataSet : IconifiedIncomeOrExpenseItem[] = 
+            dataSet as IconifiedIncomeOrExpenseItem[]
+
+          // Start loading the icons for each element in the data set that has an icon reference
+          const iconLoadingTasks : ObservableInput<void>[] =
+            iconifiedDataSet
+              .filter(item => item.incomeOrExpenseItemIconUUID)
+              .map(item =>
+                this.applyIcon(
+                  () => item.incomeOrExpenseItemIconUUID,
+                  (imageData) => item.imageData = imageData
+                )
+              )
+
+          // Add a dummy operation so that the iconLoadingTasks array still has something to execute
+          // even if the iconifiedDataSet is empty
+          iconLoadingTasks.push(new Observable<void>(subscriber => {
+            subscriber.next()
+            subscriber.complete()
+          }))
+
+          // Wait for all the loading tasks to complete
+          errorPipingObservableConsumer(
+            forkJoin(iconLoadingTasks), // This is how we wait
+            mainSubscriber,
+            () => {
+              mainSubscriber.next(iconifiedDataSet)
+              mainSubscriber.complete()
+            }
+          )
+        }
+      )
+  }
+
+  /**
+   * Saves the referenced income or expense item into the repository
+   * 
+   * @param incomeOrExpenseItemSubcategoryUUID   the UUID of the parent sub-category, under which the item is saved
+   * @param incomeOrExpenseItem                  the referenced income or expense item
+   */
+  public saveIncomeOrExpenseItem(
+    incomeOrExpenseItemSubcategoryUUID : string,
+    incomeOrExpenseItem  :IncomeOrExpenseItem
+  ) : Observable<void> {
+    return this.itemsRepository.saveIncomeOrExpenseItem(
+      incomeOrExpenseItemSubcategoryUUID,
+      incomeOrExpenseItem
+    )
+  }
+
+  /**
+   * Deletes the referenced income or expense item from the catalog
+   * 
+   * @param item the referenced income or expense item
+   */
+  public deleteIncomeOrExpenseItem(item:IncomeOrExpenseItem) : Observable<void> {
+    if (item?.incomeOrExpenseItemUUID) {
+      const uuids : string[] = []
+      uuids.push(item.incomeOrExpenseItemUUID)
+      return this.itemsRepository.deleteIncomeOrExpenseItems(uuids)
+    }
+
+    throw new Error("The referenced income or expense item does not have an UUID")
   }
 
   /**

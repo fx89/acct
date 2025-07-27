@@ -35,4 +35,25 @@
             {{ this.getText() }}
         </div>
     }
+
+    @if( this.areActionsVisible() ) {
+        <div class="card-actions">
+            <table><tr>
+                @for ( action of this.actionsArray ; track action ) {
+                    <td>
+                        <app-button
+                            [value]="action.text ?? ''"
+                            textAlign="center"
+                            (onClick)="action.onClick()"
+                            [color]="action.color ?? 'none'"
+                            [width]="action.width"
+                            height="20px"
+                            fontSize="small"
+                            [icon]="action.icon ?? ''"
+                        ></app-button>
+                    </td>
+                }
+            </tr></table>
+        </div>
+    }
 </div>
