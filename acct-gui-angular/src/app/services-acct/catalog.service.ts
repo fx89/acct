@@ -13,6 +13,9 @@ import { IconifiedIncomeOrExpenseItemCategory, IncomeOrExpenseItemCategory } fro
 import { errorPipingObservableConsumer, errorPipingObservableOperation, errorPipingObservableTransform } from '../utils-reusalbe/rxjs-utils';
 import { IconifiedIncomeOrExpenseItemSubcategory, IncomeOrExpenseItemSubcategory } from '../model-acct/income-or-expense-item-subcategory';
 import { IconifiedIncomeOrExpenseItem, IncomeOrExpenseItem } from '../model-acct/income-or-expense-item';
+import { BankProperties, IconifiedBankProperties } from '../model-acct/bank-properties';
+import { AcctBanksRepository } from '../repositories-acct/banks-repository';
+import { BankUUIDResponse } from '../model-acct/bank-uuid-response';
 
 const ERROR_PLACEHOLDER_ICON_URL : string = "generic-icons/failed.png"
 
@@ -26,7 +29,8 @@ export class CatalogService {
   
   constructor(
     private iconsRepository : AcctIconsRepository,
-    private itemsRepository : AcctItemsRepository
+    private itemsRepository : AcctItemsRepository,
+    private banksRepository : AcctBanksRepository
   ) { }
 
   /**
@@ -302,6 +306,73 @@ export class CatalogService {
     }
 
     throw new Error("The referenced income or expense item does not have an UUID")
+  }
+
+  /**
+   * Returns an observable that produces an array of all the banks registered in the catalog,
+   * enriched with the Base64-encoded contents of their icons
+   */
+  public findAllBanks() : Observable<IconifiedBankProperties[]> {
+    return errorPipingObservableOperation(
+        this.banksRepository.findAllBanks(),
+        (dataSet:BankProperties[], mainSubscriber) => {
+          // Convert to an iconified set and filter
+          const iconifiedDataSet : IconifiedBankProperties[] = 
+            dataSet as IconifiedBankProperties[]
+
+          // Start loading the icons for each element in the data set that has an icon reference
+          const iconLoadingTasks : ObservableInput<void>[] =
+            iconifiedDataSet
+              .filter(item => item.bankIconUUID)
+              .map(item =>
+                this.applyIcon(
+                  () => item.bankIconUUID,
+                  (imageData) => item.imageData = imageData
+                )
+              )
+
+          // Add a dummy operation so that the iconLoadingTasks array still has something to execute
+          // even if the iconifiedDataSet is empty
+          iconLoadingTasks.push(new Observable<void>(subscriber => {
+            subscriber.next()
+            subscriber.complete()
+          }))
+
+          // Wait for all the loading tasks to complete
+          errorPipingObservableConsumer(
+            forkJoin(iconLoadingTasks), // This is how we wait
+            mainSubscriber,
+            () => {
+              mainSubscriber.next(iconifiedDataSet)
+              mainSubscriber.complete()
+            }
+          )
+        }
+      )
+  }
+
+  /**
+   * Saves the referenced bank into the catalog
+   * 
+   * @param bankProperties the referenced bank
+   */
+  public saveBank(bankProperties: BankProperties): Observable<BankUUIDResponse> {
+    return this.banksRepository.saveBank(bankProperties)
+  }
+
+  /**
+   * Deletes the referenced bank from the repository
+   * 
+   * @param bankProperties the referenced bank
+   */
+  public deleteBank(bankProperties: BankProperties): Observable<void> {
+    if (bankProperties.bankUUID) {
+      const uuids : string[] = []
+      uuids.push(bankProperties.bankUUID)
+      return this.banksRepository.deleteBanks(uuids)
+    }
+
+    throw new Error("The referenced bank does not have an UUID")
   }
 
   /**

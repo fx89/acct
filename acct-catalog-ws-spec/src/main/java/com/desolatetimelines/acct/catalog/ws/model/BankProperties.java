@@ -3,7 +3,7 @@ package com.desolatetimelines.acct.catalog.ws.model;
 /**
  * Container for the readable properties of banks
  *
- * @param bankUUID           unique identifier for the bank in the ACCT ecosystem
+ * @param bankUUID           Unique identifier for the bank in the ACCT ecosystem
  * @param bankCode           The unique code given to the bank in the ACCT ecosystem (i.e. ING, BNR, BT, BCR, etc.)
  * @param bankName           The unique human-readable name of the bank
  * @param internetBankingURL The optional internet banking URL for the bank

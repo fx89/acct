@@ -31,9 +31,9 @@
  DONE: APP-09001: Login form: Login service
  DONE: APP-09002: Login form: Design and functionality
  DONE: APP-09003: Catalog page: Page layout
- TODO: APP-09004: Catalog page: Banks: list
- TODO: APP-09005: Catalog page: Banks: Add new bank
- TODO: APP-09006: Catalog page: Banks: Delete selected banks
+ DONE: APP-09004: Catalog page: Banks: list
+ DONE: APP-09005: Catalog page: Banks: Add new bank
+ DONE: APP-09006: Catalog page: Banks: Delete selected banks
  TODO: APP-09007: Catalog page: Currencies: layout
  TODO: APP-09008: Catalog page: Currencies: currencies list
  TODO: APP-09009: Catalog page: Currencies: currencies list: add new currency

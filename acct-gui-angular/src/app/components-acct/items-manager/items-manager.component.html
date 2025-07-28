@@ -17,6 +17,7 @@
       [selectable]="true"
       (selectionChange)="this.onCardSelected($event)"
       [actionButtons]="this.cardActionButtons"
+      [floatingCards]="this.areCardsFloating()"
     >
     </app-cards-list>
 
@@ -66,10 +67,10 @@
             [style.width]="'100%'"
             [style.height]="'calc(' + this.getAddDialogHeight() + ' - 80px)'"
         >
-            @if( this.isNewItemFormTemplateDefined() && this.newItem ) {
+            @if( this.isNewItemFormTemplateDefined() && this.editedItemItem ) {
                 <ng-container
                     [ngTemplateOutlet]="this.newItemFormTemplateRef"
-                    [ngTemplateOutletContext]="{item: this.newItem}"
+                    [ngTemplateOutletContext]="{item: this.editedItemItem}"
                 ></ng-container>
             }
         </div>
@@ -84,8 +85,8 @@
                     height="30px" 
                     icon="button-icons/save.png"
                     iconAlign="left"
-                    [enabled]="this.isNewItemValid(this.newItem)"
-                    (onClick)="onNewItemSaveButtonClick()"
+                    [enabled]="this.isItemValid(this.editedItemItem)"
+                    (onClick)="onItemSaveButtonClick()"
                     color="blue"
                 ></app-button>
             </td>

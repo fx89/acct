@@ -69,6 +69,7 @@ export class CardsListComponent implements OnInit {
   cardImageHeight   : InputSignal<string> = input("100px")
   cardImagePosition : InputSignal<string> = input("left")
   cardSpacing       : InputSignal<string> = input("5px")
+  floatingCards     : InputSignal<boolean> = input(false)
 
   // Action buttons
   actionButtons : InputSignal<ItemAwareCardActionButton<any>[]> = input([] as ItemAwareCardActionButton<any>[])
@@ -168,6 +169,10 @@ export class CardsListComponent implements OnInit {
 
   isCardSelected(card : CardData) : boolean {
     return this.isSelectable() && card == this.selectedCard
+  }
+
+  areCardsFloating() : boolean {
+    return this.floatingCards()
   }
 
   onCardClicked(card : CardData) : void {

@@ -1,1 +1,104 @@
-<p>banks works!</p>
+<app-items-manager
+    width="calc(100% - 15px)"
+    height="calc(100% - 20px)"
+    cardWidth="calc(390px)"
+    cardHeight="60px"
+    addDialogWidth="480px"
+    addDialogHeight="500px"
+    [forceReloadEventEmitter]="this.banksListForceReloadEventEmitter"
+    [dataSetProducer]="this.banksListProducer"
+    [cardImageRefExtractor]="this.bankCardImageRefExtractor"
+    [cardTitleExtractor]="this.bankCardTitleExtractor"
+    [cardTextExtractor]="this.bankCardTextExtractor"
+    [itemDeletionConsumer]="this.bankDeletionConsumer"
+    [newItemSupplier]="this.newBankSupplier"
+    [itemSavingConsumer]="this.bankSavingConsumer"
+    [itemPropertiesValidator]="this.bankValidator"
+    [(selection)]="this.banksListSelectedItem"
+    [floatingCards]="true"
+    [canEdit]="true"
+    [actionButtonIcons]="true"
+>
+    <ng-template itemsManagerNewItemForm let-item="item">
+        <table>
+            <tr>
+                <td>
+                    Bank code
+                </td>
+                <td style="width:10px;"></td>
+                <td>
+                    <app-input
+                        [(value)]="item.bankCode"
+                        width="300px"
+                        height="30px"
+                        hint="Bank code"
+                    ></app-input>
+                </td>
+            </tr><tr>
+                <td>
+                    Bank name
+                </td>
+                <td></td>
+                <td>
+                    <app-input
+                        [(value)]="item.bankName"
+                        width="300px"
+                        height="30px"
+                        hint="Bank name"
+                    ></app-input>
+                </td>
+            </tr><tr>
+                <td>
+                    Internet banking URL
+                </td>
+                <td></td>
+                <td>
+                    <app-input
+                        [(value)]="item.internetBankingURL"
+                        width="300px"
+                        height="30px"
+                        hint="Internet banking URL"
+                    ></app-input>
+                </td>
+            </tr><tr>
+                <td>
+                    Icon
+                </td>
+                <td></td>
+                <td>
+                    <app-button
+                        value='Choose icon'
+                        textAlign="center"
+                        (onClick)="onChooseBankIconClick()"
+                        color="blue"
+                        width="300px"
+                        height="30px"
+                    ></app-button>
+                    <img
+                        style="width:300px;height:250px;background-color:#000;background-size:contain;"
+                        [src]="item.imageData"
+                    >
+                </td>
+            </tr>
+        </table>
+    </ng-template>
+</app-items-manager>
+
+<!-- The income or expense item icon chooser -->
+<app-dialog
+  title="Select an existing icon or add a new one"
+  width="700px"
+  height="500px"
+  [visible]="this.bankIconChooserVisible"
+>
+    <app-icons-manager
+        width="100%"
+        height="450px"
+        iconWidth="190px"
+        iconHeight="190px"
+        [allowUpload]="true"
+        [allowDelete]="false"
+        [pageSize]="9"
+        (selectionChange)="this.onBankIconSelected($event)"
+    ></app-icons-manager>
+</app-dialog>

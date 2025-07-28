@@ -66,13 +66,14 @@ export class ItemsManagerComponent implements OnInit, AfterContentInit {
   public id = uuidv4()
 
   // Properties
-  width           : InputSignal<string> = input("380px")
-  height          : InputSignal<string> = input("400px")
-  cardWidth       : InputSignal<string> = input("348px")
-  cardHeight      : InputSignal<string> = input("50px")
-  cardSpacing     : InputSignal<string> = input("5px")
-  addDialogWidth  : InputSignal<string> = input("500px")
-  addDialogHeight : InputSignal<string> = input("300px")
+  width           : InputSignal<string>  = input("380px")
+  height          : InputSignal<string>  = input("400px")
+  cardWidth       : InputSignal<string>  = input("348px")
+  cardHeight      : InputSignal<string>  = input("50px")
+  cardSpacing     : InputSignal<string>  = input("5px")
+  addDialogWidth  : InputSignal<string>  = input("500px")
+  addDialogHeight : InputSignal<string>  = input("300px")
+  floatingCards   : InputSignal<boolean> = input(false)
 
   // Message box types
   itemDeletionConfirmationMessageBoxType : MsgboxType = MsgboxType.YES_NO
@@ -139,7 +140,7 @@ export class ItemsManagerComponent implements OnInit, AfterContentInit {
    * Action to be performed when the edit button is clicked. If not defined, then the edit button
    * is not shown.
    */
-  editAction : InputSignal<ItemsManagerCardAction> = input(<ItemsManagerCardAction><unknown>undefined)
+  canEdit : InputSignal<boolean> = input(false)
 
   /**
    * Action to be performed when the children button is clicked. If not defined, then the children
@@ -170,7 +171,7 @@ export class ItemsManagerComponent implements OnInit, AfterContentInit {
   /**
    * The new item
    */
-  newItem : ItemsManagerDataItem<any>
+  editedItemItem : ItemsManagerDataItem<any>
 
   // Events
   @Output() selectionChange : EventEmitter<ItemsManagerDataItem<any>> = new EventEmitter<ItemsManagerDataItem<any>>()
@@ -194,7 +195,6 @@ export class ItemsManagerComponent implements OnInit, AfterContentInit {
   newItemFormTemplateRef! : TemplateRef<any>
 
   cardActionButtons : ItemAwareCardActionButton<ItemCardData>[] = []
-  private cardEditAction! : ItemsManagerCardAction
   private cardChildrenAction! : ItemsManagerCardAction
 
   // Dialog visibility switches
@@ -239,7 +239,7 @@ export class ItemsManagerComponent implements OnInit, AfterContentInit {
     this.cardActionButtons = []
 
     // If the edit action was set, then add the edit button
-    if (this.editAction()) {
+    if (this.canEdit()) {
       this.cardActionButtons.push({
         onClick: (cardData:ItemCardData) => this.cardEditButtonClicked(cardData),
         width: this.computeEditActionButtonWidth(),
@@ -247,8 +247,6 @@ export class ItemsManagerComponent implements OnInit, AfterContentInit {
         text: (this.actionButtonText() ? "Edit" : ""),
         icon: (this.actionButtonIcons() ? EDIT_BUTTON_ICON_REF : "")
       })
-
-      this.cardEditAction = this.editAction()
     }
 
     // If the children action was set, then add the children button
@@ -341,7 +339,7 @@ export class ItemsManagerComponent implements OnInit, AfterContentInit {
   }
 
   onCreateNewButtonClick() : void {
-    this.newItem = this.newItemSupplierFunction()
+    this.editedItemItem = this.newItemSupplierFunction()
     this.showNewItemCreationDialog()
   }
 
@@ -365,8 +363,8 @@ export class ItemsManagerComponent implements OnInit, AfterContentInit {
     }
   }
 
-  onNewItemSaveButtonClick() : void {
-    this.itemSavingFunction(this.newItem).subscribe({
+  onItemSaveButtonClick() : void {
+    this.itemSavingFunction(this.editedItemItem).subscribe({
       next: () => {
         this.initDataSet()
         this.hideNewItemCreationDialog()
@@ -383,7 +381,8 @@ export class ItemsManagerComponent implements OnInit, AfterContentInit {
   }
 
   cardEditButtonClicked(cardData:ItemCardData) : void {
-    this.cardEditAction(cardData.item)
+    this.editedItemItem = cardData.item
+    this.showNewItemCreationDialog()
   }
 
   cardChildrenButtonClicked(cardData:ItemCardData) : void {
@@ -422,8 +421,12 @@ export class ItemsManagerComponent implements OnInit, AfterContentInit {
     return false
   }
 
-  isNewItemValid(item:ItemsManagerDataItem<any>) : boolean {
+  isItemValid(item:ItemsManagerDataItem<any>) : boolean {
     return this.itemPropertiesValidatorFunction(item)
+  }
+
+  areCardsFloating() : boolean {
+    return this.floatingCards()
   }
 
   getWidth() : string {

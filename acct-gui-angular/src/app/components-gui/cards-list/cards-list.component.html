@@ -7,7 +7,12 @@
 >
     @for (card of this.getCards(); track card) {
         <div
-            [class]="{ 'cards-list-card-wrapper': true, 'selectable': this.isSelectable(), 'selected': this.isCardSelected(card) }"
+            [class]="{ 
+                'cards-list-card-wrapper': true,
+                'selectable': this.isSelectable(),
+                'selected': this.isCardSelected(card),
+                'floating': this.areCardsFloating()
+            }"
             [style.marginTop]="this.getCardSpacing()"
         >
             <app-card

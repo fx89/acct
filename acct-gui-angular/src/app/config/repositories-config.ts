@@ -1,6 +1,8 @@
 import { environment } from "../../environments/environment.development"
 import { AcctAccessTokensRepository } from "../repositories-acct/access-tokens-repository"
+import { AcctBanksRepository } from "../repositories-acct/banks-repository"
 import { HttpAcctAccessTokensRepository } from "../repositories-acct/http/http-access-tokens-repository"
+import { HttpAcctBanksRepository } from "../repositories-acct/http/http-banks-repository"
 import { HttpAcctIconsRepository } from "../repositories-acct/http/http-icons-repository"
 import { HttpAcctItemsRepository } from "../repositories-acct/http/http-items-repository"
 import { HttpAcctPrivilegesRepository } from "../repositories-acct/http/http-privileges-repository"
@@ -9,6 +11,7 @@ import { HttpAcctWorkspacesRepository } from "../repositories-acct/http/http-wor
 import { AcctIconsRepository } from "../repositories-acct/icons-repository"
 import { AcctItemsRepository } from "../repositories-acct/items-repository"
 import { MockAcctAccessTokensRepository } from "../repositories-acct/mock/mock-access-tokens-repository"
+import { MockAcctBanksRepository } from "../repositories-acct/mock/mock-banks-repository"
 import { MockAcctIconsRepository } from "../repositories-acct/mock/mock-icons-repository"
 import { MockAcctItemsRepository } from "../repositories-acct/mock/mock-items-repository"
 import { MockAcctUsersRepository } from "../repositories-acct/mock/mock-users-repository"
@@ -75,6 +78,16 @@ export function provideAcctItemsRepository() {
         AcctItemsRepository,
         new MockAcctItemsRepository(),
         httpConnectorsService => new HttpAcctItemsRepository(
+                httpConnectorsService.getHttpConnectorByServiceName('acct-catalog')
+            )
+    )
+}
+
+export function provideAcctBanksRepository() {
+    return provideRepository(
+        AcctBanksRepository,
+        new MockAcctBanksRepository(),
+        httpConnectorsService => new HttpAcctBanksRepository(
                 httpConnectorsService.getHttpConnectorByServiceName('acct-catalog')
             )
     )

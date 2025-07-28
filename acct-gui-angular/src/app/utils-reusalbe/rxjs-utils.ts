@@ -10,6 +10,17 @@ export function emptyObservable<RET>() : Observable<RET> {
 }
 
 /**
+ * Creates an observable that produces the referenced item
+ * 
+ * @param item the referenced item
+ */
+export function newObservalbe<T>(item:T) : Observable<T> {
+    return new Observable<T>(subscriber => {
+        complete(subscriber, item)
+    })
+}
+
+/**
  * Defines a generic transformation function that takes an input parameter of a given type
  * and outputs an item of another type.
  */
@@ -102,6 +113,29 @@ export function errorConsumingObservableOperation<IN,ERR>(
 }
 
 /**
+ * Subscribes to the referenced observable to apply the referenced transform and outputs
+ * a new observable for the transformation result. The referenced error consumer is called
+ * in case of errors.
+ * 
+ * @param observable    the referenced observable
+ * @param transform     the referenced transform
+ * @param errorConsumer the referenced error consumer
+ */
+export function errorConsumingObservableTransform<IN,OUT,ERR>(
+    observable : Observable<IN>,
+    transform : Transform<IN,OUT>,
+    errorConsumer : ((err:ERR) => void)
+) : Observable<OUT> {
+    return new Observable<OUT>(subscriber => {
+        observable.subscribe({
+            next: (data:IN) => subscriber.next(transform(data)),
+            complete: () => subscriber.complete(),
+            error: err => errorConsumer(err)
+        })
+    })
+}
+
+/**
  * Sends the given value to the referenced subscriber and then sends the complete() signal
  * 
  * @param subscriber the referenced subscriber
@@ -141,16 +175,5 @@ export function errorPipingConditionalObservable<T>(
                 (item, subscriber) => complete(subscriber, item)
             )
         }
-    })
-}
-
-/**
- * Creates an observable that produces the referenced item
- * 
- * @param item the referenced item
- */
-export function newObservalbe<T>(item:T) : Observable<T> {
-    return new Observable<T>(subscriber => {
-        complete(subscriber, item)
     })
 }
