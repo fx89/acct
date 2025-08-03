@@ -8,3 +8,8 @@
 // DONE: BUG-00008: Authorization server: soft-deleted users can still log in
 // DONE: BUG-00009: User management service: Soft-deletion does not set the soft_deleted_date in the database
 // DONE: BUG-00010: Icons manager: selection not reset after deletion
+// DONE: BUG-00011: Monitored currency records collection: collector is called even if data was collected for the day
+// TODO: BUG-00012: AcctCurrencyCollectionService: calls startSession() and endSession() even if all the records have been collected for the day
+
+
+

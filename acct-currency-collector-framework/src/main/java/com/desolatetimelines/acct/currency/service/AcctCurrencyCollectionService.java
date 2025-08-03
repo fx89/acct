@@ -247,8 +247,8 @@ public class AcctCurrencyCollectionService {
                 try {
                     // If the monitored currency exchange records have been collected today then exit
                     // because the data was already collected for the day
-                    if (currency.getLastMonitoredCurrencyRecordDate() != null &&
-                        currency.getLastMonitoredCurrencyRecordDate().isAfter(
+                    if (currency.getLastCollectionDate() != null &&
+                        currency.getLastCollectionDate().isAfter(
                             LocalDate.now().atStartOfDay().toInstant(UTC)
                         )
                     ) {
