@@ -33,4 +33,12 @@ export class CurrencyService {
     return this.monitoredCurrenciesRepository.findAllMonitoredCurrencies()
   }
 
+  public deleteMonitoredCurrency(monitoredCurrency:MonitoredCurrency) : Observable<void> {
+    if (monitoredCurrency?.monitoredCurrencyUUID) {
+      return this.monitoredCurrenciesRepository.deleteMonitoredCurrency(monitoredCurrency.monitoredCurrencyUUID)
+    } else {
+      throw new Error("Missing monitored currency UUID")
+    }
+  }
+
 }

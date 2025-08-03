@@ -20,6 +20,8 @@ import { CurrencyService } from '../../../services-acct/currency.service';
 import { extractFirstToken, extractLastToken } from '../../../utils-reusalbe/string-utils';
 import { TimeChooserComponent, TimeOfDay } from '../../../components-gui/time-chooser/time-chooser.component';
 import { MonitoredCurrencyProperties } from '../../../model-acct/monitored-currency-properties';
+import { MsgboxComponent } from '../../../components-gui/msgbox/msgbox.component';
+import { MsgboxType } from '../../../components-gui/msgbox/msgbox-type';
 
 type BankCardData = CardData & { bank : IconifiedBankProperties }
 
@@ -49,7 +51,8 @@ type EnrichedMonitoredCurrencyProperties = MonitoredCurrencyProperties & {
     TableComponent,
     TableColumnDirective,
     SelectComponent,
-    TimeChooserComponent
+    TimeChooserComponent,
+    MsgboxComponent
   ],
   templateUrl: './currencies.component.html',
   styleUrl: './currencies.component.less'
@@ -71,9 +74,11 @@ export class CurrenciesComponent implements OnInit {
 
   monitoredCurrencyPropertiesDialogVisible : boolean = false;
 
+  monitoredCurrencyDeletionConfirmationMsgBoxVisible : boolean = false
+
   monitoredCurrencies : EnrichedMonitoredCurrencyProperties[] = []
 
-  selectedMonitoredCurrency! : EnrichedMonitoredCurrencyProperties
+  selectedMonitoredCurrency? : EnrichedMonitoredCurrencyProperties
 
   registeredBanks : BankCardData[] = []
 
@@ -90,7 +95,11 @@ export class CurrenciesComponent implements OnInit {
   selectedMonitoredCurrencyCollector? : MonitoredCurrencyCollectorCardData
 
   selectedScheduledTime! : TimeOfDay
+
   selectedScheduledTimeDefined : boolean = false
+
+  monitoredCurrencyDeletionConfirmationMsgBoxType : MsgboxType = MsgboxType.YES_NO
+
 
   ngOnInit() : void {
     // Load the dependencies of the monitored currencies
@@ -185,6 +194,8 @@ export class CurrenciesComponent implements OnInit {
           ret.quotedCurrencyIcon = this.registeredCurrencies.filter(c => c.currency.currencyUUID == ret.quotedCurrencyUUID).map(c => c.currency.imageData)[0]
           return ret
         })
+
+        delete this.selectedMonitoredCurrency
       },
       error: err => {
         // TODO: Toast
@@ -307,6 +318,24 @@ export class CurrenciesComponent implements OnInit {
 
   }
 
+  onDeleteMonitoredCurrencyButtonClick() : void {
+    this.monitoredCurrencyDeletionConfirmationMsgBoxVisible = true
+  }
+
+  onMonitoredCurrencyDeletionConfirmed() : void {
+    if (this.selectedMonitoredCurrency) {
+      this.currencyService.deleteMonitoredCurrency(this.selectedMonitoredCurrency).subscribe({
+        next: () => {
+          this.loadRegisteredMonitoredCurrencies()
+        },
+        error: err => {
+          // TODO: Toast
+          console.log(err)
+        }
+      })
+    }
+  }
+
   onAddButtonClick() : void {
     this.monitoredCurrencyPropertiesDialogVisible = true
   }
@@ -334,7 +363,7 @@ export class CurrenciesComponent implements OnInit {
     return extractLastToken(collectorFullName, ".")
   }
 
-  isCollectManuallyButtonEnabled() : boolean {
+  isMonitoredCurrencySelected() : boolean {
     return isDefined(this.selectedMonitoredCurrency)
   }
 

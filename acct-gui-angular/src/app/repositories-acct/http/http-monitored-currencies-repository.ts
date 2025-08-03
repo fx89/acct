@@ -5,6 +5,7 @@ import { MonitoredCurrencyRecord } from "../../model-acct/monitored-currency-rec
 import { MonitoredCurrencyUUIDResponse } from "../../model-acct/monitored-currency-uuid-response";
 import { AcctMonitoredCurrenciesRepository } from "../monitored-currencies-repository";
 import { createBodyProcessingHttpClientWrapperHandlers, HttpConnector } from "../../services-reusable/http-connectors.service";
+import { complete } from "../../utils-reusalbe/rxjs-utils";
 
 /**
  * Implementation of the AcctMonitoredCurrenciesRepository that accesses the back-end services
@@ -85,7 +86,26 @@ export class HttpAcctMonitoredCurrenciesRepository extends AcctMonitoredCurrenci
     }
 
     override deleteMonitoredCurrency(monitoredCurrencyUUID: string): Observable<void> {
-        throw new Error("Method not implemented.");
+        return new Observable<void>(subscriber => {
+            this.httpConnector.delete(
+                {
+                    url: "/monitoredCurrencies",
+                    data: {
+                        params: {
+                            monitoredCurrencyUUID: monitoredCurrencyUUID
+                        }
+                    }
+                },
+                {
+                    responseHandler: () => {
+                        complete(subscriber, undefined)
+                    },
+                    errorHandler: err => {
+                        subscriber.error(err)
+                    }
+                }
+            )
+        })
     }
 
     override collectManually(monitoredCurrencyUUID: string): Observable<void> {

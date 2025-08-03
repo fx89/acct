@@ -4,7 +4,7 @@
         <app-items-manager
             width="calc(100% - 15px)"
             height="calc(100% - 20px)"
-            cardWidth="calc(310px)"
+            cardWidth="300px"
             cardHeight="60px"
             addDialogWidth="480px"
             addDialogHeight="500px"
@@ -34,7 +34,7 @@
                                 [(value)]="item.currencyCode"
                                 width="300px"
                                 height="30px"
-                                hint="Bank code"
+                                hint="Currency code"
                             ></app-input>
                         </td>
                     </tr><tr>
@@ -47,7 +47,7 @@
                                 [(value)]="item.currencyName"
                                 width="300px"
                                 height="30px"
-                                hint="Bank name"
+                                hint="Currency name"
                             ></app-input>
                         </td>
                     </tr><tr>
@@ -83,6 +83,18 @@
             [floating]="false"
             [autoHiding]="false"
         >
+            <div left-content>
+                <app-button
+                    value='Delete monitored currency'
+                    textAlign="center"
+                    width="200px"
+                    height="30px" 
+                    [enabled]="this.isMonitoredCurrencySelected()"
+                    (onClick)="this.onDeleteMonitoredCurrencyButtonClick()"
+                    color="red"
+                ></app-button>
+            </div>
+
             <div right-content>
                 <table><tr>
                     <td>
@@ -91,7 +103,7 @@
                             textAlign="center"
                             width="130px"
                             height="30px" 
-                            [enabled]="this.isCollectManuallyButtonEnabled()"
+                            [enabled]="this.isMonitoredCurrencySelected()"
                             (onClick)="this.onCollectManuallyButtonClick()"
                         ></app-button>
                     </td>
@@ -315,3 +327,14 @@
         ></app-button>
     </div>
 </app-dialog>
+
+
+<!-- The monitored currency deletion confirmation message box -->
+ <app-msgbox
+    [(visible)]="this.monitoredCurrencyDeletionConfirmationMsgBoxVisible"
+    [type]="this.monitoredCurrencyDeletionConfirmationMsgBoxType"
+    title="Confirm monitored currency deletion"
+    text="Are you sure you want to delete the selected monitored currency?"
+    (onAffirmativeResponse)="this.onMonitoredCurrencyDeletionConfirmed()"
+    height="130px"
+ ></app-msgbox>

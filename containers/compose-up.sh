@@ -15,5 +15,5 @@ mkdir data/catalog
 docker-compose \
   --env-file _environment.txt \
   --project-name acct \
-  --profile data \
+  --profile everything \
   up -d
