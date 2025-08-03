@@ -41,4 +41,12 @@ export class CurrencyService {
     }
   }
 
+  public manuallyCollectMonitoredCurrencyExchangeRates(monitoredCurrency:MonitoredCurrency) : Observable<void> {
+    if (monitoredCurrency?.monitoredCurrencyUUID) {
+      return this.monitoredCurrenciesRepository.collectManually(monitoredCurrency.monitoredCurrencyUUID)
+    } else {
+      throw new Error("Missing monitored currency UUID")
+    }
+  }
+
 }

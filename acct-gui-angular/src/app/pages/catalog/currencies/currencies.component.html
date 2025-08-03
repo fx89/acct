@@ -338,3 +338,14 @@
     (onAffirmativeResponse)="this.onMonitoredCurrencyDeletionConfirmed()"
     height="130px"
  ></app-msgbox>
+
+ <!-- The monitored currency manual collection confirmation message box -->
+ <app-msgbox
+    [(visible)]="this.monitoredCurrencyManualCollectionConfirmationMsgBoxVisible"
+    [type]="this.monitoredCurrencyManualCollectionMsgBoxType"
+    title="Confirm monitored currency manual collection"
+    text="This will trigger an ad-hoc collection of the monitored currency rates by manually invoking
+          the selected monitored currency collector. Do you want to proceed?"
+    (onAffirmativeResponse)="this.onManualCollectionConfirmed()"
+    height="150px"
+ ></app-msgbox>

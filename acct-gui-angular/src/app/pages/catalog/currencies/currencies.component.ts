@@ -76,6 +76,8 @@ export class CurrenciesComponent implements OnInit {
 
   monitoredCurrencyDeletionConfirmationMsgBoxVisible : boolean = false
 
+  monitoredCurrencyManualCollectionConfirmationMsgBoxVisible : boolean = false
+
   monitoredCurrencies : EnrichedMonitoredCurrencyProperties[] = []
 
   selectedMonitoredCurrency? : EnrichedMonitoredCurrencyProperties
@@ -99,6 +101,8 @@ export class CurrenciesComponent implements OnInit {
   selectedScheduledTimeDefined : boolean = false
 
   monitoredCurrencyDeletionConfirmationMsgBoxType : MsgboxType = MsgboxType.YES_NO
+
+  monitoredCurrencyManualCollectionMsgBoxType : MsgboxType = MsgboxType.YES_NO
 
 
   ngOnInit() : void {
@@ -315,7 +319,21 @@ export class CurrenciesComponent implements OnInit {
   }
 
   onCollectManuallyButtonClick() : void {
+    this.monitoredCurrencyManualCollectionConfirmationMsgBoxVisible = true
+  }
 
+  onManualCollectionConfirmed() : void {
+    if (this.selectedMonitoredCurrency) {
+      this.currencyService.manuallyCollectMonitoredCurrencyExchangeRates(this.selectedMonitoredCurrency).subscribe({
+        next: () => {
+          this.loadRegisteredMonitoredCurrencies()
+        },
+        error: err => {
+          // TODO: Toast
+          console.log(err)
+        }
+      })
+    }
   }
 
   onDeleteMonitoredCurrencyButtonClick() : void {
