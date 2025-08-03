@@ -51,4 +51,5 @@
 
     --table-odd-row-backgroun-color: RGBA(30, 30, 30, 0.3);
     --table-even-row-backgroun-color: RGBA(50, 50, 50, 0.3);
+    --table-body-text-color: #999;
 }
