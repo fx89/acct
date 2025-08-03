@@ -48,6 +48,15 @@ class AcctCatalogServiceUrlResolver implements HttpConnectorBaseURLsResolver {
     }
 }
 
+/**
+ * Provides the base URLs for the currency service.
+ */
+class AcctCurrencyServiceUrlResolver implements HttpConnectorBaseURLsResolver {
+    resolveBaseURLs(): string | string[] {
+        return "http://localhost:8087"
+    }
+}
+
 
 
 /**
@@ -97,6 +106,16 @@ export function provideHttpServicesConfig() {
                 serviceName     : "acct-catalog",
                 servicePath     : "/service/catalog/v1",
                 urlsResolver    : new AcctCatalogServiceUrlResolver(),
+                preRequestHooks : [
+                    // Requests to this service need to be authorized
+                    (request:HttpClientWrapperMethodlessRequest<any>) => 
+                        authorizingHttpConnectorPreRequestHook(request, router)
+                ]
+            },
+            {
+                serviceName     : "acct-currency",
+                servicePath     : "/service/currency/v1",
+                urlsResolver    : new AcctCurrencyServiceUrlResolver(),
                 preRequestHooks : [
                     // Requests to this service need to be authorized
                     (request:HttpClientWrapperMethodlessRequest<any>) => 

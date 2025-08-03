@@ -3,7 +3,7 @@ package com.desolatetimelines.acct.catalog.ws.model;
 /**
  * Contains the readable properties of currencies
  *
- * @param currencyUUID     unique identifier for the currency in the ACCT ecosystem
+ * @param currencyUUID     Unique identifier for the currency in the ACCT ecosystem
  * @param currencyCode     Unique 3-letter code that identifies the currency
  * @param currencyName     Human-readable name of the currency
  * @param currencyIconUUID UUID that identifies the currency in the GUI

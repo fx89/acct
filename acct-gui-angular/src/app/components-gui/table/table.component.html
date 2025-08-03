@@ -1,19 +1,23 @@
-<table cellspacing="0" cellpaddingh="0">
+<table cellspacing="0" cellpaddingh="0" [style.width]="this.getWidth()">
     <tr><td class="scrollable-table-header-row">
         <div
             id="{{ this.id }}_header"
             class="table-container"
+            style="width:100%"
         >
             <table
                 id="{{ this.id }}_header_table"
                 class="table-component"
                 cellspacing=0
+                style="width:100%"
             >
                 <thead>
                     @for (header of this.getHeaders(); track header) {
                         <th
                             [style]="header.headerStyle"
                             [style.width]="header.columnWidthStyle"
+                            [style.maxWidth]="header.columnWidthStyle"
+                            [style.minWidth]="'0px'"
                             [class]="{ 
                                 'first-cell': header.isFirstCell,
                                 'last-cell': header.isLastCell && !this.isScrollable(),
@@ -59,12 +63,20 @@
             id="{{ this.tableBodyElementId }}"
             [class]="{ 'table-container': true, 'scrollable-table-container': this.isScrollable() }"
             [style.height]="this.getScrollHeight()"
+            [style.width]="'100%'"
             (contentScroll)="onContentScroll($event)"
         >
+            @if (this.isEmpty()) {
+                <div style="width:100%; text-align:center; padding-top:25px;">
+                    No data
+                </div>
+            }
+
             <table
                 id="{{ this.id }}_body_table" 
                 class="table-component"
                 cellspacing=0
+                style="width:100%"
             >
                 <tbody [class]="{ 
                     'zebra-stripes'  : this.isZebraStriping(),
@@ -78,6 +90,8 @@
                                 <td
                                     [style]="column.columnStyle"
                                     [style.width]="column.columnWidthStyle"
+                                    [style.maxWidth]="column.columnWidthStyle"
+                                    [style.minWidth]="'0px'"
                                     (click)="this.onRowClicked(row)"
                                     [class]="{ 'vertical-grid-lines': this.hasVerticalGridLines() }"
                                 >

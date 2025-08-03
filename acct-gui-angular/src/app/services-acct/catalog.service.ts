@@ -10,12 +10,15 @@ import { AcctPage } from '../model-acct/acct-page';
 import { IconProperties } from '../model-acct/icon-properties';
 import { AcctItemsRepository } from '../repositories-acct/items-repository';
 import { IconifiedIncomeOrExpenseItemCategory, IncomeOrExpenseItemCategory } from '../model-acct/income-or-expense-item-category';
-import { errorPipingObservableConsumer, errorPipingObservableOperation, errorPipingObservableTransform } from '../utils-reusalbe/rxjs-utils';
+import { errorPipingObservableConsumer, errorPipingObservableOperation } from '../utils-reusalbe/rxjs-utils';
 import { IconifiedIncomeOrExpenseItemSubcategory, IncomeOrExpenseItemSubcategory } from '../model-acct/income-or-expense-item-subcategory';
 import { IconifiedIncomeOrExpenseItem, IncomeOrExpenseItem } from '../model-acct/income-or-expense-item';
 import { BankProperties, IconifiedBankProperties } from '../model-acct/bank-properties';
 import { AcctBanksRepository } from '../repositories-acct/banks-repository';
 import { BankUUIDResponse } from '../model-acct/bank-uuid-response';
+import { CurrencyProperties, IconifiedCurrencyProperties } from '../model-acct/currency-properties';
+import { CurrencyUUIDResponse } from '../model-acct/currency-uuid-response';
+import { AcctCurrenciesRepository } from '../repositories-acct/currencies-repository';
 
 const ERROR_PLACEHOLDER_ICON_URL : string = "generic-icons/failed.png"
 
@@ -30,7 +33,8 @@ export class CatalogService {
   constructor(
     private iconsRepository : AcctIconsRepository,
     private itemsRepository : AcctItemsRepository,
-    private banksRepository : AcctBanksRepository
+    private banksRepository : AcctBanksRepository,
+    private currenciesRepository : AcctCurrenciesRepository
   ) { }
 
   /**
@@ -373,6 +377,67 @@ export class CatalogService {
     }
 
     throw new Error("The referenced bank does not have an UUID")
+  }
+
+  /**
+   * Returns an observable that produces an array of all the banks registered in the catalog,
+   * enriched with the Base64-encoded contents of their icons
+   */
+  public findAllCurrencies() : Observable<IconifiedCurrencyProperties[]> {
+    return errorPipingObservableOperation(
+        this.currenciesRepository.findCurrencies(),
+        (dataSet:CurrencyProperties[], mainSubscriber) => {
+          // Convert to an iconified set and filter
+          const iconifiedDataSet : IconifiedCurrencyProperties[] = 
+            dataSet as IconifiedCurrencyProperties[]
+
+          // Start loading the icons for each element in the data set that has an icon reference
+          const iconLoadingTasks : ObservableInput<void>[] =
+            iconifiedDataSet
+              .filter(item => item.currencyIconUUID)
+              .map(item =>
+                this.applyIcon(
+                  () => item.currencyIconUUID,
+                  (imageData) => item.imageData = imageData
+                )
+              )
+
+          // Add a dummy operation so that the iconLoadingTasks array still has something to execute
+          // even if the iconifiedDataSet is empty
+          iconLoadingTasks.push(new Observable<void>(subscriber => {
+            subscriber.next()
+            subscriber.complete()
+          }))
+
+          // Wait for all the loading tasks to complete
+          errorPipingObservableConsumer(
+            forkJoin(iconLoadingTasks), // This is how we wait
+            mainSubscriber,
+            () => {
+              mainSubscriber.next(iconifiedDataSet)
+              mainSubscriber.complete()
+            }
+          )
+        }
+      )
+  }
+
+  /**
+   * Deletes the referenced currency from the catalog
+   * 
+   * @param currency the referenced currency
+   */
+  public deleteCurrency(currency:CurrencyProperties) : Observable<void> {
+    return this.currenciesRepository.deleteCurrencies([currency.currencyUUID])
+  }
+
+  /**
+   * Saves the referenced currency into the catalog
+   * 
+   * @param currency the referenced currency
+   */
+  public saveCurrency(currency: CurrencyProperties): Observable<CurrencyUUIDResponse> {
+    return this.currenciesRepository.saveCurrency(currency)
   }
 
   /**

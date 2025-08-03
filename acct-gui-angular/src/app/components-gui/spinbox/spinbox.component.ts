@@ -32,6 +32,8 @@ export class SpinboxComponent {
   minValue        : InputSignal<number|undefined>      = input()
   maxValue        : InputSignal<number|undefined>      = input()
   increment       : InputSignal<number>                = input(1)
+  overflow        : InputSignal<boolean>               = input(false)
+  textAlign       : InputSignal<string>                = input("center")
 
   // Events
   @Output() valueChange : EventEmitter<number> = new EventEmitter<number>()
@@ -46,19 +48,32 @@ export class SpinboxComponent {
   }
 
   applyValueConstraints(value: number) : number {
+    const overflow = this.overflow()
+
     const minValue : number | undefined = this.minValue()
+    const maxValue : number | undefined = this.maxValue()
+
     if ((minValue !== undefined) && (value < minValue)) {
-      return 0
+      if (overflow && (maxValue !== undefined)) {
+        return maxValue - (minValue - value) + 1
+      } else {
+        return minValue
+      }
     }
 
-    const maxValue : number | undefined = this.maxValue()
+    
     if ((maxValue !== undefined) && (value > maxValue)) {
-      return maxValue
+      if (overflow && (minValue !== undefined)) {
+        return minValue + (value - maxValue) - 1
+      } else {
+        return maxValue
+      }
     }
 
     return value
   }
 
+  
   leftArrowClicked() {
     const newValue : number = this.applyValueConstraints(this.currentValue - this.increment())
 
@@ -91,6 +106,10 @@ export class SpinboxComponent {
 
   getHeight() : string {
     return this.height()
+  }
+
+  getTextAlign() : string {
+    return this.textAlign()
   }
 
   isBox() : boolean {

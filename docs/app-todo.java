@@ -34,12 +34,12 @@
  DONE: APP-09004: Catalog page: Banks: list
  DONE: APP-09005: Catalog page: Banks: Add new bank
  DONE: APP-09006: Catalog page: Banks: Delete selected banks
- TODO: APP-09007: Catalog page: Currencies: layout
- TODO: APP-09008: Catalog page: Currencies: currencies list
- TODO: APP-09009: Catalog page: Currencies: currencies list: add new currency
- TODO: APP-09010: Catalog page: Currencies: currencies list: delete selected currencies
- TODO: APP-09011: Catalog page: Currencies: monitored currencies: table
- TODO: APP-09012: Catalog page: Currencies: monitored currencies: add new monitored currency
+ DONE: APP-09007: Catalog page: Currencies: layout
+ DONE: APP-09008: Catalog page: Currencies: currencies list
+ DONE: APP-09009: Catalog page: Currencies: currencies list: add new currency
+ DONE: APP-09010: Catalog page: Currencies: currencies list: delete selected currencies
+ DONE: APP-09011: Catalog page: Currencies: monitored currencies: table
+ DONE: APP-09012: Catalog page: Currencies: monitored currencies: add new monitored currency
  TODO: APP-09013: Catalog page: Currencies: monitored currencies: delete selected monitored currency
  TODO: APP-09014: Catalog page: Currencies: monitored currencies: edit selected monitored currency
  TODO: APP-09015: Catalog page: Currencies: monitored currencies: collect manually

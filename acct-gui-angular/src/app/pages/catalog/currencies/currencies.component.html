@@ -1,1 +1,317 @@
-<p>currencies works!</p>
+<table style="width:100%; height:100%;"><tr>
+    <!-- The currencies manager -->
+    <td style="width:370px">
+        <app-items-manager
+            width="calc(100% - 15px)"
+            height="calc(100% - 20px)"
+            cardWidth="calc(310px)"
+            cardHeight="60px"
+            addDialogWidth="480px"
+            addDialogHeight="500px"
+            [forceReloadEventEmitter]="this.currenciesListForceReloadEventEmitter"
+            [dataSetProducer]="this.currenciesListProducer"
+            [cardImageRefExtractor]="this.currencyCardImageRefExtractor"
+            [cardTitleExtractor]="this.currencyCardTitleExtractor"
+            [cardTextExtractor]="this.currencyCardTextExtractor"
+            [itemDeletionConsumer]="this.currencyDeletionConsumer"
+            [newItemSupplier]="this.newCurrencySupplier"
+            [itemSavingConsumer]="this.currencySavingConsumer"
+            [itemPropertiesValidator]="this.currencyValidator"
+            [(selection)]="this.currenciesListSelectedItem"
+            [floatingCards]="true"
+            [canEdit]="true"
+            [actionButtonIcons]="true"
+        >
+            <ng-template itemsManagerNewItemForm let-item="item">
+                <table>
+                    <tr>
+                        <td>
+                            Currency code
+                        </td>
+                        <td style="width:10px;"></td>
+                        <td>
+                            <app-input
+                                [(value)]="item.currencyCode"
+                                width="300px"
+                                height="30px"
+                                hint="Bank code"
+                            ></app-input>
+                        </td>
+                    </tr><tr>
+                        <td>
+                            Currency name
+                        </td>
+                        <td></td>
+                        <td>
+                            <app-input
+                                [(value)]="item.currencyName"
+                                width="300px"
+                                height="30px"
+                                hint="Bank name"
+                            ></app-input>
+                        </td>
+                    </tr><tr>
+                        <td>
+                            Icon
+                        </td>
+                        <td></td>
+                        <td>
+                            <app-button
+                                value='Choose icon'
+                                textAlign="center"
+                                (onClick)="onChooseCurrencyIconClick()"
+                                color="blue"
+                                width="300px"
+                                height="30px"
+                            ></app-button>
+                            <img
+                                style="width:300px;height:250px;background-color:#000;background-size:contain;"
+                                [src]="item.imageData"
+                            >
+                        </td>
+                    </tr>
+                </table>
+            </ng-template>
+        </app-items-manager>
+    </td>
+
+    <!-- The monitored currencies table -->
+    <td>
+        <!-- The buttons bar -->
+        <app-bar
+            barType="top"
+            [floating]="false"
+            [autoHiding]="false"
+        >
+            <div right-content>
+                <table><tr>
+                    <td>
+                        <app-button
+                            value='Collect manually'
+                            textAlign="center"
+                            width="130px"
+                            height="30px" 
+                            [enabled]="this.isCollectManuallyButtonEnabled()"
+                            (onClick)="this.onCollectManuallyButtonClick()"
+                        ></app-button>
+                    </td>
+                    <td></td>
+                    <td>
+                        <app-button
+                            value='Add'
+                            textAlign="center"
+                            width="40px"
+                            height="30px" 
+                            (onClick)="this.onAddButtonClick()"
+                            color="blue"
+                        ></app-button>
+                    </td>
+                </tr></table>
+            </div>
+        </app-bar>
+
+        <!-- The table -->
+        <div style="width:100%; height:100%">
+            <app-table
+                width="100%"
+                [zebraStripes]="true"
+                [verticalGridLines]="true"
+                [scrollable]="true"
+                [scrollHeight]="'calc(100vh - 250px)'"
+                [sortable]="false"
+                [selectableRows]="true"
+                [data]="this.monitoredCurrencies"
+                [(selectedRow)]="selectedMonitoredCurrency"
+                [columnNames]="[
+                    'Bank',
+                    'Curr',
+                    'Quote',
+                    'Collector',
+                    'Time',
+                    'Collected',
+                    'Buy',
+                    'Sell'
+                ]"
+                [columnWidths]="[
+                    '60px',
+                    '50px',
+                    '50px',
+                    'calc(100% - 450px)',
+                    '50px',
+                    '100px',
+                    '70px',
+                    '70px'
+                ]"
+                [columnStyles]="[
+                    '',
+                    '',
+                    '',
+                    'overflow:hidden;white-space:nowrap;text-overflow:clip;font-size:12px',
+                    'text-align:center',
+                    'text-align:center',
+                    'text-align:right',
+                    'text-align:right'
+                ]"
+            >
+                <ng-template tableColumn let-row="row">
+                    <table><tr>
+                        <td style="background:transparent">
+                            <img style="width:12px;height:12px;" [src]="row.bankIcon">
+                        </td>
+                        <td style="background:transparent">
+                            {{ row.bankCode }}
+                        </td>
+                    </tr></table>
+                </ng-template>
+
+                <ng-template tableColumn let-row="row">
+                    <table><tr>
+                        <td style="background:transparent">
+                            <img style="width:12px;height:12px;" [src]="row.currencyIcon">
+                        </td>
+                        <td style="background:transparent">
+                            {{ row.currencyCode }}
+                        </td>
+                    </tr></table>
+                </ng-template>
+
+                <ng-template tableColumn let-row="row">
+                    <table><tr>
+                        <td style="background:transparent">
+                            <img style="width:12px;height:12px;" [src]="row.quotedCurrencyIcon">
+                        </td>
+                        <td style="background:transparent">
+                            {{ row.quotedCurrencyCode }}
+                        </td>
+                    </tr></table>
+                </ng-template>
+
+                <ng-template tableColumn let-row="row">
+                    {{ this.extrectCollectorName(row.collectorName) }}
+                </ng-template>
+
+                <ng-template tableColumn let-row="row">
+                    {{ row.scheduledTimeHhMm }}
+                </ng-template>
+
+                <ng-template tableColumn let-row="row">
+                    {{ this.extractDate(row.lastMonitoredCurrencyRecordDate) }}
+                </ng-template>
+
+                <ng-template tableColumn let-row="row">
+                    {{ row.lastMonitoredCurrencyRecordPurchaseValue?.toFixed(4) ?? "" }}
+                </ng-template>
+
+                <ng-template tableColumn let-row="row">
+                    {{ row.lastMonitoredCurrencyRecordSaleValue?.toFixed(4) ?? "" }}
+                </ng-template>
+            </app-table>
+        </div>
+
+    </td>
+</tr></table>
+
+<!-- The income or expense item icon chooser -->
+<app-dialog
+  title="Select an existing icon or add a new one"
+  width="700px"
+  height="500px"
+  [visible]="this.currencyIconChooserVisible"
+>
+    <app-icons-manager
+        width="100%"
+        height="450px"
+        iconWidth="190px"
+        iconHeight="190px"
+        [allowUpload]="true"
+        [allowDelete]="false"
+        [pageSize]="9"
+        (selectionChange)="this.onCurrencyIconSelected($event)"
+    ></app-icons-manager>
+</app-dialog>
+
+<!-- The monitored currency properties dialog -->
+<app-dialog
+  title="Set monitored currency properties"
+  width="450px"
+  height="300px"
+  [(visible)]="this.monitoredCurrencyPropertiesDialogVisible"
+  [closeButton]="true"
+>
+    <div style="height:10px"></div>
+
+    <table style="width:100%">
+        <tr>
+            <td>Bank</td>
+            <td style="width:20px;"></td>
+            <td>
+                <app-select
+                    [options]="this.registeredBanks"
+                    [cardHeightPx]="50"
+                    [(selectedOption)]="this.selectedBank"
+                ></app-select>
+            </td>
+        </tr>
+
+        <tr>
+            <td>Currency</td>
+            <td></td>
+            <td>
+                <app-select
+                    [options]="this.registeredCurrencies"
+                    [cardHeightPx]="50"
+                    [(selectedOption)]="this.selectedCurrency"
+                ></app-select>
+            </td>
+        </tr>
+
+        <tr>
+            <td>Quote</td>
+            <td></td>
+            <td>
+                <app-select
+                    [options]="this.registeredCurrencies"
+                    [cardHeightPx]="50"
+                    [(selectedOption)]="this.selectedQuotedCurrency"
+                ></app-select>
+            </td>
+        </tr>
+
+        <tr>
+            <td>Collector</td>
+            <td></td>
+            <td>
+                <app-select
+                    [options]="this.registeredMonitoredCurrencyCollectors"
+                    [cardHeightPx]="50"
+                    [(selectedOption)]="this.selectedMonitoredCurrencyCollector"
+                ></app-select>
+            </td>
+        </tr>
+
+        <tr>
+            <td>Scheduled Time</td>
+            <td></td>
+            <td>
+                <app-time-chooser
+                    [value]="this.selectedScheduledTime"
+                    (valueChange)="this.onSelectedScheduledTimeChange($event)"
+                ></app-time-chooser>
+            </td>
+        </tr>
+    </table>
+
+    <div style="height:30px"></div>
+
+    <div style="width:250px; margin: 0 auto;">
+        <app-button
+            [enabled]="this.isSaveMonitoredCurrencyPropertiesButtonEnabled()"
+            value='Save monitored currency'
+            textAlign="center"
+            (onClick)="this.onSaveMonitoredCurrencyButtonClick()"
+            color="blue"
+            width="250px"
+            height="30px"
+        ></app-button>
+    </div>
+</app-dialog>

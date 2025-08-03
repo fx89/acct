@@ -1,10 +1,13 @@
 import { environment } from "../../environments/environment.development"
 import { AcctAccessTokensRepository } from "../repositories-acct/access-tokens-repository"
 import { AcctBanksRepository } from "../repositories-acct/banks-repository"
+import { AcctCurrenciesRepository } from "../repositories-acct/currencies-repository"
 import { HttpAcctAccessTokensRepository } from "../repositories-acct/http/http-access-tokens-repository"
 import { HttpAcctBanksRepository } from "../repositories-acct/http/http-banks-repository"
+import { HttpAcctCurrenciesRepository } from "../repositories-acct/http/http-currencies-repository"
 import { HttpAcctIconsRepository } from "../repositories-acct/http/http-icons-repository"
 import { HttpAcctItemsRepository } from "../repositories-acct/http/http-items-repository"
+import { HttpAcctMonitoredCurrenciesRepository } from "../repositories-acct/http/http-monitored-currencies-repository"
 import { HttpAcctPrivilegesRepository } from "../repositories-acct/http/http-privileges-repository"
 import { HttpAcctUsersRepository } from "../repositories-acct/http/http-users-repository"
 import { HttpAcctWorkspacesRepository } from "../repositories-acct/http/http-workspaces-repository"
@@ -12,10 +15,13 @@ import { AcctIconsRepository } from "../repositories-acct/icons-repository"
 import { AcctItemsRepository } from "../repositories-acct/items-repository"
 import { MockAcctAccessTokensRepository } from "../repositories-acct/mock/mock-access-tokens-repository"
 import { MockAcctBanksRepository } from "../repositories-acct/mock/mock-banks-repository"
+import { MockAcctCurrenciesRepository } from "../repositories-acct/mock/mock-currencies-repository"
 import { MockAcctIconsRepository } from "../repositories-acct/mock/mock-icons-repository"
 import { MockAcctItemsRepository } from "../repositories-acct/mock/mock-items-repository"
+import { MockAcctMonitoredCurrenciesRepository } from "../repositories-acct/mock/mock-monitored-currencies-repository"
 import { MockAcctUsersRepository } from "../repositories-acct/mock/mock-users-repository"
 import { MockAcctWorkspacesRepository } from "../repositories-acct/mock/mock-workspaces-repository"
+import { AcctMonitoredCurrenciesRepository } from "../repositories-acct/monitored-currencies-repository"
 import { AcctPrivilegesRepository } from "../repositories-acct/privileges-repository"
 import { AcctUsersRepository } from "../repositories-acct/users-repository"
 import { AcctWorkspacesRepository } from "../repositories-acct/workspaces-repository"
@@ -93,6 +99,25 @@ export function provideAcctBanksRepository() {
     )
 }
 
+export function provideAcctCurrenciesRepository() {
+    return provideRepository(
+        AcctCurrenciesRepository,
+        new MockAcctCurrenciesRepository(),
+        httpConnectorsService => new HttpAcctCurrenciesRepository(
+                httpConnectorsService.getHttpConnectorByServiceName('acct-catalog')
+            )
+    )
+}
+
+export function provideAcctMonitoredCurrenciesRepository() {
+    return provideRepository(
+        AcctMonitoredCurrenciesRepository,
+        new MockAcctMonitoredCurrenciesRepository(),
+        httpConnectorsService => new HttpAcctMonitoredCurrenciesRepository(
+                httpConnectorsService.getHttpConnectorByServiceName('acct-currency')
+            )
+    )
+}
 
 function provideRepository(
     providedType:any,

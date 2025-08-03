@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { TableColumnSort, TableColumnSortDirection, TableSortEvent } from './table-sort-event';
 import { ScrollableContentDirective, ScrollEvent } from '../directives/scrollable-content.directive';
 
-const DEFAULT_COLUMN_WIDTH: number = 70
+const DEFAULT_COLUMN_WIDTH: string = '70px'
 
 interface TableColumnHeader {
   columnName : string
@@ -51,12 +51,13 @@ export class TableComponent {
   sortable          : InputSignal<boolean>  = input(false)
   scrollable        : InputSignal<boolean>  = input(false)
   scrollHeight      : InputSignal<string>   = input("100px")
+  width             : InputSignal<string>   = input("auto")
 
   // Input properties - columns config
   columnNames       : InputSignal<string[]> = input.required()
   headerStyles      : InputSignal<string[]> = input([] as string[])
   columnStyles      : InputSignal<string[]> = input([] as string[])
-  columnWidths      : InputSignal<number[]> = input([] as number[])
+  columnWidths      : InputSignal<string[]> = input([] as string[])
 
   // Data
   data : InputSignal<any[]> = input.required()
@@ -82,7 +83,7 @@ export class TableComponent {
   private cachedHeaders: TableColumnHeader[] = []
 
   // Column widths
-  private cachedColumnWidths: number[] = []
+  private cachedColumnWidths: string[] = []
 
   ngAfterContentInit() : void {
     this.initColumnWidths()
@@ -108,13 +109,6 @@ export class TableComponent {
     for (let c : number = this.cachedColumnWidths.length ; c < nbrCols ; c++) {
       this.cachedColumnWidths.push(DEFAULT_COLUMN_WIDTH)
     }
-
-    // If any of the provided column widths is invalid, then replace it with the default value
-    for (let c : number = 0 ; c < this.cachedColumnWidths.length ; c++) {
-      if (this.cachedColumnWidths[c] < 5) {
-        this.cachedColumnWidths[c] = DEFAULT_COLUMN_WIDTH
-      }
-    }
   }
 
   initColumns() : void {
@@ -131,7 +125,7 @@ export class TableComponent {
       this.cachedColumns.push({
         columnTemplate: columnDirective.templateRef,
         columnStyle: ( (columnStyles && columnIndex < columnStyles.length) ? columnStyles[columnIndex] : "" ),
-        columnWidthStyle: this.cachedColumnWidths[columnIndex] + 'px'
+        columnWidthStyle: this.cachedColumnWidths[columnIndex]
       })
       columnIndex++
     })
@@ -157,7 +151,7 @@ export class TableComponent {
           headerStyle: headerStyles[currentCachedHeaderIndex],
           isFirstCell: currentCachedHeaderIndex == 0,
           isLastCell: currentCachedHeaderIndex == columnNames.length - 1,
-          columnWidthStyle: this.cachedColumnWidths[currentCachedHeaderIndex] + 'px',
+          columnWidthStyle: this.cachedColumnWidths[currentCachedHeaderIndex],
           sortDirection: TableColumnSortDirection.NONE
         })
         currentCachedHeaderIndex++
@@ -172,7 +166,7 @@ export class TableComponent {
         headerStyle: "",
         isFirstCell: currentCachedHeaderIndex == 0,
         isLastCell: currentCachedHeaderIndex == columnNames.length - 1,
-        columnWidthStyle: this.cachedColumnWidths[currentCachedHeaderIndex] + 'px',
+        columnWidthStyle: this.cachedColumnWidths[currentCachedHeaderIndex],
         sortDirection: TableColumnSortDirection.NONE
       })
       currentCachedHeaderIndex++
@@ -250,6 +244,18 @@ export class TableComponent {
     return this.sortable()
   }
 
+  isEmpty() : boolean {
+    const dataArray : any[] = this.data()
+
+    if (dataArray) {
+      if (dataArray.length > 0) {
+        return false
+      }
+    }
+
+    return true
+  }
+
   hasVerticalGridLines() : boolean {
     return this.verticalGridLines()
   }
@@ -280,6 +286,10 @@ export class TableComponent {
 
   getSelectedRow() : any {
     return this.cachedSelectedRow
+  }
+
+  getWidth() : string {
+    return this.width()
   }
 
 }

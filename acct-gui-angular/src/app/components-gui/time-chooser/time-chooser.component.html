@@ -1,0 +1,45 @@
+<div id="{{ this.id }}">
+    <table><tr>
+        <td>
+            <app-spinbox
+                width="50px"
+                [value]="this.hourOfDay"
+                (valueChange)="this.onHourOfDayChange($event)"
+                [minValue]="0"
+                [maxValue]="23"
+                textAlign="right"
+                [overflow]="true"
+            ></app-spinbox>
+        </td>
+        <td>
+            :
+        </td>
+        <td>
+            <app-spinbox
+                width="50px"
+                [value]="this.minuteOfHour"
+                (valueChange)="this.onMinuteOfHourChange($event)"
+                [minValue]="0"
+                [maxValue]="59"
+                textAlign="right"
+                [overflow]="true"
+            ></app-spinbox>
+        </td>
+        @if ( this.isdisplayingSeconds() ) {
+            <td>
+                :
+            </td>
+            <td>
+                <app-spinbox
+                    width="50px"
+                    [value]="this.secondOfMinute"
+                    (valueChange)="this.onSecondOfMinuteChange($event)"
+                    [minValue]="0"
+                    [maxValue]="59"
+                    textAlign="right"
+                    [overflow]="true"
+                ></app-spinbox>
+            </td>
+        }
+    </tr></table>
+</div>

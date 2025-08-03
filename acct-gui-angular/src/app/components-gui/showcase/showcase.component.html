@@ -248,7 +248,7 @@
     [data]="tableData"
     [(selectedRow)]="selectedTableRow"
     [columnNames]="['Col 1', 'Col 2', 'Col 3', 'Col 4', 'Col 5']"
-    [columnWidths]="[100, 130, 0, 140]"
+    [columnWidths]="['100px', '130px', '80px', '140px']"
     [headerStyles]="[
       'text-align:left; width:100px', 
       'text-align:left; width:130px', 
@@ -295,7 +295,7 @@
     (scroll)="onScrollableTableScroll($event)"
     (sort)="onScrollableTableSort($event)"
     [columnNames]="['Row number', 'Item name', 'Item value']"
-    [columnWidths]="[100, 130]"
+    [columnWidths]="['100px', '130px']"
     [headerStyles]="[
       'text-align:left', 
       'text-align:center', 
