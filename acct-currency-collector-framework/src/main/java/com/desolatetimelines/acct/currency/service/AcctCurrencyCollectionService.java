@@ -190,14 +190,14 @@ public class AcctCurrencyCollectionService {
                 ));
 
         // Exclude any bank codes that are not supported by the collector
-        final Map<String, List<AcctMonitoredCurrency>> monitoredCurrenciesBySupportedBankCode =
+        final Map<String, List<AcctMonitoredCurrency>> allMonitoredCurrenciesBySupportedBankCode =
             new HashMap<>(monitoredCurrenciesByBankCode.size());
 
         monitoredCurrenciesByBankCode.forEach((bankCode, currencies) -> {
             if (currencyCollector.getSupportedBankCodes() != null &&
                 currencyCollector.getSupportedBankCodes().contains(bankCode)
             ) {
-                monitoredCurrenciesBySupportedBankCode.put(bankCode, currencies);
+                allMonitoredCurrenciesBySupportedBankCode.put(bankCode, currencies);
             } else {
                 persistenceService.saveCurrenciesErrorMessage(
                     currencies,
@@ -205,6 +205,10 @@ public class AcctCurrencyCollectionService {
                 );
             }
         });
+
+        // Exclude the monitored currencies that should not be processed at this time from the session scope
+        final Map<String, List<AcctMonitoredCurrency>> monitoredCurrenciesBySupportedBankCode =
+            excludeOutOfScopeMonitoredCurrencies(allMonitoredCurrenciesBySupportedBankCode);
 
         // Map monitored currency codes by bank code and create the session parameters
         final SessionParameters sessionParameters =
@@ -245,25 +249,6 @@ public class AcctCurrencyCollectionService {
             currencies.forEach(currency -> {
                 // Try to collect currency exchange records
                 try {
-                    // If the monitored currency exchange records have been collected today then exit
-                    // because the data was already collected for the day
-                    if (currency.getLastCollectionDate() != null &&
-                        currency.getLastCollectionDate().isAfter(
-                            LocalDate.now().atStartOfDay().toInstant(UTC)
-                        )
-                    ) {
-                        return;
-                    }
-
-                    // Get the monitored currency's scheduled strTime (HH:MM)
-                    final Instant todayAtScheduledTime = todayAtTimeStrHHMM(currency.getScheduledTimeHHMM());
-
-                    // If the current strTime is before the scheduled strTime then exit
-                    // because it's too early to collect the data
-                    if (Instant.now().isBefore(todayAtScheduledTime)) {
-                        return;
-                    }
-
                     // Collect the monitored currency exchange records
                     Collection<CollectedCurrencyExchangeRecord> collectedCurrencyExchangeRecords =
                         currencyCollector.collectRecords(
@@ -291,6 +276,90 @@ public class AcctCurrencyCollectionService {
 
         // End the session
         currencyCollector.endSession(session);
+    }
+
+    /**
+     * Returns a copy of the referenced map, where the managed currencies that exhibit the following
+     * properties are excluded:<ul>
+     * <li>The current time is before the set collection time of the currency</li>
+     * <li>The exchange rates have already been collected today</li>
+     * </ul>
+     *
+     * @param monitoredCurrenciesBySupportedBankCode the referenced map
+     */
+    private Map<String, List<AcctMonitoredCurrency>> excludeOutOfScopeMonitoredCurrencies(
+        Map<String, List<AcctMonitoredCurrency>> monitoredCurrenciesBySupportedBankCode
+    ) {
+        // Create the new map
+        final Map<String, List<AcctMonitoredCurrency>> ret = new HashMap<>();
+
+        // For each entry in the old map
+        monitoredCurrenciesBySupportedBankCode.forEach((bankCode, monitoredCurrencies) -> {
+            // For each currency
+            monitoredCurrencies.forEach(monitoredCurrency -> {
+                try {
+                    // If the currency is in scope, then add it to the new map
+                    if (isMonitoredCurrencyInScope(monitoredCurrency)) {
+                        addMonitoredCurrencyToScope(ret, bankCode, monitoredCurrency);
+                    }
+                }
+                // If failed then record the error for the currency
+                // and move on without putting the monitored currency in scope
+                catch (Exception e) {
+                    persistenceService.saveCurrencyErrorMessage(
+                        monitoredCurrency,
+                        "Unable to collect exchange rates: " + e.getMessage()
+                    );
+                }
+            });
+        });
+
+        // Return a reference to the new map
+        return ret;
+    }
+
+    private boolean isMonitoredCurrencyInScope(AcctMonitoredCurrency monitoredCurrency) {
+        // If the monitored currency exchange records have been collected today, then the monitored
+        // currency is not in scope because the data was already collected for the day.
+        if (monitoredCurrency.getLastCollectionDate() != null &&
+            monitoredCurrency.getLastCollectionDate().isAfter(
+                LocalDate.now().atStartOfDay().toInstant(UTC)
+            )
+        ) {
+            return false;
+        }
+
+        // Get the monitored currency's scheduled strTime (HH:MM)
+        final Instant todayAtScheduledTime = todayAtTimeStrHHMM(monitoredCurrency.getScheduledTimeHHMM());
+
+        // If the current strTime is before the scheduled strTime, then the monitored currency is not
+        // in scope because it's too early to collect the data.
+        if (Instant.now().isBefore(todayAtScheduledTime)) {
+            return false;
+        }
+
+        // If all the checks have passed, then the monitored currency is in scope.
+        return true;
+    }
+
+    /**
+     * Adds the referenced monitored currency to the referenced scope under the given bank code
+     *
+     * @param scope             the referenced code
+     * @param bankCode          the given bank code
+     * @param monitoredCurrency the referenced monitored currency
+     */
+    private void addMonitoredCurrencyToScope(
+        Map<String, List<AcctMonitoredCurrency>> scope,
+        String bankCode,
+        AcctMonitoredCurrency monitoredCurrency
+    ) {
+        // Get or create the list of monitored currencies in scope for the bank code
+        final List<AcctMonitoredCurrency> monitoredCurrencies =
+            scope.computeIfAbsent(bankCode, (bCode) -> new ArrayList<>());
+
+        // Put the monitored currency into the list
+        monitoredCurrencies.add(monitoredCurrency);
     }
 
     /**
