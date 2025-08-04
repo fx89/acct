@@ -22,6 +22,8 @@ import { TimeChooserComponent, TimeOfDay } from '../../../components-gui/time-ch
 import { MonitoredCurrencyProperties } from '../../../model-acct/monitored-currency-properties';
 import { MsgboxComponent } from '../../../components-gui/msgbox/msgbox.component';
 import { MsgboxType } from '../../../components-gui/msgbox/msgbox-type';
+import { CalendarButtonComponent } from '../../../components-gui/calendar-button/calendar-button.component';
+import { LabelComponent } from '../../../components-gui/label/label.component';
 
 type BankCardData = CardData & { bank : IconifiedBankProperties }
 
@@ -52,7 +54,9 @@ type EnrichedMonitoredCurrencyProperties = MonitoredCurrencyProperties & {
     TableColumnDirective,
     SelectComponent,
     TimeChooserComponent,
-    MsgboxComponent
+    MsgboxComponent,
+    CalendarButtonComponent,
+    LabelComponent
   ],
   templateUrl: './currencies.component.html',
   styleUrl: './currencies.component.less'
@@ -75,6 +79,8 @@ export class CurrenciesComponent implements OnInit {
   monitoredCurrencyPropertiesDialogVisible : boolean = false;
 
   monitoredCurrencyDeletionConfirmationMsgBoxVisible : boolean = false
+
+  monitoredCurrencyExchangeRatesInputDialogVisible : boolean = false
 
   monitoredCurrencyManualCollectionConfirmationMsgBoxVisible : boolean = false
 
@@ -99,6 +105,12 @@ export class CurrenciesComponent implements OnInit {
   selectedScheduledTime! : TimeOfDay
 
   selectedScheduledTimeDefined : boolean = false
+
+  selectedCurrencyExchangeRecordDate : Date = new Date()
+
+  selectedCurrencyExchangeRecordBuyPrice : string = ""
+
+  selectedCurrencyExchangeRecordSellPrice : string = ""
 
   monitoredCurrencyDeletionConfirmationMsgBoxType : MsgboxType = MsgboxType.YES_NO
 
@@ -354,6 +366,30 @@ export class CurrenciesComponent implements OnInit {
     }
   }
 
+  onInputExchangeRatesButtonClick() : void {
+    this.monitoredCurrencyExchangeRatesInputDialogVisible = true
+  }
+
+  onSaveSelectedCurrencyRecordButtonClick() : void {
+    if (this.selectedMonitoredCurrency) {
+      this.currencyService.addMonitoredCurrencyRecords(
+        this.selectedMonitoredCurrency,
+        [
+          {
+            monitoredCurrencyRecordDate          : new Date(this.getSelectedCurrencyExchangeRecordDateAsString() + "T00:00:00.000Z"),
+            monitoredCurrencyRecordPurchaseValue : Number(this.selectedCurrencyExchangeRecordBuyPrice),
+            monitoredCurrencyRecordSaleValue     : Number(this.selectedCurrencyExchangeRecordSellPrice)
+          }
+        ]
+      ).subscribe(() => {
+        this.monitoredCurrencyExchangeRatesInputDialogVisible = false
+        this.selectedCurrencyExchangeRecordBuyPrice = ""
+        this.selectedCurrencyExchangeRecordSellPrice = ""
+        this.loadRegisteredMonitoredCurrencies()
+      })
+    }
+  }
+
   onAddButtonClick() : void {
     this.monitoredCurrencyPropertiesDialogVisible = true
   }
@@ -390,9 +426,31 @@ export class CurrenciesComponent implements OnInit {
       isDefined(this.selectedBank) &&
       isDefined(this.selectedCurrency) &&
       isDefined(this.selectedQuotedCurrency) &&
-      isDefined(this.selectedMonitoredCurrencyCollector) &&
       this.selectedScheduledTimeDefined
     )
+  }
+
+  isSelectedCurrencyExchangeRecordBuyPriceValid() : boolean {
+    return this.isNumericFieldValid(this.selectedCurrencyExchangeRecordBuyPrice)
+  }
+
+  isSelectedCurrencyExchangeRecordSellPriceValid() : boolean {
+    return this.isNumericFieldValid(this.selectedCurrencyExchangeRecordSellPrice)
+  }
+
+  isSelectedCurrencyExchangeRecordValid() : boolean {
+    return (
+      this.isSelectedCurrencyExchangeRecordBuyPriceValid() &&
+      this.isSelectedCurrencyExchangeRecordSellPriceValid()
+    )
+  }
+
+  isNumericFieldValid(numericField?:string) : boolean {
+    if (Number(numericField)) {
+      return true
+    }
+
+    return false
   }
 
   extractDate(dateTime:string) : string {
@@ -401,6 +459,18 @@ export class CurrenciesComponent implements OnInit {
     }
 
     return ""
+  }
+
+  getSelectedCurrencyExchangeRecordDateAsString() : string {
+    const year  : number = this.selectedCurrencyExchangeRecordDate.getFullYear()
+    const month : number = this.selectedCurrencyExchangeRecordDate.getMonth() + 1
+    const day   : number = this.selectedCurrencyExchangeRecordDate.getDate()
+
+    return (
+      year + "-" + 
+      (month < 10 ? "0" : "") + month + "-" +
+      (day < 10 ? "0" : "") + day
+    )
   }
 
 }

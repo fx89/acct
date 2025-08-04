@@ -1,7 +1,7 @@
-import { Component, EventEmitter, input, InputSignal, Output, Renderer2 } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, input, InputSignal, Output, Renderer2 } from '@angular/core';
 import {v4 as uuidv4} from 'uuid';
 import { CalendarComponent } from '../calendar/calendar.component';
-import { getElementRect } from '../../utils-reusalbe/dom-utils';
+import { findScrollPosition, getElementOrThrow, getElementRect, getElementRectOrThrow, Point2D } from '../../utils-reusalbe/dom-utils';
 
 @Component({
   selector: 'app-calendar-button',
@@ -11,7 +11,7 @@ import { getElementRect } from '../../utils-reusalbe/dom-utils';
   templateUrl: './calendar-button.component.html',
   styleUrl: './calendar-button.component.less'
 })
-export class CalendarButtonComponent {
+export class CalendarButtonComponent implements AfterViewInit {
 
   /**
    * The ID of the component is unique in the page
@@ -28,12 +28,11 @@ export class CalendarButtonComponent {
   @Output() valueChange : EventEmitter<Date> = new EventEmitter<Date>()
 
   // Private properties
-  currentValue       : Date    = this.value()
-  visible            : boolean = false
-  wasJustMadeVisible : boolean = false
-  leftOfButton       : boolean = false
-  topOfButton        : boolean = false
-  calendarButtonId   : string  = this.id + "_calendar_button_container"
+  currentValue              : Date    = this.value()
+  visible                   : boolean = false
+  wasJustMadeVisible        : boolean = false
+  calendarButtonId          : string  = this.id + "_calendar_button"
+  calendarButtonContainerId : string  = this.id + "_calendar_container"
 
   // Injectables
   renderer : Renderer2
@@ -52,35 +51,60 @@ export class CalendarButtonComponent {
     })
   }
 
+  ngAfterViewInit(): void {
+    this.reparentCalendarContainerElement()
+  }
+
+  reparentCalendarContainerElement() : void {
+    const element : HTMLElement = this.findCalendarContainerElement()
+    element.parentElement?.removeChild(element)
+    document.body.appendChild(element)
+    element.style.zIndex = '99999'
+  }
+
+  findCalendarContainerElement() : HTMLElement {
+    return getElementOrThrow(this.getCalendarButtonContainerId(), "Calendar container not found")
+  }
+
   showCalendar() : void {
-    this.adjustCalendarPosition()
     this.visible = true
+    this.adjustCalendarPosition()
     this.scheduleVisibilityMark()
   }
 
   adjustCalendarPosition() : void {
-    const rect : DOMRect | undefined = getElementRect(this.getCalendarButtonId())
+    // Get a reference to the calendar button RECT
+    const rect : DOMRect = getElementRectOrThrow(this.getCalendarButtonId(), "Calendar button not found")
+
+    // Get the window dimensions
     const windowWidth : number = window.innerWidth
     const windowHeight : number = window.innerHeight
 
-    if (rect) {
-      if (rect.left + 270 > windowWidth) {
-        this.leftOfButton = true
-      } else {
-        this.leftOfButton = false
-      }
+    // Get the scroll position of the document/window
+    const scrollPosition : Point2D = findScrollPosition()
 
-      if (rect.top + 270 > windowHeight) {
-        this.topOfButton = true
-      } else {
-        this.topOfButton = false
-      }
-    }
+    // Find out where the calendar should be situated in relation to the button
+    const leftOfButton : boolean = (rect.left + 270 > windowWidth)
+    const topOfButton : boolean = (rect.top + 250 > windowHeight)
+
+    // Compute the coordinates of the calendar container based on the relative position to the button
+    const left : number = scrollPosition.left + (leftOfButton ? rect.right - 270 : rect.left)
+    const top : number = scrollPosition.top + (topOfButton ? rect.top - 250 : rect.bottom + 3)
+
+    // Get a reference to the calendar container
+    const calendarContainer : HTMLElement = this.findCalendarContainerElement()
+
+    // Set the calendar container position to the coordinates computed above
+    calendarContainer.style.left = left + 'px'
+    calendarContainer.style.top = top + 'px'
   }
 
   hideCalendar() : void {
     this.wasJustMadeVisible = false
     this.visible = false
+
+    const calendarContainer : HTMLElement = this.findCalendarContainerElement()
+    calendarContainer.style.top = '-2000px'
   }
 
   scheduleVisibilityMark() : void {
@@ -112,24 +136,12 @@ export class CalendarButtonComponent {
     return this.calendarButtonId
   }
 
+  getCalendarButtonContainerId() : string {
+    return this.calendarButtonContainerId
+  }
+
   isVisible() : boolean {
     return this.visible
-  }
-
-  isLeftOfButton() : boolean {
-    return this.visible && this.leftOfButton
-  }
-
-  isRightOfButton() : boolean {
-    return this.visible && !this.leftOfButton
-  }
-
-  isTopOfButton() : boolean {
-    return this.visible && this.topOfButton
-  }
-
-  isBottomOfButton() : boolean {
-    return this.visible && !this.topOfButton
   }
 
 }

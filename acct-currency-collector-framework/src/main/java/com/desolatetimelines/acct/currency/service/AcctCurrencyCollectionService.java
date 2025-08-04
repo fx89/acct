@@ -146,7 +146,7 @@ public class AcctCurrencyCollectionService {
         // Group monitored currencies by collector name (exclude the ones that do not specify a collector name)
         final Map<String, List<AcctMonitoredCurrency>> monitoredCurrenciesByCollectorName =
             selectedMonitoredCurrencies.stream()
-                .filter(monitoredCurrency -> monitoredCurrency.getCollectorName() != null)
+                .filter(monitoredCurrency -> monitoredCurrency.getCollectorName() != null && !monitoredCurrency.getCollectorName().isBlank())
                 .collect(groupingBy(AcctMonitoredCurrency::getCollectorName));
 
         // For each collector name that's defined

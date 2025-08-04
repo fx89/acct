@@ -59,5 +59,7 @@
  DONE: APP-09025: Catalog page: Icons: icon categories: add new icon category
  DONE: APP-09026: Catalog page: Icons: icon categories: delete selected icon category
  DONE: APP-09027: Catalog page: Icons: delete selected icons
+ DONE: APP-09028: Catalog page: Currencies: monitored currencies: add exchange rates record manually
+ TODO: APP-09029: Catalog page: Currencies: monitored currencies: collection error display
 */
 

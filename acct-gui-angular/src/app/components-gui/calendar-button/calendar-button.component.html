@@ -1,5 +1,5 @@
 <div
-    id="{{this.id}}_calendar_button_container"
+    id="{{ this.id }}"
     class="calendar-button-container"
 >
     <!-- Calendar button -->
@@ -18,8 +18,11 @@
 
     <!-- Calendar container -->
      <div
-        id="{{this.id}}_calendar_container"
-        [class]="{ 'calendar-container': true, 'visible': this.isVisible(), 'top': this.isTopOfButton(), 'bottom': this.isBottomOfButton(), 'left': this.isLeftOfButton(), 'right': this.isRightOfButton() }"
+        id="{{this.getCalendarButtonContainerId()}}"
+        [class]="{ 
+            'calendar-container': true,
+            'visible': this.isVisible()
+        }"
      >
         <app-calendar
             [minYear]="this.minYear()"

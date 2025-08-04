@@ -15,13 +15,14 @@ export class LabelComponent {
   public id = uuidv4()
 
   // Properties
-  width     : InputSignal<string>  = input("300px")
-  height    : InputSignal<string>  = input("32px")
-  color     : InputSignal<string>  = input("none")
-  value     : InputSignal<string>  = input("Label")
-  fontSize  : InputSignal<string>  = input("normal")
-  textAlign : InputSignal<string>  = input("left")
-  flash     : InputSignal<boolean> = input(false)
+  width      : InputSignal<string>  = input("300px")
+  height     : InputSignal<string>  = input("32px")
+  color      : InputSignal<string>  = input("none")
+  value      : InputSignal<string>  = input("Label")
+  fontSize   : InputSignal<string>  = input("normal")
+  textAlign  : InputSignal<string>  = input("left")
+  flash      : InputSignal<boolean> = input(false)
+  inputStyle : InputSignal<boolean> = input(false)
 
   getWidth() : string {
     return this.width()
@@ -61,6 +62,10 @@ export class LabelComponent {
 
   isFlashing() : boolean {
     return this.flash()
+  }
+
+  isInputStyle() : boolean {
+    return this.inputStyle()
   }
 
 }

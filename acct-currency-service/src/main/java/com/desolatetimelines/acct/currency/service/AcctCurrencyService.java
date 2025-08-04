@@ -22,6 +22,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+
 /**
  * Main class of the services layer of the ACCT currency service
  */
@@ -261,24 +263,35 @@ public class AcctCurrencyService {
         // Attempt to find the monitored currency or throw an exception if not found
         final AcctMonitoredCurrency monitoredCurrency = findMonitoredCurrencyOrFail(monitoredCurrencyUUID);
 
+        // Truncate the dates in the received records
+        final Collection<MonitoredCurrencyRecord> recs =
+            records.stream()
+                // Truncate the date to the day
+                .map(rec -> new MonitoredCurrencyRecord(
+                    rec.monitoredCurrencyRecordDate().truncatedTo(DAYS),
+                    rec.monitoredCurrencyRecordPurchaseValue(),
+                    rec.monitoredCurrencyRecordSaleValue()
+                ))
+                .toList();
+
         // Attempt to find any already-existing records for the given date
         final Collection<AcctMonitoredCurrencyRecord> existingRecords =
             dataService.findAllMonitoredCurrencyRecordsByMonitoredCurrencyAndMonitoredCurrencyRecordDateIn(
                 monitoredCurrency,
-                records.stream()
+                recs.stream()
                     .map(MonitoredCurrencyRecord::monitoredCurrencyRecordDate)
                     .toList()
             );
 
         // For each input record...
-        records.forEach(record -> {
+        recs.forEach(record -> {
             // Get the already existing record or create a new one
             final AcctMonitoredCurrencyRecord dbRec =
                 existingRecords.stream()
                     .filter(rec ->
                         Objects.equals(
-                            rec.getMonitoredCurrencyRecordDate(),
-                            record.monitoredCurrencyRecordDate()
+                            rec.getMonitoredCurrencyRecordDate().truncatedTo(DAYS),
+                            record.monitoredCurrencyRecordDate().truncatedTo(DAYS)
                         )
                     )
                     .findFirst()
@@ -296,6 +309,22 @@ public class AcctCurrencyService {
             // Save the record
             dataService.saveMonitoredCurrencyRecord(dbRec);
         });
+
+        // Re-compute the last value...
+
+        // Look up the latest record
+        final AcctMonitoredCurrencyRecord latestRecord =
+            dataService.findMonitoredCurrencyRecordsByMonitoredCurrency(monitoredCurrency).stream()
+                .max(Comparator.comparing(AcctMonitoredCurrencyRecord::getMonitoredCurrencyRecordDate))
+                .orElseThrow();
+
+        // Copy the values from the latest record to the latest record information properties of the monitored currency
+        monitoredCurrency.setLastMonitoredCurrencyRecordDate(latestRecord.getMonitoredCurrencyRecordDate());
+        monitoredCurrency.setLastMonitoredCurrencyRecordPurchaseValue(latestRecord.getMonitoredCurrencyRecordPurchaseValue());
+        monitoredCurrency.setLastMonitoredCurrencyRecordSaleValue(latestRecord.getMonitoredCurrencyRecordSaleValue());
+
+        // Save the monitored currency
+        dataService.saveMonitoredCurrency(monitoredCurrency);
     }
 
     /**

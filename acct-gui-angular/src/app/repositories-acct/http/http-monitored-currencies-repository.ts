@@ -132,7 +132,27 @@ export class HttpAcctMonitoredCurrenciesRepository extends AcctMonitoredCurrenci
     }
 
     override addMonitoredCurrencyRecords(monitoredCurrencyUUID: string, records: MonitoredCurrencyRecord[]): Observable<void> {
-        throw new Error("Method not implemented.");
+        return new Observable<void>(subscriber => {
+            this.httpConnector.put(
+                {
+                    url: "/monitoredCurrencies/records",
+                    data: {
+                        params: {
+                            monitoredCurrencyUUID: monitoredCurrencyUUID
+                        },
+                        body: records
+                    }
+                },
+                {
+                    responseHandler: () => {
+                        complete(subscriber, undefined)
+                    },
+                    errorHandler: err => {
+                        subscriber.error(err)
+                    }
+                }
+            )
+        })
     }
     
 }

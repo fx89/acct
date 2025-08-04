@@ -31,11 +31,6 @@
             <artifactId>acct-currency-collector-ro-bcr</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.desolatetimelines</groupId>
-            <artifactId>acct-currency-collector-ro-bt</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
 
         <dependency>
             <groupId>com.desolatetimelines</groupId>
