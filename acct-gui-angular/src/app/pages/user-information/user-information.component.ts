@@ -202,7 +202,7 @@ export class UserInformationComponent implements AfterViewInit {
 
   saveDefaultWorkspace() : void {
     this.userManagementService.saveCurrentUserDefaultWorkspaceUUID(
-      this.selectedWorkspace.workspace.workspaceUUID
+      this.selectedWorkspace.workspace.workspaceUUID as string
     ).subscribe({
       next: () => {
         this.defaultWorkspaceUpdateConfirmationMessageBoxVisible = true

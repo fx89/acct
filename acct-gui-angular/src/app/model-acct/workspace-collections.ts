@@ -1,4 +1,4 @@
-import { Workspace } from "./workspace";
+import { IconifiedWorkspace, Workspace } from "./workspace";
 
 /**
  * A response object that contains the details of all workspaces accessible to a given owner,

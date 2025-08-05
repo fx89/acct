@@ -1,1 +1,105 @@
-<p>workspaces works!</p>
+<app-items-manager
+    width="calc(100% - 15px)"
+    height="calc(100vh - 140px)"
+    cardWidth="500px"
+    cardHeight="60px"
+    addDialogWidth="480px"
+    addDialogHeight="500px"
+    [forceReloadEventEmitter]="this.workspacesListForceReloadEventEmitter"
+    [dataSetProducer]="this.workspacesListProducer"
+    [cardImageRefExtractor]="this.workspaceCardImageRefExtractor"
+    [cardTitleExtractor]="this.workspaceCardTitleExtractor"
+    [cardTextExtractor]="this.workspaceCardTextExtractor"
+    [itemDeletionConsumer]="this.workspaceDeletionConsumer"
+    [newItemSupplier]="this.newWorkspaceSupplier"
+    [itemSavingConsumer]="this.workspaceSavingConsumer"
+    [itemPropertiesValidator]="this.workspaceValidator"
+    [(selection)]="this.workspacesListSelectedItem"
+    [floatingCards]="true"
+    [canEdit]="true"
+    [actionButtonIcons]="true"
+>
+    <ng-template itemsManagerNewItemForm let-item="item">
+        <table>
+            <tr>
+                <td>
+                    Workspace name
+                </td>
+                <td style="width:10px;"></td>
+                <td>
+                    <app-input
+                        [(value)]="item.workspaceName"
+                        width="300px"
+                        height="30px"
+                        hint="Workspace name"
+                    ></app-input>
+                </td>
+            </tr><tr>
+                <td>
+                    Workspace description
+                </td>
+                <td></td>
+                <td>
+                    <app-input
+                        [(value)]="item.workspaceDescription"
+                        width="300px"
+                        height="30px"
+                        hint="Workspace description"
+                    ></app-input>
+                </td>
+            </tr><tr>
+                <td>
+                    Default currency
+                </td>
+                <td></td>
+                <td>
+                    <app-select
+                        [options]="this.registeredCurrencies"
+                        [cardHeightPx]="50"
+                        [selectedOption]="this.selectedCurrency"
+                        (selectedOptionChange)="this.onSelectedCurrencyChange($event)"
+                    ></app-select>
+                </td>
+            </tr><tr>
+                <td>
+                    Workspace icon
+                </td>
+                <td></td>
+                <td>
+                    <app-button
+                        value='Choose icon'
+                        textAlign="center"
+                        (onClick)="onChooseWorkspaceIconClick()"
+                        color="blue"
+                        width="300px"
+                        height="30px"
+                    ></app-button>
+                    <img
+                        style="width:300px;height:250px;background-color:#000;background-size:contain;"
+                        [src]="item.imageData"
+                    >
+                </td>
+            </tr>
+        </table>
+    </ng-template>
+</app-items-manager>
+
+
+<!-- The workspace icon chooser -->
+<app-dialog
+  title="Select an existing icon or add a new one"
+  width="700px"
+  height="500px"
+  [visible]="this.workspaceIconChooserVisible"
+>
+    <app-icons-manager
+        width="100%"
+        height="450px"
+        iconWidth="190px"
+        iconHeight="190px"
+        [allowUpload]="true"
+        [allowDelete]="false"
+        [pageSize]="9"
+        (selectionChange)="this.onWorkspaceIconSelected($event)"
+    ></app-icons-manager>
+</app-dialog>

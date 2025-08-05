@@ -5,8 +5,12 @@
  TODO: APP-02002: Dashboard page: Dashboard table
  TODO: APP-02003: Dashboard page: Dashboard chart
  TODO: APP-02004: Dashboard page: Dashboard layout
- TODO: APP-03001: Workspaces page: Cards menu
+ DONE: APP-03001: Workspaces page: Cards menu
  TODO: APP-03002: Workspaces page: Workspace selector
+ DONE: APP-03003: Workspaces page: Cards menu: Add workspace
+ DONE: APP-03004: Workspaces page: Cards menu: Create workspace
+ DONE: APP-03005: Workspaces page: Cards menu: Edit workspace
+ DONE: APP-03006: Workspaces page: Cards menu: Delete workspace
  TODO: APP-04001: Accounts page
  TODO: APP-05001: Account records page: Page layout
  TODO: APP-05002: Account records page: Account selector
