@@ -149,6 +149,34 @@ export class ItemsManagerComponent implements OnInit, AfterContentInit {
   childrenAction : InputSignal<ItemsManagerCardAction> = input(<ItemsManagerCardAction><unknown>undefined)
 
   /**
+   * Action to be performed when the additional action button is clicked. If not defined, then the
+   * additional action button is not shown.
+   */
+  additionalAction : InputSignal<ItemsManagerCardAction> = input(<ItemsManagerCardAction><unknown>undefined)
+
+  /**
+   * Text to be shown on the additonal action button. If the actionButtonText() property is set to false,
+   * then this text is notrendered.
+   */
+  additionalActionText : InputSignal<string> = input("")
+
+  /**
+   * IMG ref of the icon to be shown on the additonal action button. If the actionButtonIcons() property
+   * is set to false, then this image is not rendered.
+   */
+  additionalActionIcon : InputSignal<string> = input("")
+
+  /**
+   * The width othe additional action button cannot be computed here cause the text is provided from the outside
+   */
+  additionalActionButtonWidth : InputSignal<string> = input("50px")
+
+  /**
+   * The color of the additional action button (defaults to none)
+   */
+  additionalActionButtonColor : InputSignal<string> = input("none")
+
+  /**
    * Set this to true to display the action button icons
    */
   actionButtonIcons : InputSignal<boolean> = input(false)
@@ -195,7 +223,10 @@ export class ItemsManagerComponent implements OnInit, AfterContentInit {
   newItemFormTemplateRef! : TemplateRef<any>
 
   cardActionButtons : ItemAwareCardActionButton<ItemCardData>[] = []
+
   private cardChildrenAction! : ItemsManagerCardAction
+
+  private cardAdditionalAction! : ItemsManagerCardAction
 
   // Dialog visibility switches
   itemDeletionConfirmationMessageBoxVisible : boolean = false
@@ -260,6 +291,19 @@ export class ItemsManagerComponent implements OnInit, AfterContentInit {
       })
 
       this.cardChildrenAction = this.childrenAction()
+    }
+
+    // If the additional action was set, then add the additional action button
+    if (this.additionalAction()) {
+      this.cardActionButtons.push({
+        onClick: (cardData:ItemCardData) => this.cardAdditionalActionButtonClicked(cardData),
+        width: this.additionalActionButtonWidth(),
+        color: this.additionalActionButtonColor(),
+        text: (this.actionButtonText() ? this.additionalActionText() : ""),
+        icon: (this.actionButtonIcons() ? this.additionalActionIcon() : "")
+      })
+
+      this.cardAdditionalAction = this.additionalAction()
     }
   }
 
@@ -387,6 +431,10 @@ export class ItemsManagerComponent implements OnInit, AfterContentInit {
 
   cardChildrenButtonClicked(cardData:ItemCardData) : void {
     this.cardChildrenAction(cardData.item)
+  }
+
+  cardAdditionalActionButtonClicked(cardData:ItemCardData) : void {
+    this.cardAdditionalAction(cardData.item)
   }
 
   private showItemDeletionConfirmationMessageBox() : void {

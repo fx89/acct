@@ -40,7 +40,8 @@ export const routes: Routes = [
         data: {
             menuItem: {
                 text: "Dashboard",
-                imageRef: "menu-icons/dashboard.png"
+                imageRef: "menu-icons/dashboard.png",
+                isWithinWorkspaceContext: true
             }
         }
     },
@@ -60,17 +61,19 @@ export const routes: Routes = [
         data: {
             menuItem: {
                 text: "Accounts",
-                imageRef: "menu-icons/accounts.png"
+                imageRef: "menu-icons/accounts.png",
+                isWithinWorkspaceContext: true
             }
         }
     },
     {
         path: 'deposits',
-        component: AccountsComponent,
+        component: AccountsComponent, // TODO: DepositsComponent
         data: {
             menuItem: {
                 text: "Deposits",
-                imageRef: "menu-icons/deposits.png"
+                imageRef: "menu-icons/deposits.png",
+                isWithinWorkspaceContext: true
             }
         }
     },

@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { InputComponent } from '../../../components-gui/input/input.component';
 import { CatalogService } from '../../../services-acct/catalog.service';
 import { IconifiedIncomeOrExpenseItemCategory, IncomeOrExpenseItemCategory } from '../../../model-acct/income-or-expense-item-category';
-import { complete, errorConsumingObservableOperation, errorPipingConditionalObservable, newObservalbe } from '../../../utils-reusalbe/rxjs-utils';
+import { complete, errorConsumingObservableOperation, errorPipingConditionalObservable, newObservable } from '../../../utils-reusalbe/rxjs-utils';
 import { ButtonComponent } from '../../../components-gui/button/button.component';
 import { DialogComponent } from '../../../components-gui/dialog/dialog.component';
 import { IconsManagerComponent } from '../../../components-acct/icons-manager/icons-manager.component';
@@ -173,7 +173,7 @@ export class IncomeOrExpenseItemsComponent {
         () => this.catalogService.findIncomeOrExpenseItemSubcategories(
                 throwIfNotDefined(this.incomeOrExpenseItemCategoriesListSelectedItem?.incomeOrExpenseItemCategoryUUID)
               ),
-        () => newObservalbe([])
+        () => newObservable([])
       ),
       // Error handling
       err => {
@@ -273,7 +273,7 @@ export class IncomeOrExpenseItemsComponent {
         () => this.catalogService.findIncomeOrExpenseItems(
                 throwIfNotDefined(this.incomeOrExpenseItemSubcategoriesListSelectedItem?.incomeOrExpenseItemSubcategoryUUID)
               ),
-        () => newObservalbe([])
+        () => newObservable([])
       ),
       // Error handling
       err => {

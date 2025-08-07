@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Predicate } from '@angular/core';
 import { AcctIconsRepository } from '../repositories-acct/icons-repository';
 import { IconCreateRequest } from '../model-acct/icon-create-request';
 import { forkJoin, Observable, ObservableInput } from 'rxjs';
@@ -380,13 +380,19 @@ export class CatalogService {
   }
 
   /**
-   * Returns an observable that produces an array of all the banks registered in the catalog,
-   * enriched with the Base64-encoded contents of their icons
+   * Returns an observable that produces an array of all the currencies registered in the catalog
+   * that match the given filter, enriched with the Base64-encoded contents of their icons. If the
+   * filter is not given, then all currencies are returned.
    */
-  public findAllCurrencies() : Observable<IconifiedCurrencyProperties[]> {
+  public findAllCurrencies(filter?:Predicate<CurrencyProperties>) : Observable<IconifiedCurrencyProperties[]> {
     return errorPipingObservableOperation(
         this.currenciesRepository.findCurrencies(),
         (dataSet:CurrencyProperties[], mainSubscriber) => {
+          // If a filter was provided, then apply it
+          if (filter) {
+            dataSet = dataSet.filter(filter)
+          }
+
           // Convert to an iconified set and filter
           const iconifiedDataSet : IconifiedCurrencyProperties[] = 
             dataSet as IconifiedCurrencyProperties[]
@@ -420,6 +426,28 @@ export class CatalogService {
           )
         }
       )
+  }
+
+  /**
+   * Returns an observable that produces an iconified currency properties object that contains the
+   * properties of the currency identified by the given currencyUUID. If such a currency does not
+   * exist, then an error is thrown.
+   * 
+   * @param currencyUUID the given currencyUUID
+   */
+  public findCurrencyByCurrencyUUID(currencyUUID:string) : Observable<IconifiedCurrencyProperties> {
+    return new Observable<IconifiedCurrencyProperties>(subscriber => {
+      this.findAllCurrencies(currency => currencyUUID == currency.currencyUUID).subscribe({
+        next: currencies => {
+          if (currencies.length == 0) {
+            subscriber.error(new Error("Currency not found"))
+          } else {
+            subscriber.next(currencies[0])
+          }
+        },
+        error: err => subscriber.error(err)
+      })
+    })
   }
 
   /**

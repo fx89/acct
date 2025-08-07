@@ -17,6 +17,10 @@
     [(selection)]="this.workspacesListSelectedItem"
     [floatingCards]="true"
     [canEdit]="true"
+    [additionalAction]="this.workspaceSelectAction"
+    additionalActionText="Select"
+    additionalActionButtonWidth="60px"
+    additionalActionButtonColor="blue"
     [actionButtonIcons]="true"
 >
     <ng-template itemsManagerNewItemForm let-item="item">
@@ -103,3 +107,14 @@
         (selectionChange)="this.onWorkspaceIconSelected($event)"
     ></app-icons-manager>
 </app-dialog>
+
+<!-- The workspace selection confirmation message box -->
+ <app-msgbox
+    [type]="this.workspaceSelectionConfirmationMessageBoxType"
+    [(visible)]="this.workspaceSelectionConfirmationMessageBoxVisible"
+    title="Workspace selected"
+    [text]="'You have selected the workspace named [' + this.selectedWorkspace?.workspaceName + ']. The application will now show data within the context of the selected workspace.'"
+    width="600px"
+    height="130px"
+    (onAffirmativeResponse)="this.reloadPage()"
+ ></app-msgbox>

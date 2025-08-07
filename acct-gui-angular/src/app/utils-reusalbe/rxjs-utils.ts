@@ -14,7 +14,7 @@ export function emptyObservable<RET>() : Observable<RET> {
  * 
  * @param item the referenced item
  */
-export function newObservalbe<T>(item:T) : Observable<T> {
+export function newObservable<T>(item:T) : Observable<T> {
     return new Observable<T>(subscriber => {
         complete(subscriber, item)
     })

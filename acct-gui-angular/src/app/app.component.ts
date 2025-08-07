@@ -6,6 +6,16 @@ import { MenuItemData } from './components-gui/menu/menu-item-data';
 import { ColorThemeSelectorComponent } from './components-gui/color-theme-selector/color-theme-selector.component';
 import { BarComponent } from './components-gui/bar/bar.component';
 import { LoginFormComponent } from './components-acct/login-form/login-form.component';
+import { WorkspaceSelectorService } from './services-acct/workspace-selector.service';
+import { IconifiedWorkspace } from './model-acct/workspace';
+import { isDefined } from './utils-reusalbe/lang-utils';
+import { IconifiedCurrencyProperties } from './model-acct/currency-properties';
+import { CatalogService } from './services-acct/catalog.service';
+
+/**
+ * Extends the MenuItemData type with ACCT-specific properties
+ */
+type AcctMenuItemData = MenuItemData & { isWithinWorkspaceContext: boolean }
 
 @Component({
   selector: 'app-root',
@@ -22,16 +32,24 @@ import { LoginFormComponent } from './components-acct/login-form/login-form.comp
 export class AppComponent implements OnInit {
   title = 'acct-gui-angular'
 
-  menuItems        : MenuItemData[] = []
-  menuItemPaths    : string[] = []
-  selectedMenuItem : MenuItemData = this.menuItems[0] 
+  menuItems                         : AcctMenuItemData[] = []
+  menuItemPaths                     : string[] = []
+  selectedMenuItem                  : AcctMenuItemData = this.menuItems[0] 
+  selectedWorkspace!                : IconifiedWorkspace
+  selectedWorkspaceDefaultCurrency! : IconifiedCurrencyProperties
 
-  constructor(protected router:Router, protected colorThemesService:ColorThemesService) {
+  constructor(
+    protected router:Router,
+    protected colorThemesService:ColorThemesService,
+    protected workspaceSelectorService:WorkspaceSelectorService,
+    protected catalogService:CatalogService
+  ) {
     this.compileMenuItemsArray()
   }
 
   ngOnInit(): void {
     this.identifySelectedMenuItemBasedOnActiveRoute()
+    this.acquireSelectedWorkspace()
   }
 
   private compileMenuItemsArray() : void {
@@ -40,9 +58,10 @@ export class AppComponent implements OnInit {
 
       if (menuItem) {
         this.menuItems.push({
-          text: menuItem['text'],
-          imageRef: menuItem['imageRef'],
-          onSelect: () => this.router.navigate(['/', configItem.path])
+          text                     : menuItem['text'],
+          imageRef                 : menuItem['imageRef'],
+          isWithinWorkspaceContext : menuItem['isWithinWorkspaceContext'] ?? false,
+          onSelect                 : () => this.router.navigate(['/', configItem.path])
         })
 
         this.menuItemPaths.push("/" + (configItem.path ?? ""))
@@ -59,8 +78,41 @@ export class AppComponent implements OnInit {
     }
   }
 
+  private acquireSelectedWorkspace() : void {
+    this.workspaceSelectorService.findSelectedWorkspace().subscribe({
+      next: workspace => {
+        this.catalogService.findCurrencyByCurrencyUUID(workspace.defaultCurrencyUUID).subscribe({
+          next: currency => {
+            this.selectedWorkspaceDefaultCurrency = currency
+            this.selectedWorkspace = workspace
+          },
+          error: err => {
+            // TODO: Toast
+            console.log(err)
+          }
+        })
+      },
+      error : err => {
+        // TODO: Toast
+        console.log(err)
+      }
+    })
+  }
+
   public getSelectedMenuItemText() : string {
     return this.selectedMenuItem?.text ?? ""
+  }
+
+  public getSelectedWorkspace() : IconifiedWorkspace {
+    return this.selectedWorkspace
+  }
+
+  public isSelectedMenuItemWithinWorkspaceContext() : boolean {
+    return this.selectedMenuItem?.isWithinWorkspaceContext ?? false
+  }
+
+  public isWorkspaceSelected() : boolean {
+    return isDefined(this.selectedWorkspace)
   }
 
 }

@@ -1,11 +1,11 @@
 import { Component, EventEmitter, OnInit } from '@angular/core';
-import { ItemsManagerCardPropertyExtractor, ItemsManagerComponent, ItemsManagerDataItem, ItemsManagerDataSet, ItemsManagerNewItemFormDirective } from '../../components-acct/items-manager/items-manager.component';
+import { ItemsManagerCardAction, ItemsManagerCardPropertyExtractor, ItemsManagerComponent, ItemsManagerDataItem, ItemsManagerDataSet, ItemsManagerNewItemFormDirective } from '../../components-acct/items-manager/items-manager.component';
 import { ButtonComponent } from '../../components-gui/button/button.component';
 import { IconsManagerComponent } from '../../components-acct/icons-manager/icons-manager.component';
 import { InputComponent } from '../../components-gui/input/input.component';
 import { identity, Observable } from 'rxjs';
 import { complete, errorConsumingObservableOperation, errorConsumingObservableTransform } from '../../utils-reusalbe/rxjs-utils';
-import { IconifiedWorkspace } from '../../model-acct/workspace';
+import { IconifiedWorkspace, Workspace } from '../../model-acct/workspace';
 import { WorkspaceService } from '../../services-acct/workspace.service';
 import { isDefined } from '../../utils-reusalbe/lang-utils';
 import { IconProperties } from '../../model-acct/icon-properties';
@@ -14,6 +14,9 @@ import { CatalogService } from '../../services-acct/catalog.service';
 import { IconifiedCurrencyProperties } from '../../model-acct/currency-properties';
 import { CardData } from '../../components-gui/cards-list/card-data';
 import { SelectComponent } from '../../components-gui/select/select.component';
+import { WorkspaceSelectorService } from '../../services-acct/workspace-selector.service';
+import { MsgboxComponent } from '../../components-gui/msgbox/msgbox.component';
+import { MsgboxType } from '../../components-gui/msgbox/msgbox-type';
 
 type CurrencyCardData = CardData & { currency : IconifiedCurrencyProperties }
 
@@ -26,7 +29,8 @@ type CurrencyCardData = CardData & { currency : IconifiedCurrencyProperties }
     IconsManagerComponent,
     InputComponent,
     DialogComponent,
-    SelectComponent
+    SelectComponent,
+    MsgboxComponent
   ],
   templateUrl: './workspaces.component.html',
   styleUrl: './workspaces.component.less'
@@ -39,13 +43,20 @@ export class WorkspacesComponent implements OnInit {
 
   workspaceIconChooserVisible : boolean = false
 
+  workspaceSelectionConfirmationMessageBoxVisible : boolean = false
+
+  workspaceSelectionConfirmationMessageBoxType : MsgboxType = MsgboxType.OK_ONLY
+
   registeredCurrencies : CurrencyCardData[] = []
 
   selectedCurrency? : CurrencyCardData
 
+  selectedWorkspace? : Workspace
+
   constructor(
     private workspaceService : WorkspaceService,
-    private catalogService : CatalogService
+    private catalogService : CatalogService,
+    private workspaceSelectorSerivce : WorkspaceSelectorService
   ) {
 
   }
@@ -99,7 +110,10 @@ export class WorkspacesComponent implements OnInit {
   workspaceSavingConsumer : ((item:IconifiedWorkspace) => Observable<void>) =
     (item:IconifiedWorkspace) => errorConsumingObservableTransform(
       this.workspaceService.saveWorkspace(item),
-      () => {},
+      () => {
+        // Reload the page to force a re-initialization of all components, in case the default workspace was edited
+        this.reloadPage()
+      },
       err => {
         // TODO: toast
         console.log(err)
@@ -119,6 +133,12 @@ export class WorkspacesComponent implements OnInit {
 
       return false
     }
+
+  workspaceSelectAction : ItemsManagerCardAction = (workspace:ItemsManagerDataItem<Workspace>) => {
+    this.selectedWorkspace = workspace
+    this.workspaceSelectorSerivce.setSelectedWorkspace(workspace)
+    this.workspaceSelectionConfirmationMessageBoxVisible = true
+  }
 
   ngOnInit() : void {
     this.loadRegisteredCurrencies().subscribe()
@@ -178,5 +198,12 @@ export class WorkspacesComponent implements OnInit {
       }
     }
   }
+
+  /**
+   * Triggers a page reload, to force all components to re-initialize
+   */
+  reloadPage() : void {
+    window.location.reload()
+  }   
 
 }

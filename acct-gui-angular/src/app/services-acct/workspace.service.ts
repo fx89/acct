@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Predicate } from '@angular/core';
 import { AcctWorkspacesRepository } from '../repositories-acct/workspaces-repository';
 import { forkJoin, Observable, Subscriber } from 'rxjs';
 import { WorkspaceCollections } from '../model-acct/workspace-collections';
@@ -24,16 +24,23 @@ export class WorkspaceService {
   }
 
   /**
-   * Returns an observable that produces an array of workspaces,
-   * complete with the image data of the related icons.
+   * Returns an observable that produces an array of workspaces, complete with the image data of the related icons.
+   * If a filter is given, then the array of workspaces will contain only workspaces that match the given filter.
+   * 
+   * @param filter an optional predicate that can be used to select a specific sub-set of workspaces
    */
-  public findUserAccessibleWorkspaces(): Observable<IconifiedWorkspace[]> {
+  public findUserAccessibleWorkspaces(filter?:Predicate<Workspace>): Observable<IconifiedWorkspace[]> {
     // TODO: cache into session
     return errorPipingObservableOperation(
       this.workspacesRepository.findUserAccessibleWorkspaces(),
       (workspaceCollections:WorkspaceCollections, subscriber:Subscriber<IconifiedWorkspace[]>) => {
         // Flatten the response into an array of workspaces
-        const workspaces : Workspace[] = this.workspaceCollectionsToWorkspaceArray(workspaceCollections)
+        let workspaces : Workspace[] = this.workspaceCollectionsToWorkspaceArray(workspaceCollections)
+
+        // If a filter was provided, then apply it now
+        if (filter) {
+          workspaces = workspaces.filter(filter)
+        }
 
         // Convert to iconified workspaces
         const iconifiedWorkspaces : IconifiedWorkspace[] = workspaces as IconifiedWorkspace[]
@@ -42,7 +49,8 @@ export class WorkspaceService {
         // feed the iconified workspaces array into the subscriber.
         errorPipingObservableConsumer(
           forkJoin(
-            workspaces.map((workspace:IconifiedWorkspace) => {
+            workspaces
+            .map((workspace:IconifiedWorkspace) => {
               return this.catalogService.applyIcon(
                 () => workspace.workspaceIconUUID,
                 imageData => workspace.imageData = imageData
@@ -52,6 +60,28 @@ export class WorkspaceService {
           subscriber,
           () => complete(subscriber, iconifiedWorkspaces)
         )
+      }
+    )
+  }
+
+  /**
+   * Returns an observable that produces the workspace identified by the given workspaceUUID.
+   * If the referenced workspace is not accessible by the user, or if the workspace does not
+   * exist, then an error is thrown.
+   * 
+   * @param workspaceUUID the given workspace UUID
+   */
+  public findUserAccessibleWorkspace(workspaceUUID:string) : Observable<IconifiedWorkspace> {
+    return errorPipingObservableTransform(
+      this.findUserAccessibleWorkspaces(ws => workspaceUUID == ws.workspaceUUID),
+      workspaces => {
+        // If there is no workspace in the array, then throw the error
+        if (workspaces.length == 0) {
+          throw new Error("Workspace not found")
+        }
+        
+        // If there's an workspace in the array, then return a reference
+        return workspaces[0]
       }
     )
   }

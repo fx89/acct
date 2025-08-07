@@ -6,7 +6,7 @@
  TODO: APP-02003: Dashboard page: Dashboard chart
  TODO: APP-02004: Dashboard page: Dashboard layout
  DONE: APP-03001: Workspaces page: Cards menu
- TODO: APP-03002: Workspaces page: Workspace selector
+ DONE: APP-03002: Workspaces page: Workspace selector
  DONE: APP-03003: Workspaces page: Cards menu: Add workspace
  DONE: APP-03004: Workspaces page: Cards menu: Create workspace
  DONE: APP-03005: Workspaces page: Cards menu: Edit workspace
