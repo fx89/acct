@@ -11,14 +11,12 @@ import { isDefined } from '../../utils-reusalbe/lang-utils';
 import { IconProperties } from '../../model-acct/icon-properties';
 import { DialogComponent } from '../../components-gui/dialog/dialog.component';
 import { CatalogService } from '../../services-acct/catalog.service';
-import { IconifiedCurrencyProperties } from '../../model-acct/currency-properties';
 import { CardData } from '../../components-gui/cards-list/card-data';
 import { SelectComponent } from '../../components-gui/select/select.component';
 import { WorkspaceSelectorService } from '../../services-acct/workspace-selector.service';
 import { MsgboxComponent } from '../../components-gui/msgbox/msgbox.component';
 import { MsgboxType } from '../../components-gui/msgbox/msgbox-type';
-
-type CurrencyCardData = CardData & { currency : IconifiedCurrencyProperties }
+import { CardDataService, CurrencyCardData } from '../../services-acct/card-data.service';
 
 @Component({
   selector: 'app-workspaces',
@@ -56,7 +54,8 @@ export class WorkspacesComponent implements OnInit {
   constructor(
     private workspaceService : WorkspaceService,
     private catalogService : CatalogService,
-    private workspaceSelectorSerivce : WorkspaceSelectorService
+    private workspaceSelectorSerivce : WorkspaceSelectorService,
+    private cardDataService : CardDataService
   ) {
 
   }
@@ -141,31 +140,14 @@ export class WorkspacesComponent implements OnInit {
   }
 
   ngOnInit() : void {
-    this.loadRegisteredCurrencies().subscribe()
+    this.cardDataService.loadRegisteredCurrencies().subscribe({
+      next: registeredCurrencies => this.registeredCurrencies = registeredCurrencies,
+      error: err => {
+        // TODO: Toast
+        console.log(err)
+      }
+    })
   }
-
-  private loadRegisteredCurrencies() : Observable<void> {
-      return new Observable<void>(subscriber => {
-        this.catalogService.findAllCurrencies().subscribe({
-          next: currencies => {
-            this.registeredCurrencies = currencies.map(currency => {
-              return {
-                currency : currency,
-                title    : currency.currencyCode,
-                text     : currency.currencyName,
-                imageRef : currency.imageData
-              }
-            })
-  
-            complete(subscriber, undefined)
-          },
-          error: err => {
-            // TODO: Toast
-            console.log(err)
-          }
-        })
-      })
-    }
 
   onChooseWorkspaceIconClick() : void {
     this.workspaceIconChooserVisible = true
@@ -197,6 +179,14 @@ export class WorkspacesComponent implements OnInit {
         this.workspacesListSelectedItem.defaultCurrencyUUID = this.selectedCurrency.currency.currencyUUID
       }
     }
+  }
+
+  onNewWorkspace() : void {
+    delete this.selectedCurrency
+  }
+
+  onWorkspaceSelectionChanged(workspace:IconifiedWorkspace) : void {
+    this.selectedCurrency = this.registeredCurrencies.filter(c => workspace.defaultCurrencyUUID == c.currency.currencyUUID)[0]
   }
 
   /**

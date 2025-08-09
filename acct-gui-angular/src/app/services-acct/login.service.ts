@@ -43,7 +43,7 @@ export class LoginService {
         // Decode the access token and create the access token object
         const accessToken : AccessToken = {
           accessToken        : userAccessToken,
-          decodedAccessToken : this.  decodeAccessToken(userAccessToken)
+          decodedAccessToken : this.decodeAccessToken(userAccessToken)
         }
 
         // Store the access token object for the session

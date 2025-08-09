@@ -1,4 +1,5 @@
-import { forkJoin, Observable, ObservableInput, Subscriber } from "rxjs";
+import { Predicate } from "@angular/core";
+import { filter, first, interval, map, Observable, Subscriber } from "rxjs";
 
 /**
  * Creates an observable, of the given data type, that completes without producing anything.
@@ -176,4 +177,25 @@ export function errorPipingConditionalObservable<T>(
             )
         }
     })
+}
+
+/**
+ * Returns an observable that is triggered when the condition specified by the given predicate is
+ * satisfied. The predicate is applied once every X number of milliseconds, where X is given by
+ * the stepTimeMs. If stepTimeMs is not provided, then the default value of 100ms is used for X.
+ * 
+ * @param condition  the given predicate
+ * @param stepTimeMs the number of milliseconds to wait between any two applications of
+ *                   the predicate
+ * @return an observable that is triggered only when the condition is satisfied
+ */
+export function waitForCondition(condition:Predicate<void>, stepTimeMs?:number) : Observable<void> {
+    const waitTimeMs : number = stepTimeMs ?? 100
+
+    return interval(waitTimeMs).pipe(
+        filter(() => condition.apply(undefined)),
+        first(),
+        map(() => void 0)
+    );
+    
 }

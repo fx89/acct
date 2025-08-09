@@ -22,6 +22,8 @@
     additionalActionButtonWidth="60px"
     additionalActionButtonColor="blue"
     [actionButtonIcons]="true"
+    (onNewItem)="onNewWorkspace()"
+    (onSelectionChanged)="onWorkspaceSelectionChanged($event)"
 >
     <ng-template itemsManagerNewItemForm let-item="item">
         <table>

@@ -4,7 +4,7 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpServicesConfig } from './config/http-services-config';
-import { provideAcctAccessTokensRepository, provideAcctBanksRepository, provideAcctCurrenciesRepository, provideAcctIconsRepository, provideAcctItemsRepository, provideAcctMonitoredCurrenciesRepository, provideAcctPrivilegesRepository, provideAcctUsersRepository, provideAcctWorkspacesRepository } from './config/repositories-config';
+import { provideAcctAccessTokensRepository, provideAcctAccountsRepository, provideAcctBanksRepository, provideAcctCurrenciesRepository, provideAcctIconsRepository, provideAcctItemsRepository, provideAcctMonitoredCurrenciesRepository, provideAcctPrivilegesRepository, provideAcctUsersRepository, provideAcctWorkspacesRepository } from './config/repositories-config';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -18,6 +18,7 @@ export const appConfig: ApplicationConfig = {
     // Repositories
     provideAcctAccessTokensRepository(),
     provideAcctWorkspacesRepository(),
+    provideAcctAccountsRepository(),
     provideAcctUsersRepository(),
     provideAcctPrivilegesRepository(),
     provideAcctIconsRepository(),

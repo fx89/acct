@@ -1,8 +1,10 @@
 import { environment } from "../../environments/environment.development"
 import { AcctAccessTokensRepository } from "../repositories-acct/access-tokens-repository"
+import { AcctAccountsRepository } from "../repositories-acct/accounts-repository"
 import { AcctBanksRepository } from "../repositories-acct/banks-repository"
 import { AcctCurrenciesRepository } from "../repositories-acct/currencies-repository"
 import { HttpAcctAccessTokensRepository } from "../repositories-acct/http/http-access-tokens-repository"
+import { HttpAcctAccountsRepository } from "../repositories-acct/http/http-accounts-repository"
 import { HttpAcctBanksRepository } from "../repositories-acct/http/http-banks-repository"
 import { HttpAcctCurrenciesRepository } from "../repositories-acct/http/http-currencies-repository"
 import { HttpAcctIconsRepository } from "../repositories-acct/http/http-icons-repository"
@@ -14,6 +16,7 @@ import { HttpAcctWorkspacesRepository } from "../repositories-acct/http/http-wor
 import { AcctIconsRepository } from "../repositories-acct/icons-repository"
 import { AcctItemsRepository } from "../repositories-acct/items-repository"
 import { MockAcctAccessTokensRepository } from "../repositories-acct/mock/mock-access-tokens-repository"
+import { MockAcctAccountsRepository } from "../repositories-acct/mock/mock-accounts-repository"
 import { MockAcctBanksRepository } from "../repositories-acct/mock/mock-banks-repository"
 import { MockAcctCurrenciesRepository } from "../repositories-acct/mock/mock-currencies-repository"
 import { MockAcctIconsRepository } from "../repositories-acct/mock/mock-icons-repository"
@@ -44,6 +47,16 @@ export function provideAcctWorkspacesRepository() {
         AcctWorkspacesRepository,
         new MockAcctWorkspacesRepository(),
         httpConnectorsService => new HttpAcctWorkspacesRepository(
+                httpConnectorsService.getHttpConnectorByServiceName('acct-workspace')
+            )
+    )
+}
+
+export function provideAcctAccountsRepository() {
+    return provideRepository(
+        AcctAccountsRepository,
+        new MockAcctAccountsRepository(),
+        httpConnectorsService => new HttpAcctAccountsRepository(
                 httpConnectorsService.getHttpConnectorByServiceName('acct-workspace')
             )
     )

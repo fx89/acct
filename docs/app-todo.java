@@ -11,7 +11,12 @@
  DONE: APP-03004: Workspaces page: Cards menu: Create workspace
  DONE: APP-03005: Workspaces page: Cards menu: Edit workspace
  DONE: APP-03006: Workspaces page: Cards menu: Delete workspace
- TODO: APP-04001: Accounts page
+ TODO: APP-04001: Accounts page: General layout
+ DONE: APP-04002: Accounts page: Accounts list
+ DONE: APP-04003: Accounts page: Create account
+ DONE: APP-04004: Accounts page: Delete account
+ DONE: APP-04005: Accounts page: Edit account
+ TODO: APP-04006: Accounts page: Account records link
  TODO: APP-05001: Account records page: Page layout
  TODO: APP-05002: Account records page: Account selector
  TODO: APP-05003: Account records page: Account records table

@@ -1,1 +1,125 @@
-<p>accounts works!</p>
+<!-- The accounts manager -->
+<app-items-manager
+    width="calc(100% - 15px)"
+    height="calc(100vh - 140px)"
+    cardWidth="500px"
+    cardHeight="60px"
+    addDialogWidth="480px"
+    addDialogHeight="550px"
+    [forceReloadEventEmitter]="this.accountsListForceReloadEventEmitter"
+    [dataSetProducer]="this.accountsListProducer"
+    [cardImageRefExtractor]="this.accountCardImageRefExtractor"
+    [cardTitleExtractor]="this.accountCardTitleExtractor"
+    [cardTextExtractor]="this.accountCardTextExtractor"
+    [itemDeletionConsumer]="this.accountDeletionConsumer"
+    [newItemSupplier]="this.newAccountSupplier"
+    [itemSavingConsumer]="this.accountsSavingConsumer"
+    [itemPropertiesValidator]="this.accountValidator"
+    [(selection)]="this.accountsListSelectedItem"
+    [floatingCards]="true"
+    [canEdit]="true"
+    [additionalAction]="this.accountSelectAction"
+    additionalActionText="Records"
+    additionalActionButtonWidth="70px"
+    additionalActionButtonColor="blue"
+    [actionButtonIcons]="true"
+    (onNewItem)="onNewAccount()"
+    (onSelectionChanged)="onAccountSelectionChanged($event)"
+>
+    <ng-template itemsManagerNewItemForm let-item="item">
+        <table>
+            <tr>
+                <td>
+                    Account name
+                </td>
+                <td style="width:10px;"></td>
+                <td>
+                    <app-input
+                        [(value)]="item.accountName"
+                        width="300px"
+                        height="30px"
+                        hint="Account name"
+                    ></app-input>
+                </td>
+            </tr><tr>
+                <td>
+                    Account number
+                </td>
+                <td></td>
+                <td>
+                    <app-input
+                        [(value)]="item.accountNumber"
+                        width="300px"
+                        height="30px"
+                        hint="Account number"
+                    ></app-input>
+                </td>
+            </tr><tr>
+                <td>
+                    Account currency
+                </td>
+                <td></td>
+                <td>
+                    <app-select
+                        [options]="this.registeredCurrencies"
+                        [cardHeightPx]="50"
+                        [selectedOption]="this.selectedCurrency"
+                        (selectedOptionChange)="this.onSelectedCurrencyChange($event)"
+                    ></app-select>
+                </td>
+            </tr><tr>
+            </tr><tr>
+                <td>
+                    Account bank
+                </td>
+                <td></td>
+                <td>
+                    <app-select
+                        [options]="this.registeredBanks"
+                        [cardHeightPx]="50"
+                        [selectedOption]="this.selectedBank"
+                        (selectedOptionChange)="this.onSelectedBankChange($event)"
+                    ></app-select>
+                </td>
+            </tr><tr>
+                <td>
+                    Account icon
+                </td>
+                <td></td>
+                <td>
+                    <app-button
+                        value='Choose icon'
+                        textAlign="center"
+                        (onClick)="onChooseAccountIconClick()"
+                        color="blue"
+                        width="300px"
+                        height="30px"
+                    ></app-button>
+                    <img
+                        style="width:300px;height:250px;background-color:#000;background-size:contain;"
+                        [src]="item.imageData"
+                    >
+                </td>
+            </tr>
+        </table>
+    </ng-template>
+</app-items-manager>
+
+<!-- The account icon chooser -->
+<app-dialog
+  title="Select an existing icon or add a new one"
+  width="700px"
+  height="500px"
+  [visible]="this.accountIconChooserVisible"
+>
+    <app-icons-manager
+        width="100%"
+        height="450px"
+        iconWidth="190px"
+        iconHeight="190px"
+        [allowUpload]="true"
+        [allowDelete]="false"
+        [pageSize]="9"
+        (selectionChange)="this.onAccountIconSelected($event)"
+    ></app-icons-manager>
+</app-dialog>

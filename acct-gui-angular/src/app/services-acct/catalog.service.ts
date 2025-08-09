@@ -1,7 +1,7 @@
 import { Injectable, Predicate } from '@angular/core';
 import { AcctIconsRepository } from '../repositories-acct/icons-repository';
 import { IconCreateRequest } from '../model-acct/icon-create-request';
-import { forkJoin, Observable, ObservableInput } from 'rxjs';
+import { concatAll, forkJoin, map, Observable } from 'rxjs';
 import { IconUUIDResponse } from '../model-acct/icon-uuid-response';
 import { IconQueryParams } from '../model-acct/icon-query-params';
 import { IconsCountResponse } from '../model-acct/icons-count-response';
@@ -10,7 +10,7 @@ import { AcctPage } from '../model-acct/acct-page';
 import { IconProperties } from '../model-acct/icon-properties';
 import { AcctItemsRepository } from '../repositories-acct/items-repository';
 import { IconifiedIncomeOrExpenseItemCategory, IncomeOrExpenseItemCategory } from '../model-acct/income-or-expense-item-category';
-import { errorPipingObservableConsumer, errorPipingObservableOperation } from '../utils-reusalbe/rxjs-utils';
+import { complete } from '../utils-reusalbe/rxjs-utils';
 import { IconifiedIncomeOrExpenseItemSubcategory, IncomeOrExpenseItemSubcategory } from '../model-acct/income-or-expense-item-subcategory';
 import { IconifiedIncomeOrExpenseItem, IncomeOrExpenseItem } from '../model-acct/income-or-expense-item';
 import { BankProperties, IconifiedBankProperties } from '../model-acct/bank-properties';
@@ -113,35 +113,20 @@ export class CatalogService {
    * having the referenced icon added to each of them
    */
   public findAllIncomeOrExpenseItemCategories() : Observable<IconifiedIncomeOrExpenseItemCategory[]> {
-    return errorPipingObservableOperation(
-        this.itemsRepository.findAllIncomeOrExpenseItemCategories(),
-        (dataSet:IncomeOrExpenseItemCategory[], mainSubscriber) => {
-          // Convert to an iconified set and filter
-          const iconifiedDataSet : IconifiedIncomeOrExpenseItemCategory[] = 
-            dataSet as IconifiedIncomeOrExpenseItemCategory[]
+    return this.itemsRepository.findAllIncomeOrExpenseItemCategories().pipe(
+      // Convert to an iconified set
+      map(dataSet => dataSet as IconifiedIncomeOrExpenseItemCategory[]),
 
-          // Start loading the icons for each element in the data set that has an icon reference
-          const iconLoadingTasks : ObservableInput<void>[] =
-            iconifiedDataSet
-              .filter(category => category.incomeOrExpenseItemCategoryIconUUID)
-              .map(category =>
-                this.applyIcon(
-                  () => category.incomeOrExpenseItemCategoryIconUUID,
-                  (imageData) => category.imageData = imageData
-                )
-              )
+      // Apply the icons
+      map(dataSet => this.applyIconToItems(
+        dataSet,
+        item => item.incomeOrExpenseItemCategoryIconUUID ?? "",
+        (item, imageData) => item.imageData = imageData
+      )),
 
-          // Wait for all the loading tasks to complete
-          errorPipingObservableConsumer(
-            forkJoin(iconLoadingTasks), // This is how we wait
-            mainSubscriber,
-            () => {
-              mainSubscriber.next(iconifiedDataSet)
-              mainSubscriber.complete()
-            }
-          )
-        }
-      )
+      // Flatten the Observable-of-Observables resulted from the icon applying operation
+      concatAll()
+    )
   }
 
   /**
@@ -171,42 +156,20 @@ export class CatalogService {
   public findIncomeOrExpenseItemSubcategories(
     incomeOrExpenseItemCategoryUUID:string
   ) : Observable<IconifiedIncomeOrExpenseItemSubcategory[]> {
-    return errorPipingObservableOperation(
-        this.itemsRepository.findIncomeOrExpenseItemSubcategories(incomeOrExpenseItemCategoryUUID),
-        (dataSet:IncomeOrExpenseItemSubcategory[], mainSubscriber) => {
-          // Convert to an iconified set and filter
-          const iconifiedDataSet : IconifiedIncomeOrExpenseItemSubcategory[] = 
-            dataSet as IconifiedIncomeOrExpenseItemSubcategory[]
+    return this.itemsRepository.findIncomeOrExpenseItemSubcategories(incomeOrExpenseItemCategoryUUID).pipe(
+      // Convert to an iconified set
+      map(dataSet => dataSet as IconifiedIncomeOrExpenseItemSubcategory[]),
 
-          // Start loading the icons for each element in the data set that has an icon reference
-          const iconLoadingTasks : ObservableInput<void>[] =
-            iconifiedDataSet
-              .filter(subcategory => subcategory.incomeOrExpenseItemSubcategoryIconUUID)
-              .map(subcategory =>
-                this.applyIcon(
-                  () => subcategory.incomeOrExpenseItemSubcategoryIconUUID,
-                  (imageData) => subcategory.imageData = imageData
-                )
-              )
+      // Apply the icons
+      map(dataSet => this.applyIconToItems(
+        dataSet,
+        item => item.incomeOrExpenseItemSubcategoryIconUUID ?? "",
+        (item, imageData) => item.imageData = imageData
+      )),
 
-          // Add a dummy operation so that the iconLoadingTasks array still has something to execute
-          // even if the iconifiedDataSet is empty
-          iconLoadingTasks.push(new Observable<void>(subscriber => {
-            subscriber.next()
-            subscriber.complete()
-          }))
-
-          // Wait for all the loading tasks to complete
-          errorPipingObservableConsumer(
-            forkJoin(iconLoadingTasks), // This is how we wait
-            mainSubscriber,
-            () => {
-              mainSubscriber.next(iconifiedDataSet)
-              mainSubscriber.complete()
-            }
-          )
-        }
-      )
+      // Flatten the Observable-of-Observables resulted from the icon applying operation
+      concatAll()
+    )
   }
 
   /**
@@ -243,42 +206,20 @@ export class CatalogService {
   public findIncomeOrExpenseItems(
     incomeOrExpenseItemSubcategoryUUID:string
   ) : Observable<IconifiedIncomeOrExpenseItem[]> {
-    return errorPipingObservableOperation(
-        this.itemsRepository.findIncomeOrExpenseItems(incomeOrExpenseItemSubcategoryUUID),
-        (dataSet:IncomeOrExpenseItem[], mainSubscriber) => {
-          // Convert to an iconified set and filter
-          const iconifiedDataSet : IconifiedIncomeOrExpenseItem[] = 
-            dataSet as IconifiedIncomeOrExpenseItem[]
+    return this.itemsRepository.findIncomeOrExpenseItems(incomeOrExpenseItemSubcategoryUUID).pipe(
+      // Convert to an iconified set
+      map(dataSet => dataSet as IconifiedIncomeOrExpenseItem[]),
 
-          // Start loading the icons for each element in the data set that has an icon reference
-          const iconLoadingTasks : ObservableInput<void>[] =
-            iconifiedDataSet
-              .filter(item => item.incomeOrExpenseItemIconUUID)
-              .map(item =>
-                this.applyIcon(
-                  () => item.incomeOrExpenseItemIconUUID,
-                  (imageData) => item.imageData = imageData
-                )
-              )
+      // Apply the icons
+      map(dataSet => this.applyIconToItems(
+        dataSet,
+        item => item.incomeOrExpenseItemIconUUID ?? "",
+        (item, imageData) => item.imageData = imageData
+      )),
 
-          // Add a dummy operation so that the iconLoadingTasks array still has something to execute
-          // even if the iconifiedDataSet is empty
-          iconLoadingTasks.push(new Observable<void>(subscriber => {
-            subscriber.next()
-            subscriber.complete()
-          }))
-
-          // Wait for all the loading tasks to complete
-          errorPipingObservableConsumer(
-            forkJoin(iconLoadingTasks), // This is how we wait
-            mainSubscriber,
-            () => {
-              mainSubscriber.next(iconifiedDataSet)
-              mainSubscriber.complete()
-            }
-          )
-        }
-      )
+      // Flatten the Observable-of-Observables resulted from the icon applying operation
+      concatAll()
+    )
   }
 
   /**
@@ -317,42 +258,20 @@ export class CatalogService {
    * enriched with the Base64-encoded contents of their icons
    */
   public findAllBanks() : Observable<IconifiedBankProperties[]> {
-    return errorPipingObservableOperation(
-        this.banksRepository.findAllBanks(),
-        (dataSet:BankProperties[], mainSubscriber) => {
-          // Convert to an iconified set and filter
-          const iconifiedDataSet : IconifiedBankProperties[] = 
-            dataSet as IconifiedBankProperties[]
+    return this.banksRepository.findAllBanks().pipe(
+      // Convert to an iconified set
+      map(dataSet => dataSet as IconifiedBankProperties[]),
 
-          // Start loading the icons for each element in the data set that has an icon reference
-          const iconLoadingTasks : ObservableInput<void>[] =
-            iconifiedDataSet
-              .filter(item => item.bankIconUUID)
-              .map(item =>
-                this.applyIcon(
-                  () => item.bankIconUUID,
-                  (imageData) => item.imageData = imageData
-                )
-              )
+      // Apply the icons
+      map(dataSet => this.applyIconToItems(
+        dataSet,
+        item => item.bankIconUUID,
+        (item,imageData) => item.imageData = imageData
+      )),
 
-          // Add a dummy operation so that the iconLoadingTasks array still has something to execute
-          // even if the iconifiedDataSet is empty
-          iconLoadingTasks.push(new Observable<void>(subscriber => {
-            subscriber.next()
-            subscriber.complete()
-          }))
-
-          // Wait for all the loading tasks to complete
-          errorPipingObservableConsumer(
-            forkJoin(iconLoadingTasks), // This is how we wait
-            mainSubscriber,
-            () => {
-              mainSubscriber.next(iconifiedDataSet)
-              mainSubscriber.complete()
-            }
-          )
-        }
-      )
+      // Flatten the Observable-of-Observables resulted from the icon applying operation
+      concatAll()
+    )
   }
 
   /**
@@ -385,47 +304,23 @@ export class CatalogService {
    * filter is not given, then all currencies are returned.
    */
   public findAllCurrencies(filter?:Predicate<CurrencyProperties>) : Observable<IconifiedCurrencyProperties[]> {
-    return errorPipingObservableOperation(
-        this.currenciesRepository.findCurrencies(),
-        (dataSet:CurrencyProperties[], mainSubscriber) => {
-          // If a filter was provided, then apply it
-          if (filter) {
-            dataSet = dataSet.filter(filter)
-          }
+    return this.currenciesRepository.findCurrencies().pipe(
+      // If a filter was provided, then apply it
+      map(dataSet => filter ? dataSet.filter(filter) : dataSet),
 
-          // Convert to an iconified set and filter
-          const iconifiedDataSet : IconifiedCurrencyProperties[] = 
-            dataSet as IconifiedCurrencyProperties[]
+      // Convert to an iconified set
+      map(dataSet => dataSet as IconifiedCurrencyProperties[]),
 
-          // Start loading the icons for each element in the data set that has an icon reference
-          const iconLoadingTasks : ObservableInput<void>[] =
-            iconifiedDataSet
-              .filter(item => item.currencyIconUUID)
-              .map(item =>
-                this.applyIcon(
-                  () => item.currencyIconUUID,
-                  (imageData) => item.imageData = imageData
-                )
-              )
+      // Apply the icons
+      map(dataSet => this.applyIconToItems(
+        dataSet,
+        item => item.currencyIconUUID,
+        (item,imageData) => item.imageData = imageData
+      )),
 
-          // Add a dummy operation so that the iconLoadingTasks array still has something to execute
-          // even if the iconifiedDataSet is empty
-          iconLoadingTasks.push(new Observable<void>(subscriber => {
-            subscriber.next()
-            subscriber.complete()
-          }))
-
-          // Wait for all the loading tasks to complete
-          errorPipingObservableConsumer(
-            forkJoin(iconLoadingTasks), // This is how we wait
-            mainSubscriber,
-            () => {
-              mainSubscriber.next(iconifiedDataSet)
-              mainSubscriber.complete()
-            }
-          )
-        }
-      )
+      // Flatten the Observable-of-Observables resulted from the icon applying operation
+      concatAll()
+    )
   }
 
   /**
@@ -436,18 +331,14 @@ export class CatalogService {
    * @param currencyUUID the given currencyUUID
    */
   public findCurrencyByCurrencyUUID(currencyUUID:string) : Observable<IconifiedCurrencyProperties> {
-    return new Observable<IconifiedCurrencyProperties>(subscriber => {
-      this.findAllCurrencies(currency => currencyUUID == currency.currencyUUID).subscribe({
-        next: currencies => {
-          if (currencies.length == 0) {
-            subscriber.error(new Error("Currency not found"))
-          } else {
-            subscriber.next(currencies[0])
-          }
-        },
-        error: err => subscriber.error(err)
+    return this.findAllCurrencies(currency => currencyUUID == currency.currencyUUID).pipe(
+      map(currencies => {
+        if (currencies.length == 0) {
+          throw new Error("Currency not found")
+        }
+        return currencies[0]
       })
-    })
+    )
   }
 
   /**
@@ -493,6 +384,36 @@ export class CatalogService {
           subscriber.next()
           subscriber.complete()
         }
+      })
+    })
+  }
+
+  /**
+   * Loads the icons for each of the items within the referenced items array, using
+   * the {@link applyIcon} function.
+   * 
+   * @param items             the referenced items array
+   * @param iconUUIDExtractor mapper function that extracts the icon UUID from items
+   *                          stored in the referenced items array
+   * @param iconDataSetter    consumer function that stores the image data of an icon
+   *                          into items stored in the referenced items array
+   * @returns and observable that produces an array of iconified items that result
+   *          from the icon applying process
+   */
+  public applyIconToItems<T>(
+    items : T[],
+    iconUUIDExtractor : (item:T)=>string,
+    iconDataSetter    : (item:T,imageData:string)=>void
+  ) : Observable<T[]> {
+    return new Observable<T[]>(subscriber => {
+      forkJoin(
+        items.map(item => this.applyIcon(
+          () => iconUUIDExtractor(item),
+          imageData => iconDataSetter(item, imageData)
+        ))
+      ).subscribe({
+        next: () => complete(subscriber, items),
+        error: err => subscriber.error(err)
       })
     })
   }

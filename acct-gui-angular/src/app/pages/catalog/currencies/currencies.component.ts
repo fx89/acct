@@ -24,10 +24,7 @@ import { MsgboxComponent } from '../../../components-gui/msgbox/msgbox.component
 import { MsgboxType } from '../../../components-gui/msgbox/msgbox-type';
 import { CalendarButtonComponent } from '../../../components-gui/calendar-button/calendar-button.component';
 import { LabelComponent } from '../../../components-gui/label/label.component';
-
-type BankCardData = CardData & { bank : IconifiedBankProperties }
-
-type CurrencyCardData = CardData & { currency : IconifiedCurrencyProperties }
+import { BankCardData, CardDataService, CurrencyCardData } from '../../../services-acct/card-data.service';
 
 type MonitoredCurrencyCollectorCardData = CardData & { monitoredCurrencyCollector : MonitoredCurrencyCollector }
 
@@ -65,7 +62,8 @@ export class CurrenciesComponent implements OnInit {
 
   constructor(
     private catalogService : CatalogService,
-    private currencyService : CurrencyService
+    private currencyService : CurrencyService,
+    private cardDataService : CardDataService
   ) {
 
   }
@@ -131,17 +129,9 @@ export class CurrenciesComponent implements OnInit {
 
   loadRegisteredBanks() : Observable<void> {
     return new Observable<void>(subscriber => {
-      this.catalogService.findAllBanks().subscribe({
-        next: banks => {
-          this.registeredBanks = banks.map(bank => {
-            return {
-              bank     : bank,
-              title    : bank.bankCode,
-              text     : bank.bankName,
-              imageRef : bank.imageData
-            }
-          })
-
+      this.cardDataService.loadRegisteredBanks().subscribe({
+        next: registeredBanks => {
+          this.registeredBanks = registeredBanks
           complete(subscriber, undefined)
         },
         error: err => {
@@ -154,17 +144,9 @@ export class CurrenciesComponent implements OnInit {
 
   loadRegisteredCurrencies() : Observable<void> {
     return new Observable<void>(subscriber => {
-      this.catalogService.findAllCurrencies().subscribe({
-        next: currencies => {
-          this.registeredCurrencies = currencies.map(currency => {
-            return {
-              currency : currency,
-              title    : currency.currencyCode,
-              text     : currency.currencyName,
-              imageRef : currency.imageData
-            }
-          })
-
+      this.cardDataService.loadRegisteredCurrencies().subscribe({
+        next: registeredCurrencies => {
+          this.registeredCurrencies = registeredCurrencies
           complete(subscriber, undefined)
         },
         error: err => {
