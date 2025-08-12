@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, input, InputSignal, Output, Renderer2 } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, input, InputSignal, OnDestroy, Output, Renderer2 } from '@angular/core';
 import {v4 as uuidv4} from 'uuid';
 import { CalendarComponent } from '../calendar/calendar.component';
 import { findScrollPosition, getElementOrThrow, getElementRect, getElementRectOrThrow, Point2D } from '../../utils-reusalbe/dom-utils';
@@ -11,7 +11,7 @@ import { findScrollPosition, getElementOrThrow, getElementRect, getElementRectOr
   templateUrl: './calendar-button.component.html',
   styleUrl: './calendar-button.component.less'
 })
-export class CalendarButtonComponent implements AfterViewInit {
+export class CalendarButtonComponent implements AfterViewInit, OnDestroy {
 
   /**
    * The ID of the component is unique in the page
@@ -55,10 +55,16 @@ export class CalendarButtonComponent implements AfterViewInit {
     this.reparentCalendarContainerElement()
   }
 
+  ngOnDestroy(): void {
+    const element : HTMLElement = this.findCalendarContainerElement()
+    element.parentElement?.removeChild(element)
+  }
+
   reparentCalendarContainerElement() : void {
     const element : HTMLElement = this.findCalendarContainerElement()
     element.parentElement?.removeChild(element)
     document.body.appendChild(element)
+
     element.style.zIndex = '99999'
   }
 
