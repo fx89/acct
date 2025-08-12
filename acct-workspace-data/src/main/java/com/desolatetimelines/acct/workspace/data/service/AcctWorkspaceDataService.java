@@ -286,16 +286,19 @@ public class AcctWorkspaceDataService {
      * of {@link AcctAccountRecord account records} belonging to the referenced
      * {@link AcctAccount account}
      *
-     * @param account    the referenced account
-     * @param pageNumber the given page number
-     * @param pageSize   the given page size
+     * @param account       the referenced account
+     * @param pageNumber    the given page number
+     * @param pageSize      the given page size
+     * @param sortDirection lets consumers specify if the records should be
+     *                      sorted in ascending or descending order
      */
     public Page<AcctAccountRecord> findAccountRecordsByAccount(
         AcctAccount account,
         int pageNumber,
-        int pageSize
+        int pageSize,
+        SortDirection sortDirection
     ) {
-        return accountRecordsRepository.findAllByAccount(account, pageNumber, pageSize);
+        return accountRecordsRepository.findAllByAccount(account, pageNumber, pageSize, sortDirection);
     }
 
     /**

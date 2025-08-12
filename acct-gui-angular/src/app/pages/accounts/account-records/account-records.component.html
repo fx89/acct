@@ -6,24 +6,47 @@
 >
     <!-- Content on the left side of the top bar -->
     <div left-content style="padding-left:10px;">
-        <app-button
-            icon="button-icons/back.png"
-            value='Back to accounts'
-            textAlign="left"
-            (onClick)="onBackToAccountsButtonClick()"
-            width="170px"
-            height="30px" 
-        ></app-button>
+        <tr>
+            <td>
+                <app-button
+                    icon="button-icons/back.png"
+                    value='Back to accounts'
+                    textAlign="left"
+                    (onClick)="onBackToAccountsButtonClick()"
+                    width="170px"
+                    height="30px" 
+                ></app-button>
+            </td>
+            <td></td>
+            <td style="vertical-align:middle;">
+                <h2>{{ this.getAccountName() }}</h2>
+            </td>
+        </tr>
     </div>
 
     <!-- Content on the right side of the top bar -->
     <div right-content style="padding-right:10px;">
         <table cellspacing="0" cellpadding="0"><tr>
             <td>
+                <!-- The scroll to bottom button -->
+                <app-button
+                    value='Sort'
+                    [icon]="this.getSortDirectionIcon()"
+                    textAlign="left"
+                    [enabled]="this.isAccountRecordTextToSearchForValid()"
+                    (onClick)="onSortDirectionChangeButtonClick()"
+                    width="75px"
+                    height="30px"
+                    color="none"
+                    [enabled]="!this.areAllRecordsLoaded()"
+                ></app-button>
+            </td>
+            <td style="width:10px"></td>
+            <td>
                 <!-- The account record text input box -->
                 <app-input
-                    [enabled]="true"
                     [(value)]="accountRecordTextToSearchFor"
+                    [valid]="this.isAccountRecordTextToSearchForValid()"
                     width="200px"
                     height="30px"
                     hint="Account record text"
@@ -33,8 +56,10 @@
             <td>
                 <!-- The account record text search button -->
                 <app-button
+                    icon="button-icons/search.png"
                     value='Search'
                     textAlign="left"
+                    [enabled]="this.isAccountRecordTextToSearchForValid()"
                     (onClick)="onAccountRecordTextSearchButtonClick()"
                     width="100px"
                     height="30px"
@@ -48,33 +73,158 @@
 <!-- The account records table -->
 <app-table
     width="calc(100% - 20px)"
+    [scrollable]="true"
     scrollHeight="calc(100vh - 235px)"
+    (scroll)="this.onAccountRecordsTableScroll($event)"
     [zebraStripes]="true"
-    [selectableRows]="true"
-    [data]="accountRecords"
+    [selectableRows]="false"
+    [data]="this.getAccountRecords()"
     [(selectedRow)]="selectedAccountRecord"
-    [columnNames]="['Date', 'Category', 'Subcategory', 'Text', 'Value']"
-    [columnWidths]="[]"
+    [columnNames]="
+        this.isForeignCurrencyAccount()
+            ? ['', 'Date', 'Category', 'Subcategory', 'Item', 'Text', 'Value', 'Rate']
+            : ['', 'Date', 'Category', 'Subcategory', 'Item', 'Text', 'Value']
+    "
+    [columnWidths]="
+        this.isForeignCurrencyAccount()
+            ? [
+                '50px',
+                '80px',
+                '150px',
+                '150px',
+                '150px',
+                'calc(100% - 650px)',
+                '70px'
+              ]
+            : [
+                '50px',
+                '80px',
+                '150px',
+                '150px',
+                '150px',
+                'calc(100% - 720px)',
+                '70px',
+                '70px'
+              ]
+    "
     [headerStyles]="[
-      ]"
+        'text-align:center;',
+        'text-align:left;',
+        'text-align:left;',
+        'text-align:left;',
+        'text-align:left;',
+        'text-align:left;',
+        'text-align:right;'
+    ]"
     [columnStyles]="[
+        '',
+        'height:' + this.getAccountRecordHeightPx() + '; height: 50px; text-align:left;',
+        'text-align:left;',
+        'text-align:left;',
+        'text-align:left;',
+        'overflow:hidden;white-space:break-spaces;text-overflow:clip; text-align:left;',
+        'text-align:right;'
     ]"
   >
+    <!-- The actions column -->
     <ng-template tableColumn let-row="row">
-        <!-- {{ row.propertyA }} -->
+        <table cellsapcing="0" cellpadding="0"><tr>
+            <td>
+                <!-- The delete button -->
+                <app-button
+                    value=''
+                    icon="button-icons/minus.png"
+                    textAlign="left"
+                    (onClick)="onDeleteAccountRecordButtonClick(row)"
+                    width="20px"
+                    height="20px"
+                    color="red"
+                ></app-button>
+            </td>
+            <td style="width:5px;"></td>
+            <td>
+                <!-- The edit button -->
+                <app-button
+                    value=''
+                    icon="button-icons/edit.png"
+                    textAlign="left"
+                    (onClick)="onEditAccountRecordButtonClick(row)"
+                    width="20px"
+                    height="20px"
+                    color="none"
+                ></app-button>
+            </td>
+        </tr></table>
     </ng-template>
+
+    <!-- The date column -->
     <ng-template tableColumn let-row="row">
-        
+        {{ this.extractDate(row.accountRecordDate) }}
     </ng-template>
+
+    <!-- The category column -->
     <ng-template tableColumn let-row="row">
-        
+        <table cellspacing="0" cellpadding="0"><tr>
+            <td style="background:none;">
+                <img
+                    [src]="this.getAccountRecordCategoryIconImageData(row)"
+                    style="width:30px; height:30px;"
+                >
+            </td>
+            <td style="width:5px; background:none;"></td>
+            <td style="background:none;"><h3>
+                {{ this.getAccountRecordCategoryName(row) }}
+            </h3></td>
+        </tr></table>
     </ng-template>
+
+    <!-- The sub-category column -->
     <ng-template tableColumn let-row="row">
-        
+        <td style="background:none;">
+            <img
+                [src]="this.getAccountRecordSubcategoryIconImageData(row)"
+                style="width:30px; height:30px;"
+            >
+        </td>
+        <td style="width:5px; background:none;"></td>
+        <td style="background:none;"><h3>
+            {{ this.getAccountRecordSubcategoryName(row) }}
+        </h3></td>
     </ng-template>
+
+    <!-- The item column -->
     <ng-template tableColumn let-row="row">
-        
+        <td style="background:none;">
+            <img
+                [src]="this.getAccountRecordItemIconImageData(row)"
+                style="width:30px; height:30px;"
+            >
+        </td>
+        <td style="width:5px; background:none;"></td>
+        <td style="background:none;"><h3>
+            {{ this.getAccountRecordItemName(row) }}
+        </h3></td>
     </ng-template>
+
+    <!-- The text column -->
+    <ng-template tableColumn let-row="row">
+        {{ row.accountRecordText }}
+    </ng-template>
+
+    <!-- The value column -->
+    <ng-template tableColumn let-row="row">
+        <div [style.color]="row.accountRecordValue >= 0 ? 'var(--green-font-color)' : 'var(--red-font-color)'">
+            {{ this.formatNumber(row.accountRecordValue, 2) }}
+        </div>
+    </ng-template>
+
+    @if ( this.isForeignCurrencyAccount() ) {
+        <!-- The exchange rate column -->
+        <ng-template tableColumn let-row="row">
+            {{ this.formatNumber(row.exchangeRate) }}
+        </ng-template>
+    }
+
 </app-table>
 
 <!-- The account actions bar -->
@@ -135,7 +285,7 @@
                 <!-- The account balance label -->
                 <app-label
                     width="140px"
-                    value="999 999 999.9999&nbsp;"
+                    [value]="this.cachedFormattedAccountBalance + '&nbsp;'"
                     textAlign="right"
                     [inputStyle]="true"
                     fontSize="normal"

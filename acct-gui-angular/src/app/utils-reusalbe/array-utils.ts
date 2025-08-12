@@ -53,3 +53,36 @@ export function removeArrayElement(array:any[], element:any) : void {
       array.splice(index, 1);
     }
 }
+
+/**
+ * Merges the two referenced arrays of elements of the same type into one single
+ * array that contains distinct elements. The distinctiveness is given by the
+ * referenced key extractor.
+ * 
+ * @param array1       one of the arrays to be merged
+ * @param array2       the other array to be merged
+ * @param keyExtractor a mapping function that extracts the unique key from
+ *                     objects that are found in the two arrays to be merged
+ */
+export function mergeArrays<T,K>(array1:T[], array2:T[], keyExtractor?:((t:T)=>K)) : T[] {
+    return distinctElementsArray(array1.concat(array2), keyExtractor)
+}
+
+/**
+ * Flattens the referenced array of arrays
+ * 
+ * @param arrays the referenced array of arrays
+ */
+export function flattenArrays<T>(arrays:T[][]) : T[] {
+    const arr : T[] = []
+
+    arrays.forEach(array => {
+        if (array) {
+            array.forEach(element => {
+                arr.push(element)
+            })
+        }
+    })
+
+    return arr
+}

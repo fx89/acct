@@ -1,6 +1,7 @@
 package com.desolatetimelines.acct.workspace.ws.client;
 
 import com.desolatetimelines.acct.common.ws.model.AcctPage;
+import com.desolatetimelines.acct.common.ws.model.AcctSortDirection;
 import com.desolatetimelines.acct.workspace.ws.endpoint.AccountRecordsEndpoint;
 import com.desolatetimelines.acct.workspace.ws.model.*;
 import jakarta.validation.constraints.NotNull;
@@ -32,6 +33,7 @@ public interface RESTAccountRecordsEndpointClient extends AccountRecordsEndpoint
         @NotNull @RequestParam(value = "accountUUID") String accountUUID,
         @RequestParam(value = "pattern", required = false) String pattern,
         @NotNull @RequestParam(value = "pageNumber") int pageNumber,
-        @NotNull @RequestParam(value = "pageSize") int pageSize
+        @NotNull @RequestParam(value = "pageSize") int pageSize,
+        @NotNull @RequestParam(value = "sortDirection") AcctSortDirection sortDirection
     );
 }

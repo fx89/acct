@@ -539,6 +539,7 @@ public class AcctWorkspaceService {
         String pattern,
         int pageNumber,
         int pageSize,
+        SortDirection sortDirection,
         Collection<String> assignedPrivilegeNames
     ) {
         // Retrieve the account from the workspace
@@ -551,7 +552,7 @@ public class AcctWorkspaceService {
         // chosen based on the existence of the pattern
         final Page<AcctAccountRecord> accountRecordsPage =
             (pattern == null || pattern.isBlank())
-                ? dataService.findAccountRecordsByAccount(account, pageNumber, pageSize)
+                ? dataService.findAccountRecordsByAccount(account, pageNumber, pageSize, sortDirection)
                 : dataService.findAccountRecordsByAccountAndTextLike(account, pattern, pageNumber, pageSize);
 
         // If this is a foreign currency account then fetch currency exchange records for the page

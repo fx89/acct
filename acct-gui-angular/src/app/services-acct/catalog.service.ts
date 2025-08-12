@@ -375,12 +375,14 @@ export class CatalogService {
         // If the icon was loaded successfully, then set the icon data
         next: imageData => {
           iconDataSetter(imageData)
-          subscriber.next()
-          subscriber.complete()
         },
         // If the icon was not loaded successfully, then set the placeholder icon
         error: () => {
           iconDataSetter(ERROR_PLACEHOLDER_ICON_URL)
+          subscriber.next()
+          subscriber.complete()
+        },
+        complete: () => {
           subscriber.next()
           subscriber.complete()
         }
@@ -412,8 +414,8 @@ export class CatalogService {
           imageData => iconDataSetter(item, imageData)
         ))
       ).subscribe({
-        next: () => complete(subscriber, items),
-        error: err => subscriber.error(err)
+        error: err => subscriber.error(err),
+        complete: () => complete(subscriber, items)
       })
     })
   }

@@ -3,6 +3,7 @@ package com.desolatetimelines.acct.workspace.repository;
 import com.desolatetimelines.acct.common.model.Page;
 import com.desolatetimelines.acct.workspace.model.AcctAccount;
 import com.desolatetimelines.acct.workspace.model.AcctAccountRecord;
+import com.desolatetimelines.acct.workspace.model.SortDirection;
 
 import java.util.Optional;
 
@@ -39,11 +40,18 @@ public interface AccountRecordsRepository {
      * of {@link AcctAccountRecord account records} belonging to the referenced
      * {@link AcctAccount account}
      *
-     * @param account    the referenced account
-     * @param pageNumber the given page number
-     * @param pageSize   the given page size
+     * @param account       the referenced account
+     * @param pageNumber    the given page number
+     * @param pageSize      the given page size
+     * @param sortDirection lets consumers specify if the account records should
+     *                      be sorted in ascending or descending order.
      */
-    Page<AcctAccountRecord> findAllByAccount(AcctAccount account, int pageNumber, int pageSize);
+    Page<AcctAccountRecord> findAllByAccount(
+        AcctAccount account,
+        int pageNumber,
+        int pageSize,
+        SortDirection sortDirection
+    );
 
     /**
      * Retrieves a page of the given page size and with the given page number

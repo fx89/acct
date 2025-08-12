@@ -19,11 +19,12 @@
  DONE: APP-04006: Accounts page: Account records link
  DONE: APP-05001: Account records page: Page layout
  DONE: APP-05002: Account records page: Go back link
- TODO: APP-05003: Account records page: Account records table
- TODO: APP-05004: Account records page: Search box
+ DONE: APP-05003: Account records page: Account records table
+ DONE: APP-05004: Account records page: Search box
  TODO: APP-05005: Account records page: New record creation
  TODO: APP-05006: Account records page: Transfer
  TODO: APP-05007: Account records page: Currency exchange
+ TODO: APP-05008: Account records page: Gain / loss from exchange rates
  TODO: APP-06001: Currency history page: Page layout
  TODO: APP-06002: Currency history page: Bank and currency selector
  TODO: APP-06003: Currency history page: Currency history graphs

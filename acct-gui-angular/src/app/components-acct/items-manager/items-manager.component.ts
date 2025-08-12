@@ -345,15 +345,21 @@ export class ItemsManagerComponent implements OnInit, AfterContentInit {
   }
 
   private initDataSet() : void {
+    let theData : ItemsManagerDataSet = []
+
     this.dataSetProducerFunction().subscribe({
       next: data => {
         if (data) {
-          this.createCards(data)
+          theData = data
         }
       },
       error: err => {
         // TODO: Toast
         console.log(err)
+        this.createCards(theData)
+      },
+      complete: () => {
+        this.createCards(theData)
       }
     })
   }

@@ -4,6 +4,7 @@ import com.desolatetimelines.acct.common.model.Page;
 import com.desolatetimelines.acct.workspace.model.AcctAccount;
 import com.desolatetimelines.acct.workspace.model.AcctAccountRecord;
 import com.desolatetimelines.acct.workspace.model.JpaAcctAccountRecord;
+import com.desolatetimelines.acct.workspace.model.SortDirection;
 import com.desolatetimelines.acct.workspace.springrepository.JpaAccountRecordsRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -43,7 +44,18 @@ public class SpringJpaAccountRecordsRepository implements AccountRecordsReposito
     }
 
     @Override
-    public Page<AcctAccountRecord> findAllByAccount(AcctAccount account, int pageNumber, int pageSize) {
+    public Page<AcctAccountRecord> findAllByAccount(
+        AcctAccount account,
+        int pageNumber,
+        int pageSize,
+        SortDirection sortDirection
+    ) {
+        // Compute the sort direction
+        final Sort sort =
+            sortDirection == SortDirection.ASCENDING
+                ? Sort.by(Sort.Order.asc("accountRecordDate"))
+                : Sort.by(Sort.Order.desc("accountRecordDate"));
+
         // Get the page
         final org.springframework.data.domain.Page<AcctAccountRecord> page =
             jpaAccountRecordsRepository
@@ -52,7 +64,7 @@ public class SpringJpaAccountRecordsRepository implements AccountRecordsReposito
                     PageRequest.of(
                         pageNumber,
                         pageSize,
-                        Sort.by(Sort.Order.asc("accountRecordDate"))
+                        sort
                     )
                 );
 

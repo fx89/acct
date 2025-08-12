@@ -106,9 +106,13 @@ export function errorConsumingObservableOperation<IN,ERR>(
 ) : Observable<IN> {
     return new Observable<IN>(subscriber => {
         observable.subscribe({
-            next: (data:IN) => subscriber.next(data),
-            complete: () => subscriber.complete(),
-            error: err => errorConsumer(err)
+            next: (data:IN) => {
+                complete(subscriber, data)
+            },
+            error: err => {
+                errorConsumer(err)
+                subscriber.complete()
+            }
         })
     })
 }
@@ -129,9 +133,11 @@ export function errorConsumingObservableTransform<IN,OUT,ERR>(
 ) : Observable<OUT> {
     return new Observable<OUT>(subscriber => {
         observable.subscribe({
-            next: (data:IN) => subscriber.next(transform(data)),
-            complete: () => subscriber.complete(),
-            error: err => errorConsumer(err)
+            next: (data:IN) => complete(subscriber, transform(data)),
+            error: err => {
+                errorConsumer(err)
+                subscriber.complete()
+            }
         })
     })
 }
@@ -198,4 +204,47 @@ export function waitForCondition(condition:Predicate<void>, stepTimeMs?:number) 
         map(() => void 0)
     );
     
+}
+
+/**
+ * Waits for each of the observables in the referened observables array to either complete
+ * or end in error and then returns an array of all the results emmitted by all the observables
+ * that have ever emmitted anything. This ensures that the resulted observable completes even
+ * if one or more of the source observables emmits errors instead of completing. The down side,
+ * of course, is that errors are ignored. 
+ * 
+ * @param observables the referenced observables array
+ * 
+ * @returns an observable that completes no matter what, even if it means losing errors
+ */
+export function joinObservables<T>(observables : Observable<T>[]) : Observable<T[]> {
+    return new Observable<T[]>(subscriber => {
+        const expectedCompletedObservablesCount : number = observables.length
+        let currentCompletedObservablesCount : number = 0
+
+        const result : T[] = []
+
+        observables.forEach(observable =>
+            observable.subscribe({
+                next: value => {
+                    result.push(value)
+                    currentCompletedObservablesCount++
+                    if (currentCompletedObservablesCount == expectedCompletedObservablesCount) {
+                        complete(subscriber, result)
+                    }
+                },
+                error: () => {
+                    currentCompletedObservablesCount++
+                    if (currentCompletedObservablesCount == expectedCompletedObservablesCount) {
+                        complete(subscriber, result)
+                    }
+                },
+                complete: () => {
+                    if (currentCompletedObservablesCount == expectedCompletedObservablesCount) {
+                        complete(subscriber, result)
+                    }
+                }
+            })
+        )
+    })
 }

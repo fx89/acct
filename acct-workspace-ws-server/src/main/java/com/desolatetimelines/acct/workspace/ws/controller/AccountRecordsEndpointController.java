@@ -1,6 +1,7 @@
 package com.desolatetimelines.acct.workspace.ws.controller;
 
 import com.desolatetimelines.acct.common.ws.model.AcctPage;
+import com.desolatetimelines.acct.common.ws.model.AcctSortDirection;
 import com.desolatetimelines.acct.common.ws.model.AcctUserClaims;
 import com.desolatetimelines.acct.workspace.service.AcctWorkspaceService;
 import com.desolatetimelines.acct.workspace.ws.endpoint.AccountRecordsEndpoint;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import static com.desolatetimelines.acct.common.ws.util.AcctJwtUtils.extractCurrentUserClaims;
 import static com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspacePrivilegeIds.*;
+import static com.desolatetimelines.acct.workspace.ws.mapper.AcctSortDirectionMapper.toSortDirection;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
@@ -58,8 +60,9 @@ public class AccountRecordsEndpointController implements AccountRecordsEndpoint 
         @NotNull @RequestParam(value = "accountUUID") String accountUUID,
         @RequestParam(value = "pattern", required = false) String pattern,
         @NotNull @RequestParam(value = "pageNumber") int pageNumber,
-        @NotNull @RequestParam(value = "pageSize") int pageSize
-    ) {
+        @NotNull @RequestParam(value = "pageSize") int pageSize,
+        @NotNull @RequestParam(value = "sortDirection") AcctSortDirection sortDirection
+        ) {
         // Get the user claims
         final AcctUserClaims userClaims = extractCurrentUserClaims();
 
@@ -73,6 +76,7 @@ public class AccountRecordsEndpointController implements AccountRecordsEndpoint 
                     pattern,
                     pageNumber,
                     pageSize,
+                    toSortDirection(sortDirection),
                     userClaims.privilegeNames()
                 ),
                 pageNumber,
@@ -82,7 +86,7 @@ public class AccountRecordsEndpointController implements AccountRecordsEndpoint 
 
     @Override
     @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + ACCOUNT_RECORDS_TRANSFER + "')")
-    @PostMapping(value = "transfer")
+    @PostMapping(value = "/transfer")
     public void transferAmountBetweenAccountsWithSameCurrency(
         @NotNull @RequestParam String workspaceUUID,
         @RequestBody CurrencyTransfer currencyTransfer
@@ -103,7 +107,7 @@ public class AccountRecordsEndpointController implements AccountRecordsEndpoint 
 
     @Override
     @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + ACCOUNT_RECORDS_TRANSFER + "')")
-    @PostMapping(value = "exchange")
+    @PostMapping(value = "/exchange")
     public void currencyExchange(
         @NotNull @RequestParam(value = "workspaceUUID") String workspaceUUID,
         @RequestBody CurrencyExchange currencyExchange
