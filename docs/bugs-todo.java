@@ -10,6 +10,6 @@
 // DONE: BUG-00010: Icons manager: selection not reset after deletion
 // DONE: BUG-00011: Monitored currency records collection: collector is called even if data was collected for the day
 // DONE: BUG-00012: AcctCurrencyCollectionService: calls startSession() and endSession() even if all the records have been collected for the day
-
+// DONE: BUG-00012: Modal overlay component: re-parented divs are not cleaned up automatically by Angular and remain on the page, causing large vertical scrollbars to appear
 
 

@@ -1,5 +1,6 @@
-import { AfterContentChecked, AfterContentInit, AfterViewInit, Component, input, InputSignal } from '@angular/core';
+import {AfterViewInit, Component, input, InputSignal, OnDestroy } from '@angular/core';
 import {v4 as uuidv4} from 'uuid';
+import {getElementOrThrow} from '../../utils-reusalbe/dom-utils';
 
 @Component({
   selector: 'app-modal-overlay',
@@ -7,7 +8,7 @@ import {v4 as uuidv4} from 'uuid';
   templateUrl: './modal-overlay.component.html',
   styleUrl: './modal-overlay.component.less'
 })
-export class ModalOverlayComponent implements AfterViewInit {
+export class ModalOverlayComponent implements AfterViewInit, OnDestroy {
 
   /**
    * The ID of the component is unique in the page
@@ -22,12 +23,15 @@ export class ModalOverlayComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    const element : HTMLElement | null = document.getElementById(this.id)
-
-    if (element) {
-      element.parentElement?.removeChild(element)
-      document.body.appendChild(element)
-    }
+    const element : HTMLElement = getElementOrThrow(this.id, "Modal overlay not found in DOM")
+    element.parentElement?.removeChild(element)
+    document.body.appendChild(element)
   }
+
+  ngOnDestroy(): void {
+    const element : HTMLElement = getElementOrThrow(this.id, "Modal overlay not found in DOM")
+    element.parentElement?.removeChild(element)
+  }
+  
 
 }
