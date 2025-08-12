@@ -1,6 +1,7 @@
 @if ( this.isAccountSelected() ) {
     <app-account-records
         [selectedAccount]="this.getSelectedAccount()"
+        (selectedAccountCleared)="this.onSelectedAccountCleared()"
     ></app-account-records>
 } @else {
     <app-account-selection

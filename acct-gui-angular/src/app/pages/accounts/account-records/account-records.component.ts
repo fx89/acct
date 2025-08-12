@@ -1,4 +1,4 @@
-import { Component, input, InputSignal, OnInit } from '@angular/core';
+import { Component, EventEmitter, input, InputSignal, OnInit, Output } from '@angular/core';
 import { BarComponent } from '../../../components-gui/bar/bar.component';
 import { ButtonComponent } from '../../../components-gui/button/button.component';
 import { InputComponent } from '../../../components-gui/input/input.component';
@@ -27,6 +27,8 @@ export class AccountRecordsComponent implements OnInit {
   registeredCurrencies : CurrencyCardData[] = []
 
   selectedAccount : InputSignal<Account> = input.required()
+
+  @Output() selectedAccountCleared : EventEmitter<void> = new EventEmitter<void>()
 
   accountRecordTextToSearchFor : string = ""
 
@@ -58,7 +60,7 @@ export class AccountRecordsComponent implements OnInit {
   }
  
   onBackToAccountsButtonClick() : void {
-
+    this.selectedAccountCleared.emit()
   }
 
   onAccountRecordTextSearchButtonClick() : void {

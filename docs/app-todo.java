@@ -18,7 +18,7 @@
  DONE: APP-04005: Accounts page: Edit account
  DONE: APP-04006: Accounts page: Account records link
  DONE: APP-05001: Account records page: Page layout
- TODO: APP-05002: Account records page: Go back link
+ DONE: APP-05002: Account records page: Go back link
  TODO: APP-05003: Account records page: Account records table
  TODO: APP-05004: Account records page: Search box
  TODO: APP-05005: Account records page: New record creation

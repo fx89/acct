@@ -25,6 +25,10 @@ export class AccountsComponent implements OnInit {
     this.selectedAccount = selectedAccount
   }
 
+  onSelectedAccountCleared() : void {
+    delete this.selectedAccount
+  }
+
   getSelectedAccount() : Account {
     return this.selectedAccount as Account
   }
