@@ -1,1 +1,153 @@
-<p>account-records works!</p>
+<!-- The top barl -->
+<app-bar
+  [barType]="'top'"
+  [floating]="false"
+  [autoHiding]="false"
+>
+    <!-- Content on the left side of the top bar -->
+    <div left-content style="padding-left:10px;">
+        <app-button
+            value='Back to accounts'
+            textAlign="left"
+            (onClick)="onBackToAccountsButtonClick()"
+            width="150px"
+            height="30px" 
+        ></app-button>
+    </div>
+
+    <!-- Content on the right side of the top bar -->
+    <div right-content style="padding-right:10px;">
+        <table cellspacing="0" cellpadding="0"><tr>
+            <td>
+                <!-- The account record text input box -->
+                <app-input
+                    [enabled]="true"
+                    [(value)]="accountRecordTextToSearchFor"
+                    width="200px"
+                    height="30px"
+                    hint="Account record text"
+                ></app-input>
+            </td>
+            <td style="width:10px"></td>
+            <td>
+                <!-- The account record text search button -->
+                <app-button
+                    value='Search'
+                    textAlign="left"
+                    (onClick)="onAccountRecordTextSearchButtonClick()"
+                    width="100px"
+                    height="30px"
+                    color="blue"
+                ></app-button>
+            </td>
+        </tr></table>
+    </div>
+</app-bar>
+
+<!-- The account records table -->
+<app-table
+    width="calc(100% - 20px)"
+    scrollHeight="calc(100vh - 235px)"
+    [zebraStripes]="true"
+    [selectableRows]="true"
+    [data]="accountRecords"
+    [(selectedRow)]="selectedAccountRecord"
+    [columnNames]="['Date', 'Category', 'Subcategory', 'Text', 'Value']"
+    [columnWidths]="[]"
+    [headerStyles]="[
+      ]"
+    [columnStyles]="[
+    ]"
+  >
+    <ng-template tableColumn let-row="row">
+        <!-- {{ row.propertyA }} -->
+    </ng-template>
+    <ng-template tableColumn let-row="row">
+        
+    </ng-template>
+    <ng-template tableColumn let-row="row">
+        
+    </ng-template>
+    <ng-template tableColumn let-row="row">
+        
+    </ng-template>
+    <ng-template tableColumn let-row="row">
+        
+    </ng-template>
+</app-table>
+
+<!-- The account actions bar -->
+<app-bar
+  [barType]="'bottom'"
+  [floating]="false"
+  [autoHiding]="false"
+>
+    <!-- Content on the left side of the account actions bar -->
+    <div left-content style="padding-left:10px;">
+        <table cellspacing="0" cellpadding="0"><tr>
+            <td>
+                <!-- The new record button -->
+                <app-button
+                    value='New record'
+                    textAlign="left"
+                    (onClick)="onNewAccountRecordButtonClick()"
+                    width="100px"
+                    height="30px"
+                    color="blue"
+                ></app-button>
+            </td>
+            <td style="width:10px"></td>
+            <td>
+                <!-- The transfer button -->
+                <app-button
+                    value='Transfer'
+                    textAlign="left"
+                    (onClick)="onTransferButtonClick()"
+                    width="100px"
+                    height="30px"
+                    color="blue"
+                ></app-button>
+            </td>
+            <td style="width:10px"></td>
+            <td>
+                <!-- The currency exchange button -->
+                <app-button
+                    value='Currency exchange'
+                    textAlign="left"
+                    (onClick)="onCurrencyExchangeButtonClick()"
+                    width="170px"
+                    height="30px"
+                    color="blue"
+                ></app-button>
+            </td>
+        </tr></table>
+    </div>
+
+    <!-- Content on the right side of the account actions bar -->
+    <div right-content style="padding-right:10px;">
+        <table cellspacing="0" cellpadding="0"><tr>
+            <td>
+                Balance
+            </td>
+            <td style="width:10px"></td>
+            <td>
+                <!-- The account balance label -->
+                <app-label
+                    width="140px"
+                    value="999 999 999.9999&nbsp;"
+                    textAlign="right"
+                    [inputStyle]="true"
+                    fontSize="normal"
+                ></app-label>
+            </td>
+            <td style="width:10px"></td>
+            <td>
+                <!-- The account currency icon -->
+                 <img
+                    [src]="this.getAccountCurrencyIconImageData()"
+                    style="width:32px; height: 32px"
+                 >
+            </td>
+        </tr></table>
+    </div>
+</app-bar>

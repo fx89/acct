@@ -1,7 +1,7 @@
 @if ( this.isAccountSelected() ) {
-    <app-account-records>
-        
-    </app-account-records>
+    <app-account-records
+        [selectedAccount]="this.getSelectedAccount()"
+    ></app-account-records>
 } @else {
     <app-account-selection
         (selectedAccountChange)="this.onSelectedAccountChange($event)"

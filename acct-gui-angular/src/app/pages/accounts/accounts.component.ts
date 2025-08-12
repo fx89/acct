@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Account } from '../../model-acct/account';
+import { Account, IconifiedAccount } from '../../model-acct/account';
 import { isDefined } from '../../utils-reusalbe/lang-utils';
 import { AccountSelectionComponent } from './account-selection/account-selection.component';
 import { AccountRecordsComponent } from './account-records/account-records.component';
@@ -23,6 +23,10 @@ export class AccountsComponent implements OnInit {
 
   onSelectedAccountChange(selectedAccount:Account) : void {
     this.selectedAccount = selectedAccount
+  }
+
+  getSelectedAccount() : Account {
+    return this.selectedAccount as Account
   }
 
   isAccountSelected() : boolean {
