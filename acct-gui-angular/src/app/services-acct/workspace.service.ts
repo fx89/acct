@@ -18,6 +18,9 @@ import { AcctPage } from '../model-acct/acct-page';
 import { CurrencyTransfer } from '../model-acct/currency-transfer';
 import { CurrencyExchange } from '../model-acct/currency-exchange';
 import { SortDirection } from '../model-acct/sort-direction';
+import { AcctAutocompleteRepository } from '../repositories-acct/autocomplete-repository';
+import { AutocompleteDataResponse } from '../model-acct/autocomplete-data-response';
+import { IncomeOrExpenseItem } from '../model-acct/income-or-expense-item';
 
 /**
  * Container for the UUIDs of the workspace and account where an account record is found
@@ -38,8 +41,9 @@ export class WorkspaceService {
   constructor(
     private workspacesRepository     : AcctWorkspacesRepository,
     private catalogService           : CatalogService,
-    private acctAccountsRepository   : AcctAccountsRepository,
-    private accountRecordsRepository : AcctAccountRecordsRepository
+    private accountsRepository       : AcctAccountsRepository,
+    private accountRecordsRepository : AcctAccountRecordsRepository,
+    private autocompleteRepository   : AcctAutocompleteRepository
   ) { 
 
   }
@@ -131,7 +135,7 @@ export class WorkspaceService {
       // Store the wokrspace UUID
       const workspaceUUID : string = workspace.workspaceUUID
 
-      return this.acctAccountsRepository.findAccountsByWorkspaceUUID(workspaceUUID).pipe(
+      return this.accountsRepository.findAccountsByWorkspaceUUID(workspaceUUID).pipe(
         // Convert to iconified accounts
         map(accounts => accounts as IconifiedAccount[]),
 
@@ -163,7 +167,7 @@ export class WorkspaceService {
   public deleteWorkspaceAccount(workspace:Workspace, account:Account) : Observable<void> {
     if (workspace.workspaceUUID) {
       if (account.accountUUID) {
-        return this.acctAccountsRepository.deleteAccount(workspace.workspaceUUID, account.accountUUID)
+        return this.accountsRepository.deleteAccount(workspace.workspaceUUID, account.accountUUID)
       }
       else {
         throw new Error("Missing account UUID")
@@ -185,7 +189,7 @@ export class WorkspaceService {
    */
   public saveAccount(workspace:Workspace, account:Account) : Observable<AccountUUIDResponse> {
     if (workspace.workspaceUUID) {
-      return this.acctAccountsRepository.saveAccount(workspace.workspaceUUID, account)
+      return this.accountsRepository.saveAccount(workspace.workspaceUUID, account)
     }
     else {
       throw new Error("Missing workspace UUID")
@@ -209,7 +213,7 @@ export class WorkspaceService {
 
     // Run the repository operation and, when it returns a response, extract the account balance from
     // the response and send it up the pipe.
-    return this.acctAccountsRepository.findAccountBalance(workspaceUUID, accountUUID)
+    return this.accountsRepository.findAccountBalance(workspaceUUID, accountUUID)
       .pipe(map(response => response.accountBalance))
   }
 
@@ -319,6 +323,32 @@ export class WorkspaceService {
       currencyExchange.currencyTransfer.amount,
       currencyExchange.exchangeRate,
       currencyExchange.originalAccountRecordId
+    )
+  }
+
+  public findAutocompleteData(
+    workspace           : Workspace,
+    account             : Account,
+    incomeOrExpenseItem : IncomeOrExpenseItem,
+    textPattern         : string
+  ) : Observable<AutocompleteDataResponse[]> {
+    // Make sure the workspace UUID is provided and extract the account record context
+    const context : AccountRecordContext = this.verifyAccountRecordContext(workspace, account)
+
+    // Make sure the income or expense item UUID is provided
+    if (!isDefined(incomeOrExpenseItem.incomeOrExpenseItemUUID)) {
+      throw new Error("Income or expense item UUID not provided")
+    }
+
+    // Extract the income or expense item UUID
+    const incomeOrExpenseItemUUID : string = incomeOrExpenseItem.incomeOrExpenseItemUUID ?? ""
+
+    // Call the repository function
+    return this.autocompleteRepository.findAutocompleteData(
+      context.workspaceUUID,
+      context.accountUUID,
+      incomeOrExpenseItemUUID,
+      textPattern
     )
   }
 

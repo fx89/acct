@@ -1,12 +1,12 @@
 import { Component, EventEmitter, input, InputSignal, OnInit, Output } from '@angular/core';
 import { BarComponent } from '../../../components-gui/bar/bar.component';
 import { ButtonComponent } from '../../../components-gui/button/button.component';
-import { InputComponent } from '../../../components-gui/input/input.component';
+import { AutocompleteMapper, InputComponent } from '../../../components-gui/input/input.component';
 import { TableColumnDirective, TableComponent } from '../../../components-gui/table/table.component';
 import { LabelComponent } from '../../../components-gui/label/label.component';
 import { Account } from '../../../model-acct/account';
 import { BankCardData, CardDataService, CurrencyCardData, IncomeOrExpenseItemCardData, IncomeOrExpenseItemCategoryCardData, IncomeOrExpenseItemSubcategoryCardData } from '../../../services-acct/card-data.service';
-import { forkJoin, Observable } from 'rxjs';
+import { concatAll, forkJoin, map, Observable } from 'rxjs';
 import { complete, errorConsumingObservableOperation, newObservable } from '../../../utils-reusalbe/rxjs-utils';
 import { AccountRecord } from '../../../model-acct/account-record';
 import { WorkspaceService } from '../../../services-acct/workspace.service';
@@ -18,6 +18,13 @@ import { ScrollDirection, ScrollEvent } from '../../../components-gui/directives
 import { extractFirstToken } from '../../../utils-reusalbe/string-utils';
 import { SortDirection } from '../../../model-acct/sort-direction';
 import { IconifiedBankProperties } from '../../../model-acct/bank-properties';
+import { isDefined } from '../../../utils-reusalbe/lang-utils';
+import { DialogComponent } from '../../../components-gui/dialog/dialog.component';
+import { SelectComponent } from '../../../components-gui/select/select.component';
+import { CardData } from '../../../components-gui/cards-list/card-data';
+import { isNumber } from '../../../utils-reusalbe/dom-utils';
+import { IconifiedIncomeOrExpenseItem } from '../../../model-acct/income-or-expense-item';
+import { AutocompleteDataResponse } from '../../../model-acct/autocomplete-data-response';
 
 /**
  * The height of a record in the account records table. Used for both displaying account records
@@ -31,6 +38,18 @@ const ACCOUNT_RECORD_HEIGHT_PX : number = 50
  */
 const SCROLL_POS_PAGE_LOAD_THRESHOLD : number = 0.9
 
+/**
+ * Container for the properties displayed on the account record properties form
+ */
+type AccountRecordPropertiesFormData = {
+  accountRecordId? : number,
+  selectedIncomeOrExpenseItemCategory? : IncomeOrExpenseItemCategoryCardData,
+  selectedIncomeOrExpenseItemSubcategory? : IncomeOrExpenseItemSubcategoryCardData,
+  selectedIncomeOrExpenseItem? : IncomeOrExpenseItemCardData,
+  accountRecordText : string,
+  accountRecordValueStr : string
+}
+
 @Component({
   selector: 'app-account-records',
   imports: [
@@ -39,7 +58,9 @@ const SCROLL_POS_PAGE_LOAD_THRESHOLD : number = 0.9
     InputComponent,
     TableComponent,
     TableColumnDirective,
-    LabelComponent
+    LabelComponent,
+    DialogComponent,
+    SelectComponent
   ],
   templateUrl: './account-records.component.html',
   styleUrl: './account-records.component.less'
@@ -62,6 +83,11 @@ export class AccountRecordsComponent implements OnInit {
    * The workspace that contains the account for which data is being displayed
    */
   selectedWorkspace! : Workspace
+
+  /**
+   * The record being edited
+   */
+  selectedAccountRecord : AccountRecordPropertiesFormData = this.newAccountRecordPropertiesFormData()
 
   /**
    * This event is triggered when the back button is clicked and has the
@@ -103,6 +129,23 @@ export class AccountRecordsComponent implements OnInit {
   cachedIncomeOrExpenseItemCardsByIncomeOrExpenseItemUUID : Map<string,IncomeOrExpenseItemCardData> = new Map()
 
   /**
+   * The list of subcategory cards that fall under the category that's selected for the
+   * account record currently being edited
+   */
+  selectedAccountRecordSubcategoryOptions : IncomeOrExpenseItemSubcategoryCardData[] = []
+
+  /**
+   * The list of item cards that fall under the subcategory that's selected for the
+   * account record currently being edited
+   */
+  selectedAccountRecordItemOptions : IncomeOrExpenseItemCardData[] = []
+
+  /**
+   * Flag that controls the visibility of the account record properties form
+   */
+  accountRecordEditDialogVisible : boolean = false
+
+  /**
    * The sort direction can be toggled from the sort direction change button
    */
   sortDirection : SortDirection = SortDirection.ASCENDING
@@ -111,11 +154,6 @@ export class AccountRecordsComponent implements OnInit {
    * Contains the text in the search box
    */
   accountRecordTextToSearchFor : string = ""
-
-  /**
-   * The record that's selected in the account records table
-   */
-  selectedAccountRecord?: AccountRecord
 
   /**
    * The number of records that should be fetched at any one time.
@@ -278,6 +316,7 @@ export class AccountRecordsComponent implements OnInit {
         next: balance => {
           this.selectedAccountBalance = balance
           this.cacheFormattedAccountBalance()
+          complete(subscriber, undefined)
         },
         error: err => {
           // TODO: Toast
@@ -307,7 +346,73 @@ export class AccountRecordsComponent implements OnInit {
     this.cachedFormattedAccountBalance = this.formatNumber(this.selectedAccountBalance)
   }
 
-  formatNumber(number:number, nDigits?:number) : string {
+  private newAccountRecordPropertiesFormData(accountRecord?:AccountRecord) : AccountRecordPropertiesFormData {
+    var item        : IncomeOrExpenseItemCardData | undefined = undefined
+    var subcategory : IncomeOrExpenseItemSubcategoryCardData | undefined = undefined
+    var category    : IncomeOrExpenseItemCategoryCardData | undefined = undefined
+
+    if (accountRecord) {
+      item =
+        this.registeredIncomeOrExpenseItems.filter(item => 
+          accountRecord.incomeOrExpenseItemUUID == item.incomeOrExpenseItem.incomeOrExpenseItemUUID
+        )[0]
+
+      subcategory =
+        this.registeredIncomeOrExpenseItemSubcategories.filter(subcategory =>
+          (item?.incomeOrExpenseItemSubcategory.incomeOrExpenseItemSubcategoryUUID ?? "") == subcategory.incomeOrExpenseItemSubcategory.incomeOrExpenseItemSubcategoryUUID
+        )[0]
+
+      category =
+        this.registeredIncomeOrExpenseItemCategories.filter(category =>
+          (item?.incomeOrExpenseItemCategory.incomeOrExpenseItemCategoryUUID ?? "") == category.incomeOrExpenseItemCategory.incomeOrExpenseItemCategoryUUID
+        )[0]
+    }
+
+    return {
+      accountRecordId                        : accountRecord?.accountRecordId,
+      selectedIncomeOrExpenseItemSubcategory : subcategory,
+      selectedIncomeOrExpenseItemCategory    : category,
+      selectedIncomeOrExpenseItem            : item,
+      accountRecordText                      : accountRecord?.accountRecordText ?? "",
+      accountRecordValueStr                  : "" + (accountRecord?.accountRecordValue ?? 0)
+    }
+  }
+
+  selectedAccountRecordTextAutocompleteMapper : AutocompleteMapper = (input => {
+    // If the input is not long enough, then it does not qualify for auto-complete
+    if (input.length >= 3) {
+      // If there is no income or expense item UUID selected, then the auto-complete feature cannot run
+      if (this.selectedAccountRecord?.selectedIncomeOrExpenseItem?.incomeOrExpenseItem) {
+        // If all inputs are valid, then the auto-complete feature may run
+        return this.workspaceService.findAutocompleteData(
+          this.selectedWorkspace,
+          this.selectedAccount(),
+          this.selectedAccountRecord?.selectedIncomeOrExpenseItem?.incomeOrExpenseItem,
+          input
+        ).pipe(
+          map(arr => newObservable(arr.length > 0 ? this.processAutocompleteResponse(arr[0]) : "")),
+          concatAll()
+        )
+      }
+    }
+
+    // If the inputs are not valid, then return an empty string observable
+    return newObservable("")
+  })
+
+  private processAutocompleteResponse(autoCompleteResponse:AutocompleteDataResponse) : string {
+    this.selectedAccountRecord.accountRecordValueStr =
+      this.formatNumber(autoCompleteResponse.lastUsedAccountRecordValue, 2)
+
+    return autoCompleteResponse.accountRecordText
+  }
+
+  formatNumber(number?:number, nDigits?:number) : string {
+    // If the number is not provided, then return an empty string
+    if (number == undefined || number == null) {
+      return ""
+    }
+
     // Acquire the number of digits
     const nDig : number = nDigits ?? 4
 
@@ -328,6 +433,11 @@ export class AccountRecordsComponent implements OnInit {
       this.sortDirection = SortDirection.ASCENDING
     }
   }
+
+  private reloadRecords() : Observable<void> {
+    this.accountRecordsManager.reset()
+    return this.loadAccountRecordsPage()
+  }
  
   onBackToAccountsButtonClick() : void {
     this.selectedAccountCleared.emit()
@@ -335,8 +445,7 @@ export class AccountRecordsComponent implements OnInit {
 
   onAccountRecordTextSearchButtonClick() : void {
     if (this.isAccountRecordTextToSearchForValid()) {
-      this.accountRecordsManager.reset()
-      this.loadAccountRecordsPage().subscribe()
+      this.reloadRecords().subscribe()
     }
   }
 
@@ -358,7 +467,56 @@ export class AccountRecordsComponent implements OnInit {
   }
  
   onNewAccountRecordButtonClick() : void {
+    this.selectedAccountRecord = this.newAccountRecordPropertiesFormData()
+    this.accountRecordEditDialogVisible = true
+  }
 
+  onSelectedIncomeOrExpenseItemCategoryChange(
+    selectedIncomeOrExpenseItemCategory:CardData | undefined
+  ) : void {
+    // Assign the category
+    this.selectedAccountRecord.selectedIncomeOrExpenseItemCategory = 
+      selectedIncomeOrExpenseItemCategory as IncomeOrExpenseItemCategoryCardData
+
+    // Extract the subcategory options
+    this.selectedAccountRecordSubcategoryOptions = 
+      this.registeredIncomeOrExpenseItemSubcategories.filter(
+        subcat => 
+          (subcat.incomeOrExpenseItemCategory.incomeOrExpenseItemCategoryUUID ?? "") ==
+          this.selectedAccountRecord.selectedIncomeOrExpenseItemCategory?.incomeOrExpenseItemCategory?.incomeOrExpenseItemCategoryUUID
+      )
+
+    // Clear the available item options list
+    this.selectedAccountRecordItemOptions = []
+
+    // Clear the selected sub-category and item
+    this.selectedAccountRecord.selectedIncomeOrExpenseItemSubcategory = undefined
+    this.selectedAccountRecord.selectedIncomeOrExpenseItem = undefined
+  }
+
+  onSelectedIncomeOrExpenseItemSubcategoryChange(
+    selectedIncomeOrExpenseItemSubcategory:CardData | undefined
+  ) : void {
+    // Assign the subcategory
+    this.selectedAccountRecord.selectedIncomeOrExpenseItemSubcategory =
+      selectedIncomeOrExpenseItemSubcategory as IncomeOrExpenseItemSubcategoryCardData
+
+    // Extract the item options
+    this.selectedAccountRecordItemOptions =
+      this.registeredIncomeOrExpenseItems.filter(
+        item =>
+          (item.incomeOrExpenseItemSubcategory.incomeOrExpenseItemSubcategoryUUID ?? "") ==
+          this.selectedAccountRecord.selectedIncomeOrExpenseItemSubcategory?.incomeOrExpenseItemSubcategory?.incomeOrExpenseItemSubcategoryUUID
+      )
+
+    // Clear the selected item
+    this.selectedAccountRecord.selectedIncomeOrExpenseItem = undefined
+  }
+
+  onSelectedIncomeOrExpenseItemChange(selectedIncomeOrExpenseItem:CardData | undefined) : void {
+    // Assign the item
+    this.selectedAccountRecord.selectedIncomeOrExpenseItem =
+      selectedIncomeOrExpenseItem as IncomeOrExpenseItemCardData
   }
 
   onDeleteAccountRecordButtonClick(record:AccountRecord) : void {
@@ -366,7 +524,40 @@ export class AccountRecordsComponent implements OnInit {
   }
 
   onEditAccountRecordButtonClick(record:AccountRecord) : void {
+    this.selectedAccountRecord = this.newAccountRecordPropertiesFormData(record)
+    this.accountRecordEditDialogVisible = true
+  }
 
+  //aaafindAutocompleteData
+
+  onSelectedAccountRecordSaveButtonClick() : void {
+    if (this.isSelectedAccountRecordValid()) {
+      this.workspaceService.saveAccountRecord(
+        this.selectedWorkspace,
+        this.selectedAccount(),
+        {
+          accountRecordId         : this.selectedAccountRecord.accountRecordId,
+          incomeOrExpenseItemUUID : (this.selectedAccountRecord.selectedIncomeOrExpenseItem?.incomeOrExpenseItem.incomeOrExpenseItemUUID ?? ""),
+          accountRecordText       : this.selectedAccountRecord.accountRecordText,
+          accountRecordValue      : Number.parseFloat(this.selectedAccountRecord.accountRecordValueStr)
+        }
+      ).pipe(
+        map(() => forkJoin([
+          this.loadAccountBalance(),
+          this.reloadRecords()
+        ])),
+        concatAll()
+      )
+      .subscribe({
+        next: () => {
+          this.accountRecordEditDialogVisible = false
+        },
+        error: err => {
+          // TODO: Toast
+          console.error(err)
+        }
+      })
+    }
   }
 
   onTransferButtonClick() : void {
@@ -446,7 +637,11 @@ export class AccountRecordsComponent implements OnInit {
   }
 
   isForeignCurrencyAccount() : boolean {
-    return this.selectedWorkspace.defaultCurrencyUUID != this.cachedAccountCurrency.currencyUUID
+    return this.selectedWorkspace?.defaultCurrencyUUID != this.cachedAccountCurrency?.currencyUUID
+  }
+
+  isCurrencyExchangeRecord(rec:AccountRecord) : boolean {
+    return isDefined(rec.exchangeRate)
   }
 
   isAccountRecordTextToSearchForValid() : boolean {
@@ -456,8 +651,20 @@ export class AccountRecordsComponent implements OnInit {
     )
   }
 
-  areAllRecordsLoaded() : boolean {
-    return this.accountRecordsManager.areAllPagesLoaded()
+  isSelectedAccountRecordTextValid() : boolean {
+    return (this.selectedAccountRecord?.accountRecordText ?? "").length >= 3
+  }
+
+  isSelectedAccountRecordValueValid() : boolean {
+    return isNumber((this.selectedAccountRecord?.accountRecordValueStr ?? 0))
+  }
+
+  isSelectedAccountRecordValid() : boolean {
+    return (
+      this.isSelectedAccountRecordTextValid() &&
+      this.isSelectedAccountRecordValueValid() && 
+      isDefined(this.selectedAccountRecord.selectedIncomeOrExpenseItem)
+    )
   }
 
 }

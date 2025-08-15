@@ -62,3 +62,73 @@ export function findScrollPosition() : Point2D {
 
     
 }
+
+/**
+ * Returns true if the referenced string is a number, or false if it's not
+ */
+export function isNumber(string: any) : boolean {
+    const number = parseFloat(string)
+    return !(isNaN(number))
+}
+
+/**
+ * Returns true if the keyboard key referenced by the keyboard event is in
+ * one of the lists of special keys defind in the key categories described
+ * [here](https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_key_values):
+ * - Modifier keys
+ * - Navigation keys
+ * - Whitespace keys (excluding space)
+ * - Editing keys
+ */
+export function isSpecialKey(event:KeyboardEvent) : boolean {
+    // Get the key name
+    const key : string = event.key
+
+    // Check on the key name
+    return (
+      // Modifier keys
+      key == "Alt" ||
+      key == "AltGraph" ||
+      key == "CapsLock" ||
+      key == "Control" ||
+      key == "Fn" ||
+      key == "FnLock" ||
+      key == "Hyper" ||
+      key == "Meta" ||
+      key == "NumLock" ||
+      key == "OS" ||
+      key == "ScrollLock" ||
+      key == "Shift" ||
+      key == "Super" ||
+      key == "Symbol" ||
+      key == "SymbolLock" ||
+
+      // Navigation keys
+      key == "Home" || 
+      key == "End" ||
+      key == "PageUp" ||
+      key == "PageDown" ||
+      key == "ArrowUp" ||
+      key == "ArrowDown" ||
+      key == "ArrowLeft" ||
+      key == "ArrowRight" ||
+
+      // Whitespace keys
+      key == "Tab" || 
+      key == "Enter" ||
+
+      // Editing keys
+      key == "Backspace" ||
+      key == "Clear" ||
+      key == "Copy" ||
+      key == "CrSel" ||
+      key == "Cut" ||
+      key == "Delete" ||
+      key == "EraseEof" ||
+      key == "ExSel" ||
+      key == "Insert" ||
+      key == "Paste" ||
+      key == "Redo" ||
+      key == "Undo"
+    )
+}

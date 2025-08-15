@@ -21,12 +21,13 @@
  DONE: APP-05002: Account records page: Go back link
  DONE: APP-05003: Account records page: Account records table
  DONE: APP-05004: Account records page: Search box
- TODO: APP-05005: Account records page: New record creation
+ DONE: APP-05005: Account records page: New record creation + existing record editing
  TODO: APP-05006: Account records page: Transfer
  TODO: APP-05007: Account records page: Currency exchange
  TODO: APP-05008: Account records page: Gain / loss from exchange rates
  DONE: APP-05009: Account records page: Add bank icon alongside the account name
  TODO: APP-05010: Account records page: Let users specify transfer fees when registering a cash transfer (autofill with last value)
+ TODO: APP-05011: Account records page: Search box in the cards lists used for selecting categories, subcategories and items in the account record properties form
  TODO: APP-06001: Currency history page: Page layout
  TODO: APP-06002: Currency history page: Bank and currency selector
  TODO: APP-06003: Currency history page: Currency history graphs

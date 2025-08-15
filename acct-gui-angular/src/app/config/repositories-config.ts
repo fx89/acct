@@ -2,11 +2,13 @@ import { environment } from "../../environments/environment.development"
 import { AcctAccessTokensRepository } from "../repositories-acct/access-tokens-repository"
 import { AcctAccountRecordsRepository } from "../repositories-acct/account-records-repository"
 import { AcctAccountsRepository } from "../repositories-acct/accounts-repository"
+import { AcctAutocompleteRepository } from "../repositories-acct/autocomplete-repository"
 import { AcctBanksRepository } from "../repositories-acct/banks-repository"
 import { AcctCurrenciesRepository } from "../repositories-acct/currencies-repository"
 import { HttpAcctAccessTokensRepository } from "../repositories-acct/http/http-access-tokens-repository"
 import { HttpAcctAccountRecordsRepository } from "../repositories-acct/http/http-account-records-repository"
 import { HttpAcctAccountsRepository } from "../repositories-acct/http/http-accounts-repository"
+import { HttpAcctAutocompleteRepository } from "../repositories-acct/http/http-autocomplete-repository"
 import { HttpAcctBanksRepository } from "../repositories-acct/http/http-banks-repository"
 import { HttpAcctCurrenciesRepository } from "../repositories-acct/http/http-currencies-repository"
 import { HttpAcctIconsRepository } from "../repositories-acct/http/http-icons-repository"
@@ -20,6 +22,7 @@ import { AcctItemsRepository } from "../repositories-acct/items-repository"
 import { MockAcctAccessTokensRepository } from "../repositories-acct/mock/mock-access-tokens-repository"
 import { MockAcctAccountRecordsRepository } from "../repositories-acct/mock/mock-account-records-repository"
 import { MockAcctAccountsRepository } from "../repositories-acct/mock/mock-accounts-repository"
+import { MockAcctAutocompleteRepository } from "../repositories-acct/mock/mock-autocomplete-repository"
 import { MockAcctBanksRepository } from "../repositories-acct/mock/mock-banks-repository"
 import { MockAcctCurrenciesRepository } from "../repositories-acct/mock/mock-currencies-repository"
 import { MockAcctIconsRepository } from "../repositories-acct/mock/mock-icons-repository"
@@ -70,6 +73,16 @@ export function provideAcctAccountRecordsRepository() {
         AcctAccountRecordsRepository,
         new MockAcctAccountRecordsRepository(),
         httpConnectorsService => new HttpAcctAccountRecordsRepository(
+                httpConnectorsService.getHttpConnectorByServiceName('acct-workspace')
+            )
+    )
+}
+
+export function provideAcctAutocompleteRepository() {
+    return provideRepository(
+        AcctAutocompleteRepository,
+        new MockAcctAutocompleteRepository(),
+        httpConnectorsService => new HttpAcctAutocompleteRepository(
                 httpConnectorsService.getHttpConnectorByServiceName('acct-workspace')
             )
     )

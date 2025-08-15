@@ -48,7 +48,6 @@
                     width="75px"
                     height="30px"
                     color="none"
-                    [enabled]="!this.areAllRecordsLoaded()"
                 ></app-button>
             </td>
             <td style="width:10px"></td>
@@ -153,16 +152,18 @@
             </td>
             <td style="width:5px;"></td>
             <td>
-                <!-- The edit button -->
-                <app-button
-                    value=''
-                    icon="button-icons/edit.png"
-                    textAlign="left"
-                    (onClick)="onEditAccountRecordButtonClick(row)"
-                    width="20px"
-                    height="20px"
-                    color="none"
-                ></app-button>
+                @if ( !this.isCurrencyExchangeRecord(row) ) {
+                    <!-- The edit button -->
+                    <app-button
+                        value=''
+                        icon="button-icons/edit.png"
+                        textAlign="left"
+                        (onClick)="onEditAccountRecordButtonClick(row)"
+                        width="20px"
+                        height="20px"
+                        color="none"
+                    ></app-button>
+                }
             </td>
         </tr></table>
     </ng-template>
@@ -250,9 +251,10 @@
                 <!-- The new record button -->
                 <app-button
                     value='New record'
+                    icon="button-icons/plus.png"
                     textAlign="left"
                     (onClick)="onNewAccountRecordButtonClick()"
-                    width="100px"
+                    width="130px"
                     height="30px"
                     color="blue"
                 ></app-button>
@@ -312,3 +314,112 @@
         </tr></table>
     </div>
 </app-bar>
+
+<!-- The account record edit dialog -->
+ <app-dialog
+    title="Account record properties"
+    width="500px"
+    height="335px"
+    [(visible)]="this.accountRecordEditDialogVisible"
+    [closeButton]="true"
+ >
+    <table>
+        <tr>
+            <td style="height:40px;">
+                Category
+            </td>
+            <td style="width:20px"></td>
+            <td>
+                <app-select
+                    width="350px"
+                    [options]="this.registeredIncomeOrExpenseItemCategories"
+                    [cardHeightPx]="50"
+                    [selectedOption]="this.selectedAccountRecord.selectedIncomeOrExpenseItemCategory"
+                    (selectedOptionChange)="this.onSelectedIncomeOrExpenseItemCategoryChange($event)"
+                ></app-select>
+            </td>
+        </tr>
+        <tr>
+            <td style="height:40px;">
+                Subcategory
+            </td>
+            <td></td>
+            <td>
+                <app-select
+                    width="350px"
+                    [options]="this.selectedAccountRecordSubcategoryOptions"
+                    [cardHeightPx]="50"
+                    [selectedOption]="this.selectedAccountRecord.selectedIncomeOrExpenseItemSubcategory"
+                    (selectedOptionChange)="this.onSelectedIncomeOrExpenseItemSubcategoryChange($event)"
+                ></app-select>
+            </td>
+        </tr>
+        <tr>
+            <td style="height:40px;">
+                Item
+            </td>
+            <td></td>
+            <td>
+                <app-select
+                    width="350px"
+                    [options]="this.selectedAccountRecordItemOptions"
+                    [cardHeightPx]="50"
+                    [selectedOption]="this.selectedAccountRecord.selectedIncomeOrExpenseItem"
+                    (selectedOptionChange)="this.onSelectedIncomeOrExpenseItemChange($event)"
+                ></app-select>
+            </td>
+        </tr>
+        <tr>
+            <td style="height:40px;">
+                Text
+            </td>
+            <td></td>
+            <td>
+                <app-input
+                    [(value)]="this.selectedAccountRecord.accountRecordText"
+                    [valid]="this.isSelectedAccountRecordTextValid()"
+                    [autocompleteEnabled]="true"
+                    [autocompleteMapper]="this.selectedAccountRecordTextAutocompleteMapper"
+                    width="370px"
+                    height="30px"
+                    hint="Account record text"
+                ></app-input>
+            </td>
+        </tr>
+        <tr>
+            <td style="height:40px;">
+                Value
+            </td>
+            <td></td>
+            <td>
+                <app-input
+                    [(value)]="this.selectedAccountRecord.accountRecordValueStr"
+                    [valid]="this.isSelectedAccountRecordValueValid()"
+                    width="160px"
+                    height="30px"
+                    hint="Account record value"
+                ></app-input>
+            </td>
+        </tr>
+        <tr>
+            <td style="height:30px;"></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td>
+                <app-button
+                    [enabled]="this.isSelectedAccountRecordValid()"
+                    value='Save record'
+                    textAlign="center"
+                    (onClick)="onSelectedAccountRecordSaveButtonClick()"
+                    width="370px"
+                    height="30px"
+                    color="blue"
+                ></app-button>
+            </td>
+        </tr>
+    </table>
+</app-dialog>
