@@ -8,17 +8,27 @@
     <div left-content style="padding-left:10px;">
         <tr>
             <td>
+                <!-- The back button -->
                 <app-button
                     icon="button-icons/back.png"
                     value='Back to accounts'
                     textAlign="left"
                     (onClick)="onBackToAccountsButtonClick()"
-                    width="170px"
+                    width="160px"
                     height="30px" 
                 ></app-button>
             </td>
+            <td style="width:10px"></td>
+            <td style="vertical-align:middle;">
+                <!-- The account bank's icon -->
+                 <img
+                    [src]="this.getAccountBankIconImageData()"
+                    style="width:25px; height:25x;"
+                 >
+            </td>
             <td></td>
             <td style="vertical-align:middle;">
+                <!-- The account name -->
                 <h2>{{ this.getAccountName() }}</h2>
             </td>
         </tr>

@@ -5,7 +5,7 @@ import { InputComponent } from '../../../components-gui/input/input.component';
 import { TableColumnDirective, TableComponent } from '../../../components-gui/table/table.component';
 import { LabelComponent } from '../../../components-gui/label/label.component';
 import { Account } from '../../../model-acct/account';
-import { CardDataService, CurrencyCardData, IncomeOrExpenseItemCardData, IncomeOrExpenseItemCategoryCardData, IncomeOrExpenseItemSubcategoryCardData } from '../../../services-acct/card-data.service';
+import { BankCardData, CardDataService, CurrencyCardData, IncomeOrExpenseItemCardData, IncomeOrExpenseItemCategoryCardData, IncomeOrExpenseItemSubcategoryCardData } from '../../../services-acct/card-data.service';
 import { forkJoin, Observable } from 'rxjs';
 import { complete, errorConsumingObservableOperation, newObservable } from '../../../utils-reusalbe/rxjs-utils';
 import { AccountRecord } from '../../../model-acct/account-record';
@@ -17,6 +17,7 @@ import { IconifiedCurrencyProperties } from '../../../model-acct/currency-proper
 import { ScrollDirection, ScrollEvent } from '../../../components-gui/directives/scrollable-content.directive';
 import { extractFirstToken } from '../../../utils-reusalbe/string-utils';
 import { SortDirection } from '../../../model-acct/sort-direction';
+import { IconifiedBankProperties } from '../../../model-acct/bank-properties';
 
 /**
  * The height of a record in the account records table. Used for both displaying account records
@@ -75,7 +76,23 @@ export class AccountRecordsComponent implements OnInit {
    */
   registeredCurrencies : CurrencyCardData[] = []
 
+  /**
+   * This is where the currency of the selected account is cached,
+   * to be used during rendering.
+   */
   cachedAccountCurrency! : IconifiedCurrencyProperties
+
+  /**
+   * Contains all the banks registered in the catalog, together with
+   * their icons.
+   */
+  registeredBanks : BankCardData[] = []
+
+  /**
+   * This is where the bank of the selected account is cached, to
+   * be used during rendering.
+   */
+  cachedAccountBank! : IconifiedBankProperties
 
   registeredIncomeOrExpenseItems : IncomeOrExpenseItemCardData[] = []
 
@@ -137,6 +154,7 @@ export class AccountRecordsComponent implements OnInit {
     forkJoin([
       // Load the dependencies of the account records together with their icons
       this.loadRegisteredCurrencies(),
+      this.loadRegisteredBanks(),
       this.loadRegisteredIncomeOrExpenseItemsCatalog(),
 
       // Load the selected workspace
@@ -159,6 +177,27 @@ export class AccountRecordsComponent implements OnInit {
 
           // Identify the selected account's currency
           this.cacheSelectedAccountCurrency()
+
+          // Notify subscribers that the task is done
+          complete(subscriber, undefined)
+        },
+        error: err => {
+          // TODO: Toast
+          console.log(err)
+        }
+      })
+    })
+  }
+
+  loadRegisteredBanks() : Observable<void> {
+    return new Observable<void>(subscriber => {
+      this.cardDataService.loadRegisteredBanks().subscribe({
+        next: registeredBanks => {
+          // Assign the registered currencies array
+          this.registeredBanks = registeredBanks
+
+          // Identify the selected account's currency
+          this.cacheSelectedAccountBank()
 
           // Notify subscribers that the task is done
           complete(subscriber, undefined)
@@ -256,6 +295,14 @@ export class AccountRecordsComponent implements OnInit {
         [0]
   }
 
+  private cacheSelectedAccountBank() : void {
+    this.cachedAccountBank =
+      this.registeredBanks
+        .map(bankCard => bankCard.bank)
+        .filter(b => this.selectedAccount().bankUUID == b.bankUUID)
+        [0]
+  }
+
   private cacheFormattedAccountBalance() : void {
     this.cachedFormattedAccountBalance = this.formatNumber(this.selectedAccountBalance)
   }
@@ -340,6 +387,10 @@ export class AccountRecordsComponent implements OnInit {
 
   getAccountCurrencyIconImageData() : string {
     return this.cachedAccountCurrency?.imageData ?? ""
+  }
+
+  getAccountBankIconImageData() : string {
+    return this.cachedAccountBank?.imageData ?? ""
   }
 
   getAccountName() : string {

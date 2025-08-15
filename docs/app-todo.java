@@ -25,6 +25,8 @@
  TODO: APP-05006: Account records page: Transfer
  TODO: APP-05007: Account records page: Currency exchange
  TODO: APP-05008: Account records page: Gain / loss from exchange rates
+ DONE: APP-05009: Account records page: Add bank icon alongside the account name
+ TODO: APP-05010: Account records page: Let users specify transfer fees when registering a cash transfer (autofill with last value)
  TODO: APP-06001: Currency history page: Page layout
  TODO: APP-06002: Currency history page: Bank and currency selector
  TODO: APP-06003: Currency history page: Currency history graphs
