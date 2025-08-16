@@ -17,17 +17,20 @@
  DONE: APP-04004: Accounts page: Delete account
  DONE: APP-04005: Accounts page: Edit account
  DONE: APP-04006: Accounts page: Account records link
+ TODO: APP-04007: Accounts page: Account balance on the account card
  DONE: APP-05001: Account records page: Page layout
  DONE: APP-05002: Account records page: Go back link
  DONE: APP-05003: Account records page: Account records table
  DONE: APP-05004: Account records page: Search box
  DONE: APP-05005: Account records page: New record creation + existing record editing
- TODO: APP-05006: Account records page: Transfer
+ DONE: APP-05006: Account records page: Transfer
  TODO: APP-05007: Account records page: Currency exchange
  TODO: APP-05008: Account records page: Gain / loss from exchange rates
  DONE: APP-05009: Account records page: Add bank icon alongside the account name
  TODO: APP-05010: Account records page: Let users specify transfer fees when registering a cash transfer (autofill with last value)
  TODO: APP-05011: Account records page: Search box in the cards lists used for selecting categories, subcategories and items in the account record properties form
+ TODO: APP-05012: Account records page: Advanced search feature (time interval, item selection, etc.)
+ TODO: APP-05013: Account records page: Delete record
  TODO: APP-06001: Currency history page: Page layout
  TODO: APP-06002: Currency history page: Bank and currency selector
  TODO: APP-06003: Currency history page: Currency history graphs
@@ -77,5 +80,7 @@
  DONE: APP-09027: Catalog page: Icons: delete selected icons
  DONE: APP-09028: Catalog page: Currencies: monitored currencies: add exchange rates record manually
  TODO: APP-09029: Catalog page: Currencies: monitored currencies: collection error display
+ TODO: APP-10001: Currency extractors: ING currency collector - https://ing.ro/persoane-fizice/curs-valutar
+ TODO: APP-10002: Currency extractors: Raiffeisen currency collector - https://www.raiffeisen.ro/ro.exchangerates.20250816.BASE.EUR-USD-GBP-CAD-HUF-BGN-MDL-CHF-SEK-JPY-DKK-RUB-TRY-CZK-PLN-EGP.RON.json
 */
 

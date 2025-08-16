@@ -5,7 +5,7 @@ import { AutocompleteMapper, InputComponent } from '../../../components-gui/inpu
 import { TableColumnDirective, TableComponent } from '../../../components-gui/table/table.component';
 import { LabelComponent } from '../../../components-gui/label/label.component';
 import { Account } from '../../../model-acct/account';
-import { BankCardData, CardDataService, CurrencyCardData, IncomeOrExpenseItemCardData, IncomeOrExpenseItemCategoryCardData, IncomeOrExpenseItemSubcategoryCardData } from '../../../services-acct/card-data.service';
+import { AccountCardData, BankCardData, CardDataService, CurrencyCardData, IncomeOrExpenseItemCardData, IncomeOrExpenseItemCategoryCardData, IncomeOrExpenseItemSubcategoryCardData } from '../../../services-acct/card-data.service';
 import { concatAll, forkJoin, map, Observable } from 'rxjs';
 import { complete, errorConsumingObservableOperation, newObservable } from '../../../utils-reusalbe/rxjs-utils';
 import { AccountRecord } from '../../../model-acct/account-record';
@@ -22,9 +22,9 @@ import { isDefined } from '../../../utils-reusalbe/lang-utils';
 import { DialogComponent } from '../../../components-gui/dialog/dialog.component';
 import { SelectComponent } from '../../../components-gui/select/select.component';
 import { CardData } from '../../../components-gui/cards-list/card-data';
-import { isNumber } from '../../../utils-reusalbe/dom-utils';
-import { IconifiedIncomeOrExpenseItem } from '../../../model-acct/income-or-expense-item';
+import { isNumber } from '../../../utils-reusalbe/lang-utils';
 import { AutocompleteDataResponse } from '../../../model-acct/autocomplete-data-response';
+import { MsgboxComponent } from '../../../components-gui/msgbox/msgbox.component';
 
 /**
  * The height of a record in the account records table. Used for both displaying account records
@@ -50,6 +50,20 @@ type AccountRecordPropertiesFormData = {
   accountRecordValueStr : string
 }
 
+/**
+ * Container for the properties displayed on the currency transfer form
+ */
+type CurrencyTransferPropertiesFormData = {
+  targetAccount? : AccountCardData,
+  amountStr      : string
+}
+
+function newCurrencyTransferPropertiesFormData() {
+  return {
+    amountStr: ""
+  }
+}
+
 @Component({
   selector: 'app-account-records',
   imports: [
@@ -60,7 +74,8 @@ type AccountRecordPropertiesFormData = {
     TableColumnDirective,
     LabelComponent,
     DialogComponent,
-    SelectComponent
+    SelectComponent,
+    MsgboxComponent
   ],
   templateUrl: './account-records.component.html',
   styleUrl: './account-records.component.less'
@@ -88,6 +103,16 @@ export class AccountRecordsComponent implements OnInit {
    * The record being edited
    */
   selectedAccountRecord : AccountRecordPropertiesFormData = this.newAccountRecordPropertiesFormData()
+
+  /**
+   * Container for the properties directly edited by the currency transfer form
+   */
+  selectedCurrencyTransferPropertiesFormData : CurrencyTransferPropertiesFormData = newCurrencyTransferPropertiesFormData()
+
+  /**
+   * Numeric value for the remaining amount displayed in the currency transfer form
+   */
+  selectedCurrencyTransferRemainingAmount : number = 0
 
   /**
    * This event is triggered when the back button is clicked and has the
@@ -120,6 +145,24 @@ export class AccountRecordsComponent implements OnInit {
    */
   cachedAccountBank! : IconifiedBankProperties
 
+  /**
+   * Contains all the accounts registered in the selected workspace,
+   * together with their icons.
+   */
+  registeredAccounts : AccountCardData[] = []
+
+  /**
+   * Contains all the accounts registered in the selected workspace,
+   * having the same currency as the selected account
+   */
+  registeredAccountsWithSameCurrency : AccountCardData[] = []
+
+  /**
+   * Contains all the accounts registered in the selected workspace,
+   * having a different currency than selected account
+   */
+  registeredAccountsWithForeignCurrency : AccountCardData[] = []
+
   registeredIncomeOrExpenseItems : IncomeOrExpenseItemCardData[] = []
 
   registeredIncomeOrExpenseItemSubcategories : IncomeOrExpenseItemSubcategoryCardData[] = []
@@ -144,6 +187,16 @@ export class AccountRecordsComponent implements OnInit {
    * Flag that controls the visibility of the account record properties form
    */
   accountRecordEditDialogVisible : boolean = false
+
+  /**
+   * Flag that controls the visibility of the currency transfier dialog
+   */
+  currencyTransferDialogVisible : boolean = false
+
+  /**
+   * Flag that controls the visibility of the no transfer target accounts message box
+   */
+  noTransferTargetAccountsMessageBoxVisible : boolean = false
 
   /**
    * The sort direction can be toggled from the sort direction change button
@@ -198,9 +251,11 @@ export class AccountRecordsComponent implements OnInit {
       // Load the selected workspace
       this.loadSelectedWorkspace()
     ]).subscribe(() => {
-      // Once everything else is loaded, load the account balance and the first account records page
+      // Once everything else is loaded, load the account balance and the first account records page,
+      // together with the list of registered accounts - all of these need the workspace to work
       forkJoin([
-        this.loadAccountBalance(),
+        this.loadRegisteredAccounts(this.selectedWorkspace),
+        this.loadAccountBalance(this.selectedWorkspace),
         this.loadAccountRecordsPage()
       ]).subscribe()
     })
@@ -236,6 +291,33 @@ export class AccountRecordsComponent implements OnInit {
 
           // Identify the selected account's currency
           this.cacheSelectedAccountBank()
+
+          // Notify subscribers that the task is done
+          complete(subscriber, undefined)
+        },
+        error: err => {
+          // TODO: Toast
+          console.log(err)
+        }
+      })
+    })
+  }
+
+  loadRegisteredAccounts(selectedWorkspace:Workspace) : Observable<void> {
+    return new Observable<void>(subscriber => {
+      this.cardDataService.loadRegisteredAccounts(selectedWorkspace).subscribe({
+        next: registeredAccounts => {
+          // Assign the registered currencies array, but exclude the selected account
+          this.registeredAccounts =
+            registeredAccounts.filter(acc => this.selectedAccount().accountUUID != acc.account.accountUUID)
+
+          // Cache the accounts with the same currency
+          this.registeredAccountsWithSameCurrency =
+            this.registeredAccounts.filter(acc => this.selectedAccount().currencyUUID == acc.account.currencyUUID)
+
+          // Cache the foreign currency accounts
+          this.registeredAccountsWithForeignCurrency =
+            this.registeredAccounts.filter(acc => this.selectedAccount().currencyUUID != acc.account.currencyUUID)
 
           // Notify subscribers that the task is done
           complete(subscriber, undefined)
@@ -310,9 +392,9 @@ export class AccountRecordsComponent implements OnInit {
     )
   }
 
-  loadAccountBalance() : Observable<void> {
+  loadAccountBalance(selectedWorkspace:Workspace) : Observable<void> {
     return new Observable<void>(subscriber => {
-      this.workspaceService.findAccountBalance(this.selectedWorkspace, this.cachedSelectedAccount).subscribe({
+      this.workspaceService.findAccountBalance(selectedWorkspace, this.cachedSelectedAccount).subscribe({
         next: balance => {
           this.selectedAccountBalance = balance
           this.cacheFormattedAccountBalance()
@@ -438,6 +520,19 @@ export class AccountRecordsComponent implements OnInit {
     this.accountRecordsManager.reset()
     return this.loadAccountRecordsPage()
   }
+
+  private computeSelectedCurrencyTransferRemainingAccountBalance() : number {
+    // The remaining balance is computed as the selected account balance minus the
+    // amount to be transferred, unless the amount to be transfered is incorrectly
+    // typed in, in which case nothing is subtracted from the account balance.
+    return (
+      this.selectedAccountBalance - (
+        this.isSelectedCurrencyTransferPropertiesFormDataAmountValid()
+          ? parseFloat(this.selectedCurrencyTransferPropertiesFormData.amountStr)
+          : 0
+      )
+    )
+  }
  
   onBackToAccountsButtonClick() : void {
     this.selectedAccountCleared.emit()
@@ -528,8 +623,6 @@ export class AccountRecordsComponent implements OnInit {
     this.accountRecordEditDialogVisible = true
   }
 
-  //aaafindAutocompleteData
-
   onSelectedAccountRecordSaveButtonClick() : void {
     if (this.isSelectedAccountRecordValid()) {
       this.workspaceService.saveAccountRecord(
@@ -543,7 +636,7 @@ export class AccountRecordsComponent implements OnInit {
         }
       ).pipe(
         map(() => forkJoin([
-          this.loadAccountBalance(),
+          this.loadAccountBalance(this.selectedWorkspace),
           this.reloadRecords()
         ])),
         concatAll()
@@ -561,7 +654,49 @@ export class AccountRecordsComponent implements OnInit {
   }
 
   onTransferButtonClick() : void {
+    // If there are other accounts with the same currency as the selected account,
+    // then open the currency transfer dialog
+    if (this.registeredAccountsWithSameCurrency.length > 0) {
+      this.selectedCurrencyTransferPropertiesFormData = newCurrencyTransferPropertiesFormData()
+      this.selectedCurrencyTransferRemainingAmount = this.selectedAccountBalance
+      this.currencyTransferDialogVisible = true
+    } 
+    // If there aren't any other accounts with the same currency as the selected
+    // account, then display the no trasfer target accounts message box
+    else {
+      this.noTransferTargetAccountsMessageBoxVisible = true
+    }
+  }
 
+  onSelectedCurrencyTransferPropertiesFormDataTargetAccountChange(account:CardData|undefined) : void {
+    this.selectedCurrencyTransferPropertiesFormData.targetAccount = account as AccountCardData
+  }
+
+  onSelectedCurrencyTransferAmountChanged() : void {
+    this.selectedCurrencyTransferRemainingAmount = this.computeSelectedCurrencyTransferRemainingAccountBalance()
+  }
+
+  onRegisterCurrencyTransferButtonClick() : void {
+    const targetAccount : Account = this.selectedCurrencyTransferPropertiesFormData.targetAccount?.account as Account
+
+    this.workspaceService.saveCurrencyTransfer(
+      this.selectedWorkspace,
+      {
+        sourceAccount: this.selectedAccount(),
+        targetAccount: targetAccount,
+        amount: parseFloat(this.selectedCurrencyTransferPropertiesFormData.amountStr)
+      }
+    ).subscribe({
+      next: () => {
+        this.accountRecordsManager.reset()
+        this.accountRecordsManager.loadNextPage().subscribe()
+        this.currencyTransferDialogVisible = false
+      },
+      error: err => {
+        // TODO: toast
+        console.log(err)
+      }
+    })
   }
 
   onCurrencyExchangeButtonClick() : void {
@@ -636,6 +771,26 @@ export class AccountRecordsComponent implements OnInit {
     return "button-icons/" + (this.sortDirection == SortDirection.ASCENDING ? "down" : "up") + ".png"
   }
 
+  getSelectedCurrencyTransferRemainingAmountStr() : string {
+    return this.formatNumber(this.selectedCurrencyTransferRemainingAmount, 2)
+  }
+
+  getSelectedCurrencyTransferProblemDescription() : string {
+    if(!isDefined(this.selectedCurrencyTransferPropertiesFormData?.targetAccount)) {
+      return "Target account not selected"
+    }
+
+    if(!this.isSelectedCurrencyTransferPropertiesFormDataAmountValid()) {
+      return "Amount to be transferred is not a valid number"
+    }
+
+    if(!this.isSelectedCurrencyTransferRemainingAmountValid()) {
+      return "Insufficient funds"
+    }
+
+    return ""
+  }
+
   isForeignCurrencyAccount() : boolean {
     return this.selectedWorkspace?.defaultCurrencyUUID != this.cachedAccountCurrency?.currencyUUID
   }
@@ -664,6 +819,25 @@ export class AccountRecordsComponent implements OnInit {
       this.isSelectedAccountRecordTextValid() &&
       this.isSelectedAccountRecordValueValid() && 
       isDefined(this.selectedAccountRecord.selectedIncomeOrExpenseItem)
+    )
+  }
+
+  isSelectedCurrencyTransferPropertiesFormDataAmountValid() : boolean {
+    return (
+      isNumber(this.selectedCurrencyTransferPropertiesFormData?.amountStr ?? "") &&
+      parseFloat(this.selectedCurrencyTransferPropertiesFormData?.amountStr) > 0
+    )
+  }
+
+  isSelectedCurrencyTransferRemainingAmountValid() : boolean {
+    return this.selectedCurrencyTransferRemainingAmount >= 0
+  }
+
+  isRegisterCurrencyTransferButtonEnabled() : boolean {
+    return (
+      isDefined(this.selectedCurrencyTransferPropertiesFormData?.targetAccount) &&
+      this.isSelectedCurrencyTransferPropertiesFormDataAmountValid() &&
+      this.isSelectedCurrencyTransferRemainingAmountValid()
     )
   }
 

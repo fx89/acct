@@ -56,6 +56,7 @@
                 <app-input
                     [(value)]="accountRecordTextToSearchFor"
                     [valid]="this.isAccountRecordTextToSearchForValid()"
+                    (submit)="onAccountRecordTextSearchButtonClick()"
                     width="200px"
                     height="30px"
                     hint="Account record text"
@@ -70,7 +71,7 @@
                     textAlign="left"
                     [enabled]="this.isAccountRecordTextToSearchForValid()"
                     (onClick)="onAccountRecordTextSearchButtonClick()"
-                    width="100px"
+                    width="90px"
                     height="30px"
                     color="blue"
                 ></app-button>
@@ -123,6 +124,7 @@
         'text-align:left;',
         'text-align:left;',
         'text-align:left;',
+        'text-align:right;',
         'text-align:right;'
     ]"
     [columnStyles]="[
@@ -132,6 +134,7 @@
         'text-align:left;',
         'text-align:left;',
         'overflow:hidden;white-space:break-spaces;text-overflow:clip; text-align:left;',
+        'text-align:right;',
         'text-align:right;'
     ]"
   >
@@ -254,7 +257,7 @@
                     icon="button-icons/plus.png"
                     textAlign="left"
                     (onClick)="onNewAccountRecordButtonClick()"
-                    width="130px"
+                    width="125px"
                     height="30px"
                     color="blue"
                 ></app-button>
@@ -264,9 +267,10 @@
                 <!-- The transfer button -->
                 <app-button
                     value='Transfer'
+                    icon="button-icons/transfer.png"
                     textAlign="left"
                     (onClick)="onTransferButtonClick()"
-                    width="100px"
+                    width="104px"
                     height="30px"
                     color="blue"
                 ></app-button>
@@ -395,6 +399,7 @@
                 <app-input
                     [(value)]="this.selectedAccountRecord.accountRecordValueStr"
                     [valid]="this.isSelectedAccountRecordValueValid()"
+                    textAlign="right"
                     width="160px"
                     height="30px"
                     hint="Account record value"
@@ -423,3 +428,112 @@
         </tr>
     </table>
 </app-dialog>
+
+<!-- The currency transfer dialog -->
+ <app-dialog
+    title="Account record properties"
+    width="495px"
+    height="270px"
+    [(visible)]="this.currencyTransferDialogVisible"
+    [closeButton]="true"
+ >
+    <table>
+        <tr>
+            <td style="height:40px;">
+                Target account
+            </td>
+            <td></td>
+            <td>
+                <app-select
+                    width="350px"
+                    [options]="this.registeredAccountsWithSameCurrency"
+                    [cardHeightPx]="50"
+                    [selectedOption]="this.selectedCurrencyTransferPropertiesFormData.targetAccount"
+                    (selectedOptionChange)="this.onSelectedCurrencyTransferPropertiesFormDataTargetAccountChange($event)"
+                ></app-select>
+            </td>
+        </tr>
+        <tr>
+            <td style="height:40px;">
+                Amount
+            </td>
+            <td></td>
+            <td>
+                <app-input
+                    [(value)]="this.selectedCurrencyTransferPropertiesFormData.amountStr"
+                    [valid]="this.isSelectedCurrencyTransferPropertiesFormDataAmountValid()"
+                    (onValueChanged)="this.onSelectedCurrencyTransferAmountChanged()"
+                    textAlign="right"
+                    width="160px"
+                    height="30px"
+                    hint="Account record value"
+                ></app-input>
+            </td>
+        </tr>
+        <tr>
+            <td style="height:40px;">
+                Remaining mount
+            </td>
+            <td></td>
+            <td style="padding-left:4px;">
+                <app-label
+                    width="160px"
+                    [inputStyle]="true"
+                    textAlign="right"
+                    [color]="this.isSelectedCurrencyTransferRemainingAmountValid() ? 'none' : 'red'"
+                    [value]="this.getSelectedCurrencyTransferRemainingAmountStr() + '&nbsp;'"
+                ></app-label>
+            </td>
+        </tr>
+        <tr>
+            <td style="height:10px;"></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td>
+                <app-label
+                    width="350px"
+                    textAlign="left"
+                    style="color:var(--red-font-color)"
+                    [value]="this.getSelectedCurrencyTransferProblemDescription()"
+                ></app-label>
+            </td>
+        </tr>
+        <tr>
+            <td style="height:10px;"></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td>
+                <app-button
+                    [enabled]="this.isRegisterCurrencyTransferButtonEnabled()"
+                    value='Register the currency transfer'
+                    textAlign="center"
+                    (onClick)="onRegisterCurrencyTransferButtonClick()"
+                    width="370px"
+                    height="30px"
+                    color="blue"
+                ></app-button>
+            </td>
+        </tr>
+    </table>
+ </app-dialog>
+
+ <!-- The no transfer target accounts message box -->
+  <app-msgbox
+    [(visible)]="this.noTransferTargetAccountsMessageBoxVisible"
+    width="400px"
+    height="200px"
+    title="There is no account to transfer money into"
+    text="
+        There are no other accounts with the same currency as the selected account within the scope of the
+        selected workspace. Currency transfers can only be done between two accounts with the same currency.
+        If you want to register a transfer to a foreign currency account, then use the Currency exchage button.
+    "
+  ></app-msgbox>

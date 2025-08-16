@@ -41,6 +41,7 @@ export class InputComponent implements OnChanges, AfterViewInit {
   hint                : InputSignal<string>  = input("")
   autocompleteEnabled : InputSignal<boolean> = input(false)
   autocompleteMapper  : InputSignal<AutocompleteMapper> = input((value:string) => newObservable(""))
+  textAlign           : InputSignal<string>  = input("left")
 
   // Events
   @Output() valueChange    : EventEmitter<string> = new EventEmitter<string>()
@@ -164,6 +165,10 @@ export class InputComponent implements OnChanges, AfterViewInit {
 
   public getInputType() : string {
     return this.masked() ? "password" : "text"
+  }
+
+  public getTextAlign() : string {
+    return this.textAlign()
   }
 
   public isHintVisible() : boolean {

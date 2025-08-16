@@ -9,6 +9,9 @@ import { IconifiedIncomeOrExpenseItemSubcategory } from '../model-acct/income-or
 import { IconifiedIncomeOrExpenseItemCategory } from '../model-acct/income-or-expense-item-category';
 import { complete } from '../utils-reusalbe/rxjs-utils';
 import { flattenArrays } from '../utils-reusalbe/array-utils';
+import { IconifiedAccount } from '../model-acct/account';
+import { Workspace } from '../model-acct/workspace';
+import { WorkspaceService } from './workspace.service';
 
 /**
  * Extends the CardData type with the IconifiedCurrencyProperties of a given currency
@@ -19,6 +22,11 @@ export type CurrencyCardData = CardData & { currency : IconifiedCurrencyProperti
  * Extends the CardData type with the IconifiedBankProperties of a given currency
  */
 export type BankCardData = CardData & { bank : IconifiedBankProperties }
+
+/**
+ * Extends the CardData type with the IconifiedAccount of a given account
+ */
+export type AccountCardData = CardData & { account : IconifiedAccount }
 
 /**
  * Extends the CardData type with the IconifiedIncomeOrExpenseItem that it represents,
@@ -60,7 +68,8 @@ export type ItemsCatalog = {
 export class CardDataService {
 
   constructor(
-    private catalogService : CatalogService
+    private catalogService   : CatalogService,
+    private workspaceService : WorkspaceService
   ) { }
 
   /**
@@ -96,6 +105,28 @@ export class CardDataService {
             title    : bank.bankCode,
             text     : bank.bankName,
             imageRef : bank.imageData
+          }
+        })
+      )
+    )
+  }
+
+  /**
+   * Returns an observable that produces an array of AccountCardData objects, which contain
+   * the data to be set on an account card and the iconified account used as source for the
+   * card data. Card data is returned only for accounts within the referenced workspace.
+   * 
+   * @param workspace the referenced workspace
+   */
+  public loadRegisteredAccounts(workspace:Workspace) : Observable<AccountCardData[]> {
+    return this.workspaceService.findWorkspaceAccounts(workspace).pipe(
+      map(accounts => 
+        accounts.map(account => {
+          return {
+            account  : account,
+            title    : account.accountName,
+            text     : account.accountNumber,
+            imageRef : account.imageData
           }
         })
       )

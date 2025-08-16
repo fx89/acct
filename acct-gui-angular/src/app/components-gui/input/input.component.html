@@ -12,5 +12,6 @@
     (focus)="this.focusEventHandler()"
     (click)="this.focusEventHandler()"
     (blur)="this.lostFocusEventHandler()"
+    [style.text-align]="this.getTextAlign()"
     #itemValue
 >

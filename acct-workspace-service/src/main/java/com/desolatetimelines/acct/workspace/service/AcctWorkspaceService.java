@@ -624,14 +624,14 @@ public class AcctWorkspaceService {
 
         // Add a record for subtracting the amount from the source account
         final AcctAccountRecord sourceAccountRecord = createNewAccountRecordWithinAccount(sourceAccount, userUUID);
-        sourceAccountRecord.setAccountRecordText(ACCT_REC_TEXT_TRANSFER + " -> " + targetAccount.getAccountName());
+        sourceAccountRecord.setAccountRecordText(ACCT_REC_TEXT_TRANSFER + " >>> " + targetAccount.getAccountName());
         sourceAccountRecord.setAccountRecordValue(-amount);
         sourceAccountRecord.setIncomeOrExpenseItemUUID(INCOME_OR_EXPENSE_ITEM_UUID_FOR_TRANSFER);
         saveAccountRecord(userUUID, currentDate, sourceAccountRecord);
 
         // Add a record for adding the amount to the target account
         final AcctAccountRecord targetAccountRecord = createNewAccountRecordWithinAccount(targetAccount, userUUID);
-        targetAccountRecord.setAccountRecordText(ACCT_REC_TEXT_TRANSFER + " <- " + sourceAccount.getAccountName());
+        targetAccountRecord.setAccountRecordText(ACCT_REC_TEXT_TRANSFER + " <<< " + sourceAccount.getAccountName());
         targetAccountRecord.setAccountRecordValue(amount);
         targetAccountRecord.setIncomeOrExpenseItemUUID(INCOME_OR_EXPENSE_ITEM_UUID_FOR_TRANSFER);
         saveAccountRecord(userUUID, currentDate, targetAccountRecord);
@@ -681,14 +681,14 @@ public class AcctWorkspaceService {
 
         // Add a record for subtracting the amount from the source account
         final AcctAccountRecord sourceAccountRecord = createNewAccountRecordWithinAccount(sourceAccount, userUUID);
-        sourceAccountRecord.setAccountRecordText(ACCT_REC_TEXT_EXCHANGE + " -> " + targetAccount.getAccountName());
+        sourceAccountRecord.setAccountRecordText(ACCT_REC_TEXT_EXCHANGE + " >>> " + targetAccount.getAccountName());
         sourceAccountRecord.setAccountRecordValue(-sourceAmount);
         sourceAccountRecord.setIncomeOrExpenseItemUUID(INCOME_OR_EXPENSE_ITEM_UUID_FOR_CURRENCY_EXCHANGE);
         final AcctAccountRecord savedSourceAccountRecord = saveAccountRecord(userUUID, currentDate, sourceAccountRecord);
 
         // Add a record for adding the amount to the target account
         final AcctAccountRecord targetAccountRecord = createNewAccountRecordWithinAccount(targetAccount, userUUID);
-        targetAccountRecord.setAccountRecordText(ACCT_REC_TEXT_EXCHANGE + " <- " + sourceAccount.getAccountName());
+        targetAccountRecord.setAccountRecordText(ACCT_REC_TEXT_EXCHANGE + " <<< " + sourceAccount.getAccountName());
         targetAccountRecord.setAccountRecordValue(amount);
         targetAccountRecord.setIncomeOrExpenseItemUUID(INCOME_OR_EXPENSE_ITEM_UUID_FOR_CURRENCY_EXCHANGE);
         final AcctAccountRecord savedTargetAccountRecord = saveAccountRecord(userUUID, currentDate, targetAccountRecord);

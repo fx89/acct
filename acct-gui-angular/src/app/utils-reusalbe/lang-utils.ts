@@ -25,3 +25,19 @@ export function throwIfNotDefined<T>(item:T|undefined) : T {
 
     throw new Error("The given item reference is undefined")
 }
+
+/**
+ * Returns true if the referenced string is a number, or false if it's not
+ */
+export function isNumber(string: any) : boolean {
+    // Parse the string into a float
+    const number = parseFloat(string)
+
+    // If the parsing did not go well, then the string does not contain a number
+    if(isNaN(number)) {
+        return false
+    }
+
+    // If theparsing went well, then test it with the regex
+    return /^[+-]?\d+(\.\d+)?$/.test(string)
+}

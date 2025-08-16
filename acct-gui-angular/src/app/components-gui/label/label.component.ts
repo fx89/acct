@@ -23,6 +23,7 @@ export class LabelComponent {
   textAlign  : InputSignal<string>  = input("left")
   flash      : InputSignal<boolean> = input(false)
   inputStyle : InputSignal<boolean> = input(false)
+  style      : InputSignal<string>  = input("")
 
   getWidth() : string {
     return this.width()
@@ -38,6 +39,10 @@ export class LabelComponent {
 
   getTextAlign() : string {
     return this.textAlign()
+  }
+
+  getStyle() : string {
+    return this.style()
   }
 
   isRed() : boolean {

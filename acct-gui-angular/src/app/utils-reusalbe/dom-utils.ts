@@ -64,14 +64,6 @@ export function findScrollPosition() : Point2D {
 }
 
 /**
- * Returns true if the referenced string is a number, or false if it's not
- */
-export function isNumber(string: any) : boolean {
-    const number = parseFloat(string)
-    return !(isNaN(number))
-}
-
-/**
  * Returns true if the keyboard key referenced by the keyboard event is in
  * one of the lists of special keys defind in the key categories described
  * [here](https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_key_values):
