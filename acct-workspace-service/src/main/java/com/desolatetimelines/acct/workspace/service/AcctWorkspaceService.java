@@ -25,8 +25,7 @@ import java.time.Instant;
 import java.util.*;
 import java.util.stream.Stream;
 
-import static com.desolatetimelines.acct.common.model.CommonUUIDs.INCOME_OR_EXPENSE_ITEM_UUID_FOR_DEPOSIT;
-import static com.desolatetimelines.acct.common.model.CommonUUIDs.INCOME_OR_EXPENSE_ITEM_UUID_FOR_TRANSFER;
+import static com.desolatetimelines.acct.common.model.CommonUUIDs.*;
 import static com.desolatetimelines.acct.security.client.model.ResourceType.WORKSPACE;
 import static com.desolatetimelines.acct.workspace.privilegesprovider.model.ResourceOwnership.*;
 import static com.desolatetimelines.acct.workspace.privilegesprovider.model.WorkspacePrivilegeIds.*;
@@ -40,6 +39,8 @@ import static java.util.Collections.emptyList;
 public class AcctWorkspaceService {
 
     private static final String ACCT_REC_TEXT_TRANSFER = "Transfer";
+
+    private static final String ACCT_REC_TEXT_EXCHANGE = "Exchange";
 
     private static final String ACCT_REC_TEXT_DEPOSIT_CREATION = "Deposit creation";
 
@@ -623,14 +624,14 @@ public class AcctWorkspaceService {
 
         // Add a record for subtracting the amount from the source account
         final AcctAccountRecord sourceAccountRecord = createNewAccountRecordWithinAccount(sourceAccount, userUUID);
-        sourceAccountRecord.setAccountRecordText(ACCT_REC_TEXT_TRANSFER);
+        sourceAccountRecord.setAccountRecordText(ACCT_REC_TEXT_TRANSFER + " -> " + targetAccount.getAccountName());
         sourceAccountRecord.setAccountRecordValue(-amount);
         sourceAccountRecord.setIncomeOrExpenseItemUUID(INCOME_OR_EXPENSE_ITEM_UUID_FOR_TRANSFER);
         saveAccountRecord(userUUID, currentDate, sourceAccountRecord);
 
         // Add a record for adding the amount to the target account
         final AcctAccountRecord targetAccountRecord = createNewAccountRecordWithinAccount(targetAccount, userUUID);
-        targetAccountRecord.setAccountRecordText(ACCT_REC_TEXT_TRANSFER);
+        targetAccountRecord.setAccountRecordText(ACCT_REC_TEXT_TRANSFER + " <- " + sourceAccount.getAccountName());
         targetAccountRecord.setAccountRecordValue(amount);
         targetAccountRecord.setIncomeOrExpenseItemUUID(INCOME_OR_EXPENSE_ITEM_UUID_FOR_TRANSFER);
         saveAccountRecord(userUUID, currentDate, targetAccountRecord);
@@ -680,16 +681,16 @@ public class AcctWorkspaceService {
 
         // Add a record for subtracting the amount from the source account
         final AcctAccountRecord sourceAccountRecord = createNewAccountRecordWithinAccount(sourceAccount, userUUID);
-        sourceAccountRecord.setAccountRecordText(ACCT_REC_TEXT_TRANSFER);
+        sourceAccountRecord.setAccountRecordText(ACCT_REC_TEXT_EXCHANGE + " -> " + targetAccount.getAccountName());
         sourceAccountRecord.setAccountRecordValue(-sourceAmount);
-        sourceAccountRecord.setIncomeOrExpenseItemUUID(INCOME_OR_EXPENSE_ITEM_UUID_FOR_TRANSFER);
+        sourceAccountRecord.setIncomeOrExpenseItemUUID(INCOME_OR_EXPENSE_ITEM_UUID_FOR_CURRENCY_EXCHANGE);
         final AcctAccountRecord savedSourceAccountRecord = saveAccountRecord(userUUID, currentDate, sourceAccountRecord);
 
         // Add a record for adding the amount to the target account
         final AcctAccountRecord targetAccountRecord = createNewAccountRecordWithinAccount(targetAccount, userUUID);
-        targetAccountRecord.setAccountRecordText(ACCT_REC_TEXT_TRANSFER);
+        targetAccountRecord.setAccountRecordText(ACCT_REC_TEXT_EXCHANGE + " <- " + sourceAccount.getAccountName());
         targetAccountRecord.setAccountRecordValue(amount);
-        targetAccountRecord.setIncomeOrExpenseItemUUID(INCOME_OR_EXPENSE_ITEM_UUID_FOR_TRANSFER);
+        targetAccountRecord.setIncomeOrExpenseItemUUID(INCOME_OR_EXPENSE_ITEM_UUID_FOR_CURRENCY_EXCHANGE);
         final AcctAccountRecord savedTargetAccountRecord = saveAccountRecord(userUUID, currentDate, targetAccountRecord);
 
         // Create a currency exchange record
@@ -982,7 +983,7 @@ public class AcctWorkspaceService {
 
         // Create the interest record
         final AcctAccountRecord interestRecord = createNewAccountRecordWithinAccount(sourceAccount, userUUID);
-        interestRecord.setIncomeOrExpenseItemUUID(INCOME_OR_EXPENSE_ITEM_UUID_FOR_DEPOSIT);
+        interestRecord.setIncomeOrExpenseItemUUID(INCOME_OR_EXPENSE_ITEM_UUID_FOR_DEPOSIT_INTEREST);
         interestRecord.setAccountRecordText(ACCT_REC_TEXT_DEPOSIT_INTEREST);
         interestRecord.setAccountRecordValue(returnValue - deposit.getDepositValue());
         final AcctAccountRecord savedInterestRecord = saveAccountRecord(userUUID, interestRecord);
