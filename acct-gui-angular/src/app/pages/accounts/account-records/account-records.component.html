@@ -81,165 +81,175 @@
 </app-bar>
 
 <!-- The account records table -->
-<app-table
-    width="calc(100% - 20px)"
-    [scrollable]="true"
-    scrollHeight="calc(100vh - 235px)"
-    (scroll)="this.onAccountRecordsTableScroll($event)"
-    [zebraStripes]="true"
-    [selectableRows]="false"
-    [data]="this.getAccountRecords()"
-    [(selectedRow)]="selectedAccountRecord"
-    [columnNames]="
-        this.isForeignCurrencyAccount()
-            ? ['', 'Date', 'Category', 'Subcategory', 'Item', 'Text', 'Value', 'Rate']
-            : ['', 'Date', 'Category', 'Subcategory', 'Item', 'Text', 'Value']
-    "
-    [columnWidths]="
-        this.isForeignCurrencyAccount()
-            ? [
-                '50px',
-                '80px',
-                '150px',
-                '150px',
-                '150px',
-                'calc(100% - 650px)',
-                '70px'
-              ]
-            : [
-                '50px',
-                '80px',
-                '150px',
-                '150px',
-                '150px',
-                'calc(100% - 720px)',
-                '70px',
-                '70px'
-              ]
-    "
-    [headerStyles]="[
-        'text-align:center;',
-        'text-align:left;',
-        'text-align:left;',
-        'text-align:left;',
-        'text-align:left;',
-        'text-align:left;',
-        'text-align:right;',
-        'text-align:right;'
-    ]"
-    [columnStyles]="[
-        '',
-        'height:' + this.getAccountRecordHeightPx() + '; height: 50px; text-align:left;',
-        'text-align:left;',
-        'text-align:left;',
-        'text-align:left;',
-        'overflow:hidden;white-space:break-spaces;text-overflow:clip; text-align:left;',
-        'text-align:right;',
-        'text-align:right;'
-    ]"
-  >
-    <!-- The actions column -->
-    <ng-template tableColumn let-row="row">
-        <table cellsapcing="0" cellpadding="0"><tr>
-            <td>
-                <!-- The delete button -->
-                <app-button
-                    value=''
-                    icon="button-icons/minus.png"
-                    textAlign="left"
-                    (onClick)="onDeleteAccountRecordButtonClick(row)"
-                    width="20px"
-                    height="20px"
-                    color="red"
-                ></app-button>
-            </td>
-            <td style="width:5px;"></td>
-            <td>
-                @if ( !this.isCurrencyExchangeRecord(row) ) {
-                    <!-- The edit button -->
+ @if ( this.selectedWorkspace ) {
+    <app-table
+        width="calc(100% - 20px)"
+        [scrollable]="true"
+        scrollHeight="calc(100vh - 235px)"
+        (scroll)="this.onAccountRecordsTableScroll($event)"
+        [zebraStripes]="true"
+        [selectableRows]="this.isForeignCurrencyAccount()"
+        [data]="this.getAccountRecords()"
+        [(selectedRow)]="selectedAccountRecordInTable"
+        [columnNames]="
+            this.isForeignCurrencyAccount()
+                ? ['', 'Date', 'Category', 'Subcategory', 'Item', 'Text', 'Value', 'Rate', 'Buyback']
+                : ['', 'Date', 'Category', 'Subcategory', 'Item', 'Text', 'Value']
+        "
+        [columnWidths]="
+            this.isForeignCurrencyAccount()
+                ? [
+                    '50px',
+                    '80px',
+                    '150px',
+                    '150px',
+                    '150px',
+                    'calc(100% - 650px)',
+                    '70px'
+                ]
+                : [
+                    '50px',
+                    '80px',
+                    '150px',
+                    '150px',
+                    '150px',
+                    'calc(100% - 720px)',
+                    '70px',
+                    '70px',
+                    '70px'
+                ]
+        "
+        [headerStyles]="[
+            'text-align:center;',
+            'text-align:left;',
+            'text-align:left;',
+            'text-align:left;',
+            'text-align:left;',
+            'text-align:left;',
+            'text-align:right;',
+            'text-align:right;',
+            'text-align:right;'
+        ]"
+        [columnStyles]="[
+            '',
+            'height:' + this.getAccountRecordHeightPx() + '; height: 50px; text-align:left;',
+            'text-align:left;',
+            'text-align:left;',
+            'text-align:left;',
+            'overflow:hidden;white-space:break-spaces;text-overflow:clip; text-align:left;',
+            'text-align:right;',
+            'text-align:right;',
+            'text-align:right;'
+        ]"
+    >
+        <!-- The actions column -->
+        <ng-template tableColumn let-row="row">
+            <table cellsapcing="0" cellpadding="0"><tr>
+                <td>
+                    <!-- The delete button -->
                     <app-button
                         value=''
-                        icon="button-icons/edit.png"
+                        icon="button-icons/minus.png"
                         textAlign="left"
-                        (onClick)="onEditAccountRecordButtonClick(row)"
+                        (onClick)="onDeleteAccountRecordButtonClick(row)"
                         width="20px"
                         height="20px"
-                        color="none"
+                        color="red"
                     ></app-button>
-                }
-            </td>
-        </tr></table>
-    </ng-template>
+                </td>
+                <td style="width:5px;"></td>
+                <td>
+                    @if ( !this.isCurrencyExchangeRecord(row) ) {
+                        <!-- The edit button -->
+                        <app-button
+                            value=''
+                            icon="button-icons/edit.png"
+                            textAlign="left"
+                            (onClick)="onEditAccountRecordButtonClick(row)"
+                            width="20px"
+                            height="20px"
+                            color="none"
+                        ></app-button>
+                    }
+                </td>
+            </tr></table>
+        </ng-template>
 
-    <!-- The date column -->
-    <ng-template tableColumn let-row="row">
-        {{ this.extractDate(row.accountRecordDate) }}
-    </ng-template>
+        <!-- The date column -->
+        <ng-template tableColumn let-row="row">
+            {{ this.extractDate(row.accountRecordDate) }}
+        </ng-template>
 
-    <!-- The category column -->
-    <ng-template tableColumn let-row="row">
-        <table cellspacing="0" cellpadding="0"><tr>
+        <!-- The category column -->
+        <ng-template tableColumn let-row="row">
+            <table cellspacing="0" cellpadding="0"><tr>
+                <td style="background:none;">
+                    <img
+                        [src]="this.getAccountRecordCategoryIconImageData(row)"
+                        style="width:30px; height:30px;"
+                    >
+                </td>
+                <td style="width:5px; background:none;"></td>
+                <td style="background:none;"><h3>
+                    {{ this.getAccountRecordCategoryName(row) }}
+                </h3></td>
+            </tr></table>
+        </ng-template>
+
+        <!-- The sub-category column -->
+        <ng-template tableColumn let-row="row">
             <td style="background:none;">
                 <img
-                    [src]="this.getAccountRecordCategoryIconImageData(row)"
+                    [src]="this.getAccountRecordSubcategoryIconImageData(row)"
                     style="width:30px; height:30px;"
                 >
             </td>
             <td style="width:5px; background:none;"></td>
             <td style="background:none;"><h3>
-                {{ this.getAccountRecordCategoryName(row) }}
+                {{ this.getAccountRecordSubcategoryName(row) }}
             </h3></td>
-        </tr></table>
-    </ng-template>
-
-    <!-- The sub-category column -->
-    <ng-template tableColumn let-row="row">
-        <td style="background:none;">
-            <img
-                [src]="this.getAccountRecordSubcategoryIconImageData(row)"
-                style="width:30px; height:30px;"
-            >
-        </td>
-        <td style="width:5px; background:none;"></td>
-        <td style="background:none;"><h3>
-            {{ this.getAccountRecordSubcategoryName(row) }}
-        </h3></td>
-    </ng-template>
-
-    <!-- The item column -->
-    <ng-template tableColumn let-row="row">
-        <td style="background:none;">
-            <img
-                [src]="this.getAccountRecordItemIconImageData(row)"
-                style="width:30px; height:30px;"
-            >
-        </td>
-        <td style="width:5px; background:none;"></td>
-        <td style="background:none;"><h3>
-            {{ this.getAccountRecordItemName(row) }}
-        </h3></td>
-    </ng-template>
-
-    <!-- The text column -->
-    <ng-template tableColumn let-row="row">
-        {{ row.accountRecordText }}
-    </ng-template>
-
-    <!-- The value column -->
-    <ng-template tableColumn let-row="row">
-        <div [style.color]="row.accountRecordValue >= 0 ? 'var(--green-font-color)' : 'var(--red-font-color)'">
-            {{ this.formatNumber(row.accountRecordValue, 2) }}
-        </div>
-    </ng-template>
-
-    @if ( this.isForeignCurrencyAccount() ) {
-        <!-- The exchange rate column -->
-        <ng-template tableColumn let-row="row">
-            {{ this.formatNumber(row.exchangeRate) }}
         </ng-template>
-    }
 
-</app-table>
+        <!-- The item column -->
+        <ng-template tableColumn let-row="row">
+            <td style="background:none;">
+                <img
+                    [src]="this.getAccountRecordItemIconImageData(row)"
+                    style="width:30px; height:30px;"
+                >
+            </td>
+            <td style="width:5px; background:none;"></td>
+            <td style="background:none;"><h3>
+                {{ this.getAccountRecordItemName(row) }}
+            </h3></td>
+        </ng-template>
+
+        <!-- The text column -->
+        <ng-template tableColumn let-row="row">
+            {{ row.accountRecordText }}
+        </ng-template>
+
+        <!-- The value column -->
+        <ng-template tableColumn let-row="row">
+            <div [style.color]="row.accountRecordValue >= 0 ? 'var(--green-font-color)' : 'var(--red-font-color)'">
+                {{ this.formatNumber(row.accountRecordValue, 2) }}
+            </div>
+        </ng-template>
+
+        @if ( this.isForeignCurrencyAccount() ) {
+            <!-- The exchange rate column -->
+            <ng-template tableColumn let-row="row">
+                {{ this.formatNumber(row.exchangeRate) }}
+            </ng-template>
+
+            <!-- The buy-back rate column -->
+            <ng-template tableColumn let-row="row">
+                {{ row.buyBackRate ? this.formatNumber(1 / row.buyBackRate) : ''}}
+            </ng-template>
+        }
+
+    </app-table>
+}
 
 <!-- The account actions bar -->
 <app-bar
@@ -279,10 +289,12 @@
             <td>
                 <!-- The currency exchange button -->
                 <app-button
-                    value='Currency exchange'
+                    [value]="this.isForeignCurrencyAccount() ? 'Currency Buy back' : 'Currency exchange'"
+                    icon="button-icons/exchange.png"
                     textAlign="left"
+                    [enabled]="!this.isForeignCurrencyAccount() || (this.isAccountRecordSelectedInTable() && this.isAccountRecordSelectedInTableWithPositiveValue() && !this.isAccountRecordSelectedInTableABoughtBackCurrencyExchange())"
                     (onClick)="onCurrencyExchangeButtonClick()"
-                    width="170px"
+                    width="190px"
                     height="30px"
                     color="blue"
                 ></app-button>
@@ -321,7 +333,7 @@
 
 <!-- The account record edit dialog -->
  <app-dialog
-    title="Account record properties"
+    title="Currency transfer properties"
     width="500px"
     height="335px"
     [(visible)]="this.accountRecordEditDialogVisible"
@@ -429,7 +441,7 @@
     </table>
 </app-dialog>
 
-<!-- The currency transfer dialog -->
+<!-- The currency exchange dialog -->
  <app-dialog
     title="Account record properties"
     width="495px"
@@ -466,7 +478,7 @@
                     textAlign="right"
                     width="160px"
                     height="30px"
-                    hint="Account record value"
+                    hint="Account to transfer"
                 ></app-input>
             </td>
         </tr>
@@ -523,9 +535,9 @@
             </td>
         </tr>
     </table>
- </app-dialog>
+  </app-dialog>
 
- <!-- The no transfer target accounts message box -->
+  <!-- The no transfer target accounts message box -->
   <app-msgbox
     [(visible)]="this.noTransferTargetAccountsMessageBoxVisible"
     width="400px"
@@ -535,5 +547,140 @@
         There are no other accounts with the same currency as the selected account within the scope of the
         selected workspace. Currency transfers can only be done between two accounts with the same currency.
         If you want to register a transfer to a foreign currency account, then use the Currency exchage button.
+    "
+  ></app-msgbox>
+
+  <!-- The currency transfer dialog -->
+ <app-dialog
+    title="Currency exchange properties"
+    width="495px"
+    height="310px"
+    [(visible)]="this.currencyExchangeDialogVisible"
+    [closeButton]="true"
+ >
+    <table>
+        <tr>
+            <td style="height:40px;">
+                Target account
+            </td>
+            <td></td>
+            <td>
+                <app-select
+                    width="350px"
+                    [options]="this.registeredAccountsWithForeignCurrency"
+                    [cardHeightPx]="50"
+                    [selectedOption]="this.selectedCurrencyExchangePropertiesFormData.targetAccount"
+                    (selectedOptionChange)="this.onSelectedCurrencyExchangePropertiesFormDataTargetAccountChange($event)"
+                ></app-select>
+            </td>
+        </tr>
+        <tr>
+            <td style="height:40px;">
+                Amount
+            </td>
+            <td></td>
+            <td style="padding-left: 3px;">
+                @if (this.isForeignCurrencyAccount()) {
+                    <app-label
+                        width="160px"
+                        textAlign="right"
+                        [inputStyle]="true"
+                        [value]="this.selectedCurrencyExchangePropertiesFormData.amountStr + '&nbsp;'"
+                    ></app-label>
+                }
+                @else {
+                    <app-input
+                        [(value)]="this.selectedCurrencyExchangePropertiesFormData.amountStr"
+                        [valid]="this.isSelectedCurrencyExchangePropertiesFormDataAmountValid()"
+                        (onValueChanged)="this.onSelectedCurrencyExchangeAmountChanged()"
+                        textAlign="right"
+                        width="160px"
+                        height="30px"
+                        hint="Amount to purchase"
+                    ></app-input>
+                }
+            </td>
+        </tr>
+        <tr>
+            <td style="height:40px;">
+                {{ this.isForeignCurrencyAccount() ? 'Sell' : 'Buy' }} rate
+            </td>
+            <td></td>
+            <td>
+                <app-input
+                    [(value)]="this.selectedCurrencyExchangePropertiesFormData.exchangeRateStr"
+                    [valid]="this.isSelectedCurrencyExchangePropertiesFormDataExchangeRateValid()"
+                    (onValueChanged)="this.onSelectedCurrencyExchangeAmountChanged()"
+                    textAlign="right"
+                    width="160px"
+                    height="30px"
+                    hint="Exchange rate"
+                ></app-input>
+            </td>
+        </tr>
+        <tr>
+            <td style="height:40px;">
+                Remaining mount
+            </td>
+            <td></td>
+            <td style="padding-left:4px;">
+                <app-label
+                    width="160px"
+                    [inputStyle]="true"
+                    textAlign="right"
+                    [color]="this.isSelectedCurrencyExchangeRemainingAmountValid() ? 'none' : 'red'"
+                    [value]="this.getSelectedCurrencyExchangeRemainingAmountStr() + '&nbsp;'"
+                ></app-label>
+            </td>
+        </tr>
+        <tr>
+            <td style="height:10px;"></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td>
+                <app-label
+                    width="350px"
+                    textAlign="left"
+                    style="color:var(--red-font-color)"
+                    [value]="this.getSelectedCurrencyExchangeProblemDescription()"
+                ></app-label>
+            </td>
+        </tr>
+        <tr>
+            <td style="height:10px;"></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td>
+                <app-button
+                    [enabled]="this.isRegisterCurrencyExchangeButtonEnabled()"
+                    value='Register the currency exchange'
+                    textAlign="center"
+                    (onClick)="onRegisterCurrencyExchangeButtonClick()"
+                    width="370px"
+                    height="30px"
+                    color="blue"
+                ></app-button>
+            </td>
+        </tr>
+    </table>
+  </app-dialog>
+  
+  <!-- The no exchange target accounts message box -->
+  <app-msgbox
+    [(visible)]="this.noExchangeTargetAccountsMessageBoxVisible"
+    width="450px"
+    height="160px"
+    title="There is no account to exchange currency with"
+    text="
+        There are no accounts with a different currency than the selected account within the scope of the
+        selected workspace. Currency exchange can only be done between accounts with different currencies.
     "
   ></app-msgbox>

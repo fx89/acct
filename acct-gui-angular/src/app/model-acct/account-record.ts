@@ -58,6 +58,18 @@ export interface AccountRecord extends AccountRecordInputData {
      * Optional purchase price of foreign currencies, calculated as
      * accountRecordValue * exchangeRate
      */
-    purchasePrice? : number
+    purchasePrice? : number,
+
+    /**
+     * Optional exchange rate applied when selling the foreign currency, available only if
+     * the record describes a foreign currency sale
+     */
+    sellRate? : number
+
+    /**
+     * Optional exchange rate applied for buying back the currency, available only if the
+     * record describes a foreign currency exchange which has been bought back
+     */
+    buyBackRate? : number
 
 }

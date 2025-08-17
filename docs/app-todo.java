@@ -17,20 +17,23 @@
  DONE: APP-04004: Accounts page: Delete account
  DONE: APP-04005: Accounts page: Edit account
  DONE: APP-04006: Accounts page: Account records link
- TODO: APP-04007: Accounts page: Account balance on the account card
+ TODO: APP-04007: Accounts page: Display the account balance on the account card
  DONE: APP-05001: Account records page: Page layout
  DONE: APP-05002: Account records page: Go back link
  DONE: APP-05003: Account records page: Account records table
  DONE: APP-05004: Account records page: Search box
  DONE: APP-05005: Account records page: New record creation + existing record editing
  DONE: APP-05006: Account records page: Transfer
- TODO: APP-05007: Account records page: Currency exchange
+ DONE: APP-05007: Account records page: Currency exchange
  TODO: APP-05008: Account records page: Gain / loss from exchange rates
  DONE: APP-05009: Account records page: Add bank icon alongside the account name
  TODO: APP-05010: Account records page: Let users specify transfer fees when registering a cash transfer (autofill with last value)
  TODO: APP-05011: Account records page: Search box in the cards lists used for selecting categories, subcategories and items in the account record properties form
  TODO: APP-05012: Account records page: Advanced search feature (time interval, item selection, etc.)
  TODO: APP-05013: Account records page: Delete record
+ TODO: APP-05014: Account records page: Currency exchange - automatically fill in the exchange rate field with the purchase or buy value of the currency for the bank of the target account
+ TODO: APP-05015: Account records page: Do not allow editing or deleting items of type transfer or currency exchange
+ TODO: APP-05016: Account records page: Foreign currency account - allow multiple currency exchanges originating from the same source account, as long as the sum of the exchange amounts is not over the value of the record
  TODO: APP-06001: Currency history page: Page layout
  TODO: APP-06002: Currency history page: Bank and currency selector
  TODO: APP-06003: Currency history page: Currency history graphs

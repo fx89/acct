@@ -24,6 +24,8 @@ public abstract class AccountRecordEnhancedDetailsMapper {
                 .withRecordedByUserUUID(accountRecordExtendedDetails.recordedByUserUUID())
                 .withLastModifiedDate(accountRecordExtendedDetails.lastModifiedDate())
                 .withLastModifiedByUserUUID(accountRecordExtendedDetails.lastModifiedByUserUUID())
+                .withSellRate(accountRecordExtendedDetails.currencySellRate())
+                .withBuyBackRate(accountRecordExtendedDetails.buyBackRate())
                 .withExchangeRate(accountRecordExtendedDetails.currencyExchangeRate())
                 .withPurchasePrice(accountRecordExtendedDetails.purchasePrice())
                 .build();

@@ -34,6 +34,23 @@ public interface AcctCurrencyExchangesRepository {
     Collection<AcctCurrencyExchange> findAllByTargetAccountRecordIn(Collection<AcctAccountRecord> accountRecords);
 
     /**
+     * Retrieves a collection of {@link AcctCurrencyExchange currency exchange records} for which the
+     * {@link AcctCurrencyExchange#getOptionalOriginalCurrencyExchange() target currency exchange} is
+     * one of the {@link AcctCurrencyExchange currency exchange records} in the given collection
+     *
+     * @param currencyExchanges the given collection
+     */
+    Collection<AcctCurrencyExchange> findAllByOptionalOriginalCurrencyExchangeIn(Collection<AcctCurrencyExchange> currencyExchanges);
+
+    /**
+     * Retrieves a collection of {@link AcctCurrencyExchange currency exchange records}
+     * related to the {@link AcctAccountRecord account records} in the given collection
+     *
+     * @param accountRecords the given collection
+     */
+    Collection<AcctCurrencyExchange> findAllBySourceAccountRecordIn(Collection<AcctAccountRecord> accountRecords);
+
+    /**
      * Retrieves the {@link AcctCurrencyExchange currency exchange record} for which the
      * {@link AcctCurrencyExchange#getCurrencyExchangeTargetAccountRecord() target account record}
      * has the given {@link AcctAccountRecord#getAccountRecordId() account record id}.

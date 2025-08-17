@@ -315,6 +315,32 @@ public class AcctWorkspaceDataService {
     }
 
     /**
+     * Retrieves a collection of {@link AcctCurrencyExchange currency exchange records} for which the
+     * {@link AcctCurrencyExchange#getOptionalOriginalCurrencyExchange() target currency exchange} is
+     * one of the {@link AcctCurrencyExchange currency exchange records} in the given collection
+     *
+     * @param currencyExchanges the given collection
+     */
+    public Collection<AcctCurrencyExchange> findCurrencyExchangesByOptionalOriginalCurrencyExchangeIn(
+        Collection<AcctCurrencyExchange> currencyExchanges
+    ) {
+        return currencyExchangesRepository.findAllByOptionalOriginalCurrencyExchangeIn(currencyExchanges);
+    }
+
+    /**
+     * Retrieves a collection of {@link AcctCurrencyExchange currency exchange records} for which the
+     * {@link AcctCurrencyExchange#getCurrencyExchangeSourceAccountRecord() source account record} is
+     * one of the {@link AcctAccountRecord account records} in the given collection
+     *
+     * @param accountRecords the given collection
+     */
+    public Collection<AcctCurrencyExchange> findCurrencyExchangesBySourceAccountRecordIn(
+        Collection<AcctAccountRecord> accountRecords
+    ) {
+        return currencyExchangesRepository.findAllBySourceAccountRecordIn(accountRecords);
+    }
+
+    /**
      * Retrieves the {@link AcctCurrencyExchange currency exchange record} for which the
      * {@link AcctCurrencyExchange#getCurrencyExchangeTargetAccountRecord() target account record}
      * has the given {@link AcctAccountRecord#getAccountRecordId() account record id}.

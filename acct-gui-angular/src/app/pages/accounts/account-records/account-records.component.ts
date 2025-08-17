@@ -64,6 +64,23 @@ function newCurrencyTransferPropertiesFormData() {
   }
 }
 
+/**
+ * Container for the properties displayed on the currency exchange form
+ */
+type CurrencyExchangePropertiesFormData = CurrencyTransferPropertiesFormData & {
+  exchangeRateStr : string,
+  exchangeRateNbr : number,
+  originalAccountRecordId? : number
+}
+
+function newCurrencyExchangePropertiesFormData() {
+  return {
+    amountStr: "",
+    exchangeRateStr: "",
+    exchangeRateNbr: 0
+  }
+}
+
 @Component({
   selector: 'app-account-records',
   imports: [
@@ -105,6 +122,11 @@ export class AccountRecordsComponent implements OnInit {
   selectedAccountRecord : AccountRecordPropertiesFormData = this.newAccountRecordPropertiesFormData()
 
   /**
+   * The record being selected in the data table
+   */
+  selectedAccountRecordInTable? : AccountRecord
+
+  /**
    * Container for the properties directly edited by the currency transfer form
    */
   selectedCurrencyTransferPropertiesFormData : CurrencyTransferPropertiesFormData = newCurrencyTransferPropertiesFormData()
@@ -113,6 +135,16 @@ export class AccountRecordsComponent implements OnInit {
    * Numeric value for the remaining amount displayed in the currency transfer form
    */
   selectedCurrencyTransferRemainingAmount : number = 0
+
+  /**
+   * Container for the properties directly edited by the currency exchange form
+   */
+  selectedCurrencyExchangePropertiesFormData : CurrencyExchangePropertiesFormData = newCurrencyExchangePropertiesFormData()
+
+  /**
+   * Numeric value for the remaining amount displayed in the currency exchange form
+   */
+  selectedCurrencyExchangeRemainingAmount : number = 0
 
   /**
    * This event is triggered when the back button is clicked and has the
@@ -197,6 +229,16 @@ export class AccountRecordsComponent implements OnInit {
    * Flag that controls the visibility of the no transfer target accounts message box
    */
   noTransferTargetAccountsMessageBoxVisible : boolean = false
+
+  /**
+   * Flag that controls the visibility of the currency exchange dialog
+   */
+  currencyExchangeDialogVisible : boolean = false
+
+  /**
+   * Flag that controls the visibility of the no exchange target accounts message boxf
+   */
+  noExchangeTargetAccountsMessageBoxVisible : boolean = false
 
   /**
    * The sort direction can be toggled from the sort direction change button
@@ -533,6 +575,34 @@ export class AccountRecordsComponent implements OnInit {
       )
     )
   }
+
+  private computeSelectedCurrencyExchangeRemainingAccountBalance() : number {
+    return (
+      this.selectedAccountBalance - (
+        (
+          this.isSelectedCurrencyExchangePropertiesFormDataAmountValid() &&
+          this.isSelectedCurrencyExchangePropertiesFormDataExchangeRateValid()
+        )
+          ? (
+              parseFloat(this.selectedCurrencyExchangePropertiesFormData.amountStr) *
+              (
+                this.isForeignCurrencyAccount()
+                  ? 1
+                  : this.computeActualExchangeRate()
+              )
+          )
+          : 0
+      )
+    )
+  }
+
+  private computeActualExchangeRate() : number {
+    return (
+      this.isForeignCurrencyAccount() 
+        ? (1 / this.selectedCurrencyExchangePropertiesFormData.exchangeRateNbr)
+        : this.selectedCurrencyExchangePropertiesFormData.exchangeRateNbr
+    )
+  }
  
   onBackToAccountsButtonClick() : void {
     this.selectedAccountCleared.emit()
@@ -700,7 +770,76 @@ export class AccountRecordsComponent implements OnInit {
   }
 
   onCurrencyExchangeButtonClick() : void {
+    // If there are other accounts with a different currency from the selected account,
+    // then open the currency exchange dialog
+    if (this.registeredAccountsWithForeignCurrency.length > 0) {
+      this.selectedCurrencyExchangePropertiesFormData = newCurrencyExchangePropertiesFormData()
 
+      if (this.selectedAccountRecordInTable) {
+        this.selectedCurrencyExchangePropertiesFormData.amountStr =
+          "" + this.selectedAccountRecordInTable.accountRecordValue
+
+          this.selectedCurrencyExchangeRemainingAmount = 
+            this.selectedAccountBalance - this.selectedAccountRecordInTable.accountRecordValue
+      } else {
+        this.selectedCurrencyExchangeRemainingAmount = this.selectedAccountBalance
+      }
+
+      this.currencyExchangeDialogVisible = true
+    } 
+    // If there aren't any other accounts with a different currency from the selected
+    // account, then display the no exchange target accounts message box
+    else {
+      this.noExchangeTargetAccountsMessageBoxVisible = true
+    }
+  }
+
+  onSelectedCurrencyExchangePropertiesFormDataTargetAccountChange(account:CardData|undefined) : void {
+    this.selectedCurrencyExchangePropertiesFormData.targetAccount = account as AccountCardData
+  }
+
+  onSelectedCurrencyExchangeAmountChanged() : void {
+    if (isNumber(this.selectedCurrencyExchangePropertiesFormData.exchangeRateStr)) {
+      this.selectedCurrencyExchangePropertiesFormData.exchangeRateNbr =
+        parseFloat(this.selectedCurrencyExchangePropertiesFormData.exchangeRateStr)
+    }
+
+    this.selectedCurrencyExchangeRemainingAmount = this.computeSelectedCurrencyExchangeRemainingAccountBalance()
+  }
+
+  onRegisterCurrencyExchangeButtonClick() : void {
+    if (this.selectedCurrencyExchangePropertiesFormData.targetAccount) {
+      this.workspaceService.saveCurrencyExchange(
+        this.selectedWorkspace,
+        {
+          currencyTransfer: {
+            sourceAccount: this.selectedAccount(),
+            targetAccount: this.selectedCurrencyExchangePropertiesFormData.targetAccount.account,
+            amount: (
+              parseFloat(this.selectedCurrencyExchangePropertiesFormData.amountStr) *
+              (
+                this.isForeignCurrencyAccount() 
+                  ? this.selectedCurrencyExchangePropertiesFormData.exchangeRateNbr
+                  : 1
+              )
+            )
+          },
+          exchangeRate: this.computeActualExchangeRate(),
+          originalAccountRecordId: this.selectedAccountRecordInTable?.accountRecordId
+        }
+      ).subscribe({
+        next: () => {
+          delete this.selectedAccountRecordInTable
+          this.accountRecordsManager.reset()
+          this.accountRecordsManager.loadNextPage().subscribe()
+          this.currencyExchangeDialogVisible = false
+        },
+        error: err => {
+          // TODO: Toast
+          console.log(err)
+        }
+      })
+    }
   }
 
   extractDate(dateTime:string) : string {
@@ -791,12 +930,36 @@ export class AccountRecordsComponent implements OnInit {
     return ""
   }
 
+  getSelectedCurrencyExchangeProblemDescription() : string {
+    if(!isDefined(this.selectedCurrencyExchangePropertiesFormData?.targetAccount)) {
+      return "Target account not selected"
+    }
+
+    if(!this.isSelectedCurrencyExchangePropertiesFormDataAmountValid()) {
+      return "Amount to be transferred is not a valid number"
+    }
+
+    if(!this.isSelectedCurrencyExchangePropertiesFormDataExchangeRateValid()) {
+      return "Exchange rate is not a valid number"
+    }
+
+    if(!this.isSelectedCurrencyExchangeRemainingAmountValid()) {
+      return "Insufficient funds"
+    }
+
+    return ""
+  }
+
+  getSelectedCurrencyExchangeRemainingAmountStr() : string {
+    return this.formatNumber(this.selectedCurrencyExchangeRemainingAmount, 2)
+  }
+
   isForeignCurrencyAccount() : boolean {
     return this.selectedWorkspace?.defaultCurrencyUUID != this.cachedAccountCurrency?.currencyUUID
   }
 
   isCurrencyExchangeRecord(rec:AccountRecord) : boolean {
-    return isDefined(rec.exchangeRate)
+    return isDefined(rec.exchangeRate) || isDefined(rec.sellRate)
   }
 
   isAccountRecordTextToSearchForValid() : boolean {
@@ -841,4 +1004,42 @@ export class AccountRecordsComponent implements OnInit {
     )
   }
 
+  isSelectedCurrencyExchangePropertiesFormDataAmountValid() : boolean {
+    return (
+      isNumber(this.selectedCurrencyExchangePropertiesFormData?.amountStr ?? "") &&
+      parseFloat(this.selectedCurrencyExchangePropertiesFormData?.amountStr) > 0
+    )
+  }
+
+  isSelectedCurrencyExchangePropertiesFormDataExchangeRateValid() : boolean {
+    return (
+      isNumber(this.selectedCurrencyExchangePropertiesFormData?.exchangeRateStr ?? "") &&
+      parseFloat(this.selectedCurrencyExchangePropertiesFormData?.exchangeRateStr) > 0
+    )
+  }
+
+  isSelectedCurrencyExchangeRemainingAmountValid() : boolean {
+    return this.selectedCurrencyExchangeRemainingAmount >= 0
+  }
+
+  isRegisterCurrencyExchangeButtonEnabled() : boolean {
+    return (
+      isDefined(this.selectedCurrencyExchangePropertiesFormData?.targetAccount) &&
+      this.isSelectedCurrencyExchangePropertiesFormDataAmountValid() &&
+      this.isSelectedCurrencyExchangePropertiesFormDataExchangeRateValid() &&
+      this.isSelectedCurrencyExchangeRemainingAmountValid()
+    )
+  }
+
+  isAccountRecordSelectedInTable() : boolean {
+    return isDefined(this.selectedAccountRecordInTable)
+  }
+
+  isAccountRecordSelectedInTableWithPositiveValue() : boolean {
+    return (this.selectedAccountRecordInTable?.accountRecordValue ?? 0) > 0
+  }
+
+  isAccountRecordSelectedInTableABoughtBackCurrencyExchange() : boolean {
+    return isDefined(this.selectedAccountRecordInTable?.buyBackRate)
+  }
 }

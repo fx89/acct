@@ -556,18 +556,36 @@ public class AcctWorkspaceService {
                 ? dataService.findAccountRecordsByAccount(account, pageNumber, pageSize, sortDirection)
                 : dataService.findAccountRecordsByAccountAndTextLike(account, pattern, pageNumber, pageSize);
 
-        // If this is a foreign currency account then fetch currency exchange records for the page
-        final Collection<AcctCurrencyExchange> currencyExchangeRecords =
+        // If this is a foreign currency account then fetch currency exchange records where
+        // the account records on this page are the source record for the currency exchange
+        final Collection<AcctCurrencyExchange> currencyExchangeRecordsSourcingRecordsOnPage =
+            Objects.equals(account.getCurrencyUUID(), account.getWorkspace().getDefaultCurrencyUUID())
+                ? emptyList()
+                : dataService.findCurrencyExchangesBySourceAccountRecordIn(accountRecordsPage.data());
+
+        // If this is a foreign currency account then fetch currency exchange records where
+        // the account records on this page are the target record for the currency exchange
+        final Collection<AcctCurrencyExchange> currencyExchangeRecordsTargetingRecordsOnPage =
             Objects.equals(account.getCurrencyUUID(), account.getWorkspace().getDefaultCurrencyUUID())
                 ? emptyList()
                 : dataService.findCurrencyExchangesByTargetAccountRecordIn(accountRecordsPage.data());
+
+        // If this is a foreign currency account then fetch currency exchange records where
+        // the source currency exchanges are the currency exchanges where the records on this
+        // page are the target records
+        final Collection<AcctCurrencyExchange> buyBackExchangeRecordsTargetingExchangeRecordsTargetingRecordsOnPage =
+            Objects.equals(account.getCurrencyUUID(), account.getWorkspace().getDefaultCurrencyUUID())
+                ? emptyList()
+                : dataService.findCurrencyExchangesByOptionalOriginalCurrencyExchangeIn(currencyExchangeRecordsTargetingRecordsOnPage);
 
         // Turn the retrieved page into a page of AccountRecordExtendedDetails
         // and return a reference
         return
             AccountRecordExtendedDetailsMapper.fromPageOfAcctAccountRecords(
                 accountRecordsPage,
-                currencyExchangeRecords
+                currencyExchangeRecordsSourcingRecordsOnPage,
+                currencyExchangeRecordsTargetingRecordsOnPage,
+                buyBackExchangeRecordsTargetingExchangeRecordsTargetingRecordsOnPage
             );
     }
 
@@ -709,7 +727,7 @@ public class AcctWorkspaceService {
                 dataService.findCurrencyExchangeByTargetAccountRecordId(originalAccountRecordId);
 
             // If an original currency exchange record is found then reference it from the
-            // newly created currency e4xchange record
+            // newly created currency exchange record
             optionalOriginalCurrencyExchangeRecord.ifPresent(currencyExchange::setOptionalOriginalCurrencyExchange);
         }
 

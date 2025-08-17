@@ -16,6 +16,8 @@ import java.time.Instant;
  * @param currencyExchangeRate    The optional exchange rate applied when purchasing foreign currency
  * @param purchasePrice           The optional foreign exchange purchase price, calculated as
  *                                {@code accountRecordValue * currencyExchangeRate}
+ * @param currencySellRate        The optional exchange rate at which the currency was sold
+ * @param buyBackRate             The optional exchange rate at which the currency was bought back
  */
 public record AccountRecordExtendedDetails(
     Long accountRecordId,
@@ -27,7 +29,9 @@ public record AccountRecordExtendedDetails(
     Instant lastModifiedDate,
     String lastModifiedByUserUUID,
     Double currencyExchangeRate,
-    Double purchasePrice
+    Double purchasePrice,
+    Double currencySellRate,
+    Double buyBackRate
 ) {
     public static AccountRecordExtendedDetailsBuilder builder() {
         return new AccountRecordExtendedDetailsBuilder();
@@ -47,6 +51,8 @@ public record AccountRecordExtendedDetails(
         private String lastModifiedByUserUUID;
         private Double currencyExchangeRate;
         private Double purchasePrice;
+        private Double currencySellRate;
+        private Double buyBackRate;
 
         private AccountRecordExtendedDetailsBuilder() {
         }
@@ -162,6 +168,28 @@ public record AccountRecordExtendedDetails(
         }
 
         /**
+         * Sets the {@code currencySellRate} and returns a reference to this Builder enabling method chaining.
+         *
+         * @param currencySellRate the {@code currencySellRate} to set
+         * @return a reference to this Builder
+         */
+        public AccountRecordExtendedDetailsBuilder withCurrencySellRate(Double currencySellRate) {
+            this.currencySellRate = currencySellRate;
+            return this;
+        }
+
+        /**
+         * Sets the {@code buyBackRate} and returns a reference to this Builder enabling method chaining.
+         *
+         * @param buyBackRate the {@code buyBackRate} to set
+         * @return a reference to this Builder
+         */
+        public AccountRecordExtendedDetailsBuilder withBuyBackRate(Double buyBackRate) {
+            this.buyBackRate = buyBackRate;
+            return this;
+        }
+
+        /**
          * Returns a {@code AccountRecordExtendedDetails} built from the parameters previously set.
          *
          * @return a {@code AccountRecordExtendedDetails} built with parameters of this {@code AccountRecordExtendedDetails.Builder}
@@ -178,7 +206,9 @@ public record AccountRecordExtendedDetails(
                     lastModifiedDate,
                     lastModifiedByUserUUID,
                     currencyExchangeRate,
-                    purchasePrice
+                    purchasePrice,
+                    currencySellRate,
+                    buyBackRate
                 );
         }
     }

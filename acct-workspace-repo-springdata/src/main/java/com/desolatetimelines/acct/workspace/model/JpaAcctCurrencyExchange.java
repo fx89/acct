@@ -2,6 +2,7 @@ package com.desolatetimelines.acct.workspace.model;
 
 import jakarta.persistence.*;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.desolatetimelines.acct.workspace.util.AcctWorkspaceRepoSpringDataUtils.doWithJpaAcctAccountRecordReturning;
@@ -105,5 +106,17 @@ public class JpaAcctCurrencyExchange implements AcctCurrencyExchange {
 
     public void setOptionalOriginalCurrencyExchange(JpaAcctCurrencyExchange optionalOriginalCurrencyExchange) {
         this.optionalOriginalCurrencyExchange = optionalOriginalCurrencyExchange;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        JpaAcctCurrencyExchange that = (JpaAcctCurrencyExchange) o;
+        return Objects.equals(currencyExchangeId, that.currencyExchangeId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(currencyExchangeId);
     }
 }

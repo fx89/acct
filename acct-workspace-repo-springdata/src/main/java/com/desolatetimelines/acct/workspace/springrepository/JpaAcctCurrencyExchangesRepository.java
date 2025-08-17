@@ -13,8 +13,16 @@ public interface JpaAcctCurrencyExchangesRepository extends CrudRepository<JpaAc
         Collection<JpaAcctAccountRecord> currencyExchangeSourceAccountRecords
     );
 
+    Collection<JpaAcctCurrencyExchange> findAllByCurrencyExchangeSourceAccountRecordIn(
+        Collection<JpaAcctAccountRecord> currencyExchangeSourceAccountRecords
+    );
+
     Optional<JpaAcctCurrencyExchange> findFirstByCurrencyExchangeTargetAccountRecordAccountRecordId(
         Long accountRecordId
+    );
+
+    Collection<JpaAcctCurrencyExchange> findAllByOptionalOriginalCurrencyExchangeIn(
+        Collection<JpaAcctCurrencyExchange> currencyExchanges
     );
 
 }

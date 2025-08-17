@@ -16,13 +16,22 @@ public abstract class AccountRecordExtendedDetailsMapper {
 
     public static Page<AccountRecordExtendedDetails> fromPageOfAcctAccountRecords(
         Page<AcctAccountRecord> acctAccountRecordsPage,
-        Collection<AcctCurrencyExchange> currencyExchangeRecords
+        Collection<AcctCurrencyExchange> currencyExchangeRecordsWithSourceAccountRecords,
+        Collection<AcctCurrencyExchange> currencyExchangeRecordsWithTargetAccountRecords,
+        Collection<AcctCurrencyExchange> buyBackExchanges
     ) {
         return
             new Page<>(
                 acctAccountRecordsPage.data()
                     .stream()
-                    .map(acctAccountRecord -> fromAcctAccountRecord(acctAccountRecord, currencyExchangeRecords))
+                    .map(acctAccountRecord ->
+                        fromAcctAccountRecord(
+                            acctAccountRecord,
+                            currencyExchangeRecordsWithSourceAccountRecords,
+                            currencyExchangeRecordsWithTargetAccountRecords,
+                            buyBackExchanges
+                        )
+                    )
                     .toList(),
                 acctAccountRecordsPage.numElements(),
                 acctAccountRecordsPage.maxElements()
@@ -32,10 +41,21 @@ public abstract class AccountRecordExtendedDetailsMapper {
 
     public static AccountRecordExtendedDetails fromAcctAccountRecord(
         AcctAccountRecord acctAccountRecord,
-        Collection<AcctCurrencyExchange> currencyExchangeRecords
+        Collection<AcctCurrencyExchange> currencyExchangeRecordsWithSourceAccountRecords,
+        Collection<AcctCurrencyExchange> currencyExchangeRecordsWithTargetAccountRecords,
+        Collection<AcctCurrencyExchange> buyBackExchanges
     ) {
-        final Optional<AcctCurrencyExchange> optionalCurrencyExchangeRecord =
-            extractCurrencyExchange(acctAccountRecord, currencyExchangeRecords);
+        final Optional<AcctCurrencyExchange> optionalCurrencyExchangeRecordWithSourceAccountRecord =
+            extractSourceCurrencyExchange(acctAccountRecord, currencyExchangeRecordsWithSourceAccountRecords);
+
+        final Optional<AcctCurrencyExchange> optionalCurrencyExchangeRecordWithTargetAccountRecord =
+            extractTargetCurrencyExchange(acctAccountRecord, currencyExchangeRecordsWithTargetAccountRecords);
+
+        final Optional<AcctCurrencyExchange> optionalBuyBackExchange =
+            optionalCurrencyExchangeRecordWithTargetAccountRecord.flatMap(
+                exchangeTargetingRecord ->
+                    extractBuyBackExchangeRecord(exchangeTargetingRecord, buyBackExchanges)
+            );
 
         return
             AccountRecordExtendedDetails.builder()
@@ -47,12 +67,26 @@ public abstract class AccountRecordExtendedDetailsMapper {
                 .withRecordedByUserUUID(acctAccountRecord.getRecordedByUserUUID())
                 .withLastModifiedDate(acctAccountRecord.getLastModifiedDate())
                 .withLastModifiedByUserUUID(acctAccountRecord.getLastModifiedByUserUUID())
-                .withCurrencyExchangeRate(optionalCurrencyExchangeRecord.map(AcctCurrencyExchange::getCurrencyExchangeRate).orElse(null))
-                .withPurchasePrice(optionalCurrencyExchangeRecord.map(AcctCurrencyExchange::getPurchasePrice).orElse(null))
+                .withCurrencySellRate(optionalCurrencyExchangeRecordWithSourceAccountRecord.map(AcctCurrencyExchange::getCurrencyExchangeRate).orElse(null))
+                .withBuyBackRate(optionalBuyBackExchange.map(AcctCurrencyExchange::getCurrencyExchangeRate).orElse(null))
+                .withCurrencyExchangeRate(optionalCurrencyExchangeRecordWithTargetAccountRecord.map(AcctCurrencyExchange::getCurrencyExchangeRate).orElse(null))
+                .withPurchasePrice(optionalCurrencyExchangeRecordWithTargetAccountRecord.map(AcctCurrencyExchange::getPurchasePrice).orElse(null))
                 .build();
     }
 
-    private static Optional<AcctCurrencyExchange> extractCurrencyExchange(
+    private static Optional<AcctCurrencyExchange> extractSourceCurrencyExchange(
+        AcctAccountRecord acctAccountRecord,
+        Collection<AcctCurrencyExchange> currencyExchangeRecords
+    ) {
+        return
+            currencyExchangeRecords.stream()
+                .filter(currencyExchange ->
+                    Objects.equals(currencyExchange.getCurrencyExchangeSourceAccountRecord(), acctAccountRecord)
+                )
+                .findFirst();
+    }
+
+    private static Optional<AcctCurrencyExchange> extractTargetCurrencyExchange(
         AcctAccountRecord acctAccountRecord,
         Collection<AcctCurrencyExchange> currencyExchangeRecords
     ) {
@@ -60,6 +94,21 @@ public abstract class AccountRecordExtendedDetailsMapper {
             currencyExchangeRecords.stream()
                 .filter(currencyExchange ->
                     Objects.equals(currencyExchange.getCurrencyExchangeTargetAccountRecord(), acctAccountRecord)
+                )
+                .findFirst();
+    }
+
+    private static Optional<AcctCurrencyExchange> extractBuyBackExchangeRecord(
+        AcctCurrencyExchange acctCurrencyExchange,
+        Collection<AcctCurrencyExchange> buyBackExchanges
+    ) {
+        return
+            buyBackExchanges.stream()
+                .filter(buyBackExchange ->
+                    Objects.equals(
+                        buyBackExchange.getOptionalOriginalCurrencyExchange().orElse(null),
+                        acctCurrencyExchange
+                    )
                 )
                 .findFirst();
     }

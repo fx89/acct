@@ -52,6 +52,38 @@ public class SpringJpaAcctCurrencyExchangesRepository implements AcctCurrencyExc
     }
 
     @Override
+    public Collection<AcctCurrencyExchange> findAllByOptionalOriginalCurrencyExchangeIn(
+        Collection<AcctCurrencyExchange> currencyExchanges
+    ) {
+        return
+            jpaAcctCurrencyExchangesRepository.findAllByOptionalOriginalCurrencyExchangeIn(
+                    currencyExchanges
+                        .stream()
+                        .map(acctCurrencyExchange -> doWithJpaAcctCurrencyExchangeReturning(acctCurrencyExchange, identity()))
+                        .toList()
+                )
+                .stream()
+                .map(jpaAcctCurrencyExchange -> (AcctCurrencyExchange) jpaAcctCurrencyExchange)
+                .toList();
+    }
+
+    @Override
+    public Collection<AcctCurrencyExchange> findAllBySourceAccountRecordIn(
+        Collection<AcctAccountRecord> accountRecords
+    ) {
+        return
+            jpaAcctCurrencyExchangesRepository.findAllByCurrencyExchangeSourceAccountRecordIn(
+                    accountRecords
+                        .stream()
+                        .map(acctAccountRecord -> doWithJpaAcctAccountRecordReturning(acctAccountRecord, identity()))
+                        .toList()
+                )
+                .stream()
+                .map(jpaAcctCurrencyExchange -> (AcctCurrencyExchange) jpaAcctCurrencyExchange)
+                .toList();
+    }
+
+    @Override
     public Optional<AcctCurrencyExchange> findFirstByTargetAccountRecordId(Long accountRecordId) {
         return
             jpaAcctCurrencyExchangesRepository
