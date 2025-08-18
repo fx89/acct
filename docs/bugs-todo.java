@@ -13,5 +13,5 @@
 // DONE: BUG-00013: Modal overlay component: re-parented divs are not cleaned up automatically by Angular and remain on the page, causing large vertical scrollbars to appear
 // DONE: BUG-00014: Calendar component: re-parented calendar div is not cleand up automatically by Angular and remains on the page, causing the calendar to be displayed on every single page of the app
 // TODO: BUG-00015: Pagination: add validation to the page size to avoid overloads
-// TODO: BUG-00016: Account records: Date input field missing from the account record properties form
+// DONE: BUG-00016: Account records: Date input field missing from the account record properties form
 

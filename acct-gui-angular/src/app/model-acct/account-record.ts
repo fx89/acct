@@ -20,7 +20,12 @@ export interface AccountRecordInputData {
     /**
      * The income or expense value
      */
-    accountRecordValue : number
+    accountRecordValue : number,
+
+    /**
+     * The date when the transaction took place
+     */
+    accountRecordDate? : Date
 }
 
 /**

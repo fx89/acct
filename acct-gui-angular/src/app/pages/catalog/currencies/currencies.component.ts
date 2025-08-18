@@ -25,6 +25,7 @@ import { MsgboxType } from '../../../components-gui/msgbox/msgbox-type';
 import { CalendarButtonComponent } from '../../../components-gui/calendar-button/calendar-button.component';
 import { LabelComponent } from '../../../components-gui/label/label.component';
 import { BankCardData, CardDataService, CurrencyCardData } from '../../../services-acct/card-data.service';
+import { dateToIsoString } from '../../../utils-reusalbe/date-utils';
 
 type MonitoredCurrencyCollectorCardData = CardData & { monitoredCurrencyCollector : MonitoredCurrencyCollector }
 
@@ -444,15 +445,7 @@ export class CurrenciesComponent implements OnInit {
   }
 
   getSelectedCurrencyExchangeRecordDateAsString() : string {
-    const year  : number = this.selectedCurrencyExchangeRecordDate.getFullYear()
-    const month : number = this.selectedCurrencyExchangeRecordDate.getMonth() + 1
-    const day   : number = this.selectedCurrencyExchangeRecordDate.getDate()
-
-    return (
-      year + "-" + 
-      (month < 10 ? "0" : "") + month + "-" +
-      (day < 10 ? "0" : "") + day
-    )
+    return dateToIsoString(this.selectedCurrencyExchangeRecordDate)
   }
 
 }

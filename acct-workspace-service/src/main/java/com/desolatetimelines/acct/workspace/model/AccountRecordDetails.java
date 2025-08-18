@@ -1,5 +1,7 @@
 package com.desolatetimelines.acct.workspace.model;
 
+import java.time.Instant;
+
 /**
  * Groups the {@link AcctAccountRecord account record} properties that can be
  * modified directly by users.
@@ -13,7 +15,8 @@ public record AccountRecordDetails(
     Long accountRecordId,
     String incomeOrExpenseItemUUID,
     String accountRecordText,
-    Double accountRecordValue
+    Double accountRecordValue,
+    Instant accountRecordDate
 ) {
 
     public static Builder builder() {
@@ -28,6 +31,7 @@ public record AccountRecordDetails(
         private String incomeOrExpenseItemUUID;
         private String accountRecordText;
         private Double accountRecordValue;
+        private Instant accountRecordDate = Instant.now();
 
         private Builder() {
         }
@@ -77,6 +81,17 @@ public record AccountRecordDetails(
         }
 
         /**
+         * Sets the {@code accountRecordDate} and returns a reference to this Builder enabling method chaining.
+         *
+         * @param accountRecordDate the {@code accountRecordDate} to set
+         * @return a reference to this Builder
+         */
+        public Builder withAccountRecordDate(Instant accountRecordDate) {
+            this.accountRecordDate = accountRecordDate;
+            return this;
+        }
+
+        /**
          * Returns a {@code AccountRecordDetails} built from the parameters previously set.
          *
          * @return a {@code AccountRecordDetails} built with parameters of this {@code AccountRecordDetails.Builder}
@@ -86,7 +101,8 @@ public record AccountRecordDetails(
                 accountRecordId,
                 incomeOrExpenseItemUUID,
                 accountRecordText,
-                accountRecordValue
+                accountRecordValue,
+                accountRecordDate
             );
         }
     }

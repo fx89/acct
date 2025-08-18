@@ -177,7 +177,7 @@
 
         <!-- The date column -->
         <ng-template tableColumn let-row="row">
-            {{ this.extractDate(row.accountRecordDate) }}
+            {{ this.myDateToIsoString(row.accountRecordDate) }}
         </ng-template>
 
         <!-- The category column -->
@@ -335,11 +335,37 @@
  <app-dialog
     title="Currency transfer properties"
     width="500px"
-    height="335px"
+    height="375px"
     [(visible)]="this.accountRecordEditDialogVisible"
     [closeButton]="true"
  >
     <table>
+        <tr>
+            <td style="height:40px;">
+                Date
+            </td>
+            <td style="width:20px"></td>
+            <td>
+                <table><tr>
+                    <td>
+                        <app-label
+                            width="100px"
+                            height="30px"
+                            textAlign="center"
+                            [value]="this.getSelectedAccountRecordDateAsString()"
+                            [inputStyle]="true"
+                        ></app-label>
+                    </td>
+                    <td>
+                        <app-calendar-button
+                            [isMondayFirstWeekDay]="true"
+                            [(value)]="this.selectedAccountRecord.accountRecordDate"
+                            calendarStyle="position:absolute"
+                        ></app-calendar-button>
+                    </td>
+                </tr></table>
+            </td>
+        </tr>
         <tr>
             <td style="height:40px;">
                 Category

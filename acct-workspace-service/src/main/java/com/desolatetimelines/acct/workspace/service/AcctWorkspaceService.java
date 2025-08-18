@@ -502,6 +502,7 @@ public class AcctWorkspaceService {
         record.setIncomeOrExpenseItemUUID(accountRecordDetails.incomeOrExpenseItemUUID());
         record.setAccountRecordText(accountRecordDetails.accountRecordText());
         record.setAccountRecordValue(accountRecordDetails.accountRecordValue());
+        record.setAccountRecordDate(accountRecordDetails.accountRecordDate());
 
         // Persist the account record
         final AcctAccountRecord persistedAccountRecord = saveAccountRecord(userUUID, record);

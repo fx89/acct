@@ -26,6 +26,8 @@ import { isNumber } from '../../../utils-reusalbe/lang-utils';
 import { AutocompleteDataResponse } from '../../../model-acct/autocomplete-data-response';
 import { MsgboxComponent } from '../../../components-gui/msgbox/msgbox.component';
 import { MsgboxType } from '../../../components-gui/msgbox/msgbox-type';
+import { dateToIsoString } from '../../../utils-reusalbe/date-utils';
+import { CalendarButtonComponent } from '../../../components-gui/calendar-button/calendar-button.component';
 
 /**
  * The height of a record in the account records table. Used for both displaying account records
@@ -49,6 +51,7 @@ type AccountRecordPropertiesFormData = {
   selectedIncomeOrExpenseItem? : IncomeOrExpenseItemCardData,
   accountRecordText : string,
   accountRecordValueStr : string
+  accountRecordDate : Date
 }
 
 /**
@@ -93,7 +96,8 @@ function newCurrencyExchangePropertiesFormData() {
     LabelComponent,
     DialogComponent,
     SelectComponent,
-    MsgboxComponent
+    MsgboxComponent,
+    CalendarButtonComponent
   ],
   templateUrl: './account-records.component.html',
   styleUrl: './account-records.component.less'
@@ -509,7 +513,8 @@ export class AccountRecordsComponent implements OnInit {
       selectedIncomeOrExpenseItemCategory    : category,
       selectedIncomeOrExpenseItem            : item,
       accountRecordText                      : accountRecord?.accountRecordText ?? "",
-      accountRecordValueStr                  : "" + (accountRecord?.accountRecordValue ?? 0)
+      accountRecordValueStr                  : "" + (accountRecord?.accountRecordValue ?? 0),
+      accountRecordDate                      : accountRecord?.accountRecordDate ?? new Date()
     }
   }
 
@@ -537,7 +542,7 @@ export class AccountRecordsComponent implements OnInit {
 
   private processAutocompleteResponse(autoCompleteResponse:AutocompleteDataResponse) : string {
     this.selectedAccountRecord.accountRecordValueStr =
-      this.formatNumber(autoCompleteResponse.lastUsedAccountRecordValue, 2)
+      this.formatNumber(autoCompleteResponse.lastUsedAccountRecordValue, 2).replace(/\s/g, '')
 
     return autoCompleteResponse.accountRecordText
   }
@@ -734,7 +739,8 @@ export class AccountRecordsComponent implements OnInit {
           accountRecordId         : this.selectedAccountRecord.accountRecordId,
           incomeOrExpenseItemUUID : (this.selectedAccountRecord.selectedIncomeOrExpenseItem?.incomeOrExpenseItem.incomeOrExpenseItemUUID ?? ""),
           accountRecordText       : this.selectedAccountRecord.accountRecordText,
-          accountRecordValue      : Number.parseFloat(this.selectedAccountRecord.accountRecordValueStr)
+          accountRecordValue      : Number.parseFloat(this.selectedAccountRecord.accountRecordValueStr),
+          accountRecordDate       : this.selectedAccountRecord.accountRecordDate
         }
       ).pipe(
         map(() => forkJoin([
@@ -874,14 +880,6 @@ export class AccountRecordsComponent implements OnInit {
     }
   }
 
-  extractDate(dateTime:string) : string {
-      if (dateTime) {
-        return extractFirstToken(dateTime, 'T')
-      }
-  
-      return ""
-    }
-
   getAccountCurrencyIconImageData() : string {
     return this.cachedAccountCurrency?.imageData ?? ""
   }
@@ -984,6 +982,18 @@ export class AccountRecordsComponent implements OnInit {
 
   getSelectedCurrencyExchangeRemainingAmountStr() : string {
     return this.formatNumber(this.selectedCurrencyExchangeRemainingAmount, 2)
+  }
+
+  getSelectedAccountRecordDateAsString() : string {
+    if (this.selectedAccountRecord?.accountRecordDate) {
+      return dateToIsoString(this.selectedAccountRecord?.accountRecordDate)
+    }
+
+    return ""
+  }
+
+  myDateToIsoString(date:Date) : string {
+    return dateToIsoString(date)
   }
 
   isForeignCurrencyAccount() : boolean {

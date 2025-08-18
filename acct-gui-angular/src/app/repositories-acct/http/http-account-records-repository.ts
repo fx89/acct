@@ -1,4 +1,4 @@
-import { identity, Observable } from "rxjs";
+import { identity, map, Observable } from "rxjs";
 import { AccountRecordInputData, AccountRecord } from "../../model-acct/account-record";
 import { AccountRecordIdResponse } from "../../model-acct/account-record-id-response";
 import { AcctPage } from "../../model-acct/acct-page";
@@ -48,7 +48,8 @@ export class HttpAcctAccountRecordsRepository extends AcctAccountRecordsReposito
                         body: {
                             incomeOrExpenseItemUUID : record.incomeOrExpenseItemUUID,
                             accountRecordText       : record.accountRecordText,
-                            accountRecordValue      : record.accountRecordValue
+                            accountRecordValue      : record.accountRecordValue,
+                            accountRecordDate       : record.accountRecordDate ?? null
                         }
                     }
                 },
@@ -135,7 +136,15 @@ export class HttpAcctAccountRecordsRepository extends AcctAccountRecordsReposito
                     "Account records not found."
                 )
             )
-        })
+        }).pipe(
+            map(page => {
+                page.data.forEach(record => {
+                    const str : string = '' + record.accountRecordDate
+                    record.accountRecordDate = new Date(str)
+                })
+                return page
+            })
+        )
     }
 
     override saveCurrencyTransfer(
