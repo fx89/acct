@@ -514,6 +514,38 @@ public class AcctWorkspaceService {
     }
 
     /**
+     * Deletes the record with the given account record id from the account with the
+     * given account UUID, which is part of the workspace with the given workspace UUID,
+     * but only of this operation is allowed for the user with the given user UUID with
+     * the privileges found in the given privileges collection.
+     *
+     * @param userUUID               the given user UUID
+     * @param workspaceUUID          the given workspace UUID
+     * @param accountUUID            the given account UUID
+     * @param accountRecordId        the given account record id
+     * @param assignedPrivilegeNames the given privileges collection
+     */
+    public void deleteAccountRecord(
+        String userUUID,
+        String workspaceUUID,
+        String accountUUID,
+        Long accountRecordId,
+        Collection<String> assignedPrivilegeNames
+    ) {
+        // Retrieve the account from the workspace
+        final AcctAccount account =
+            retrieveAccountFromWorkspaceForWorkspaceOperation(
+                DELETE, userUUID, workspaceUUID, assignedPrivilegeNames, accountUUID
+            );
+
+        // Get a reference to the account record to be deleted
+        final AcctAccountRecord accountRecord = retrieveAccountRecord(accountRecordId);
+
+        // Delete the record
+        dataService.deleteAccountRecord(accountRecord);
+    }
+
+    /**
      * Retrieves a page of {@link AccountRecordExtendedDetails extended account records},
      * which include all the properties an {@link AcctAccountRecord account record} has
      * and add some more additional information such as the purchase price for foreign

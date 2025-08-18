@@ -82,6 +82,20 @@ public abstract class AcctWorkspaceRepoSpringDataUtils {
         );
     }
 
+    public static void doWithJpaAcctAccountRecord(
+        AcctAccountRecord acctAccountRecord,
+        Consumer<JpaAcctAccountRecord> todo
+    ) {
+        if (acctAccountRecord instanceof JpaAcctAccountRecord jpaAcctAccountRecord) {
+            todo.accept(jpaAcctAccountRecord);
+        }
+
+        throw new IllegalArgumentException(
+            "The referenced " + AcctAccountRecord.class.getName() +
+                " is not of type " + JpaAcctAccountRecord.class.getCanonicalName()
+        );
+    }
+
     public static JpaAcctCurrencyExchange doWithJpaAcctCurrencyExchangeReturning(
         AcctCurrencyExchange acctCurrencyExchange,
         Function<JpaAcctCurrencyExchange, JpaAcctCurrencyExchange> todo

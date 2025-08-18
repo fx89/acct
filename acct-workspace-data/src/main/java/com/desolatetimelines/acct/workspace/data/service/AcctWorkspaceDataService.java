@@ -213,6 +213,13 @@ public class AcctWorkspaceDataService {
     }
 
     /**
+     * Deletes the referenced account record
+     */
+    public void deleteAccountRecord(AcctAccountRecord accountRecord) {
+        accountRecordsRepository.delete(accountRecord);
+    }
+
+    /**
      * Retrieves the {@link AcctAccountRecord account record} with the given
      * {@link AcctAccountRecord#getAccountRecordId() account record ID} or an
      * empty optional in case the account record is not found

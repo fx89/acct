@@ -3,7 +3,9 @@ package com.desolatetimelines.acct.workspace.ws.client;
 import com.desolatetimelines.acct.common.ws.model.AcctPage;
 import com.desolatetimelines.acct.common.ws.model.AcctSortDirection;
 import com.desolatetimelines.acct.workspace.ws.endpoint.AccountRecordsEndpoint;
-import com.desolatetimelines.acct.workspace.ws.model.*;
+import com.desolatetimelines.acct.workspace.ws.model.AccountRecordEnhancedDetails;
+import com.desolatetimelines.acct.workspace.ws.model.AccountRecordIdResponse;
+import com.desolatetimelines.acct.workspace.ws.model.AccountRecordProperties;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.util.MimeTypeUtils;
@@ -24,6 +26,14 @@ public interface RESTAccountRecordsEndpointClient extends AccountRecordsEndpoint
         @NotNull @RequestParam(name = "accountUUID") String accountUUID,
         @RequestParam(name = "accountRecordId", required = false) Long accountRecordId,
         @RequestBody AccountRecordProperties accountRecordProperties
+    );
+
+    @Override
+    @DeleteMapping(value = "")
+    void deleteAccountRecordFromAccount(
+        @NotNull @RequestParam(name = "workspaceUUID") String workspaceUUID,
+        @NotNull @RequestParam(name = "accountUUID") String accountUUID,
+        @NotNull @RequestParam(name = "accountRecordId") Long accountRecordId
     );
 
     @Override

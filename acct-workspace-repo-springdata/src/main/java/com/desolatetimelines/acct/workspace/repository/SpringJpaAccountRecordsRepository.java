@@ -12,8 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-import static com.desolatetimelines.acct.workspace.util.AcctWorkspaceRepoSpringDataUtils.doWithJpaAcctAccountRecordReturning;
-import static com.desolatetimelines.acct.workspace.util.AcctWorkspaceRepoSpringDataUtils.doWithJpaAcctAccountReturning;
+import static com.desolatetimelines.acct.workspace.util.AcctWorkspaceRepoSpringDataUtils.*;
 import static java.util.function.Function.identity;
 
 /**
@@ -36,6 +35,11 @@ public class SpringJpaAccountRecordsRepository implements AccountRecordsReposito
     @Override
     public AcctAccountRecord save(AcctAccountRecord accountRecord) {
         return doWithJpaAcctAccountRecordReturning(accountRecord, jpaAccountRecordsRepository::save);
+    }
+
+    @Override
+    public void delete(AcctAccountRecord accountRecord) {
+        doWithJpaAcctAccountRecord(accountRecord, jpaAccountRecordsRepository::delete);
     }
 
     @Override

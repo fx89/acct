@@ -26,6 +26,11 @@ public interface AccountRecordsRepository {
     AcctAccountRecord save(AcctAccountRecord accountRecord);
 
     /**
+     * Deletes the referenced account record
+     */
+    void delete(AcctAccountRecord accountRecord);
+
+    /**
      * Retrieves the {@link AcctAccountRecord account record} with the given
      * {@link AcctAccountRecord#getAccountRecordId() account record ID} or an
      * empty optional in case the account record is not found

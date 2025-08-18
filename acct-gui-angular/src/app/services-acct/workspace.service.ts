@@ -243,6 +243,28 @@ export class WorkspaceService {
   }
 
   /**
+     * Deletes the referenced account record from the referenced account,
+     * which is part of the referenced workspace.
+     * 
+     * @param workspace the referenced workspace
+     * @param account   the referenced account
+     * @param record    the referenced account record
+     * 
+     * @returns an observable that lets consumers know when the operation has ended
+     */
+  public deleteAccountRecord(
+    workspace : Workspace,
+    account   : Account,
+    record    : AccountRecordInputData
+  ) : Observable<void> {
+    // Make sure the workspace and account UUIDs are provided and extract the account record context
+    const context : AccountRecordContext = this.verifyAccountRecordContext(workspace, account)
+
+    // Call the repository function
+    return this.accountRecordsRepository.deleteAccountRecord(context.workspaceUUID, context.accountUUID, record)
+  }
+
+  /**
      * Returns an observable that produces a page of account records, optionally filtered by the given
      * text pattern, and sorted by record date in ascending order. The page of records is taken from
      * the referenced account, which must be part of the referenced workspace. The returned page is as

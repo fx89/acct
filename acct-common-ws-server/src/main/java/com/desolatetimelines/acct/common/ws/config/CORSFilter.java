@@ -19,12 +19,25 @@ public class CORSFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
+        if (!response.getHeaderNames().contains("Access-Control-Allow-Origin")) {
+            response.setHeader("Access-Control-Allow-Origin", "*");
+        }
 
-        response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE");
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Max-Age", "3600");
-        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With, Authorization");
+        if (!response.getHeaderNames().contains("Access-Control-Max-Age")) {
+            response.setHeader("Access-Control-Max-Age", "3600");
+        }
+
+        if (!response.getHeaderNames().contains("Access-Control-Allow-Credentials")) {
+            response.setHeader("Access-Control-Allow-Credentials", "true");
+        }
+
+        if (!response.getHeaderNames().contains("Access-Control-Allow-Methods")) {
+            response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE");
+        }
+
+        if (!response.getHeaderNames().contains("Access-Control-Allow-Headers")) {
+            response.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With, Authorization");
+        }
 
         filterChain.doFilter(request, response);
     }

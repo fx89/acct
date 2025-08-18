@@ -25,6 +25,7 @@ import { CardData } from '../../../components-gui/cards-list/card-data';
 import { isNumber } from '../../../utils-reusalbe/lang-utils';
 import { AutocompleteDataResponse } from '../../../model-acct/autocomplete-data-response';
 import { MsgboxComponent } from '../../../components-gui/msgbox/msgbox.component';
+import { MsgboxType } from '../../../components-gui/msgbox/msgbox-type';
 
 /**
  * The height of a record in the account records table. Used for both displaying account records
@@ -239,6 +240,16 @@ export class AccountRecordsComponent implements OnInit {
    * Flag that controls the visibility of the no exchange target accounts message boxf
    */
   noExchangeTargetAccountsMessageBoxVisible : boolean = false
+
+  /**
+   * Flag that controls the visibility of the account record deletion message box
+   */
+  accountRecordDeletionMessageBoxVisible : boolean = false
+
+  /**
+   * Defines the buttons of the account record deletion message box
+   */
+  accountRecordDeletionMessageBoxType : MsgboxType = MsgboxType.YES_NO
 
   /**
    * The sort direction can be toggled from the sort direction change button
@@ -626,8 +637,7 @@ export class AccountRecordsComponent implements OnInit {
   onSortDirectionChangeButtonClick() : void {
     if (this.isAccountRecordTextToSearchForValid()) {
       this.toggleSortDirection()
-      this.accountRecordsManager.reset()
-      this.accountRecordsManager.loadNextPage().subscribe()
+      this.reloadRecords().subscribe()
     }
   }
  
@@ -685,7 +695,29 @@ export class AccountRecordsComponent implements OnInit {
   }
 
   onDeleteAccountRecordButtonClick(record:AccountRecord) : void {
-    
+    this.selectedAccountRecordInTable = record
+    this.accountRecordDeletionMessageBoxVisible = true
+  }
+
+  onAccountRecordDeletionMessageBoxAffirmativeResponse() : void {
+    if (this.selectedAccountRecordInTable) {
+        this.workspaceService.deleteAccountRecord(
+        this.selectedWorkspace,
+        this.selectedAccount(),
+        this.selectedAccountRecordInTable
+      ).subscribe({
+        next: () => {
+          this.reloadRecords().subscribe()
+          this.loadAccountBalance(this.selectedWorkspace).subscribe()
+        },
+        error: err => {
+          this.reloadRecords().subscribe()
+          this.loadAccountBalance(this.selectedWorkspace).subscribe()
+          // TODO: Toast
+          console.log(err)
+        }
+      })
+    }
   }
 
   onEditAccountRecordButtonClick(record:AccountRecord) : void {
@@ -758,8 +790,8 @@ export class AccountRecordsComponent implements OnInit {
       }
     ).subscribe({
       next: () => {
-        this.accountRecordsManager.reset()
-        this.accountRecordsManager.loadNextPage().subscribe()
+        this.reloadRecords().subscribe()
+        this.loadAccountBalance(this.selectedWorkspace).subscribe()
         this.currencyTransferDialogVisible = false
       },
       error: err => {
@@ -830,8 +862,8 @@ export class AccountRecordsComponent implements OnInit {
       ).subscribe({
         next: () => {
           delete this.selectedAccountRecordInTable
-          this.accountRecordsManager.reset()
-          this.accountRecordsManager.loadNextPage().subscribe()
+          this.reloadRecords().subscribe()
+          this.loadAccountBalance(this.selectedWorkspace).subscribe()
           this.currencyExchangeDialogVisible = false
         },
         error: err => {

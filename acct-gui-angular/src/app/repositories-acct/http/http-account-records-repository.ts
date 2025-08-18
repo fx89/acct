@@ -61,6 +61,34 @@ export class HttpAcctAccountRecordsRepository extends AcctAccountRecordsReposito
         })
     }
 
+    override deleteAccountRecord(
+        workspaceUUID : string,
+        accountUUID   : string,
+        record        : AccountRecordInputData
+    ): Observable<void> {
+        return new Observable<void>(subscriber => {
+            this.httpConnector.delete(
+                {
+                    url: "/accountRecords",
+                    data: {
+                        params: {
+                            workspaceUUID   : workspaceUUID,
+                            accountUUID     : accountUUID,
+                            accountRecordId : record.accountRecordId ?? ""
+                        }
+                    }
+                },
+                {
+                    responseHandler: () => {
+                        subscriber.next()
+                        subscriber.complete()
+                    },
+                    errorHandler: err => subscriber.error(err)
+                }
+            )
+        })
+    }
+
     override findSortedPageOfAccountRecordsByTextPattern(
         workspaceUUID : string,
         accountUUID   : string,

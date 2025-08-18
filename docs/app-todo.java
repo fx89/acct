@@ -30,7 +30,7 @@
  TODO: APP-05010: Account records page: Let users specify transfer fees when registering a cash transfer (autofill with last value)
  TODO: APP-05011: Account records page: Search box in the cards lists used for selecting categories, subcategories and items in the account record properties form
  TODO: APP-05012: Account records page: Advanced search feature (time interval, item selection, etc.)
- TODO: APP-05013: Account records page: Delete record
+ DONE: APP-05013: Account records page: Delete record
  TODO: APP-05014: Account records page: Currency exchange - automatically fill in the exchange rate field with the purchase or buy value of the currency for the bank of the target account
  TODO: APP-05015: Account records page: Do not allow editing or deleting items of type transfer or currency exchange
  TODO: APP-05016: Account records page: Foreign currency account - allow multiple currency exchanges originating from the same source account, as long as the sum of the exchange amounts is not over the value of the record

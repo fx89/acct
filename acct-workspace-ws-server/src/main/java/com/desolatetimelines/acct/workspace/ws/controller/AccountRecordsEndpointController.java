@@ -53,6 +53,28 @@ public class AccountRecordsEndpointController implements AccountRecordsEndpoint 
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + ACCOUNT_RECORDS_DELETE + "')")
+    @DeleteMapping(value = "", produces = APPLICATION_JSON_VALUE)
+    // TODO: why are the CORS response headers duplicated for this operation alone?
+    public void deleteAccountRecordFromAccount(
+        @NotNull @RequestParam(name = "workspaceUUID") String workspaceUUID,
+        @NotNull @RequestParam(name = "accountUUID") String accountUUID,
+        @NotNull @RequestParam(name = "accountRecordId") Long accountRecordId
+    ) {
+        // Get the user claims
+        final AcctUserClaims userClaims = extractCurrentUserClaims();
+
+        // Delete the record
+        workspaceService.deleteAccountRecord(
+            userClaims.userUUID(),
+            workspaceUUID,
+            accountUUID,
+            accountRecordId,
+            userClaims.privilegeNames()
+        );
+    }
+
+    @Override
     @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + ACCOUNT_RECORDS_READ + "')")
     @GetMapping(value = "", produces = APPLICATION_JSON_VALUE)
     public AcctPage<AccountRecordEnhancedDetails> findSortedPageOfAccountRecordsByTextPattern(
@@ -62,7 +84,7 @@ public class AccountRecordsEndpointController implements AccountRecordsEndpoint 
         @NotNull @RequestParam(value = "pageNumber") int pageNumber,
         @NotNull @RequestParam(value = "pageSize") int pageSize,
         @NotNull @RequestParam(value = "sortDirection") AcctSortDirection sortDirection
-        ) {
+    ) {
         // Get the user claims
         final AcctUserClaims userClaims = extractCurrentUserClaims();
 

@@ -20,6 +20,14 @@ export class MockAcctAccountRecordsRepository extends AcctAccountRecordsReposito
         throw new Error("Method not implemented.");
     }
 
+    override deleteAccountRecord(
+        workspaceUUID : string,
+        accountUUID   : string,
+        record        : AccountRecordInputData
+    ): Observable<void> {
+        throw new Error("Method not implemented.");
+    }
+
     override findSortedPageOfAccountRecordsByTextPattern(
         workspaceUUID : string,
         accountUUID   : string,

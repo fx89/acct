@@ -442,103 +442,103 @@
 </app-dialog>
 
 <!-- The currency exchange dialog -->
- <app-dialog
+<app-dialog
     title="Account record properties"
     width="495px"
     height="270px"
     [(visible)]="this.currencyTransferDialogVisible"
     [closeButton]="true"
- >
-    <table>
-        <tr>
-            <td style="height:40px;">
-                Target account
-            </td>
-            <td></td>
-            <td>
-                <app-select
-                    width="350px"
-                    [options]="this.registeredAccountsWithSameCurrency"
-                    [cardHeightPx]="50"
-                    [selectedOption]="this.selectedCurrencyTransferPropertiesFormData.targetAccount"
-                    (selectedOptionChange)="this.onSelectedCurrencyTransferPropertiesFormDataTargetAccountChange($event)"
-                ></app-select>
-            </td>
-        </tr>
-        <tr>
-            <td style="height:40px;">
-                Amount
-            </td>
-            <td></td>
-            <td>
-                <app-input
-                    [(value)]="this.selectedCurrencyTransferPropertiesFormData.amountStr"
-                    [valid]="this.isSelectedCurrencyTransferPropertiesFormDataAmountValid()"
-                    (onValueChanged)="this.onSelectedCurrencyTransferAmountChanged()"
-                    textAlign="right"
-                    width="160px"
-                    height="30px"
-                    hint="Account to transfer"
-                ></app-input>
-            </td>
-        </tr>
-        <tr>
-            <td style="height:40px;">
-                Remaining mount
-            </td>
-            <td></td>
-            <td style="padding-left:4px;">
-                <app-label
-                    width="160px"
-                    [inputStyle]="true"
-                    textAlign="right"
-                    [color]="this.isSelectedCurrencyTransferRemainingAmountValid() ? 'none' : 'red'"
-                    [value]="this.getSelectedCurrencyTransferRemainingAmountStr() + '&nbsp;'"
-                ></app-label>
-            </td>
-        </tr>
-        <tr>
-            <td style="height:10px;"></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td>
-                <app-label
-                    width="350px"
-                    textAlign="left"
-                    style="color:var(--red-font-color)"
-                    [value]="this.getSelectedCurrencyTransferProblemDescription()"
-                ></app-label>
-            </td>
-        </tr>
-        <tr>
-            <td style="height:10px;"></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td>
-                <app-button
-                    [enabled]="this.isRegisterCurrencyTransferButtonEnabled()"
-                    value='Register the currency transfer'
-                    textAlign="center"
-                    (onClick)="onRegisterCurrencyTransferButtonClick()"
-                    width="370px"
-                    height="30px"
-                    color="blue"
-                ></app-button>
-            </td>
-        </tr>
-    </table>
-  </app-dialog>
+>
+<table>
+    <tr>
+        <td style="height:40px;">
+            Target account
+        </td>
+        <td></td>
+        <td>
+            <app-select
+                width="350px"
+                [options]="this.registeredAccountsWithSameCurrency"
+                [cardHeightPx]="50"
+                [selectedOption]="this.selectedCurrencyTransferPropertiesFormData.targetAccount"
+                (selectedOptionChange)="this.onSelectedCurrencyTransferPropertiesFormDataTargetAccountChange($event)"
+            ></app-select>
+        </td>
+    </tr>
+    <tr>
+        <td style="height:40px;">
+            Amount
+        </td>
+        <td></td>
+        <td>
+            <app-input
+                [(value)]="this.selectedCurrencyTransferPropertiesFormData.amountStr"
+                [valid]="this.isSelectedCurrencyTransferPropertiesFormDataAmountValid()"
+                (onValueChanged)="this.onSelectedCurrencyTransferAmountChanged()"
+                textAlign="right"
+                width="160px"
+                height="30px"
+                hint="Account to transfer"
+            ></app-input>
+        </td>
+    </tr>
+    <tr>
+        <td style="height:40px;">
+            Remaining mount
+        </td>
+        <td></td>
+        <td style="padding-left:4px;">
+            <app-label
+                width="160px"
+                [inputStyle]="true"
+                textAlign="right"
+                [color]="this.isSelectedCurrencyTransferRemainingAmountValid() ? 'none' : 'red'"
+                [value]="this.getSelectedCurrencyTransferRemainingAmountStr() + '&nbsp;'"
+            ></app-label>
+        </td>
+    </tr>
+    <tr>
+        <td style="height:10px;"></td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+        <td>
+            <app-label
+                width="350px"
+                textAlign="left"
+                style="color:var(--red-font-color)"
+                [value]="this.getSelectedCurrencyTransferProblemDescription()"
+            ></app-label>
+        </td>
+    </tr>
+    <tr>
+        <td style="height:10px;"></td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+        <td>
+            <app-button
+                [enabled]="this.isRegisterCurrencyTransferButtonEnabled()"
+                value='Register the currency transfer'
+                textAlign="center"
+                (onClick)="onRegisterCurrencyTransferButtonClick()"
+                width="370px"
+                height="30px"
+                color="blue"
+            ></app-button>
+        </td>
+    </tr>
+</table>
+</app-dialog>
 
-  <!-- The no transfer target accounts message box -->
-  <app-msgbox
+<!-- The no transfer target accounts message box -->
+<app-msgbox
     [(visible)]="this.noTransferTargetAccountsMessageBoxVisible"
     width="400px"
     height="200px"
@@ -548,133 +548,133 @@
         selected workspace. Currency transfers can only be done between two accounts with the same currency.
         If you want to register a transfer to a foreign currency account, then use the Currency exchage button.
     "
-  ></app-msgbox>
+></app-msgbox>
 
-  <!-- The currency transfer dialog -->
- <app-dialog
+<!-- The currency transfer dialog -->
+<app-dialog
     title="Currency exchange properties"
     width="495px"
     height="310px"
     [(visible)]="this.currencyExchangeDialogVisible"
     [closeButton]="true"
- >
-    <table>
-        <tr>
-            <td style="height:40px;">
-                Target account
-            </td>
-            <td></td>
-            <td>
-                <app-select
-                    width="350px"
-                    [options]="this.registeredAccountsWithForeignCurrency"
-                    [cardHeightPx]="50"
-                    [selectedOption]="this.selectedCurrencyExchangePropertiesFormData.targetAccount"
-                    (selectedOptionChange)="this.onSelectedCurrencyExchangePropertiesFormDataTargetAccountChange($event)"
-                ></app-select>
-            </td>
-        </tr>
-        <tr>
-            <td style="height:40px;">
-                Amount
-            </td>
-            <td></td>
-            <td style="padding-left: 3px;">
-                @if (this.isForeignCurrencyAccount()) {
-                    <app-label
-                        width="160px"
-                        textAlign="right"
-                        [inputStyle]="true"
-                        [value]="this.selectedCurrencyExchangePropertiesFormData.amountStr + '&nbsp;'"
-                    ></app-label>
-                }
-                @else {
-                    <app-input
-                        [(value)]="this.selectedCurrencyExchangePropertiesFormData.amountStr"
-                        [valid]="this.isSelectedCurrencyExchangePropertiesFormDataAmountValid()"
-                        (onValueChanged)="this.onSelectedCurrencyExchangeAmountChanged()"
-                        textAlign="right"
-                        width="160px"
-                        height="30px"
-                        hint="Amount to purchase"
-                    ></app-input>
-                }
-            </td>
-        </tr>
-        <tr>
-            <td style="height:40px;">
-                {{ this.isForeignCurrencyAccount() ? 'Sell' : 'Buy' }} rate
-            </td>
-            <td></td>
-            <td>
+>
+<table>
+    <tr>
+        <td style="height:40px;">
+            Target account
+        </td>
+        <td></td>
+        <td>
+            <app-select
+                width="350px"
+                [options]="this.registeredAccountsWithForeignCurrency"
+                [cardHeightPx]="50"
+                [selectedOption]="this.selectedCurrencyExchangePropertiesFormData.targetAccount"
+                (selectedOptionChange)="this.onSelectedCurrencyExchangePropertiesFormDataTargetAccountChange($event)"
+            ></app-select>
+        </td>
+    </tr>
+    <tr>
+        <td style="height:40px;">
+            Amount
+        </td>
+        <td></td>
+        <td style="padding-left: 3px;">
+            @if (this.isForeignCurrencyAccount()) {
+                <app-label
+                    width="160px"
+                    textAlign="right"
+                    [inputStyle]="true"
+                    [value]="this.selectedCurrencyExchangePropertiesFormData.amountStr + '&nbsp;'"
+                ></app-label>
+            }
+            @else {
                 <app-input
-                    [(value)]="this.selectedCurrencyExchangePropertiesFormData.exchangeRateStr"
-                    [valid]="this.isSelectedCurrencyExchangePropertiesFormDataExchangeRateValid()"
+                    [(value)]="this.selectedCurrencyExchangePropertiesFormData.amountStr"
+                    [valid]="this.isSelectedCurrencyExchangePropertiesFormDataAmountValid()"
                     (onValueChanged)="this.onSelectedCurrencyExchangeAmountChanged()"
                     textAlign="right"
                     width="160px"
                     height="30px"
-                    hint="Exchange rate"
+                    hint="Amount to purchase"
                 ></app-input>
-            </td>
-        </tr>
-        <tr>
-            <td style="height:40px;">
-                Remaining mount
-            </td>
-            <td></td>
-            <td style="padding-left:4px;">
-                <app-label
-                    width="160px"
-                    [inputStyle]="true"
-                    textAlign="right"
-                    [color]="this.isSelectedCurrencyExchangeRemainingAmountValid() ? 'none' : 'red'"
-                    [value]="this.getSelectedCurrencyExchangeRemainingAmountStr() + '&nbsp;'"
-                ></app-label>
-            </td>
-        </tr>
-        <tr>
-            <td style="height:10px;"></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td>
-                <app-label
-                    width="350px"
-                    textAlign="left"
-                    style="color:var(--red-font-color)"
-                    [value]="this.getSelectedCurrencyExchangeProblemDescription()"
-                ></app-label>
-            </td>
-        </tr>
-        <tr>
-            <td style="height:10px;"></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td>
-                <app-button
-                    [enabled]="this.isRegisterCurrencyExchangeButtonEnabled()"
-                    value='Register the currency exchange'
-                    textAlign="center"
-                    (onClick)="onRegisterCurrencyExchangeButtonClick()"
-                    width="370px"
-                    height="30px"
-                    color="blue"
-                ></app-button>
-            </td>
-        </tr>
-    </table>
-  </app-dialog>
-  
-  <!-- The no exchange target accounts message box -->
-  <app-msgbox
+            }
+        </td>
+    </tr>
+    <tr>
+        <td style="height:40px;">
+            {{ this.isForeignCurrencyAccount() ? 'Sell' : 'Buy' }} rate
+        </td>
+        <td></td>
+        <td>
+            <app-input
+                [(value)]="this.selectedCurrencyExchangePropertiesFormData.exchangeRateStr"
+                [valid]="this.isSelectedCurrencyExchangePropertiesFormDataExchangeRateValid()"
+                (onValueChanged)="this.onSelectedCurrencyExchangeAmountChanged()"
+                textAlign="right"
+                width="160px"
+                height="30px"
+                hint="Exchange rate"
+            ></app-input>
+        </td>
+    </tr>
+    <tr>
+        <td style="height:40px;">
+            Remaining mount
+        </td>
+        <td></td>
+        <td style="padding-left:4px;">
+            <app-label
+                width="160px"
+                [inputStyle]="true"
+                textAlign="right"
+                [color]="this.isSelectedCurrencyExchangeRemainingAmountValid() ? 'none' : 'red'"
+                [value]="this.getSelectedCurrencyExchangeRemainingAmountStr() + '&nbsp;'"
+            ></app-label>
+        </td>
+    </tr>
+    <tr>
+        <td style="height:10px;"></td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+        <td>
+            <app-label
+                width="350px"
+                textAlign="left"
+                style="color:var(--red-font-color)"
+                [value]="this.getSelectedCurrencyExchangeProblemDescription()"
+            ></app-label>
+        </td>
+    </tr>
+    <tr>
+        <td style="height:10px;"></td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+        <td>
+            <app-button
+                [enabled]="this.isRegisterCurrencyExchangeButtonEnabled()"
+                value='Register the currency exchange'
+                textAlign="center"
+                (onClick)="onRegisterCurrencyExchangeButtonClick()"
+                width="370px"
+                height="30px"
+                color="blue"
+            ></app-button>
+        </td>
+    </tr>
+</table>
+</app-dialog>
+
+<!-- The no exchange target accounts message box -->
+<app-msgbox
     [(visible)]="this.noExchangeTargetAccountsMessageBoxVisible"
     width="450px"
     height="160px"
@@ -683,4 +683,15 @@
         There are no accounts with a different currency than the selected account within the scope of the
         selected workspace. Currency exchange can only be done between accounts with different currencies.
     "
-  ></app-msgbox>
+></app-msgbox>
+
+<!-- The account record deletion confirmation message box -->
+<app-msgbox
+    [(visible)]="this.accountRecordDeletionMessageBoxVisible"
+    [type]="this.accountRecordDeletionMessageBoxType"
+    width="400px"
+    height="105px"
+    title="Confirm account record deletion"
+    text="Are you sure you want to delete this record?"
+    (onAffirmativeResponse)="this.onAccountRecordDeletionMessageBoxAffirmativeResponse()"
+></app-msgbox>

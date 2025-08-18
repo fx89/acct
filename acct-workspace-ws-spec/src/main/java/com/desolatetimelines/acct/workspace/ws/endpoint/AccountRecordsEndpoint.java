@@ -32,6 +32,19 @@ public interface AccountRecordsEndpoint {
     );
 
     /**
+     * Removes the record with the given record id from the account with the given
+     * account UUID, which resides within the workspace with the given workspace UUID
+     * @param workspaceUUID   the given workspace UUID
+     * @param accountUUID     the given account UUID
+     * @param accountRecordId the given record id
+     */
+    void deleteAccountRecordFromAccount(
+        @NotNull String workspaceUUID,
+        @NotNull String accountUUID,
+        @NotNull Long accountRecordId
+    );
+
+    /**
      * Returns a page of account records, filtered by the given {@link AccountRecordEnhancedDetails#accountRecordText() text}
      * pattern and sorted by {@link AccountRecordEnhancedDetails#accountRecordDate() record date} in ascending order. The page
      * of records is taken from the account with the given account UUID, which must be part of the workspace with the

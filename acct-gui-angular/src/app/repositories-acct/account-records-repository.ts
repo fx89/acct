@@ -30,6 +30,22 @@ export abstract class AcctAccountRecordsRepository {
     ) : Observable<AccountRecordIdResponse>
 
     /**
+     * Deletes the referenced account record from the account referenced via the given account UUID,
+     * which is part of the workspace wirth the given workspace UUID.
+     * 
+     * @param workspaceUUID the given workspace UUID
+     * @param accountUUID   the given account UUID
+     * @param record        the referenced account record
+     * 
+     * @returns an observable that lets consumers know when the operation has ended
+     */
+    abstract deleteAccountRecord(
+        workspaceUUID : string,
+        accountUUID   : string,
+        record        : AccountRecordInputData
+    ) : Observable<void>
+
+    /**
      * Returns an observable that produces a page of account records, optionally filtered by the given
      * text pattern, and sorted by record date in ascending order. The page of records is taken from
      * the account with the given account UUID , which must be part of the workspace with the given
