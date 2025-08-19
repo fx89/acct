@@ -1,0 +1,153 @@
+<!-- The top bar -->
+<app-bar
+  [barType]="'top'"
+  [floating]="false"
+  [autoHiding]="false"
+>
+    <!-- Content on the left side of the top bar -->
+    <div left-content style="padding-left:10px;">
+        <tr>
+            <td style="vertical-align:middle;">
+                Bank
+            </td>
+            <td style="width:10px"></td>
+            <td style="vertical-align:middle;">
+                <!-- The banks selection box -->
+                <app-select
+                    width="270px"
+                    [options]="this.registeredBanks"
+                    [cardHeightPx]="50"
+                    [selectedOption]="this.selectedBank"
+                    (selectedOptionChange)="this.onSelectedBankChange($event)"
+                ></app-select>
+            </td>
+            <td style="width:10px"></td>
+            <td style="vertical-align:middle;">
+                <!-- The capitalized deposits inclusion switch -->
+                <app-switch
+                    [(value)]="this.includeCapitalizedDeposits"
+                    width="70px"
+                    height="30px"
+                    color="blue"
+                    [enabled]="true"
+                ></app-switch>
+            </td>
+            <td style="width:1px"></td>
+            <td style="vertical-align:middle;">
+                {{ this.includeCapitalizedDeposits ? 'Include capitalized' : 'Exclude capitalized' }}
+            </td>
+        </tr>
+    </div>
+
+    <!-- Content on the right side of the top bar -->
+    <div right-content style="padding-right:10px;">
+        <table cellspacing="0" cellpadding="0"><tr>
+            <td>
+                <!-- The scroll to bottom button -->
+                <app-button
+                    value='New deposit'
+                    icon="button-icons/plus.png"
+                    textAlign="left"
+                    [enabled]="true"
+                    (onClick)="onNewDepositButtonClick()"
+                    width="125px"
+                    height="30px"
+                    color="blue"
+                ></app-button>
+            </td>
+        </tr></table>
+    </div>
+</app-bar>
+
+@if ( this.selectedBank ) {
+    <!-- The banks table -->
+     <app-table
+        width="calc(100% - 20px)"
+        [scrollable]="true"
+        scrollHeight="calc(100vh - 190px)"
+        (scroll)="this.onDepositsTableScroll($event)"
+        [zebraStripes]="true"
+        [selectableRows]="false"
+        [data]="this.getDeposits()"
+        [columnNames]="[
+            '', 'Source account', 'Account number', 'Start date', 'End date', 'Value', 'Interest %', 'Interest', '', 'Progress'
+        ]"
+        [columnWidths]="[
+            '50px',
+            '130px',
+            '150px',
+            '120px',
+            '120px',
+            '80px',
+            '80px',
+            '80px',
+            '45px',
+            'calc(100% - 810px)'
+        ]
+        "
+        [headerStyles]="[
+            'text-align:center;',
+            'text-align:left;',
+            'text-align:left;',
+            'text-align:center;',
+            'text-align:center;',
+            'text-align:right;',
+            'text-align:right;',
+            'text-align:right;',
+            'text-align:center;',
+            'text-align:center;'
+        ]"
+        [columnStyles]="[
+            'text-align:center;',
+            'height:' + this.getDepositRecordHeightPx() + '; height: 50px; text-align:left;',
+            'text-align:left;',
+            'text-align:center;',
+            'text-align:center;',
+            'text-align:right;',
+            'text-align:right;',
+            'text-align:right;',
+            'text-align:center;',
+            'text-align:center;'
+        ]"
+    >
+        <!-- The actions column -->
+        <ng-template tableColumn let-row="row">
+        </ng-template>
+
+        <!-- The Source account column -->
+        <ng-template tableColumn let-row="row">
+        </ng-template>
+
+        <!-- The The account number column -->
+        <ng-template tableColumn let-row="row">
+        </ng-template>
+
+        <!-- The Start date column -->
+        <ng-template tableColumn let-row="row">
+        </ng-template>
+
+        <!-- The End date column -->
+        <ng-template tableColumn let-row="row">
+        </ng-template>
+
+        <!-- The Value column -->
+        <ng-template tableColumn let-row="row">
+        </ng-template>
+
+        <!-- The Interest percent column -->
+        <ng-template tableColumn let-row="row">
+        </ng-template>
+
+        <!-- The Interest column -->
+        <ng-template tableColumn let-row="row">
+        </ng-template>
+
+        <!-- The currency icon column -->
+        <ng-template tableColumn let-row="row">
+        </ng-template>
+
+        <!-- The progress column -->
+        <ng-template tableColumn let-row="row">
+        </ng-template>
+    </app-table>
+}

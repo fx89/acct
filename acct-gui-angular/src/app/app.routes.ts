@@ -8,6 +8,7 @@ import { UserInformationComponent } from './pages/user-information/user-informat
 import { CatalogComponent } from './pages/catalog/catalog.component';
 import { ShowcaseComponent } from './components-gui/showcase/showcase.component';
 import { LoginFormComponent } from './components-acct/login-form/login-form.component';
+import { DepositsComponent } from './pages/deposits/deposits.component';
 
 export const routes: Routes = [
     {
@@ -68,7 +69,7 @@ export const routes: Routes = [
     },
     {
         path: 'deposits',
-        component: AccountsComponent, // TODO: DepositsComponent
+        component: DepositsComponent,
         data: {
             menuItem: {
                 text: "Deposits",

@@ -15,7 +15,6 @@ import { WorkspaceSelectorService } from '../../../services-acct/workspace-selec
 import { RecordsManager } from '../../../utils-acct/records-manager';
 import { IconifiedCurrencyProperties } from '../../../model-acct/currency-properties';
 import { ScrollDirection, ScrollEvent } from '../../../components-gui/directives/scrollable-content.directive';
-import { extractFirstToken } from '../../../utils-reusalbe/string-utils';
 import { SortDirection } from '../../../model-acct/sort-direction';
 import { IconifiedBankProperties } from '../../../model-acct/bank-properties';
 import { isDefined } from '../../../utils-reusalbe/lang-utils';

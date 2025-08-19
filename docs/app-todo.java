@@ -37,8 +37,8 @@
  TODO: APP-06001: Currency history page: Page layout
  TODO: APP-06002: Currency history page: Bank and currency selector
  TODO: APP-06003: Currency history page: Currency history graphs
- TODO: APP-07001: Deposits page: Page layout
- TODO: APP-07002: Deposits page: Bank selector
+ DONE: APP-07001: Deposits page: Page layout
+ DONE: APP-07002: Deposits page: Bank selector
  TODO: APP-07003: Deposits page: Deposit editor form (create or update deposits)
  TODO: APP-07004: Deposits page: Deposits table
  TODO: APP-07001: Deposits to capitalize: Page layout
