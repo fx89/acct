@@ -43,12 +43,12 @@
     <div right-content style="padding-right:10px;">
         <table cellspacing="0" cellpadding="0"><tr>
             <td>
-                <!-- The scroll to bottom button -->
+                <!-- The new deposit button -->
                 <app-button
                     value='New deposit'
                     icon="button-icons/plus.png"
                     textAlign="left"
-                    [enabled]="true"
+                    [enabled]="this.isBankSelected()"
                     (onClick)="onNewDepositButtonClick()"
                     width="125px"
                     height="30px"
@@ -151,3 +151,174 @@
         </ng-template>
     </app-table>
 }
+
+<!-- The deposit editor form dialog -->
+ <app-dialog
+    title="Edit deposit properties"
+    width="710px"
+    height="250px"
+    [(visible)]="this.depositEditorFormDialogVisible"
+    [closeButton]="true"
+ >
+    <table><tr>
+        <td>
+            <table>
+                <tr>
+                    <td style="height:40px;">
+                        Bank
+                    </td>
+                    <td style="width:10px;"></td>
+                    <td style="padding-left:3px;">
+                        <app-label
+                            width="250px"
+                            [value]="'&nbsp;' + (this.selectedBank?.bank?.bankName ?? '')"
+                            textAlign="left"
+                            [inputStyle]="true"
+                            fontSize="normal"
+                        ></app-label>
+                    <td>
+                </tr>
+                <tr>
+                    <td style="height:40px;">
+                        Source account
+                    </td>
+                    <td></td>
+                        <app-select
+                            width="230px"
+                            [options]="this.selectedBankAccounts"
+                            [cardHeightPx]="50"
+                            [selectedOption]="this.selectedDeposit.selectedAccount"
+                            (selectedOptionChange)="this.onSelectedAccountChange($event)"
+                        ></app-select>
+                    <td>
+                </tr>
+                <tr>
+                    <td style="height:40px;">
+                        Account number
+                    </td>
+                    <td></td>
+                        <app-input
+                            [(value)]="this.selectedDeposit.depositAccountNumber"
+                            [valid]="this.isSelectedDepositAccountNumberValid()"
+                            width="250px"
+                            height="30px"
+                            hint="Deposit account number"
+                        ></app-input>
+                    <td>
+                </tr>
+            </table>
+        </td>
+        <td style="width:20px;"></td>
+        <td>
+            <table>
+                <tr>
+                    <td style="height:40px;">
+                        Start date
+                    </td>
+                    <td style="width:10px;"></td>
+                    <td>
+                        <table><tr>
+                            <td style="padding-left:3px;">
+                                <app-label
+                                    width="100px"
+                                    height="30px"
+                                    textAlign="center"
+                                    [value]="this.getSelectedDepositStartDateAsString()"
+                                    [inputStyle]="true"
+                                ></app-label>
+                            </td>
+                            <td>
+                                <app-calendar-button
+                                    [isMondayFirstWeekDay]="true"
+                                    [(value)]="this.selectedDeposit.startDate"
+                                    calendarStyle="position:absolute"
+                                ></app-calendar-button>
+                            </td>
+                        </tr></table>
+                    <td>
+                </tr>
+                <tr>
+                    <td style="height:40px;">
+                        End date
+                    </td>
+                    <td></td>
+                    <td>
+                        <table><tr>
+                            <td style="padding-left:3px;">
+                                <app-label
+                                    width="100px"
+                                    height="30px"
+                                    textAlign="center"
+                                    [value]="this.getSelectedDepositEndDateAsString()"
+                                    [inputStyle]="true"
+                                ></app-label>
+                            </td>
+                            <td>
+                                <app-calendar-button
+                                    [isMondayFirstWeekDay]="true"
+                                    [(value)]="this.selectedDeposit.endDate"
+                                    calendarStyle="position:absolute"
+                                ></app-calendar-button>
+                            </td>
+                        </tr></table>
+                    <td>
+                </tr>
+                <tr>
+                    <td style="height:40px;">
+                        Amount / Interest
+                    </td>
+                    <td></td>
+                    <td>
+                        <table><tr>
+                            <td>
+                                <app-input
+                                    [(value)]="this.selectedDeposit.amountStr"
+                                    [valid]="this.isSelectedDepositAmountStrValid()"
+                                    textAlign="right"
+                                    width="70px"
+                                    height="30px"
+                                    hint="Amount"
+                                ></app-input>
+                            </td>
+                            <td>
+                                <app-input
+                                    [(value)]="this.selectedDeposit.interestPctStr"
+                                    [valid]="this.isSelectedDepositInterestPctStrValid()"
+                                    width="35px"
+                                    height="30px"
+                                    hint="Int"
+                                ></app-input>
+                            </td>
+                            <td>
+                                %
+                            </td>
+                        </tr></table>
+                    <td>
+                </tr>
+            </table>
+        </td>
+    </tr></table>
+
+    <!-- The deposit editor form error label -->
+    <app-label
+        width="100%"
+        height="30px"
+        textAlign="center"
+        style="color:var(--red-font-color)"
+        [value]="this.getDepositEditorFormError()"
+    ></app-label>
+
+    <div style="height:10px;"></div>
+
+    <!-- The deposit editor form submit button -->
+    <app-button
+        value='Save deposit propertoes'
+        textAlign="center"
+        [enabled]="this.isDepositEditorFormSubmitButtonEnabled()"
+        (onClick)="onDepositEditorFormSubmitButtonClick()"
+        width="calc(100% - 2px)"
+        height="30px"
+        color="blue"
+    ></app-button>
+
+ </app-dialog>

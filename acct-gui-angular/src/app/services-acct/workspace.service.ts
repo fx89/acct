@@ -21,6 +21,9 @@ import { SortDirection } from '../model-acct/sort-direction';
 import { AcctAutocompleteRepository } from '../repositories-acct/autocomplete-repository';
 import { AutocompleteDataResponse } from '../model-acct/autocomplete-data-response';
 import { IncomeOrExpenseItem } from '../model-acct/income-or-expense-item';
+import { DepositProperties } from '../model-acct/deposit-modifiable-attributes';
+import { AcctDepositsRepository } from '../repositories-acct/deposits-repository';
+import { DepositUUIDResponse } from '../model-acct/deposit-uuid-response';
 
 /**
  * Container for the UUIDs of the workspace and account where an account record is found
@@ -43,7 +46,8 @@ export class WorkspaceService {
     private catalogService           : CatalogService,
     private accountsRepository       : AcctAccountsRepository,
     private accountRecordsRepository : AcctAccountRecordsRepository,
-    private autocompleteRepository   : AcctAutocompleteRepository
+    private autocompleteRepository   : AcctAutocompleteRepository,
+    private depositsRepository       : AcctDepositsRepository
   ) { 
 
   }
@@ -372,6 +376,23 @@ export class WorkspaceService {
       incomeOrExpenseItemUUID,
       textPattern
     )
+  }
+
+  /**
+   * Saves the referenced deposit in the referenced workspace
+   * 
+   * @param workspace the referenced workspace
+   * @param deposit   the referenced deposit
+   * 
+   * @returns an observable that produces a container for the
+   *          depositUUID of the saved deposit
+   */
+  public saveDeposit(workspace:Workspace, deposit:DepositProperties) : Observable<DepositUUIDResponse> {
+    // Make sure the workspace UUID is provided and extract the account record context
+    const context : AccountRecordContext = this.verifyAccountRecordContext(workspace)
+
+    // Call the repository function
+    return this.depositsRepository.saveDeposit(context.workspaceUUID, deposit)
   }
 
   private verifyAccountRecordContext(workspace:Workspace, account?:Account) : AccountRecordContext {

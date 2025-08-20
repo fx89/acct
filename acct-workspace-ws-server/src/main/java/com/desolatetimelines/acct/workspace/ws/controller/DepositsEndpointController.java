@@ -42,6 +42,7 @@ public class DepositsEndpointController implements DepositsEndpoint {
                     depositProperties.sourceAccountUUID(),
                     depositProperties.depositAccountNumber(),
                     depositProperties.amount(),
+                    depositProperties.startDate(),
                     depositProperties.projectedEndDate(),
                     depositProperties.interestPct(),
                     userClaims.privilegeNames()

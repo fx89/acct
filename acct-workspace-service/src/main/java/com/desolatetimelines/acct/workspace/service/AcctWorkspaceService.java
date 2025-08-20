@@ -813,6 +813,7 @@ public class AcctWorkspaceService {
      * @param sourceAccountUUID      the given source account UUID
      * @param depositAccountNumber   the given deposit account number
      * @param amount                 the given amount of currency
+     * @param startDate              the date when the deposit was created
      * @param projectedEndDate       the given projected end date
      * @param interestPct            the given interest percent
      * @param assignedPrivilegeNames the given collection of privileges
@@ -824,6 +825,7 @@ public class AcctWorkspaceService {
         String sourceAccountUUID,
         String depositAccountNumber,
         Double amount,
+        Instant startDate,
         Instant projectedEndDate,
         Double interestPct,
         Collection<String> assignedPrivilegeNames
@@ -839,7 +841,8 @@ public class AcctWorkspaceService {
 
         // Create a new account record for subtracting the amount for the deposit from the source account
         final AcctAccountRecord depositCreationRecord = createNewAccountRecordWithinAccount(sourceAccount, userUUID);
-        depositCreationRecord.setAccountRecordText(ACCT_REC_TEXT_DEPOSIT_CREATION);
+        depositCreationRecord.setAccountRecordDate(Optional.ofNullable(startDate).orElse(Instant.now()));
+        depositCreationRecord.setAccountRecordText(ACCT_REC_TEXT_DEPOSIT_CREATION + " - " + depositAccountNumber);
         depositCreationRecord.setAccountRecordValue(-amount);
         depositCreationRecord.setIncomeOrExpenseItemUUID(INCOME_OR_EXPENSE_ITEM_UUID_FOR_DEPOSIT);
         final AcctAccountRecord savedDepositCreationRecord = saveAccountRecord(userUUID, depositCreationRecord);

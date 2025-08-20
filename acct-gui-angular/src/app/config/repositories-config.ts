@@ -5,12 +5,14 @@ import { AcctAccountsRepository } from "../repositories-acct/accounts-repository
 import { AcctAutocompleteRepository } from "../repositories-acct/autocomplete-repository"
 import { AcctBanksRepository } from "../repositories-acct/banks-repository"
 import { AcctCurrenciesRepository } from "../repositories-acct/currencies-repository"
+import { AcctDepositsRepository } from "../repositories-acct/deposits-repository"
 import { HttpAcctAccessTokensRepository } from "../repositories-acct/http/http-access-tokens-repository"
 import { HttpAcctAccountRecordsRepository } from "../repositories-acct/http/http-account-records-repository"
 import { HttpAcctAccountsRepository } from "../repositories-acct/http/http-accounts-repository"
 import { HttpAcctAutocompleteRepository } from "../repositories-acct/http/http-autocomplete-repository"
 import { HttpAcctBanksRepository } from "../repositories-acct/http/http-banks-repository"
 import { HttpAcctCurrenciesRepository } from "../repositories-acct/http/http-currencies-repository"
+import { HttpAcctDepositsRepository } from "../repositories-acct/http/http-deposits-repository"
 import { HttpAcctIconsRepository } from "../repositories-acct/http/http-icons-repository"
 import { HttpAcctItemsRepository } from "../repositories-acct/http/http-items-repository"
 import { HttpAcctMonitoredCurrenciesRepository } from "../repositories-acct/http/http-monitored-currencies-repository"
@@ -25,6 +27,7 @@ import { MockAcctAccountsRepository } from "../repositories-acct/mock/mock-accou
 import { MockAcctAutocompleteRepository } from "../repositories-acct/mock/mock-autocomplete-repository"
 import { MockAcctBanksRepository } from "../repositories-acct/mock/mock-banks-repository"
 import { MockAcctCurrenciesRepository } from "../repositories-acct/mock/mock-currencies-repository"
+import { MockAcctDepositsRepository } from "../repositories-acct/mock/mock-deposits-repository"
 import { MockAcctIconsRepository } from "../repositories-acct/mock/mock-icons-repository"
 import { MockAcctItemsRepository } from "../repositories-acct/mock/mock-items-repository"
 import { MockAcctMonitoredCurrenciesRepository } from "../repositories-acct/mock/mock-monitored-currencies-repository"
@@ -83,6 +86,16 @@ export function provideAcctAutocompleteRepository() {
         AcctAutocompleteRepository,
         new MockAcctAutocompleteRepository(),
         httpConnectorsService => new HttpAcctAutocompleteRepository(
+                httpConnectorsService.getHttpConnectorByServiceName('acct-workspace')
+            )
+    )
+}
+
+export function provideAcctDepositsRepository() {
+    return provideRepository(
+        AcctDepositsRepository,
+        new MockAcctDepositsRepository(),
+        httpConnectorsService => new HttpAcctDepositsRepository(
                 httpConnectorsService.getHttpConnectorByServiceName('acct-workspace')
             )
     )
