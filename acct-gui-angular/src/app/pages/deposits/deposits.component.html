@@ -70,19 +70,19 @@
         [selectableRows]="false"
         [data]="this.getDeposits()"
         [columnNames]="[
-            '', 'Source account', 'Account number', 'Start date', 'End date', 'Value', 'Interest %', 'Interest', '', 'Progress'
+            '', 'Source account', 'Deposit account number', 'Start date', 'End date', 'Amount', 'Interest %', 'Interest', '', 'Progress'
         ]"
         [columnWidths]="[
             '50px',
-            '130px',
             '150px',
-            '120px',
-            '120px',
+            '200px',
+            '80px',
+            '80px',
             '80px',
             '80px',
             '80px',
             '45px',
-            'calc(100% - 810px)'
+            'calc(100% - 800px)'
         ]
         "
         [headerStyles]="[
@@ -99,7 +99,7 @@
         ]"
         [columnStyles]="[
             'text-align:center;',
-            'height:' + this.getDepositRecordHeightPx() + '; height: 50px; text-align:left;',
+            'height:' + this.getDepositRecordHeightPx() + '; text-align:left;',
             'text-align:left;',
             'text-align:center;',
             'text-align:center;',
@@ -116,38 +116,58 @@
 
         <!-- The Source account column -->
         <ng-template tableColumn let-row="row">
+            {{ this.getAccountNameByAccountUUID(row.sourceAccountUUID) }}
         </ng-template>
 
         <!-- The The account number column -->
         <ng-template tableColumn let-row="row">
+            {{ row.depositAccountNumber }}
         </ng-template>
 
         <!-- The Start date column -->
         <ng-template tableColumn let-row="row">
+            {{ this.formatDate(row.startDate) }}
         </ng-template>
 
         <!-- The End date column -->
         <ng-template tableColumn let-row="row">
+            {{ this.formatDate(row.projectedEndDate) }}
         </ng-template>
 
-        <!-- The Value column -->
+        <!-- The Amount column -->
         <ng-template tableColumn let-row="row">
+            {{ this.formatNumber(row.amount, 2) }}
         </ng-template>
 
         <!-- The Interest percent column -->
         <ng-template tableColumn let-row="row">
+            {{ this.formatNumber(row.interestPct * 100, 2) }}%
         </ng-template>
 
         <!-- The Interest column -->
         <ng-template tableColumn let-row="row">
+            <!-- TODO: remove the 0.9 and add the non-hardcoded tax rate in its palce -->
+            {{ this.formatNumber(row.amount * row.interestPct * 0.9, 2) }}
         </ng-template>
 
         <!-- The currency icon column -->
         <ng-template tableColumn let-row="row">
+            <img
+                [src]="this.getCurrencyIconByCurrencyUUID(row.currencyUUID)"
+                width="25px"
+                height="25px"
+            >
         </ng-template>
 
         <!-- The progress column -->
         <ng-template tableColumn let-row="row">
+            <app-progress-bar
+                width="100%"
+                height="20px"
+                color="blue"
+                [value]="this.getProgressPct(row)"
+                [valueVisible]="true"
+            ></app-progress-bar>
         </ng-template>
     </app-table>
 }

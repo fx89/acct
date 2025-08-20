@@ -2,13 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { BarComponent } from '../../components-gui/bar/bar.component';
 import { ButtonComponent } from '../../components-gui/button/button.component';
 import { SelectComponent } from '../../components-gui/select/select.component';
-import { AccountCardData, BankCardData, CardDataService } from '../../services-acct/card-data.service';
+import { AccountCardData, BankCardData, CardDataService, CurrencyCardData } from '../../services-acct/card-data.service';
 import { forkJoin, Observable } from 'rxjs';
 import { complete, newObservable } from '../../utils-reusalbe/rxjs-utils';
 import { CardData } from '../../components-gui/cards-list/card-data';
 import { SwitchComponent } from '../../components-gui/switch/switch.component';
 import { TableColumnDirective, TableComponent } from '../../components-gui/table/table.component';
-import { ScrollEvent } from '../../components-gui/directives/scrollable-content.directive';
+import { ScrollDirection, ScrollEvent } from '../../components-gui/directives/scrollable-content.directive';
 import { isDefined, isNumber } from '../../utils-reusalbe/lang-utils';
 import { DialogComponent } from '../../components-gui/dialog/dialog.component';
 import { DepositProperties } from '../../model-acct/deposit-modifiable-attributes';
@@ -20,6 +20,21 @@ import { CalendarButtonComponent } from '../../components-gui/calendar-button/ca
 import { dateToIsoString } from '../../utils-reusalbe/date-utils';
 import { WorkspaceService } from '../../services-acct/workspace.service';
 import { IconifiedAccount } from '../../model-acct/account';
+import { RecordsManager } from '../../utils-acct/records-manager';
+import { emptyPage } from '../../model-acct/acct-page';
+import { ProgressBarComponent } from '../../components-gui/progress-bar/progress-bar.component';
+
+/**
+ * The height of a record in the deposits table. Used for both displaying deposits
+ * and computing the deposits table page size based on the viewport height.
+ */
+const DEPOSIT_RECORD_HEIGHT_PX : number = 35
+
+/**
+ * If the table's scroll position, in percent, is higher than or equal to this number,
+ * then a new page is loaded.
+ */
+const SCROLL_POS_PAGE_LOAD_THRESHOLD : number = 0.9
 
 type DepositFormData = {
   selectedAccount?     : AccountCardData,
@@ -52,7 +67,8 @@ function newDepositFormData() {
     DialogComponent,
     LabelComponent,
     InputComponent,
-    CalendarButtonComponent
+    CalendarButtonComponent,
+    ProgressBarComponent
   ],
   templateUrl: './deposits.component.html',
   styleUrl: './deposits.component.less'
@@ -64,6 +80,12 @@ export class DepositsComponent implements OnInit {
    * and saving deposits
    */
   selectedWorkspace? : IconifiedWorkspace
+
+  /**
+   * Contains all the currencies registered in the catalog, together
+   * with their icons.
+   */
+  registeredCurrencies : CurrencyCardData[] = []
 
   /**
    * Contains all the banks registered in the catalog, together with
@@ -99,6 +121,39 @@ export class DepositsComponent implements OnInit {
    */
   selectedDeposit : DepositFormData = newDepositFormData()
 
+
+  /**
+   * The number of records that should be fetched at any one time.
+   * There should be enough of them to overflow the table, so that
+   * scrolling is enabled, but not so many as to overflow too much.
+   * This number is relative to the viewport height and represents
+   * the approximate amount of records that fit within the view.
+   */
+  pageSize : number =  Math.floor(window.innerHeight / DEPOSIT_RECORD_HEIGHT_PX)
+
+  depositRecordsManager : RecordsManager<DepositProperties, string> = 
+    new RecordsManager<DepositProperties, string>(
+      this.pageSize,
+      (pageNumber,pageSize) => {
+        // If the selected workspace is present and the bank is selected, then return the page
+        if (this.selectedWorkspace) {
+          if (this.selectedBank) {
+            return this.workspaceService.findSortedPageOfDepositsByWorkspaceAndBank(
+              this.selectedWorkspace,
+              this.selectedBank.bank,
+              pageNumber,
+              pageSize
+            )
+          }
+        }
+
+        // If the selected workspace is not present, or if the bank is not selected, rthen return
+        // an empty page
+        return newObservable(emptyPage())
+      },
+      record => record.depositUUID ?? ""
+    )
+
   /**
    * Flag that is set by the capitalized deposits inclusion switch
    */
@@ -117,6 +172,7 @@ export class DepositsComponent implements OnInit {
 
   ngOnInit() : void {
     forkJoin([
+      this.loadRegisteredCurrencies(),
       this.loadRegisteredBanks(),
       this.loadSelectedWorkspace()
     ])
@@ -130,7 +186,25 @@ export class DepositsComponent implements OnInit {
       }
     })
   }
- 
+
+  loadRegisteredCurrencies() : Observable<void> {
+    return new Observable<void>(subscriber => {
+      this.cardDataService.loadRegisteredCurrencies().subscribe({
+        next: registeredCurrencies => {
+          // Assign the registered currencies array
+          this.registeredCurrencies = registeredCurrencies
+
+          // Notify subscribers that the task is done
+          complete(subscriber, undefined)
+        },
+        error: err => {
+          // TODO: Toast
+          console.log(err)
+        }
+      })
+    })
+  }
+
   loadRegisteredBanks() : Observable<void> {
     return new Observable<void>(subscriber => {
       this.cardDataService.loadRegisteredBanks().subscribe({
@@ -182,8 +256,9 @@ export class DepositsComponent implements OnInit {
     })
   }
 
-  loadSelectedBankDeposits() : Observable<void> {
-    return newObservable(undefined) // TODO: work here
+  reloadDepositRecords() : Observable<void> {
+    this.depositRecordsManager.reset()
+    return this.depositRecordsManager.loadNextPage()
   }
 
   cacheSelectedBankAccounts() : void {
@@ -208,8 +283,14 @@ export class DepositsComponent implements OnInit {
   }
 
   onSelectedBankChange(bank : CardData | undefined) : void {
+    // Assign the selected bank
     this.selectedBank = bank as BankCardData
+
+    // Cache the accounts open at the selected bank
     this.cacheSelectedBankAccounts()
+
+    // Reload the table data
+    this.reloadDepositRecords().subscribe()
   }
 
   onNewDepositButtonClick() : void {
@@ -221,7 +302,14 @@ export class DepositsComponent implements OnInit {
   }
 
   onDepositsTableScroll(scrollEvent:ScrollEvent) : void {
-
+    if (
+      scrollEvent.direction == ScrollDirection.DOWN &&
+      scrollEvent.sliderPosPct > SCROLL_POS_PAGE_LOAD_THRESHOLD
+    ) {
+      if (!this.depositRecordsManager.areAllPagesLoaded()) {
+        this.depositRecordsManager.loadNextPage().subscribe()
+      }
+    }
   }
 
   onDepositEditorFormSubmitButtonClick() : void {
@@ -231,13 +319,13 @@ export class DepositsComponent implements OnInit {
         sourceAccountUUID    : this.selectedDeposit.selectedAccount?.account?.accountUUID ?? "",
         depositAccountNumber : this.selectedDeposit.depositAccountNumber,
         amount               : parseFloat(this.selectedDeposit.amountStr),
-        interestPct          : parseFloat(this.selectedDeposit.interestPctStr),
+        interestPct          : parseFloat(this.selectedDeposit.interestPctStr) / 100,
         startDate            : this.selectedDeposit.startDate,
         projectedEndDate     : this.selectedDeposit.endDate
       }
     ).subscribe({
       next: () => {
-        this.loadSelectedBankDeposits().subscribe()
+        this.reloadDepositRecords().subscribe()
         this.depositEditorFormDialogVisible = false
       },
       error: err => {
@@ -256,11 +344,11 @@ export class DepositsComponent implements OnInit {
   }
 
   getDepositRecordHeightPx() : string {
-    return '50px'
+    return DEPOSIT_RECORD_HEIGHT_PX + 'px'
   }
 
-  getDeposits() : any[] {
-    return []
+  getDeposits() : DepositProperties[] {
+    return this.depositRecordsManager.getRecords()
   }
 
   getDepositEditorFormError() : string {
@@ -297,6 +385,32 @@ export class DepositsComponent implements OnInit {
 
   getSelectedDepositEndDateAsString() : string {
     return dateToIsoString(this.selectedDeposit.endDate)
+  }
+
+  getAccountNameByAccountUUID(accountUUID : string) : string {
+    return this.selectedBankAccounts
+      .filter(accountCard => accountUUID == accountCard.account.accountUUID)
+      .map(accountCard => accountCard.account.accountName)
+      [0] ?? ""
+  }
+
+  getCurrencyIconByCurrencyUUID(currencyUUID : string) : string {
+    return this.registeredCurrencies
+      .filter(currencyCard => currencyUUID == currencyCard.currency.currencyUUID)
+      .map(currencyCard => currencyCard.currency.imageData)
+      [0] ?? ""
+  }
+
+  getProgressPct(deposit:DepositProperties) : number {
+    const today     : number = new Date().getTime()
+    const startTime : number = deposit.startDate.getTime()
+    const endTime   : number = deposit.projectedEndDate.getTime()
+
+    if (today >= endTime) {
+      return 1
+    }
+
+    return (today - startTime) / (endTime - startTime)
   }
 
   isBankSelected() : boolean {
@@ -347,6 +461,29 @@ export class DepositsComponent implements OnInit {
       this.isSelectedDepositInterestPctStrValid() &&
       this.isRemainingAccountBalancePositive()
     )
+  }
+
+  formatDate(date:Date) : string {
+    return dateToIsoString(date)
+  }
+
+  formatNumber(number?:number, nDigits?:number) : string {
+    // If the number is not provided, then return an empty string
+    if (number == undefined || number == null) {
+      return ""
+    }
+
+    // Acquire the number of digits
+    const nDig : number = nDigits ?? 4
+
+    // For mat the balance to frech
+    const formatted = number.toLocaleString("fr-FR", {
+      minimumFractionDigits: nDig,
+      maximumFractionDigits: nDig,
+    });
+
+    // Replace the coma with a dot
+    return formatted.replace(",", ".")
   }
 
 }

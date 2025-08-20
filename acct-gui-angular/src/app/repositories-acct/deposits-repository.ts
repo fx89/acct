@@ -1,6 +1,7 @@
 import { Observable } from "rxjs";
 import { DepositUUIDResponse } from "../model-acct/deposit-uuid-response";
 import { DepositProperties } from "../model-acct/deposit-modifiable-attributes";
+import { AcctPage } from "../model-acct/acct-page";
 
 /**
  * Allows creating, reading, updating and deleting deposits
@@ -23,5 +24,22 @@ export abstract class AcctDepositsRepository {
      */
     abstract saveDeposit(workspaceUUID:string, deposit:DepositProperties) : Observable<DepositUUIDResponse>
 
+    /**
+     * Returns an observable that produces a page of deposits within the workspace
+     * referenced by the given workspace UUID, sorted by the projected end date in
+     * ascending order. Only the deposits at the bank with the given bank UUID are
+     * fetched. 
+     * 
+     * @param workspaceUUID the given workspace UUID
+     * @param bankUUID      the given bank UUID
+     * @param pageNumber    the zero-based index of the page to be returned
+     * @param pageSize      the number of elements to be contained by any given page
+     */
+    abstract findSortedPageOfDepositsByWorkspaceUUIDAndOptionalBankUUID(
+        workspaceUUID : string,
+        bankUUID      : string,
+        pageNumber    : number,
+        pageSize      : number
+    ) : Observable<AcctPage<DepositProperties>>
 
 }

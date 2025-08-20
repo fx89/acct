@@ -14,3 +14,18 @@ export interface AcctPage<T> {
      */
     page : AcctPageInfo
 }
+
+/**
+ * Returns an empty page of elements of the given data type
+ */
+export function emptyPage<T>() : AcctPage<T> {
+    return {
+        page: {
+            number: 0,
+            size: 0,
+            totalElements: 0,
+            totalPages: 0
+          },
+          data: []
+    }
+}

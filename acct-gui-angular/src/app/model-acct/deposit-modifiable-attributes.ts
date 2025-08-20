@@ -23,6 +23,11 @@ export interface DepositModifiableAttributes {
      * undefined when the intention is to register a new deposit.
      */
     depositUUID? : string
+
+    /**
+     * The UUID of the currency in which the deposit was created
+     */
+    currencyUUID? : string
 }
 
 /**

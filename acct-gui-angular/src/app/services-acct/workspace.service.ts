@@ -24,6 +24,7 @@ import { IncomeOrExpenseItem } from '../model-acct/income-or-expense-item';
 import { DepositProperties } from '../model-acct/deposit-modifiable-attributes';
 import { AcctDepositsRepository } from '../repositories-acct/deposits-repository';
 import { DepositUUIDResponse } from '../model-acct/deposit-uuid-response';
+import { BankProperties } from '../model-acct/bank-properties';
 
 /**
  * Container for the UUIDs of the workspace and account where an account record is found
@@ -393,6 +394,25 @@ export class WorkspaceService {
 
     // Call the repository function
     return this.depositsRepository.saveDeposit(context.workspaceUUID, deposit)
+  }
+
+
+  public findSortedPageOfDepositsByWorkspaceAndBank(
+    workspace  : Workspace,
+    bank       : BankProperties,
+    pageNumber : number,
+    pageSize   : number
+  ) : Observable<AcctPage<DepositProperties>> {
+    // Make sure the workspace UUID is provided and extract the account record context
+    const context : AccountRecordContext = this.verifyAccountRecordContext(workspace)
+
+    // Call the repository function
+    return this.depositsRepository.findSortedPageOfDepositsByWorkspaceUUIDAndOptionalBankUUID(
+      context.workspaceUUID,
+      bank.bankUUID ?? "",
+      pageNumber,
+      pageSize
+    )
   }
 
   private verifyAccountRecordContext(workspace:Workspace, account?:Account) : AccountRecordContext {

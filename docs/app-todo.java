@@ -40,7 +40,7 @@
  DONE: APP-07001: Deposits page: Page layout
  DONE: APP-07002: Deposits page: Bank selector
  DONE: APP-07003: Deposits page: Deposit editor form - create deposit
- TODO: APP-07004: Deposits page: Deposits table
+ DONE: APP-07004: Deposits page: Deposits table
  TODO: APP-07005: Deposits page: Deposit editor form - update deposit
  TODO: APP-07001: Deposits to capitalize: Page layout
  TODO: APP-07002: Deposits to capitalize: Bank selector
