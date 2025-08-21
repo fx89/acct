@@ -5,7 +5,10 @@
     <!-- Calendar button -->
     <div
         id="{{ this.getCalendarButtonId() }}"
-        class="calendar-button"
+        [class]="{
+            'calendar-button': true,
+            'enabled': this.isEnabled()
+        }"
         (click)="this.onCalendarButtonClick()"
     >
         <!-- Grid icon -->

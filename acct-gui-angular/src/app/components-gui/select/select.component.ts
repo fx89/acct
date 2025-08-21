@@ -24,13 +24,14 @@ export class SelectComponent {
   public wrappingDivId = this.id + "_select"
 
   // Input properties
-  width             : InputSignal<string> = input("280px")
-  height            : InputSignal<string> = input("15px")
-  cardImagePosition : InputSignal<string> = input("left")
-  cardImageWidth    : InputSignal<string> = input("50px")
-  cardImageHeight   : InputSignal<string> = input("50px")
-  cardListHeightPx  : InputSignal<number> = input(300)
-  cardHeightPx      : InputSignal<number> = input(50)
+  width             : InputSignal<string>  = input("280px")
+  height            : InputSignal<string>  = input("15px")
+  cardImagePosition : InputSignal<string>  = input("left")
+  cardImageWidth    : InputSignal<string>  = input("50px")
+  cardImageHeight   : InputSignal<string>  = input("50px")
+  cardListHeightPx  : InputSignal<number>  = input(300)
+  cardHeightPx      : InputSignal<number>  = input(50)
+  enabled           : InputSignal<boolean> = input(true)
 
   // Options
   options        : InputSignal<CardData[]> = input.required()
@@ -141,27 +142,34 @@ export class SelectComponent {
     return this.getActualListHeightPx() + "px"
   }
 
+  public isEnabled() : boolean {
+    return this.enabled()
+  }
+
   public onSelectButtonClicked() : void {
-    // If the cards list is already shown, then hide it
-    if (this.isListVisible()) {
-      this.listVisible = false
-    }
+    // If the select control is not enabled, then nothing happens
+    if(this.isEnabled()) {
+      // If the cards list is already shown, then hide it
+      if (this.isListVisible()) {
+        this.listVisible = false
+      }
 
-    // If the cards list is not already visible, then set its position and show it
-    else {
-      // Show the cards list
-      this.listVisible = true
+      // If the cards list is not already visible, then set its position and show it
+      else {
+        // Show the cards list
+        this.listVisible = true
 
-      // Later on, make a not that the list was just made visible, to enable the event handler
-      // for when there's a click outside the control. Making the note right away activates
-      // the event handler right away, which results in hiding the options list immediately
-      // after it has been shown, which is not the desired behavior.
-      window.setTimeout(() => {
-        this.listJustMadeVisible = true
-      }, 100)
+        // Later on, make a not that the list was just made visible, to enable the event handler
+        // for when there's a click outside the control. Making the note right away activates
+        // the event handler right away, which results in hiding the options list immediately
+        // after it has been shown, which is not the desired behavior.
+        window.setTimeout(() => {
+          this.listJustMadeVisible = true
+        }, 100)
 
-      // Reposition the select options list
-      this.repositionSelectOptionsList()
+        // Reposition the select options list
+        this.repositionSelectOptionsList()
+      }
     }
   }
 

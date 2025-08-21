@@ -34,7 +34,7 @@ export class HttpAcctDepositsRepository extends AcctDepositsRepository {
     override saveDeposit(workspaceUUID: string, deposit: DepositProperties): Observable<DepositUUIDResponse> {
         // If the deposit UUID was provided, then update the deposit
         if (deposit.depositUUID) {
-            return this.updateDepositAttributes().pipe(
+            return this.updateDepositAttributes(workspaceUUID, deposit).pipe(
                 map(() => { 
                     return { depositUUID: deposit.depositUUID as string } 
                 })
@@ -76,8 +76,30 @@ export class HttpAcctDepositsRepository extends AcctDepositsRepository {
         })
     }
 
-    private updateDepositAttributes() : Observable<void> {
-        throw new Error("Not yet implemented")
+    private updateDepositAttributes(workspaceUUID: string, deposit: DepositProperties) : Observable<void> {
+        return new Observable<void>(subscriber => {
+            this.httpConnector.post(
+                {
+                    url: "/deposits",
+                    data: {
+                        params: {
+                            workspaceUUID : workspaceUUID,
+                            depositUUID   : deposit.depositUUID ?? ""
+                        },
+                        body: {
+                            depositAccountNumber : deposit.depositAccountNumber,
+                            projectedEndDate     : deposit.projectedEndDate
+                        }
+                    }
+                },
+                {
+                    responseHandler: () => {
+                        complete(subscriber, undefined)
+                    },
+                    errorHandler: err => subscriber.error(err)
+                }
+            )
+        })
     }
 
     override findSortedPageOfDepositsByWorkspaceUUIDAndOptionalBankUUID(

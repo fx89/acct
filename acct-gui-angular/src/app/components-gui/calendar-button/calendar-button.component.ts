@@ -23,6 +23,7 @@ export class CalendarButtonComponent implements AfterViewInit, OnDestroy {
   minYear              : InputSignal<number>  = input(1900)
   maxYear              : InputSignal<number>  = input(3000)
   isMondayFirstWeekDay : InputSignal<boolean> = input(true)
+  enabled              : InputSignal<boolean> = input(true)
 
   // Events
   @Output() valueChange : EventEmitter<Date> = new EventEmitter<Date>()
@@ -120,10 +121,12 @@ export class CalendarButtonComponent implements AfterViewInit, OnDestroy {
   }
 
   onCalendarButtonClick() : void {
-    if (this.visible) {
-      this.hideCalendar()
-    } else {
-      this.showCalendar()
+    if (this.isEnabled()) {
+      if (this.visible) {
+        this.hideCalendar()
+      } else {
+        this.showCalendar()
+      }
     }
   }
 
@@ -148,6 +151,10 @@ export class CalendarButtonComponent implements AfterViewInit, OnDestroy {
 
   isVisible() : boolean {
     return this.visible
+  }
+
+  isEnabled() : boolean {
+    return this.enabled()
   }
 
 }

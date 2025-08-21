@@ -112,6 +112,16 @@
     >
         <!-- The actions column -->
         <ng-template tableColumn let-row="row">
+            <!-- The edit button -->
+            <app-button
+                value=''
+                icon="button-icons/edit.png"
+                textAlign="left"
+                (onClick)="onEditDepositRecordButtonClick(row)"
+                width="20px"
+                height="20px"
+                color="none"
+            ></app-button>
         </ng-template>
 
         <!-- The Source account column -->
@@ -205,6 +215,7 @@
                     <td></td>
                         <app-select
                             width="230px"
+                            [enabled]="!this.isSelectedDepositAlreadyRegistered()"
                             [options]="this.selectedBankAccounts"
                             [cardHeightPx]="50"
                             [selectedOption]="this.selectedDeposit.selectedAccount"
@@ -249,6 +260,7 @@
                             </td>
                             <td>
                                 <app-calendar-button
+                                    [enabled]="!this.isSelectedDepositAlreadyRegistered()"
                                     [isMondayFirstWeekDay]="true"
                                     [(value)]="this.selectedDeposit.startDate"
                                     calendarStyle="position:absolute"
@@ -292,6 +304,7 @@
                         <table><tr>
                             <td>
                                 <app-input
+                                    [enabled]="!this.isSelectedDepositAlreadyRegistered()"
                                     [(value)]="this.selectedDeposit.amountStr"
                                     [valid]="this.isSelectedDepositAmountStrValid()"
                                     textAlign="right"
@@ -302,8 +315,10 @@
                             </td>
                             <td>
                                 <app-input
+                                    [enabled]="!this.isSelectedDepositAlreadyRegistered()"
                                     [(value)]="this.selectedDeposit.interestPctStr"
                                     [valid]="this.isSelectedDepositInterestPctStrValid()"
+                                    textAlign="right"
                                     width="35px"
                                     height="30px"
                                     hint="Int"

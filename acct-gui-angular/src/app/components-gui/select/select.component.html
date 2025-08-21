@@ -17,16 +17,18 @@
         (onClick)="onSelectButtonClicked()"
     ></app-card>
 
-    <div
-        id="{{ this.id }}_select_button"
-        class="form-control clickable select-button"
-        [style.width]="this.getHeight()"
-        [style.height]="this.getHeight()"
-        [style.lineHeight]="this.getHeight()"
-        (click)="onSelectButtonClicked()"
-    >
-        &#x2B9F;
-    </div>
+    @if ( this.isEnabled() ) {
+        <div
+            id="{{ this.id }}_select_button"
+            class="form-control clickable select-button"
+            [style.width]="this.getHeight()"
+            [style.height]="this.getHeight()"
+            [style.lineHeight]="this.getHeight()"
+            (click)="onSelectButtonClicked()"
+        >
+            &#x2B9F;
+        </div>
+    }
 </div>
 
 <div

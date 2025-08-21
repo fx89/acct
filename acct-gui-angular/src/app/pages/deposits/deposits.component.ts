@@ -42,16 +42,18 @@ type DepositFormData = {
   startDate            : Date,
   endDate              : Date,
   amountStr            : string,
-  interestPctStr       : string
+  interestPctStr       : string,
+  depositUUID?         : string
 }
 
-function newDepositFormData() {
+function newDepositFormData(deposit? : DepositProperties) {
   return {
-    depositAccountNumber : "",
-    startDate            : new Date(),
-    endDate              : new Date(new Date().setFullYear((new Date()).getFullYear() + 1)),
-    amountStr            : "5000",
-    interestPctStr       : "4.5"
+    depositAccountNumber : deposit?.depositAccountNumber ?? "",
+    startDate            : deposit?.startDate ?? new Date(),
+    endDate              : deposit?.projectedEndDate ?? new Date(new Date().setFullYear((new Date()).getFullYear() + 1)),
+    amountStr            : "" + (deposit?.amount ?? 5000),
+    interestPctStr       : "" + ((deposit?.interestPct ?? 0.045) * 100),
+    depositUUID          : deposit?.depositUUID
   }
 }
 
@@ -343,6 +345,17 @@ export class DepositsComponent implements OnInit {
     this.cacheSelectedBankAccountBalance()
   }
 
+  onEditDepositRecordButtonClick(deposit : DepositProperties) : void {
+    // Create the deposit form data
+    this.selectedDeposit = newDepositFormData(deposit)
+
+    // Assigned the selected account
+    this.selectedDeposit.selectedAccount = this.getAccountCardDataByAccountUUID(deposit.sourceAccountUUID)
+
+    // Show the edit dialog
+    this.depositEditorFormDialogVisible = true
+  }
+
   getDepositRecordHeightPx() : string {
     return DEPOSIT_RECORD_HEIGHT_PX + 'px'
   }
@@ -387,11 +400,14 @@ export class DepositsComponent implements OnInit {
     return dateToIsoString(this.selectedDeposit.endDate)
   }
 
-  getAccountNameByAccountUUID(accountUUID : string) : string {
+  getAccountCardDataByAccountUUID(accountUUID : string) : AccountCardData {
     return this.selectedBankAccounts
       .filter(accountCard => accountUUID == accountCard.account.accountUUID)
-      .map(accountCard => accountCard.account.accountName)
-      [0] ?? ""
+      [0]
+  }
+
+  getAccountNameByAccountUUID(accountUUID : string) : string {
+    return this.getAccountCardDataByAccountUUID(accountUUID)?.account?.accountName ?? ""
   }
 
   getCurrencyIconByCurrencyUUID(currencyUUID : string) : string {
@@ -448,6 +464,14 @@ export class DepositsComponent implements OnInit {
   }
 
   isRemainingAccountBalancePositive() : boolean {
+    // If the deposit record is just being edited, then the value is not to be
+    // subtracted from the source account balance, hence no validation is needed
+    if (this.isSelectedDepositAlreadyRegistered()) {
+      return true
+    }
+
+    // If this is a new deposit, then the amount is subtracted from the balance
+    // of the source account, hence the validation is required
     return (this.selectedBankAccountBalance - parseFloat(this.selectedDeposit.amountStr)) >= 0
   }
 
@@ -461,6 +485,10 @@ export class DepositsComponent implements OnInit {
       this.isSelectedDepositInterestPctStrValid() &&
       this.isRemainingAccountBalancePositive()
     )
+  }
+
+  isSelectedDepositAlreadyRegistered() : boolean {
+    return isDefined(this.selectedDeposit.depositUUID)
   }
 
   formatDate(date:Date) : string {
