@@ -25,7 +25,8 @@
             <td style="vertical-align:middle;">
                 <!-- The capitalized deposits inclusion switch -->
                 <app-switch
-                    [(value)]="this.includeCapitalizedDeposits"
+                    [(value)]="this.fetchDepositsToCapitalize"
+                    (onValueChanged)="this.onFetchDepositsToCapitalizeSwitchValueChange($event)"
                     width="70px"
                     height="30px"
                     color="blue"
@@ -34,7 +35,7 @@
             </td>
             <td style="width:1px"></td>
             <td style="vertical-align:middle;">
-                {{ this.includeCapitalizedDeposits ? 'Include capitalized' : 'Exclude capitalized' }}
+                {{ this.fetchDepositsToCapitalize ? 'Deposits to capitalize' : 'Ongoing deposits' }}
             </td>
         </tr>
     </div>
@@ -112,16 +113,18 @@
     >
         <!-- The actions column -->
         <ng-template tableColumn let-row="row">
-            <!-- The edit button -->
-            <app-button
-                value=''
-                icon="button-icons/edit.png"
-                textAlign="left"
-                (onClick)="onEditDepositRecordButtonClick(row)"
-                width="20px"
-                height="20px"
-                color="none"
-            ></app-button>
+            <!-- The edit button is visible only for ongoing deposits -->
+             @if (!this.fetchDepositsToCapitalize) {
+                <app-button
+                    value=''
+                    icon="button-icons/edit.png"
+                    textAlign="left"
+                    (onClick)="onEditDepositRecordButtonClick(row)"
+                    width="20px"
+                    height="20px"
+                    color="none"
+                ></app-button>
+             }
         </ng-template>
 
         <!-- The Source account column -->
@@ -171,13 +174,27 @@
 
         <!-- The progress column -->
         <ng-template tableColumn let-row="row">
-            <app-progress-bar
-                width="100%"
-                height="20px"
-                color="blue"
-                [value]="this.getProgressPct(row)"
-                [valueVisible]="true"
-            ></app-progress-bar>
+            <!-- If the deposits to capitalize are shown, then put the capitalize button -->
+             @if (this.fetchDepositsToCapitalize) {
+                <app-button
+                    value='Capitalize'
+                    textAlign="center"
+                    (onClick)="onCapitalizeButtonClick(row)"
+                    width="calc(100% - 2px)"
+                    height="20px"
+                    color="blue"
+                ></app-button>
+             }
+             <!-- If the ongoing deposits are shown, then show the progress bar -->
+             @else {
+                <app-progress-bar
+                    width="100%"
+                    height="20px"
+                    color="blue"
+                    [value]="this.getProgressPct(row)"
+                    [valueVisible]="true"
+                ></app-progress-bar>
+             }
         </ng-template>
     </app-table>
 }

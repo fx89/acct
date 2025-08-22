@@ -22,4 +22,13 @@ export class MockAcctDepositsRepository extends AcctDepositsRepository {
         throw new Error("Method not implemented.");
     }
 
+    override findSortedPageOfDepositsToCapitalizeByWorkspaceUUIDAndBankUUID(
+        workspaceUUID : string,
+        bankUUID      : string,
+        pageNumber    : number,
+        pageSize      : number
+    ): Observable<AcctPage<DepositProperties>> {
+        throw new Error("Method not implemented.");
+    }
+
 }

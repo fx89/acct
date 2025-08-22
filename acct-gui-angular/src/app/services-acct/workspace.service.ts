@@ -396,7 +396,16 @@ export class WorkspaceService {
     return this.depositsRepository.saveDeposit(context.workspaceUUID, deposit)
   }
 
-
+  /**
+     * Returns an observable that produces a page of deposits within the referenced
+     * workspace, sorted by the projected end date in ascending order. Only the
+     * deposits at the referenced bank are fetched. 
+     * 
+     * @param workspace    the referenced workspace
+     * @param bank         the referenced bank
+     * @param pageNumber   the zero-based index of the page to be returned
+     * @param pageSize     the number of elements to be contained by any given page
+     */
   public findSortedPageOfDepositsByWorkspaceAndBank(
     workspace  : Workspace,
     bank       : BankProperties,
@@ -408,6 +417,24 @@ export class WorkspaceService {
 
     // Call the repository function
     return this.depositsRepository.findSortedPageOfDepositsByWorkspaceUUIDAndOptionalBankUUID(
+      context.workspaceUUID,
+      bank.bankUUID ?? "",
+      pageNumber,
+      pageSize
+    )
+  }
+
+  public findSortedPageOfDepositsToCapitalizeByWorkspaceAndBank(
+    workspace  : Workspace,
+    bank       : BankProperties,
+    pageNumber : number,
+    pageSize   : number
+  ) : Observable<AcctPage<DepositProperties>> {
+    // Make sure the workspace UUID is provided and extract the account record context
+    const context : AccountRecordContext = this.verifyAccountRecordContext(workspace)
+
+    // Call the repository function
+    return this.depositsRepository.findSortedPageOfDepositsToCapitalizeByWorkspaceUUIDAndBankUUID(
       context.workspaceUUID,
       bank.bankUUID ?? "",
       pageNumber,

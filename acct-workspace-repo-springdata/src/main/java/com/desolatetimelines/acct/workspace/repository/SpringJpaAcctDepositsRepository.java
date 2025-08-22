@@ -43,12 +43,15 @@ public class SpringJpaAcctDepositsRepository implements AcctDepositsRepository {
     }
 
     @Override
-    public Page<AcctDeposit> findAllByWorkspaceUUID(String workspaceUUID, int pageNumber, int pageSize) {
+    public Page<AcctDeposit> findAllByWorkspaceUUIDAndProjectedEndDateGreaterThanEqual(
+        String workspaceUUID, Instant projectedEndDate, int pageNumber, int pageSize
+    ) {
         // Get the page
         final org.springframework.data.domain.Page<JpaAcctDeposit> page =
             jpaAcctDepositsRepository
-                .findByDepositCreationAccountRecordAccountWorkspaceWorkspaceUUID(
+                .findByDepositCreationAccountRecordAccountWorkspaceWorkspaceUUIDAndDepositProjectedEndDateGreaterThanEqual(
                     workspaceUUID,
+                    projectedEndDate,
                     PageRequest.of(
                         pageNumber,
                         pageSize,
@@ -66,15 +69,47 @@ public class SpringJpaAcctDepositsRepository implements AcctDepositsRepository {
     }
 
     @Override
-    public Page<AcctDeposit> findAllByWorkspaceUUIDAndBankUUID(
-        String workspaceUUID, String bankUUID, int pageNumber, int pageSize
+    public Page<AcctDeposit> findAllByWorkspaceUUIDAndBankUUIDAndProjectedEndDateGreaterThanEqual(
+        String workspaceUUID, String bankUUID, Instant projectedEndDate, int pageNumber, int pageSize
     ) {
         // Get the page
         final org.springframework.data.domain.Page<JpaAcctDeposit> page =
             jpaAcctDepositsRepository
-                .findByDepositCreationAccountRecordAccountWorkspaceWorkspaceUUIDAndBankUUID(
+                .findByDepositCreationAccountRecordAccountWorkspaceWorkspaceUUIDAndBankUUIDAndDepositProjectedEndDateGreaterThanEqual(
                     workspaceUUID,
                     bankUUID,
+                    projectedEndDate,
+                    PageRequest.of(
+                        pageNumber,
+                        pageSize,
+                        Sort.by("depositProjectedEndDate")
+                    )
+                );
+
+        // Map the page
+        return
+            new Page<>(
+                page.get().map(rec -> (AcctDeposit) rec).toList(),
+                page.getNumberOfElements(),
+                page.getTotalElements()
+            );
+    }
+
+    @Override
+    public Page<AcctDeposit> findAllByWorkspaceUUIDAndBankUUIDAndDepositInterestAccountRecordNullAndDepositProjectedEndDateLessThan(
+        String workspaceUUID,
+        String bankUUID,
+        Instant projectedEndDate,
+        int pageNumber,
+        int pageSize
+    ) {
+        // Get the page
+        final org.springframework.data.domain.Page<JpaAcctDeposit> page =
+            jpaAcctDepositsRepository
+                .findByDepositCreationAccountRecordAccountWorkspaceWorkspaceUUIDAndBankUUIDAndDepositInterestAccountRecordNullAndDepositProjectedEndDateBefore(
+                    workspaceUUID,
+                    bankUUID,
+                    projectedEndDate,
                     PageRequest.of(
                         pageNumber,
                         pageSize,

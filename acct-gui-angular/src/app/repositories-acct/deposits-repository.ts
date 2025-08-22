@@ -42,4 +42,22 @@ export abstract class AcctDepositsRepository {
         pageSize      : number
     ) : Observable<AcctPage<DepositProperties>>
 
+    /**
+     * Returns a page of deposits within the workspace referenced by the given workspace UUID
+     * and for which the projected end date is after the current date. The page is sorted by
+     * projected end date in ascending order. Only the deposits at the bank referenced via the
+     * given bank UUID are returned.
+     *
+     * @param workspaceUUID the given workspace UUID
+     * @param bankUUID      the given bank UUID
+     * @param pageNumber    the zero-based index of the page to be returned
+     * @param pageSize      the number of elements to be contained by any given page
+     */
+    abstract findSortedPageOfDepositsToCapitalizeByWorkspaceUUIDAndBankUUID(
+        workspaceUUID : string,
+        bankUUID      : string,
+        pageNumber    : number,
+        pageSize      : number
+    ) : Observable<AcctPage<DepositProperties>>
+
 }

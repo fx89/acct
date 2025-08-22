@@ -140,12 +140,24 @@ export class DepositsComponent implements OnInit {
         // If the selected workspace is present and the bank is selected, then return the page
         if (this.selectedWorkspace) {
           if (this.selectedBank) {
-            return this.workspaceService.findSortedPageOfDepositsByWorkspaceAndBank(
-              this.selectedWorkspace,
-              this.selectedBank.bank,
-              pageNumber,
-              pageSize
-            )
+            // If the deposits to capitalize switch is turned on, then return a page of deposits to capitalize
+            if (this.fetchDepositsToCapitalize) {
+              return this.workspaceService.findSortedPageOfDepositsToCapitalizeByWorkspaceAndBank(
+                this.selectedWorkspace,
+                this.selectedBank.bank,
+                pageNumber,
+                pageSize
+              )
+            }
+            // If the deposits to capitalize switch is not turend on, thenreturn a page of ongoing deposits
+            else {
+              return this.workspaceService.findSortedPageOfDepositsByWorkspaceAndBank(
+                this.selectedWorkspace,
+                this.selectedBank.bank,
+                pageNumber,
+                pageSize
+              )
+            }
           }
         }
 
@@ -159,7 +171,7 @@ export class DepositsComponent implements OnInit {
   /**
    * Flag that is set by the capitalized deposits inclusion switch
    */
-  includeCapitalizedDeposits : boolean = false
+  fetchDepositsToCapitalize : boolean = false
 
   /**
    * Flag that controls the visibility of the deposit editor form dialog
@@ -354,6 +366,15 @@ export class DepositsComponent implements OnInit {
 
     // Show the edit dialog
     this.depositEditorFormDialogVisible = true
+  }
+
+  onFetchDepositsToCapitalizeSwitchValueChange(value:boolean) : void {
+    this.fetchDepositsToCapitalize = value
+    this.reloadDepositRecords().subscribe()
+  }
+
+  onCapitalizeButtonClick(deposit:DepositProperties) : void {
+    console.log(deposit.depositUUID)
   }
 
   getDepositRecordHeightPx() : string {

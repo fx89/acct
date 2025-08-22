@@ -124,21 +124,10 @@ export class HttpAcctDepositsRepository extends AcctDepositsRepository {
                 {
                     responseHandler: response => {
                         // Transform the results
-                        const page : AcctPage<DepositProperties> = {
-                            page: (response.body as AcctPage<DepositDetails>).page,
-                            data: ((response.body as AcctPage<DepositDetails>).data).map(rec => {
-                                return {
-                                    depositUUID          : rec.depositUUID,
-                                    depositAccountNumber : rec.depositAccountNumber,
-                                    sourceAccountUUID    : rec.sourceAccountUUID,
-                                    amount               : rec.depositValue,
-                                    interestPct          : rec.depositInterestPercent,
-                                    startDate            : new Date(rec.depositStartDate),
-                                    projectedEndDate     : new Date(rec.depositProjectedEndDate),
-                                    currencyUUID         : rec.currencyUUID
-                                }
-                            })
-                        }
+                        const page : AcctPage<DepositProperties> =
+                            this.pageOfDepositDetailsToPageOfDepositPropertiesMapper(
+                                response.body as AcctPage<DepositDetails>
+                            )
 
                         // Send the results up the pipe
                         complete(subscriber, page)
@@ -147,6 +136,60 @@ export class HttpAcctDepositsRepository extends AcctDepositsRepository {
                 }
             )
         })
+    }
+
+    override findSortedPageOfDepositsToCapitalizeByWorkspaceUUIDAndBankUUID(
+        workspaceUUID : string,
+        bankUUID      : string,
+        pageNumber    : number,
+        pageSize      : number
+    ): Observable<AcctPage<DepositProperties>> {
+        return new Observable<AcctPage<DepositProperties>>(subscriber => {
+            this.httpConnector.get(
+                {
+                    url: "/deposits/toCapitalize",
+                    data: {
+                        params: {
+                            workspaceUUID : workspaceUUID,
+                            bankUUID      : bankUUID,
+                            pageNumber    : pageNumber,
+                            pageSize      : pageSize
+                        }
+                    }
+                },
+                {
+                    responseHandler: response => {
+                        // Transform the results
+                        const page : AcctPage<DepositProperties> =
+                            this.pageOfDepositDetailsToPageOfDepositPropertiesMapper(
+                                response.body as AcctPage<DepositDetails>
+                            )
+
+                        // Send the results up the pipe
+                        complete(subscriber, page)
+                    },
+                    errorHandler: err => subscriber.error(err)
+                }
+            )
+        })
+    }
+
+    private pageOfDepositDetailsToPageOfDepositPropertiesMapper(source:AcctPage<DepositDetails>) : AcctPage<DepositProperties> {
+        return {
+            page: source.page,
+            data: source.data.map(rec => {
+                return {
+                    depositUUID          : rec.depositUUID,
+                    depositAccountNumber : rec.depositAccountNumber,
+                    sourceAccountUUID    : rec.sourceAccountUUID,
+                    amount               : rec.depositValue,
+                    interestPct          : rec.depositInterestPercent,
+                    startDate            : new Date(rec.depositStartDate),
+                    projectedEndDate     : new Date(rec.depositProjectedEndDate),
+                    currencyUUID         : rec.currencyUUID
+                }
+            })
+        }
     }
     
 }

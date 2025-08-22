@@ -43,10 +43,8 @@
  DONE: APP-07004: Deposits page: Deposits table
  DONE: APP-07005: Deposits page: Deposit editor form - update deposit
  TODO: APP-07006: Deposits page: Add configurable tax rate, to accurately predict the interest amount
- TODO: APP-07001: Deposits to capitalize: Page layout
- TODO: APP-07002: Deposits to capitalize: Bank selector
- TODO: APP-07003: Deposits to capitalize: Deposits to capitalize table
- TODO: APP-07004: Deposits to capitalize: Capitalization functionality
+ DONE: APP-07001: Deposits to capitalize: Deposits to capitalize table
+ TODO: APP-07002: Deposits to capitalize: Capitalization functionality
  DONE: APP-08001: User information page: Page layout
  DONE: APP-08002: User information page: User information display
  DONE: APP-08003: User information page: Account deletion

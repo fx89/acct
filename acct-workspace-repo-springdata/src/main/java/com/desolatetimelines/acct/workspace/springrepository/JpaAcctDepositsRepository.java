@@ -13,12 +13,16 @@ public interface JpaAcctDepositsRepository extends CrudRepository<JpaAcctDeposit
 
     Optional<JpaAcctDeposit> findFirstByDepositUUID(String depositUUID);
 
-    Page<JpaAcctDeposit> findByDepositCreationAccountRecordAccountWorkspaceWorkspaceUUID(
-        String workspaceUUID, Pageable pageable
+    Page<JpaAcctDeposit> findByDepositCreationAccountRecordAccountWorkspaceWorkspaceUUIDAndDepositProjectedEndDateGreaterThanEqual(
+        String workspaceUUID, Instant projectedEndDate, Pageable pageable
     );
 
-    Page<JpaAcctDeposit> findByDepositCreationAccountRecordAccountWorkspaceWorkspaceUUIDAndBankUUID(
-        String workspaceUUID, String bankUUID, Pageable pageable
+    Page<JpaAcctDeposit> findByDepositCreationAccountRecordAccountWorkspaceWorkspaceUUIDAndBankUUIDAndDepositProjectedEndDateGreaterThanEqual(
+        String workspaceUUID, String bankUUID, Instant projectedEndDate, Pageable pageable
+    );
+
+    Page<JpaAcctDeposit> findByDepositCreationAccountRecordAccountWorkspaceWorkspaceUUIDAndBankUUIDAndDepositInterestAccountRecordNullAndDepositProjectedEndDateBefore(
+        String workspaceUUID, String bankUUID, Instant depositProjectedEndDate, Pageable pageable
     );
 
     Page<JpaAcctDeposit> findByDepositCreationAccountRecordAccountWorkspaceWorkspaceUUIDAndDepositInterestAccountRecordNullAndDepositProjectedEndDateBefore(

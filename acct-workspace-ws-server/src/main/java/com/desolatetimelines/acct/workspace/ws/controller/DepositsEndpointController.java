@@ -105,6 +105,7 @@ public class DepositsEndpointController implements DepositsEndpoint {
     @GetMapping(value = "/toCapitalize")
     public AcctPage<DepositDetails> getSortedPageOfDepositsToCapitalize(
         @NotNull @RequestParam(name = "workspaceUUID") String workspaceUUID,
+        @RequestParam(name = "bankUUID") String bankUUID,
         @RequestParam(name = "pageNumber") int pageNumber,
         @RequestParam(name = "pageSize") int pageSize
     ) {
@@ -117,6 +118,7 @@ public class DepositsEndpointController implements DepositsEndpoint {
                 workspaceService.getSortedPageOfDepositsToCapitalize(
                     userClaims.userUUID(),
                     workspaceUUID,
+                    bankUUID,
                     pageNumber,
                     pageSize,
                     userClaims.privilegeNames()

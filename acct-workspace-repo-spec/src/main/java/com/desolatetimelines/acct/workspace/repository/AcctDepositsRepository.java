@@ -38,26 +38,51 @@ public interface AcctDepositsRepository {
 
     /**
      * Returns a {@link Page page} with the given page number and page size of {@link AcctDeposit deposits}
-     * that belong to the {@link AcctWorkspace workspace} with the given workspace UUID
+     * that belong to the {@link AcctWorkspace workspace} with the given workspace UUID and for which the
+     * projected end date is after the given projected end date
      *
-     * @param workspaceUUID the given workspace UUID
-     * @param pageNumber    the given page number
-     * @param pageSize      the given page size
+     * @param workspaceUUID    the given workspace UUID
+     * @param projectedEndDate the given projected end date
+     * @param pageNumber       the given page number
+     * @param pageSize         the given page size
      */
-    Page<AcctDeposit> findAllByWorkspaceUUID(String workspaceUUID, int pageNumber, int pageSize);
+    Page<AcctDeposit> findAllByWorkspaceUUIDAndProjectedEndDateGreaterThanEqual(
+        String workspaceUUID, Instant projectedEndDate, int pageNumber, int pageSize
+    );
 
     /**
      * Returns a {@link Page page} with the given page number and page size of {@link AcctDeposit deposits}
-     * that belong to the {@link AcctWorkspace workspace} with the given workspace UUID and have been opened
-     * at the bank with the given bank UUID
+     * that belong to the {@link AcctWorkspace workspace} with the given workspace UUID, have been opened
+     * at the bank with the given bank UUID, and for which the projected end date is after the given projected
+     * end date
      *
-     * @param workspaceUUID the given workspace UUID
-     * @param bankUUID      the given bank UUID
-     * @param pageNumber    the given page number
-     * @param pageSize      the given page size
+     * @param workspaceUUID    the given workspace UUID
+     * @param bankUUID         the given bank UUID
+     * @param projectedEndDate the given projected end date
+     * @param pageNumber       the given page number
+     * @param pageSize         the given page size
      */
-    Page<AcctDeposit> findAllByWorkspaceUUIDAndBankUUID(
-        String workspaceUUID, String bankUUID, int pageNumber, int pageSize
+    Page<AcctDeposit> findAllByWorkspaceUUIDAndBankUUIDAndProjectedEndDateGreaterThanEqual(
+        String workspaceUUID, String bankUUID, Instant projectedEndDate, int pageNumber, int pageSize
+    );
+
+    /**
+     * Returns a {@link Page page} with the given page number and page size of {@link AcctDeposit deposits}
+     * that belong to the {@link AcctWorkspace workspace} with the given workspace UUID, and for which the
+     * following conditions are fulfilled: <ul>
+     * <li>The deposit does not yet have an {@link AcctDeposit#getDepositInterestAccountRecord() interest record}</li>
+     * <li>The deposit's {@link AcctDeposit#getDepositProjectedEndDate() projected end date} is before the given date</li>
+     * </ul>
+     * Only deposits at the bank with the given bank UUID are returned.
+     *
+     * @param workspaceUUID    the given workspace UUID
+     * @param bankUUID         the given bank UUID
+     * @param projectedEndDate the given date
+     * @param pageNumber       the given page number
+     * @param pageSize         the given page size
+     */
+    Page<AcctDeposit> findAllByWorkspaceUUIDAndBankUUIDAndDepositInterestAccountRecordNullAndDepositProjectedEndDateLessThan(
+        String workspaceUUID, String bankUUID, Instant projectedEndDate, int pageNumber, int pageSize
     );
 
     /**

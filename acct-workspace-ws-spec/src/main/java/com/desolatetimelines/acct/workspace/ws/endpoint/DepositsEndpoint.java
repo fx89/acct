@@ -61,13 +61,16 @@ public interface DepositsEndpoint {
      * and for which the {@link DepositDetails#depositProjectedEndDate() projected end date}
      * is after the current date. The page is sorted by
      * {@link DepositDetails#depositProjectedEndDate() projected end date} in ascending order.
+     * Only deposits at the bank with the given bank UUID are returned.
      *
      * @param workspaceUUID the given workspace UUID
+     * @param bankUUID      the given bank UUID
      * @param pageNumber    the zero-based index of the page to be returned
      * @param pageSize      the number of elements to be contained by any given page
      */
     AcctPage<DepositDetails> getSortedPageOfDepositsToCapitalize(
         @NotNull String workspaceUUID,
+        String bankUUID,
         int pageNumber,
         int pageSize
     );

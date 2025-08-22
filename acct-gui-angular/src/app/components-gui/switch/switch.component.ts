@@ -23,6 +23,7 @@ export class SwitchComponent {
 
   // Events
   @Output() valueChange : EventEmitter<boolean> = new EventEmitter<boolean>()
+  @Output() onValueChanged : EventEmitter<boolean> = new EventEmitter<boolean>()
 
   // Private properties
   private currentValue : boolean = false
@@ -35,6 +36,7 @@ export class SwitchComponent {
     if (this.enabled()) {
       this.currentValue = !this.currentValue
       this.valueChange.emit(this.currentValue)
+      this.onValueChanged.emit(this.currentValue)
     }
   }
 

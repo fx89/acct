@@ -935,11 +935,15 @@ public class AcctWorkspaceService {
 
         // If the bank UUID was not given then return the unfiltered sorted page of deposits
         if (bankUUID == null) {
-            return dataService.findDepositsByWorkspaceUUID(workspaceUUID, pageNumber, pageSize);
+            return dataService.findDepositsByWorkspaceUUIDAndProjectedEndDateGreaterThanEqual(
+                workspaceUUID, Instant.now(), pageNumber, pageSize
+            );
         }
         // If the bank UUID was given then return the sorted page of deposits filtered by bank
         else {
-            return dataService.findDepositsByWorkspaceUUIDAndBankUUID(workspaceUUID, bankUUID, pageNumber, pageSize);
+            return dataService.findDepositsByWorkspaceUUIDAndBankUUIDAndProjectedEndDateGreaterThanEqual(
+                workspaceUUID, bankUUID, Instant.now(), pageNumber, pageSize
+            );
         }
     }
 
@@ -949,10 +953,12 @@ public class AcctWorkspaceService {
      * {@link AcctDeposit#getDepositProjectedEndDate() projected end date} is before
      * the current date while the {@link AcctDeposit#getDepositInterestAccountRecord() interest record}
      * is yet to be set. Security applies for the user with the given user UUID and the
-     * given collection of assigned privileges.
+     * given collection of assigned privileges. Only the deposits at the bank with the
+     * given bank UUID are returned
      *
      * @param userUUID               the given user UUID
      * @param workspaceUUID          the given workspace UUID
+     * @param bankUUID               the given bank UUID
      * @param pageNumber             the zero-based index of the page to be returned
      * @param pageSize               the number of elements to be contained by any given page
      * @param assignedPrivilegeNames the given collection of assigned privileges
@@ -960,6 +966,7 @@ public class AcctWorkspaceService {
     public Page<AcctDeposit> getSortedPageOfDepositsToCapitalize(
         String userUUID,
         String workspaceUUID,
+        String bankUUID,
         int pageNumber,
         int pageSize,
         Collection<String> assignedPrivilegeNames
@@ -968,13 +975,23 @@ public class AcctWorkspaceService {
         final AcctWorkspace workspace =
             findWorkspaceForUserAndOperation(READ, userUUID, workspaceUUID, assignedPrivilegeNames);
 
-        // Retrieve and return the requested page
-        return
-            dataService
-                .findDepositsByWorkspaceUUIDAndDepositInterestAccountRecordNullAndDepositProjectedEndDateLessThan(
-                    workspaceUUID, Instant.now(), pageNumber, pageSize
-                );
+        // If the bank UUID is not given, then query the entire repository of deposits, without the bank
+        if (bankUUID == null) {
+            return
+                dataService
+                    .findDepositsByWorkspaceUUIDAndDepositInterestAccountRecordNullAndDepositProjectedEndDateLessThan(
+                        workspaceUUID, Instant.now(), pageNumber, pageSize
+                    );
+        }
 
+        // If the bank UUID is given, then query only for deposits at the referenced bank
+        else {
+            return
+                dataService
+                    .findDepositsByWorkspaceUUIDAndBankUUIDAndDepositInterestAccountRecordNullAndDepositProjectedEndDateLessThan(
+                        workspaceUUID, bankUUID, Instant.now(), pageNumber, pageSize
+                    );
+        }
     }
 
     /**
