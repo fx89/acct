@@ -102,6 +102,35 @@ export class HttpAcctDepositsRepository extends AcctDepositsRepository {
         })
     }
 
+    override capitalizeDeposit(
+        workspaceUUID: string,
+        deposit: DepositProperties,
+        depositReturnValue: number
+    ): Observable<void> {
+        return new Observable<void>(subscriber => {
+            this.httpConnector.post(
+                {
+                    url: "/deposits/capitalize",
+                    data: {
+                        params: {
+                            workspaceUUID : workspaceUUID,
+                            depositUUID   : deposit.depositUUID ?? ""
+                        },
+                        body: {
+                            returnValue : depositReturnValue
+                        }
+                    }
+                },
+                {
+                    responseHandler: () => {
+                        complete(subscriber, undefined)
+                    },
+                    errorHandler: err => subscriber.error(err)
+                }
+            )
+        })
+    }
+
     override findSortedPageOfDepositsByWorkspaceUUIDAndOptionalBankUUID(
         workspaceUUID : string,
         bankUUID      : string,

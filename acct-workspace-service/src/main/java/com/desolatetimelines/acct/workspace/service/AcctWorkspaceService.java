@@ -1048,14 +1048,14 @@ public class AcctWorkspaceService {
         // Create the return record
         final AcctAccountRecord returnRecord = createNewAccountRecordWithinAccount(sourceAccount, userUUID);
         returnRecord.setIncomeOrExpenseItemUUID(INCOME_OR_EXPENSE_ITEM_UUID_FOR_DEPOSIT);
-        returnRecord.setAccountRecordText(ACCT_REC_TEXT_DEPOSIT_RETURN);
+        returnRecord.setAccountRecordText(ACCT_REC_TEXT_DEPOSIT_RETURN + " - " + deposit.getDepositAccountNumber());
         returnRecord.setAccountRecordValue(deposit.getDepositValue());
         final AcctAccountRecord savedReturnRecord = saveAccountRecord(userUUID, returnRecord);
 
         // Create the interest record
         final AcctAccountRecord interestRecord = createNewAccountRecordWithinAccount(sourceAccount, userUUID);
         interestRecord.setIncomeOrExpenseItemUUID(INCOME_OR_EXPENSE_ITEM_UUID_FOR_DEPOSIT_INTEREST);
-        interestRecord.setAccountRecordText(ACCT_REC_TEXT_DEPOSIT_INTEREST);
+        interestRecord.setAccountRecordText(ACCT_REC_TEXT_DEPOSIT_INTEREST + " - " + deposit.getDepositAccountNumber());
         interestRecord.setAccountRecordValue(returnValue - deposit.getDepositValue());
         final AcctAccountRecord savedInterestRecord = saveAccountRecord(userUUID, interestRecord);
 

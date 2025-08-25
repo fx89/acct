@@ -43,6 +43,7 @@ type DepositFormData = {
   endDate              : Date,
   amountStr            : string,
   interestPctStr       : string,
+  returnValueStr       : string,
   depositUUID?         : string
 }
 
@@ -53,9 +54,28 @@ function newDepositFormData(deposit? : DepositProperties) {
     endDate              : deposit?.projectedEndDate ?? new Date(new Date().setFullYear((new Date()).getFullYear() + 1)),
     amountStr            : "" + (deposit?.amount ?? 5000),
     interestPctStr       : "" + ((deposit?.interestPct ?? 0.045) * 100),
+    returnValueStr       : "" + ((deposit?.amount ?? 5000) + computeDepositProjectedInterestValue(deposit?.amount ?? 5000, deposit?.interestPct ?? 0.045)),
     depositUUID          : deposit?.depositUUID
   }
 }
+
+function newDeposit(depositFormData : DepositFormData) : DepositProperties {
+  return {
+    sourceAccountUUID    : depositFormData.selectedAccount?.account?.accountUUID ?? "",
+    depositAccountNumber : depositFormData.depositAccountNumber,
+    amount               : parseFloat(depositFormData.amountStr),
+    interestPct          : parseFloat(depositFormData.interestPctStr) / 100,
+    startDate            : depositFormData.startDate,
+    projectedEndDate     : depositFormData.endDate,
+    depositUUID          : depositFormData.depositUUID
+  }
+}
+
+function computeDepositProjectedInterestValue(depositedAmount:number, yearlyInterestPct:number) : number {
+    // TODO: add the time interval so that the interest can be computed for other periods than just one year
+    const taxPct : number = 0.1 // TODO: Make the tax rate configurable at workspace level
+    return depositedAmount * yearlyInterestPct * (1 - taxPct)
+  }
 
 @Component({
   selector: 'app-deposits',
@@ -177,6 +197,11 @@ export class DepositsComponent implements OnInit {
    * Flag that controls the visibility of the deposit editor form dialog
    */
   depositEditorFormDialogVisible : boolean = false
+
+  /**
+   * Flag that controls the visibility of the deposit capitalization form dialog
+   */
+  depositCapitalizationFormDialogVisible : boolean = false
 
   constructor(
     private cardDataService          : CardDataService,
@@ -329,14 +354,7 @@ export class DepositsComponent implements OnInit {
   onDepositEditorFormSubmitButtonClick() : void {
     this.workspaceService.saveDeposit(
       this.selectedWorkspace as Workspace,
-      {
-        sourceAccountUUID    : this.selectedDeposit.selectedAccount?.account?.accountUUID ?? "",
-        depositAccountNumber : this.selectedDeposit.depositAccountNumber,
-        amount               : parseFloat(this.selectedDeposit.amountStr),
-        interestPct          : parseFloat(this.selectedDeposit.interestPctStr) / 100,
-        startDate            : this.selectedDeposit.startDate,
-        projectedEndDate     : this.selectedDeposit.endDate
-      }
+      newDeposit(this.selectedDeposit),
     ).subscribe({
       next: () => {
         this.reloadDepositRecords().subscribe()
@@ -374,7 +392,35 @@ export class DepositsComponent implements OnInit {
   }
 
   onCapitalizeButtonClick(deposit:DepositProperties) : void {
-    console.log(deposit.depositUUID)
+    // Set the selected deposit
+    this.selectedDeposit = newDepositFormData(deposit)
+
+    // Set the projected return value
+    this.selectedDeposit.returnValueStr =
+      "" + (deposit.amount + this.computeDepositProjectedInterestValue(deposit.amount, deposit.interestPct))
+
+    // Show the deposit capitalization form dialog
+    this.depositCapitalizationFormDialogVisible = true
+  }
+
+  onCapitalizeFormSubmitButtonClick() : void {
+    if (this.selectedWorkspace) {
+      this.workspaceService.capitalizeDeposit(
+        this.selectedWorkspace,
+        newDeposit(this.selectedDeposit),
+        parseFloat(this.selectedDeposit.returnValueStr)
+      )
+      .subscribe({
+        next: () => {
+          this.reloadDepositRecords().subscribe()
+          this.depositCapitalizationFormDialogVisible = false
+        },
+        error: err => {
+          // TODO: Toast
+          console.log(err)
+        }
+      })
+    }
   }
 
   getDepositRecordHeightPx() : string {
@@ -510,6 +556,18 @@ export class DepositsComponent implements OnInit {
 
   isSelectedDepositAlreadyRegistered() : boolean {
     return isDefined(this.selectedDeposit.depositUUID)
+  }
+
+  isSelectedDepositReturnValueValid() : boolean {
+    if (this.selectedDeposit.returnValueStr) {
+      return isNumber(this.selectedDeposit.returnValueStr)
+    }
+
+    return false
+  }
+
+  computeDepositProjectedInterestValue(depositedAmount:number, yearlyInterestPct:number) : number {
+    return computeDepositProjectedInterestValue(depositedAmount, yearlyInterestPct)
   }
 
   formatDate(date:Date) : string {

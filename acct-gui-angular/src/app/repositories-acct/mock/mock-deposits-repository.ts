@@ -13,6 +13,14 @@ export class MockAcctDepositsRepository extends AcctDepositsRepository {
         throw new Error("Method not implemented.");
     }
 
+    override capitalizeDeposit(
+        workspaceUUID: string,
+        deposit: DepositProperties,
+        depositReturnValue: number
+    ): Observable<void> {
+        throw new Error("Method not implemented.");
+    }
+
     override findSortedPageOfDepositsByWorkspaceUUIDAndOptionalBankUUID(
         workspaceUUID : string,
         bankUUID      : string,

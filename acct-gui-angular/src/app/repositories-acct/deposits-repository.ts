@@ -25,6 +25,20 @@ export abstract class AcctDepositsRepository {
     abstract saveDeposit(workspaceUUID:string, deposit:DepositProperties) : Observable<DepositUUIDResponse>
 
     /**
+     * Capitalizes the referened deposit with the given return value within the scope
+     * of the workspace with the given workspace UUID
+     * 
+     * @param workspaceUUID      the given workspace UUID
+     * @param deposit            the referenced deposit
+     * @param depositReturnValue the given return value
+     */
+    abstract capitalizeDeposit(
+        workspaceUUID:string,
+        deposit:DepositProperties,
+        depositReturnValue:number
+    ) : Observable<void>
+
+    /**
      * Returns an observable that produces a page of deposits within the workspace
      * referenced by the given workspace UUID, sorted by the projected end date in
      * ascending order. Only the deposits at the bank with the given bank UUID are

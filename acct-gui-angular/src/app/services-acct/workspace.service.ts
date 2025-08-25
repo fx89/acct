@@ -397,6 +397,24 @@ export class WorkspaceService {
   }
 
   /**
+   * Capitalizes the referenced deposit with the given return value within the scope of the referenced
+   * workspace
+   * 
+   * @param workspace          the referenced workspace
+   * @param deposit            the referenced deposit
+   * @param depositReturnValue the given return value
+   * 
+   * @returns an observable that lets the consumer know when the operation is complete
+   */
+  public capitalizeDeposit(workspace:Workspace, deposit:DepositProperties, depositReturnValue:number) : Observable<void> {
+    // Make sure the workspace UUID is provided and extract the account record context
+    const context : AccountRecordContext = this.verifyAccountRecordContext(workspace)
+
+    // Call the repository function
+    return this.depositsRepository.capitalizeDeposit(context.workspaceUUID, deposit, depositReturnValue)
+  }
+
+  /**
      * Returns an observable that produces a page of deposits within the referenced
      * workspace, sorted by the projected end date in ascending order. Only the
      * deposits at the referenced bank are fetched. 
