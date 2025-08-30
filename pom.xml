@@ -116,6 +116,16 @@
         <module>acct-workspace-repo-spec</module>
         <module>acct-workspace-repo-springdata</module>
 
+        <!-- Reporting -->
+        <module>acct-reporting-ws-spec</module>
+        <module>acct-reporting-ws-server</module>
+        <module>acct-reporting-ws-client</module>
+        <module>acct-reporting-privileges-provider</module>
+        <module>acct-reporting-service</module>
+        <module>acct-reporting-data</module>
+        <module>acct-reporting-repo-spec</module>
+        <module>acct-reporting-repo-springdata</module>
+
         <!-- Catalog -->
         <module>acct-catalog-ws-spec</module>
         <module>acct-catalog-ws-server</module>

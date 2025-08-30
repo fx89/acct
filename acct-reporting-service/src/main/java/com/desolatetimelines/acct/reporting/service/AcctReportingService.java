@@ -1,0 +1,104 @@
+package com.desolatetimelines.acct.reporting.service;
+
+import com.desolatetimelines.acct.common.model.ObjectTypes;
+import com.desolatetimelines.acct.reporting.data.service.AcctReportingDataService;
+import com.desolatetimelines.acct.reporting.model.AcctDashboard;
+import com.desolatetimelines.acct.security.client.data.AcctSecurityClientService;
+import com.desolatetimelines.acct.usage.ws.client.RESTUsageEndpointClient;
+import com.desolatetimelines.acct.usage.ws.model.ServiceItemTypesList;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Service;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * Reporting services layer
+ */
+@Service
+public class AcctReportingService {
+
+    private final RESTUsageEndpointClient usageEndpointClient;
+
+    private final AcctSecurityClientService securityClientService;
+
+    private final AcctReportingErrorCodesRegistryService errors;
+
+    private final AcctReportingDataService dataService;
+
+    private final String applicationName;
+
+    private final String contextPath;
+
+    public AcctReportingService(
+        RESTUsageEndpointClient usageEndpointClient,
+        AcctSecurityClientService securityClientService,
+        AcctReportingErrorCodesRegistryService errors,
+        AcctReportingDataService dataService,
+        @Value("${REPORTING_APPLICATION_NAME}") String applicationName,
+        @Value("${REPORTING_SERVER_CONTEXT_PATH}") String contextPath
+    ) {
+        this.usageEndpointClient = usageEndpointClient;
+        this.securityClientService = securityClientService;
+        this.errors = errors;
+        this.dataService = dataService;
+        this.applicationName = applicationName;
+        this.contextPath = contextPath;
+    }
+
+    /**
+     * Registers in-use item types with the usage service upon startup
+     */
+    @SuppressWarnings("unused")
+    @EventListener(ApplicationReadyEvent.class)
+    protected void registerInUseObjectTypes() {
+        usageEndpointClient.registerItemTypesForService(
+            ServiceItemTypesList.builder()
+                .withServiceName(applicationName)
+                .withServiceContextPath(contextPath)
+                .withItemType(List.of(
+                    ObjectTypes.ICON.name(),
+                    ObjectTypes.WORKSPACE.name()
+                ))
+                .build()
+        );
+    }
+
+    /**
+     * Returns the UUIDs of any used items of the given type and that can be found in the given list
+     *
+     * @param objectType the given type
+     * @param itemUUIDs  the given list
+     */
+    public Collection<String> getInUseItemUUIDs(String objectType, Collection<String> itemUUIDs) {
+        // If the object type is ICON then search dashboards for used icons
+        if (Objects.equals(objectType, ObjectTypes.ICON.name())) {
+            // Find any dashboards that are using any of the icons with the given UUIDs
+            return
+                dataService.findDashboardsByDashboardIconUUIDIn(itemUUIDs)
+                    .stream()
+                    .map(AcctDashboard::getDashboardIconUUID)
+                    .toList();
+        }
+
+        // If the object type is WORKSPACE then search dashboards for used workspaces
+        if (Objects.equals(objectType, ObjectTypes.WORKSPACE.name())) {
+            // Find any dashboards that are using any of the workspaces with the given UUIDs
+            return
+                dataService.findDashboardsByDashboardIconUUIDIn(itemUUIDs)
+                    .stream()
+                    .map(AcctDashboard::getDashboardIconUUID)
+                    .toList();
+        }
+
+
+        // If this point has been reached, it means that either the item type is not supported
+        // or the code for handling the object type is missing from above
+        throw new IllegalArgumentException("Object type [" + objectType + "] not supported");
+    }
+
+
+}
