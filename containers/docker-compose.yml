@@ -137,6 +137,18 @@ services:
       - POSTGRES_USER=${CURRENCY_DB_USERNAME}
       - POSTGRES_DB=${CURRENCY_DB_NAME}
 
+  reporting-postgres:
+    <<: *dbCommonConfig
+    hostname: reporting-postgres
+    ports:
+      - ${REPORTING_DB_PORT}:5432
+    volumes:
+      - ./data/reporting:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=${REPORTING_DB_PASSWORD}
+      - POSTGRES_USER=${REPORTING_DB_USERNAME}
+      - POSTGRES_DB=${REPORTING_DB_NAME}
+
   eureka-service:
     <<: *serviceBoilerplateConfig
     build:

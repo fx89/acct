@@ -18,7 +18,7 @@ public interface RESTDashboardsEndpointClient extends DashboardsEndpoint {
 
     @Override
     @PutMapping(value = "", produces = APPLICATION_JSON_VALUE)
-    DashboardUUIDResponse editDashboard(
+    DashboardUUIDResponse saveDashboard(
         @RequestParam(name = "workspaceUUID") String workspaceUUID,
         @RequestParam(name = "dashboardUUID", required = false) String dashboardUUID,
         @RequestBody DashboardProperties dashboardProperties

@@ -10,6 +10,7 @@ mkdir data/user_management
 mkdir data/jobs
 mkdir data/workspace
 mkdir data/catalog
+mkdir data/reporting
 
 # Start the services
 docker-compose \

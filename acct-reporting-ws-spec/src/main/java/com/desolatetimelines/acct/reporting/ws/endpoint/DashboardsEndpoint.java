@@ -18,7 +18,7 @@ public interface DashboardsEndpoint {
      * @param dashboardProperties Container for the modifiable properties of a dashboard
      * @return A container for the UUID of the newly created or edited dashboard
      */
-    DashboardUUIDResponse editDashboard(
+    DashboardUUIDResponse saveDashboard(
         String workspaceUUID,
         String dashboardUUID,
         DashboardProperties dashboardProperties

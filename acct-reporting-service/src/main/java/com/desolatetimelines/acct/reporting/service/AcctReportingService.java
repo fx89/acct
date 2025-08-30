@@ -2,7 +2,9 @@ package com.desolatetimelines.acct.reporting.service;
 
 import com.desolatetimelines.acct.common.model.ObjectTypes;
 import com.desolatetimelines.acct.reporting.data.service.AcctReportingDataService;
+import com.desolatetimelines.acct.reporting.exception.AcctReportingServiceNotFoundException;
 import com.desolatetimelines.acct.reporting.model.AcctDashboard;
+import com.desolatetimelines.acct.reporting.model.DashboardDetails;
 import com.desolatetimelines.acct.security.client.data.AcctSecurityClientService;
 import com.desolatetimelines.acct.usage.ws.client.RESTUsageEndpointClient;
 import com.desolatetimelines.acct.usage.ws.model.ServiceItemTypesList;
@@ -11,9 +13,9 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+
+import static com.desolatetimelines.acct.common.model.ObjectTypes.DASHBOARD;
 
 /**
  * Reporting services layer
@@ -100,5 +102,47 @@ public class AcctReportingService {
         throw new IllegalArgumentException("Object type [" + objectType + "] not supported");
     }
 
+    /**
+     * Creates or updates a dashboard with the properties in the referenced dashboard properties container,
+     * within the workspace referenced via the given workspace UUID. If a dashboard UUID is given, then the
+     * existing dashboard is identified and edited. If the dashboard UUID is not given, then a new dashboard
+     * is created.
+     *
+     * @param workspaceUUID    The given workspace UUID
+     * @param dashboardUUID    Uniquely identifies the dashboard to be edited. Set to null if the intention
+     *                         is to create a new dashboard.
+     * @param dashboardDetails The referenced dashboard properties container
+     * @return a reference to the created or updated dashboard
+     */
+    public AcctDashboard saveDashboard(
+        String workspaceUUID,
+        String dashboardUUID,
+        DashboardDetails dashboardDetails
+    ) {
+        // Find the dashboard with the given dashboard UUID or create a new one in case the UUID is not given
+        // If a dashboard UUID was given, but the dashboard does not exist, throw an exception.
+        final AcctDashboard dashboard =
+            Optional
+                .ofNullable(dashboardUUID)
+                .map(dataService::findDashboardByDashboardUUID)
+                .orElseGet(() ->
+                    Optional
+                        .ofNullable(dataService.createNewDashboard())
+                        .map(dash -> {
+                            dash.setDashboardUUID(UUID.randomUUID().toString());
+                            return dash;
+                        })
+                )
+                .orElseThrow(() -> new AcctReportingServiceNotFoundException(errors, DASHBOARD, dashboardUUID));
+
+        // Update the dashboard's properties
+        dashboard.setWorkspaceUUID(workspaceUUID);
+        dashboard.setDashboardName(dashboardDetails.dashboardName());
+        dashboard.setDashboardDescription(dashboardDetails.dashboardDescription());
+        dashboard.setDashboardIconUUID(dashboardDetails.dashboardIconUUID());
+
+        // Persist the dashboard and return a reference
+        return dataService.saveDashboard(dashboard);
+    }
 
 }

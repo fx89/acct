@@ -9,7 +9,7 @@ public interface AcctDashboard {
 
     String getWorkspaceUUID();
 
-    void serWorkspaceUUID(String workspaceUUID);
+    void setWorkspaceUUID(String workspaceUUID);
 
     String getDashboardName();
 

@@ -8,6 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import static com.desolatetimelines.acct.reporting.privilegesprovider.model.ReportingPrivilegeIds.DASHBOARDS_SAVE;
+import static com.desolatetimelines.acct.reporting.ws.mapper.DashboardPropertiesMapper.toDashboardDetails;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
@@ -23,12 +24,19 @@ public class DashboardsEndpointController implements DashboardsEndpoint {
     @Override
     @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + DASHBOARDS_SAVE + "')")
     @PutMapping(value = "", produces = APPLICATION_JSON_VALUE)
-    public DashboardUUIDResponse editDashboard(
+    public DashboardUUIDResponse saveDashboard(
         @RequestParam(name = "workspaceUUID") String workspaceUUID,
         @RequestParam(name = "dashboardUUID", required = false) String dashboardUUID,
         @RequestBody DashboardProperties dashboardProperties
     ) {
-        return null;
+        return
+            new DashboardUUIDResponse(
+                reportingService.saveDashboard(
+                    workspaceUUID,
+                    dashboardUUID,
+                    toDashboardDetails(dashboardProperties)
+                ).getDashboardUUID()
+            );
 
     }
 }
