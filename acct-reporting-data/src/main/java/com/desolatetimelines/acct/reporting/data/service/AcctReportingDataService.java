@@ -61,6 +61,20 @@ public class AcctReportingDataService {
     }
 
     /**
+     * Returns a collection of all the dashboards that are part of the referenced workspace and are identified
+     * by one of the UUIDs from the referenced collection of dashboard UUIDs
+     *
+     * @param workspaceUUID  the UUID of the referenced workspace
+     * @param dashboardUUIDs the referenced collection of dashboard UUIDs
+     */
+    public Collection<AcctDashboard> findDashboardsByWorkspaceUUIDAndDashboardUUIDIn(
+        String workspaceUUID,
+        Collection<String> dashboardUUIDs
+    ) {
+        return dashboardsRepository.findAllByWorkspaceUUIDAndDashboardUUIDIn(workspaceUUID, dashboardUUIDs);
+    }
+
+    /**
      * Retrieves the dashboard with the given dashboard UUID. If no such dashboard exists, then an empty
      * optional is returned.
      *

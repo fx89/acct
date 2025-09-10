@@ -13,4 +13,9 @@ public interface JpaAcctDashboardsRepository extends CrudRepository<JpaAcctDashb
     Collection<JpaAcctDashboard> findAllByWorkspaceUUIDIn(Collection<String> workspaceUUIDs);
 
     Optional<JpaAcctDashboard> findFirstByDashboardUUID(String dashboardUUID);
+
+    Collection<JpaAcctDashboard> findAllByWorkspaceUUIDAndDashboardUUIDIn(
+        String workspaceUUID,
+        Collection<String> dashboardUUIDs
+    );
 }

@@ -46,4 +46,16 @@ public interface AcctDashboardsRepository {
      * @param dashboardUUID the given dashboard UUID
      */
     Optional<AcctDashboard> findFirstByDashboardUUID(String dashboardUUID);
+
+    /**
+     * Returns a collection of all the dashboards that are part of the referenced workspace and are identified
+     * by one of the UUIDs from the referenced collection of dashboard UUIDs
+     *
+     * @param workspaceUUID  the UUID of the referenced workspace
+     * @param dashboardUUIDs the referenced collection of dashboard UUIDs
+     */
+    Collection<AcctDashboard> findAllByWorkspaceUUIDAndDashboardUUIDIn(
+        String workspaceUUID,
+        Collection<String> dashboardUUIDs
+    );
 }

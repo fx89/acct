@@ -13,6 +13,14 @@ public enum ReportingPrivilege {
             .withPrivilegeName("Create or update a dashboard")
             .withPrivilegeDescription("Allows creating new dashboards or updating dashboards")
             .build()
+    ),
+
+    DASHBOARDS_READ(
+        AcctPrivilege.builder()
+            .withPrivilegeId(ReportingPrivilegeIds.DASHBOARDS_READ)
+            .withPrivilegeName("Reads user-accessible dashboards")
+            .withPrivilegeDescription("Allows reading the properties of existing dashboards that are accessible to the user")
+            .build()
     );
 
 

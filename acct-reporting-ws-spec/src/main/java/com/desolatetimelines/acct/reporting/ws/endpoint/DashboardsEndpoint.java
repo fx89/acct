@@ -2,6 +2,7 @@ package com.desolatetimelines.acct.reporting.ws.endpoint;
 
 import com.desolatetimelines.acct.reporting.ws.model.DashboardProperties;
 import com.desolatetimelines.acct.reporting.ws.model.DashboardUUIDResponse;
+import com.desolatetimelines.acct.reporting.ws.model.UserAccessibleDashboardsContainer;
 
 /**
  * Specification for the Dashboards endpoint, which provides an API that lets consumers define, edit,
@@ -23,5 +24,13 @@ public interface DashboardsEndpoint {
         String dashboardUUID,
         DashboardProperties dashboardProperties
     );
+
+    /**
+     * Retrieves a set of dashboards that are accessible to the user and groups them by access method
+     *
+     * @param workspaceUUID The UUID of the workspace where the dashboards can be found
+     * @return a container that groups user-accessible dashboards by access method into user dashboards and group dashboards
+     */
+    UserAccessibleDashboardsContainer getUserAccessibleDashboards(String workspaceUUID);
 
 }

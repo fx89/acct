@@ -3,11 +3,17 @@ package com.desolatetimelines.acct.reporting.service;
 import com.desolatetimelines.acct.common.model.ObjectTypes;
 import com.desolatetimelines.acct.reporting.data.service.AcctReportingDataService;
 import com.desolatetimelines.acct.reporting.exception.AcctReportingServiceNotFoundException;
+import com.desolatetimelines.acct.reporting.mapper.DashboardReadablePropertiesMapper;
 import com.desolatetimelines.acct.reporting.model.AcctDashboard;
 import com.desolatetimelines.acct.reporting.model.DashboardDetails;
+import com.desolatetimelines.acct.reporting.model.DashboardsContainer;
 import com.desolatetimelines.acct.security.client.data.AcctSecurityClientService;
+import com.desolatetimelines.acct.security.ws.endpoint.model.DashboardOwner;
+import com.desolatetimelines.acct.security.ws.endpoint.model.OwnedDashboardsGroup;
+import com.desolatetimelines.acct.security.ws.endpoint.model.OwnerType;
 import com.desolatetimelines.acct.usage.ws.client.RESTUsageEndpointClient;
 import com.desolatetimelines.acct.usage.ws.model.ServiceItemTypesList;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -90,7 +96,7 @@ public class AcctReportingService {
         if (Objects.equals(objectType, ObjectTypes.WORKSPACE.name())) {
             // Find any dashboards that are using any of the workspaces with the given UUIDs
             return
-                dataService.findDashboardsByDashboardIconUUIDIn(itemUUIDs)
+                dataService.findDashboardsByWorkspaceUUIDIn(itemUUIDs)
                     .stream()
                     .map(AcctDashboard::getDashboardIconUUID)
                     .toList();
@@ -114,10 +120,12 @@ public class AcctReportingService {
      * @param dashboardDetails The referenced dashboard properties container
      * @return a reference to the created or updated dashboard
      */
+    @Transactional
     public AcctDashboard saveDashboard(
         String workspaceUUID,
         String dashboardUUID,
-        DashboardDetails dashboardDetails
+        DashboardDetails dashboardDetails,
+        String userUUID
     ) {
         // Find the dashboard with the given dashboard UUID or create a new one in case the UUID is not given
         // If a dashboard UUID was given, but the dashboard does not exist, throw an exception.
@@ -141,8 +149,59 @@ public class AcctReportingService {
         dashboard.setDashboardDescription(dashboardDetails.dashboardDescription());
         dashboard.setDashboardIconUUID(dashboardDetails.dashboardIconUUID());
 
-        // Persist the dashboard and return a reference
-        return dataService.saveDashboard(dashboard);
+        // Persist the dashboard
+        final AcctDashboard savedDashboard = dataService.saveDashboard(dashboard);
+
+        // Create the user/dashboard ownership relation
+        securityClientService.addDashboardOwner(
+            DashboardOwner.builder()
+                .withOwnerType(OwnerType.USER)
+                .withOwnerUUID(userUUID)
+                .withDashboardUUID(savedDashboard.getDashboardUUID())
+                .build()
+        );
+
+        // Return a reference to the persisted dashboard
+        return savedDashboard;
+    }
+
+    /**
+     * Retrieves two sets of {@link com.desolatetimelines.acct.reporting.model.DashboardReadableProperties dashboard properties}
+     * for: <ul>
+     * <li>the dashboards that are directly accessible by the user</li>
+     * <li>the dashboards that are accessible by the user via a users group</li>
+     * </ul>
+     * The set of dashboards accessible via users groups is retrieved with the help of the security service
+     *
+     * @param workspaceUUID The UUID of the workspace that the dashboards are part of
+     * @param userUUID      The UUID of the user requesting to list the dashboards
+     * @return a container for the two aforementioned sets of dashboards
+     */
+    public DashboardsContainer readUserAccessibleDashboards(String workspaceUUID, String userUUID) {
+        // Fetch the lists of user-accessible dashboards
+        final OwnedDashboardsGroup userAccessibleDashboard =
+            securityClientService.getUserAccessibleDashboards(userUUID);
+
+        // Fetch the group dashboards that are part of the workspaces
+        final Collection<AcctDashboard> groupDashboards =
+            dataService.findDashboardsByWorkspaceUUIDAndDashboardUUIDIn(
+                workspaceUUID,
+                userAccessibleDashboard.groupDashboards()
+            );
+
+        // Fetch the user dashboards that are part of the workspaces
+        final Collection<AcctDashboard> userDashboards =
+            dataService.findDashboardsByWorkspaceUUIDAndDashboardUUIDIn(
+                workspaceUUID,
+                userAccessibleDashboard.userDashboards()
+            );
+
+        // Build the container and return a reference
+        return
+            DashboardsContainer.builder()
+                .withUserDashboards(userDashboards.stream().map(DashboardReadablePropertiesMapper::fromAcctDashboard).toList())
+                .withGroupDashboards(groupDashboards.stream().map(DashboardReadablePropertiesMapper::fromAcctDashboard).toList())
+                .build();
     }
 
 }

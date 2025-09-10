@@ -76,6 +76,29 @@ public class AcctSecurityClientService {
     }
 
     /**
+     * Creates a new dashboard ownership record with the provider details
+     *
+     * @param dashboardOwner container for the provided details
+     */
+    public void addDashboardOwner(DashboardOwner dashboardOwner) {
+        dashboardOwnershipEndpointClient.addDashboardOwner(dashboardOwner);
+    }
+
+    /**
+     * Returns a group of collections containing the UUIDs of the dashboards accessible to the user
+     * via each possible ownership type: <ul>
+     * <li>{@link OwnerType#USER accessible to the user}</li>
+     * <li>{@link OwnerType#GROUP accessible to the user's group}</li>
+     * <li>{@link OwnerType#PUBLIC accessible to everyone}</li>
+     * </ul>
+     *
+     * @param userUUID the UUID of the user whose resources are being queried
+     */
+    public OwnedDashboardsGroup getUserAccessibleDashboards(String userUUID) {
+        return dashboardOwnershipEndpointClient.getUserAccessibleDashboards(userUUID);
+    }
+
+    /**
      * Returns true if the referenced user has the rights to perform a certain operation
      * on the referenced resource of the given resource type under the circumstances given
      * by the referenced access rights.<br />

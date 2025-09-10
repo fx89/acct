@@ -49,6 +49,17 @@ public class SpringJpaAcctDashboardsRepository implements AcctDashboardsReposito
         return jpaAcctDashboardsRepository.findFirstByDashboardUUID(dashboardUUID).map(identity());
     }
 
+    @Override
+    public Collection<AcctDashboard> findAllByWorkspaceUUIDAndDashboardUUIDIn(
+        String workspaceUUID,
+        Collection<String> dashboardUUIDs
+    ) {
+        return
+            jpaAcctDashboardsRepository.findAllByWorkspaceUUIDAndDashboardUUIDIn(workspaceUUID, dashboardUUIDs).stream()
+                .map(dash -> (AcctDashboard) dash)
+                .toList();
+    }
+
     private static Collection<AcctDashboard> castAllToGeneric(Collection<JpaAcctDashboard> jpaDashboards) {
         return
             jpaDashboards.stream()

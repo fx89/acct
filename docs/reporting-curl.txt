@@ -24,7 +24,7 @@ curl \
 curl \
     --insecure \
     -v \
-    --cookie 'JSESSIONID=2F23E9AA3C6411E135A4EF26A6E98A6B' \
+    --cookie 'JSESSIONID=A49F4DD108A7C79D2CD4B43EA215A320' \
     -X GET 'http://localhost:9001/service/authorization/v1/oauth2/authorize?response_type=code&client_id=frontend-client'
 
 export ACCT_USER_ACCESS_TOKEN=$(\
@@ -33,7 +33,7 @@ curl \
     -v \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'grant_type=authorization_code' \
-    -d 'code=NKUhz-evCWgVtz1LbaOys7h1y2Y-ux980d8ky4N1497Aa-Y-z4qWSovrE5UtQ5EICn1RLuKKv3AeaiKF3AD7say0sdAOgBjeLJ10M7GWe_IjD1WIR_6nigI7-3rkBgB1' \
+    -d 'code=a8MNhVeuqtmmrKq3rWxp4goEInBcoLnpaVoPFOn7Z-kuImMyo70z3hddQfEtjPFDz9VBLYgBoKcoFDlARhjj8Sp_mP8sfKpsBEJvQ94b03gvhr5PC6AuLC6lL6S5_LBO' \
     -d 'client_id=frontend-client' \
     -d 'client_secret=lkjdwsf23odnwqkld23odfbqweorh23oihd' \
     -X POST 'http://localhost:9001/service/authorization/v1/oauth2/token' \
@@ -69,4 +69,11 @@ curl \
             "dashboardIconUUID": "b12ee08b-4c2f-4540-ab5d-ee9bb5474566"
         }
     ' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X GET 'http://localhost:8088/service/reporting/v1/dashboards?workspaceUUID=108a5846-859d-4b09-b548-8cf352064a9d' \
     | jq
