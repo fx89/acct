@@ -2,8 +2,9 @@
 // TODO: REP-01002: Dashboards endpoint: Get dashboards accessible to group - calls SEC-02001
 // DONE: REP-01003: Dashboards endpoint: Get user accessible dashboards in workspace (user dashboards and group dashboards) - calls SEC-02002
 // DONE: REP-01004: Dashboards endpoint: Edit dashboard (user or group) - create if UUID not specified
-// TODO: REP-01005: Dashboards endpoint: Delete dashboard (user or group[with special permission for deleting group dashboards])
+// DONE: REP-01005: Dashboards endpoint: Delete dashboard (user or group[with special permission for deleting group dashboards])
 // TODO: REP-01006: Dashboards endpoint: Get dashboard reports (including filters, reports and report series)
+// TODO: REP-01007: Dashboards endpoint: Add dashboard report
 
 // TODO: REP-02001: Reports endpoint: Get reports accessible to user - calls SEC-03001
 // TODO: REP-02002: Reports endpoint: Get reports accessible to group - calls SEC-03001

@@ -10,8 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import static com.desolatetimelines.acct.common.ws.util.AcctJwtUtils.extractCurrentUserClaims;
-import static com.desolatetimelines.acct.reporting.privilegesprovider.model.ReportingPrivilegeIds.DASHBOARDS_READ;
-import static com.desolatetimelines.acct.reporting.privilegesprovider.model.ReportingPrivilegeIds.DASHBOARDS_SAVE;
+import static com.desolatetimelines.acct.reporting.privilegesprovider.model.ReportingPrivilegeIds.*;
 import static com.desolatetimelines.acct.reporting.ws.mapper.DashboardPropertiesMapper.toDashboardDetails;
 import static com.desolatetimelines.acct.reporting.ws.mapper.UserAccessibleDashboardsContainerMapper.fromServicesLayerDashboardsContainer;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -63,5 +62,24 @@ public class DashboardsEndpointController implements DashboardsEndpoint {
             fromServicesLayerDashboardsContainer(
                 reportingService.readUserAccessibleDashboards(workspaceUUID, userClaims.userUUID())
             );
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + DASHBOARDS_DELETE + "', 'SCOPE_" + DASHBOARDS_DELETE_GROUP + "')")
+    @DeleteMapping(value = "")
+    public void deleteDashboard(
+        @RequestParam(name = "workspaceUUID") String workspaceUUID,
+        @RequestParam(name = "dashboardUUID") String dashboardUUID
+    ) {
+        // Get the user claims
+        final AcctUserClaims userClaims = extractCurrentUserClaims();
+
+        // Delete the dashboard, if accessible
+        reportingService.deleteDashboard(
+            workspaceUUID,
+            dashboardUUID,
+            userClaims.userUUID(),
+            userClaims.privilegeNames()
+        );
     }
 }

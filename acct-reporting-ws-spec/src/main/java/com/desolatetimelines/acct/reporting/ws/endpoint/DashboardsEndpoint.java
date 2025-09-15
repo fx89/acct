@@ -33,4 +33,12 @@ public interface DashboardsEndpoint {
      */
     UserAccessibleDashboardsContainer getUserAccessibleDashboards(String workspaceUUID);
 
+    /**
+     * Deletes the referenced dashboard from the referenced workspace
+     *
+     * @param workspaceUUID Unique identifier of the referenced workspace
+     * @param dashboardUUID Unique identifier of the referenced dashboard
+     */
+    void deleteDashboard(String workspaceUUID, String dashboardUUID);
+
 }

@@ -30,4 +30,6 @@ public interface JpaAcctDashboardOwnersRepository extends CrudRepository<JpaAcct
         String dashboardUUID
     );
 
+    void deleteByDashboardUUID(String dashboardUUID);
+
 }

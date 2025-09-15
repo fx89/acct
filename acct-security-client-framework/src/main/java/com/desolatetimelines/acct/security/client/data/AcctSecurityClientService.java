@@ -99,6 +99,15 @@ public class AcctSecurityClientService {
     }
 
     /**
+     * Deletes all ownership records of all types for the referenced dashboard
+     *
+     * @param dashboardUUID Unique identifier of the referenced dashboard
+     */
+    public void deleteAllDashboardOwnersByDashboardUUID(String dashboardUUID) {
+        dashboardOwnershipEndpointClient.deleteDashboardOwnersByDashboardUUID(dashboardUUID);
+    }
+
+    /**
      * Returns true if the referenced user has the rights to perform a certain operation
      * on the referenced resource of the given resource type under the circumstances given
      * by the referenced access rights.<br />

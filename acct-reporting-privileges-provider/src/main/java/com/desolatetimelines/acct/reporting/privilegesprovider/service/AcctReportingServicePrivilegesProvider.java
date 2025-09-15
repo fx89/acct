@@ -6,8 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
-import static com.desolatetimelines.acct.reporting.privilegesprovider.model.ReportingPrivilege.DASHBOARDS_READ;
-import static com.desolatetimelines.acct.reporting.privilegesprovider.model.ReportingPrivilege.DASHBOARDS_SAVE;
+import static com.desolatetimelines.acct.reporting.privilegesprovider.model.ReportingPrivilege.*;
 
 /**
  * {@link AcctServicePrivilegesProvider privileges provider} for the Reporting service
@@ -19,7 +18,9 @@ public class AcctReportingServicePrivilegesProvider implements AcctServicePrivil
         return
             Set.of(
                 DASHBOARDS_SAVE.getAcctPrivilege(),
-                DASHBOARDS_READ.getAcctPrivilege()
+                DASHBOARDS_READ.getAcctPrivilege(),
+                DASHBOARDS_DELETE.getAcctPrivilege(),
+                DASHBOARDS_DELETE_GROUP.getAcctPrivilege()
             );
     }
 }

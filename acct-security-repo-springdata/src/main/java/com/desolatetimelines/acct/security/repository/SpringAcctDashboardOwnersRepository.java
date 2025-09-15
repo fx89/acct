@@ -40,6 +40,11 @@ public class SpringAcctDashboardOwnersRepository implements AcctDashboardOwnersR
     }
 
     @Override
+    public void deleteAllByResourceUUID(String resourceUUID) {
+        dashboardOwnersRepository.deleteByDashboardUUID(resourceUUID);
+    }
+
+    @Override
     public Optional<AcctDashboardOwner> findFirstByOwnerTypeAndOwnerUUIDAndResourceUUID(
         OwnerType ownerType,
         String ownerUUID,

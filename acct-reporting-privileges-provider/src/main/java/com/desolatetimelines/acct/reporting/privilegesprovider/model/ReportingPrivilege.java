@@ -21,6 +21,22 @@ public enum ReportingPrivilege {
             .withPrivilegeName("Reads user-accessible dashboards")
             .withPrivilegeDescription("Allows reading the properties of existing dashboards that are accessible to the user")
             .build()
+    ),
+
+    DASHBOARDS_DELETE(
+        AcctPrivilege.builder()
+            .withPrivilegeId(ReportingPrivilegeIds.DASHBOARDS_DELETE)
+            .withPrivilegeName("Deletes user-owned dashboards")
+            .withPrivilegeDescription("Allows deletion of existing dashboards that are owned by the user")
+            .build()
+    ),
+
+    DASHBOARDS_DELETE_GROUP(
+        AcctPrivilege.builder()
+            .withPrivilegeId(ReportingPrivilegeIds.DASHBOARDS_DELETE)
+            .withPrivilegeName("Deletes user-accessible dashboards")
+            .withPrivilegeDescription("Allows deletion of existing dashboards that are accessible to the user via a users group")
+            .build()
     );
 
 

@@ -84,4 +84,13 @@ public class AcctReportingDataService {
         return dashboardsRepository.findFirstByDashboardUUID(dashboardUUID);
     }
 
+    /**
+     * Deletes the referenced dashboard
+     *
+     * @param dashboard the referenced dashboard
+     */
+    public void deleteDashboard(AcctDashboard dashboard) {
+        dashboardsRepository.delete(dashboard);
+    }
+
 }

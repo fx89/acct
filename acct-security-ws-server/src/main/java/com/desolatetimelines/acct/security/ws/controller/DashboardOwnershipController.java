@@ -77,6 +77,15 @@ public class DashboardOwnershipController implements DashboardOwnershipEndpoint 
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + DASHBOARD_OWNERS_DELETE + "')")
+    @DeleteMapping(value = "/byDashboardUUID")
+    public void deleteDashboardOwnersByDashboardUUID(
+        @RequestParam("dashboardUUID") String dashboardUUID
+    ) {
+        securityService.deleteDashboardOwnersByDashboardUUID(dashboardUUID);
+    }
+
+    @Override
     @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + DASHBOARD_OWNERS_READ + "')")
     @GetMapping(value = "/userAccessibleDashboard")
     public DashboardAccessibilityReport isUserAccessibleDashboard(

@@ -24,7 +24,7 @@ curl \
 curl \
     --insecure \
     -v \
-    --cookie 'JSESSIONID=A49F4DD108A7C79D2CD4B43EA215A320' \
+    --cookie 'JSESSIONID=339DA7973C2AD9D7EA02572668CD52D2' \
     -X GET 'http://localhost:9001/service/authorization/v1/oauth2/authorize?response_type=code&client_id=frontend-client'
 
 export ACCT_USER_ACCESS_TOKEN=$(\
@@ -33,7 +33,7 @@ curl \
     -v \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'grant_type=authorization_code' \
-    -d 'code=a8MNhVeuqtmmrKq3rWxp4goEInBcoLnpaVoPFOn7Z-kuImMyo70z3hddQfEtjPFDz9VBLYgBoKcoFDlARhjj8Sp_mP8sfKpsBEJvQ94b03gvhr5PC6AuLC6lL6S5_LBO' \
+    -d 'code=iExXdtQJX7ReQFwVp0Y2qtqRv7QlmkHu1U2m0RFsBqqPgxPmbi6jiADo_qIWi-7Q02sc-3GTV5_E0ViqSXprB90WzIS7nmjuvLPhdwQ8em_lY4EMSveD5h-AC4TOHSeO' \
     -d 'client_id=frontend-client' \
     -d 'client_secret=lkjdwsf23odnwqkld23odfbqweorh23oihd' \
     -X POST 'http://localhost:9001/service/authorization/v1/oauth2/token' \
@@ -76,4 +76,11 @@ curl \
     -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
     -H "Content-Type: application/json; charset=utf-8" \
     -X GET 'http://localhost:8088/service/reporting/v1/dashboards?workspaceUUID=108a5846-859d-4b09-b548-8cf352064a9d' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X DELETE 'http://localhost:8088/service/reporting/v1/dashboards?workspaceUUID=108a5846-859d-4b09-b548-8cf352064a9d&dashboardUUID=e6af203b-6d30-4e07-94d9-34b632826a3a' \
     | jq

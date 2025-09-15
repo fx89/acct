@@ -60,4 +60,11 @@ public interface DashboardOwnershipEndpoint {
      */
     DashboardAccessibilityReport isUserAccessibleDashboard(String userUUID, String dashboardUUID);
 
+    /**
+     * Removes all dashboard ownership records for the referenced dashboard
+     *
+     * @param dashboardUUID Unique identifier of the referenced dashboard
+     */
+    void deleteDashboardOwnersByDashboardUUID(String dashboardUUID);
+
 }

@@ -390,6 +390,18 @@ public class AcctSecurityService {
             .deleteResourceOwner(ownerType, ownerUUID, dashboardUUID);
     }
 
+    /**
+     * Deletes all the {@link AcctDashboardOwner dashboard owners} that reference the
+     * given dashboard UUID
+     *
+     * @param dashboardUUID the given dashboard UUID
+     */
+    @Transactional
+    public void deleteDashboardOwnersByDashboardUUID(String dashboardUUID) {
+        getResourceOwnersService(AcctDashboardOwner.class)
+            .deleteResourceOwnersByResourceUUID(dashboardUUID);
+    }
+
     // Report owners --------------------------------------------------------------------------------------------------
 
     /**

@@ -19,6 +19,8 @@ public interface AcctResourceOwnersRepository<T extends AcctResourceOwner> {
 
     void delete(T resourceOwner);
 
+    void deleteAllByResourceUUID(String resourceUUID);
+
     Optional<T> findFirstByOwnerTypeAndOwnerUUIDAndResourceUUID(
         OwnerType ownerType,
         String ownerUUID,

@@ -58,4 +58,11 @@ public interface AcctDashboardsRepository {
         String workspaceUUID,
         Collection<String> dashboardUUIDs
     );
+
+    /**
+     * Deletes the referenced dashboard
+     *
+     * @param dashboard the referenced dashboard
+     */
+    void delete(AcctDashboard dashboard);
 }

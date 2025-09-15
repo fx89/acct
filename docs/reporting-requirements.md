@@ -125,7 +125,7 @@ If the `isGroupDashboard` property in the response of `SEC-02005` is set to true
 is required to let the operation proceed.
 
 Example request URL:
-- `DELETE http://acct.desolatetimelines.com/service/reporting/v1/dashboards?dashboardUUID=5f23ceac-7094-416d-970a-f0e938bdb85c`
+- `DELETE http://acct.desolatetimelines.com/service/reporting/v1/dashboards?workspaceUUID=e301b44d-3c15-40db-bf81-6615fb56e6db&dashboardUUID=5f23ceac-7094-416d-970a-f0e938bdb85c`
 
 
 

@@ -41,6 +41,12 @@ public interface RESTDashboardOwnershipEndpointClient extends DashboardOwnership
     );
 
     @Override
+    @DeleteMapping(value = "/byDashboardUUID")
+    void deleteDashboardOwnersByDashboardUUID(
+        @RequestParam("dashboardUUID") String dashboardUUID
+    );
+
+    @Override
     @GetMapping(value = "/userAccessibleDashboard")
     DashboardAccessibilityReport isUserAccessibleDashboard(
         @RequestParam("userUUID") String userUUID,

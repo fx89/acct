@@ -155,4 +155,14 @@ public class AcctSecurityResourceOwnersDataService<T extends AcctResourceOwner> 
         resourceOwnersRepository.delete(resourceOwner);
     }
 
+    /**
+     * Deletes all the {@link AcctResourceOwner resource owners}, regardless of the type,
+     * that reference the resource with the given resource UUID
+     *
+     * @param resourceUUID the given resource UUID
+     */
+    public void deleteResourceOwnersByResourceUUID(String resourceUUID) {
+        resourceOwnersRepository.deleteAllByResourceUUID(resourceUUID);
+    }
+
 }

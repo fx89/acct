@@ -43,6 +43,11 @@ public class SpringAcctReportOwnersRepository implements AcctReportOwnersReposit
     }
 
     @Override
+    public void deleteAllByResourceUUID(String resourceUUID) {
+        reportOwnersRepository.deleteByReportUUID(resourceUUID);
+    }
+
+    @Override
     public Optional<AcctReportOwner> findFirstByOwnerTypeAndOwnerUUIDAndResourceUUID(
         OwnerType ownerType,
         String ownerUUID,

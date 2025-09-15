@@ -30,4 +30,6 @@ public interface JpaAcctReportOwnersRepository extends CrudRepository<JpaAcctRep
         String reportUUID
     );
 
+    void deleteByReportUUID(String reportUUID);
+
 }

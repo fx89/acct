@@ -43,6 +43,11 @@ public class SpringAcctWorkspaceOwnersRepository implements AcctWorkspaceOwnersR
     }
 
     @Override
+    public void deleteAllByResourceUUID(String resourceUUID) {
+        workspaceOwnersRepository.deleteByWorkspaceUUID(resourceUUID);
+    }
+
+    @Override
     public Optional<AcctWorkspaceOwner> findFirstByOwnerTypeAndOwnerUUIDAndResourceUUID(
         OwnerType ownerType,
         String ownerUUID,

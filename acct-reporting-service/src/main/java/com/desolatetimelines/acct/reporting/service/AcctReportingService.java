@@ -3,11 +3,14 @@ package com.desolatetimelines.acct.reporting.service;
 import com.desolatetimelines.acct.common.model.ObjectTypes;
 import com.desolatetimelines.acct.reporting.data.service.AcctReportingDataService;
 import com.desolatetimelines.acct.reporting.exception.AcctReportingServiceNotFoundException;
+import com.desolatetimelines.acct.reporting.exception.AcctReportingServiceSecurityException;
 import com.desolatetimelines.acct.reporting.mapper.DashboardReadablePropertiesMapper;
 import com.desolatetimelines.acct.reporting.model.AcctDashboard;
 import com.desolatetimelines.acct.reporting.model.DashboardDetails;
 import com.desolatetimelines.acct.reporting.model.DashboardsContainer;
 import com.desolatetimelines.acct.security.client.data.AcctSecurityClientService;
+import com.desolatetimelines.acct.security.client.model.ResourceType;
+import com.desolatetimelines.acct.security.client.model.UserResourceAccessRights;
 import com.desolatetimelines.acct.security.ws.endpoint.model.DashboardOwner;
 import com.desolatetimelines.acct.security.ws.endpoint.model.OwnedDashboardsGroup;
 import com.desolatetimelines.acct.security.ws.endpoint.model.OwnerType;
@@ -22,6 +25,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 import static com.desolatetimelines.acct.common.model.ObjectTypes.DASHBOARD;
+import static com.desolatetimelines.acct.reporting.privilegesprovider.model.ReportingPrivilegeIds.DASHBOARDS_DELETE_GROUP;
 
 /**
  * Reporting services layer
@@ -202,6 +206,72 @@ public class AcctReportingService {
                 .withUserDashboards(userDashboards.stream().map(DashboardReadablePropertiesMapper::fromAcctDashboard).toList())
                 .withGroupDashboards(groupDashboards.stream().map(DashboardReadablePropertiesMapper::fromAcctDashboard).toList())
                 .build();
+    }
+
+    /**
+     * Deletes the referenced dashboard from the referenced workspace, if accessible by the referenced user
+     * either directly or indirectly via a group
+     *
+     * @param workspaceUUID  Unique identifier for the referenced workspace
+     * @param dashboardUUID  Unique identifier for the referenced dashboard
+     * @param userUUID       Unique identifier for the referenced user
+     * @param privilegeNames Collection that contains the names of all the privileges given to the user
+     */
+    @Transactional
+    public void deleteDashboard(
+        String workspaceUUID,
+        String dashboardUUID,
+        String userUUID,
+        Collection<String> privilegeNames
+    ) {
+        // Check if the user owns the dashboard directly
+        final boolean isUserDashboard =
+            securityClientService.resourceIsAccessibleToUser(
+                ResourceType.DASHBOARD,
+                userUUID,
+                dashboardUUID,
+                UserResourceAccessRights.builder()
+                    .withOwnResources(true)
+                    .withGroupResources(false)
+                    .withAnyResources(false)
+                    .build()
+            );
+
+        // Check if the user owns the dashboard via a users group
+        final boolean isGroupDashboard =
+            securityClientService.resourceIsAccessibleToUser(
+                ResourceType.DASHBOARD,
+                userUUID,
+                dashboardUUID,
+                UserResourceAccessRights.builder()
+                    .withOwnResources(false)
+                    .withGroupResources(true)
+                    .withAnyResources(false)
+                    .build()
+            );
+
+        // The user does not have the rights to delete the dashboard if the dashboard is not owned
+        // by the user or if the user doesn't have the right to delete group dashboards
+        if (!(isUserDashboard || (isGroupDashboard && privilegeNames.contains(DASHBOARDS_DELETE_GROUP)))) {
+            throw new AcctReportingServiceSecurityException(
+                errors,
+                DASHBOARD,
+                dashboardUUID
+            );
+        }
+
+        // If the user has the proper access right, then retrieve the dashboard or throw an exception if not found
+        final AcctDashboard dashboard =
+            dataService.findDashboardsByWorkspaceUUIDAndDashboardUUIDIn(workspaceUUID, List.of(dashboardUUID)).stream()
+                .findFirst()
+                .orElseThrow(() -> new AcctReportingServiceNotFoundException(errors, DASHBOARD, dashboardUUID));
+
+        // Delete the dashboard ownership records
+        securityClientService.deleteAllDashboardOwnersByDashboardUUID(dashboardUUID);
+
+        // Delete the dashboard
+        dataService.deleteDashboard(dashboard);
+
     }
 
 }

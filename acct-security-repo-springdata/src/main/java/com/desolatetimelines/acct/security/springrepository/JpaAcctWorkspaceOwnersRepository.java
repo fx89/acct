@@ -30,4 +30,6 @@ public interface JpaAcctWorkspaceOwnersRepository extends CrudRepository<JpaAcct
         String workspaceUUID
     );
 
+    void deleteByWorkspaceUUID(String workspaceUUID);
+
 }

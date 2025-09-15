@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.Optional;
 
+import static com.desolatetimelines.acct.reporting.util.AcctReportingRepoSpringDataUtils.doWithJpaAcctDashboard;
 import static com.desolatetimelines.acct.reporting.util.AcctReportingRepoSpringDataUtils.doWithJpaAcctDashboardReturning;
 import static java.util.function.Function.identity;
 
@@ -58,6 +59,11 @@ public class SpringJpaAcctDashboardsRepository implements AcctDashboardsReposito
             jpaAcctDashboardsRepository.findAllByWorkspaceUUIDAndDashboardUUIDIn(workspaceUUID, dashboardUUIDs).stream()
                 .map(dash -> (AcctDashboard) dash)
                 .toList();
+    }
+
+    @Override
+    public void delete(AcctDashboard dashboard) {
+        doWithJpaAcctDashboard(dashboard, jpaAcctDashboardsRepository::delete);
     }
 
     private static Collection<AcctDashboard> castAllToGeneric(Collection<JpaAcctDashboard> jpaDashboards) {
