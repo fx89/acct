@@ -149,3 +149,9 @@ dist/
 .angular
 node_modules
 dist
+
+# Container data
+/containers/data/
+
+# Sqlite databases
+*.sqlite.db

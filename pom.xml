@@ -125,6 +125,8 @@
         <module>acct-reporting-data</module>
         <module>acct-reporting-repo-spec</module>
         <module>acct-reporting-repo-springdata</module>
+        <module>acct-reporting-compiler</module>
+        <module>acct-reporting-data-provider-spec</module>
 
         <!-- Catalog -->
         <module>acct-catalog-ws-spec</module>
