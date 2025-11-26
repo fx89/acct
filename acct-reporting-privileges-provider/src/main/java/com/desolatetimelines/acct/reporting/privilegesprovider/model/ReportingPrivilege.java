@@ -37,6 +37,14 @@ public enum ReportingPrivilege {
             .withPrivilegeName("Deletes user-accessible dashboards")
             .withPrivilegeDescription("Allows deletion of existing dashboards that are accessible to the user via a users group")
             .build()
+    ),
+
+    DATA_PROVIDERS_READ(
+        AcctPrivilege.builder()
+            .withPrivilegeId(ReportingPrivilegeIds.DATA_PROVIDERS_READ)
+            .withPrivilegeName("Read data provider meta-data")
+            .withPrivilegeDescription("Allows reading of the meta-data of reporting data providers")
+            .build()
     );
 
 

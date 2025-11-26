@@ -1,13 +1,9 @@
 package com.desolatetimelines.acct.reporting.dataprovider.model;
 
-import java.util.Map;
 import java.util.Objects;
 
 /**
- * Allows a {@link com.desolatetimelines.acct.reporting.dataprovider.service.AcctReportingDataProvider data provider}
- * to specify the runtime parameters that it uses when
- * {@link com.desolatetimelines.acct.reporting.dataprovider.service.AcctReportingDataProvider#provideData(Map) compiling}
- * the report data
+ * Allows a data provider to specify the runtime parameters that it uses when compiling the report data
  *
  * @param name
  * @param mandatory

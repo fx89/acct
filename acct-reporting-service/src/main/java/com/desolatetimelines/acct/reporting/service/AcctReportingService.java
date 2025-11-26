@@ -2,6 +2,8 @@ package com.desolatetimelines.acct.reporting.service;
 
 import com.desolatetimelines.acct.common.model.ObjectTypes;
 import com.desolatetimelines.acct.reporting.data.service.AcctReportingDataService;
+import com.desolatetimelines.acct.reporting.dataprovider.model.AcctReportingDataProviderId;
+import com.desolatetimelines.acct.reporting.dataprovider.service.AcctReportingDataCompiler;
 import com.desolatetimelines.acct.reporting.exception.AcctReportingServiceNotFoundException;
 import com.desolatetimelines.acct.reporting.exception.AcctReportingServiceSecurityException;
 import com.desolatetimelines.acct.reporting.mapper.DashboardReadablePropertiesMapper;
@@ -41,6 +43,8 @@ public class AcctReportingService {
 
     private final AcctReportingDataService dataService;
 
+    private final AcctReportingDataCompiler reportCompiler;
+
     private final String applicationName;
 
     private final String contextPath;
@@ -50,6 +54,7 @@ public class AcctReportingService {
         AcctSecurityClientService securityClientService,
         AcctReportingErrorCodesRegistryService errors,
         AcctReportingDataService dataService,
+        AcctReportingDataCompiler reportCompiler,
         @Value("${REPORTING_APPLICATION_NAME}") String applicationName,
         @Value("${REPORTING_SERVER_CONTEXT_PATH}") String contextPath
     ) {
@@ -57,6 +62,7 @@ public class AcctReportingService {
         this.securityClientService = securityClientService;
         this.errors = errors;
         this.dataService = dataService;
+        this.reportCompiler = reportCompiler;
         this.applicationName = applicationName;
         this.contextPath = contextPath;
     }
@@ -272,6 +278,15 @@ public class AcctReportingService {
         // Delete the dashboard
         dataService.deleteDashboard(dashboard);
 
+    }
+
+    /**
+     * Returns a set of {@link AcctReportingDataProviderId data provider meta-data entries} that
+     * provide information about the registered data providers, which are available for use in
+     * the data provisioning stage of various reports.
+     */
+    public Set<AcctReportingDataProviderId> getDataProviders() {
+        return reportCompiler.getDataProviderIds();
     }
 
 }

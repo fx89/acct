@@ -13,4 +13,6 @@ public abstract class ReportingPrivilegeIds {
 
     public static final String DASHBOARDS_DELETE_GROUP = "DASHBOARDS_DELETE_GROUP";
 
+    public static final String DATA_PROVIDERS_READ = "DATA_PROVIDERS_READ";
+
 }

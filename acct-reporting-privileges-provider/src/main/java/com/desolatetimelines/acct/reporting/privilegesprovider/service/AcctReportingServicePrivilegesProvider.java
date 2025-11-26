@@ -20,7 +20,8 @@ public class AcctReportingServicePrivilegesProvider implements AcctServicePrivil
                 DASHBOARDS_SAVE.getAcctPrivilege(),
                 DASHBOARDS_READ.getAcctPrivilege(),
                 DASHBOARDS_DELETE.getAcctPrivilege(),
-                DASHBOARDS_DELETE_GROUP.getAcctPrivilege()
+                DASHBOARDS_DELETE_GROUP.getAcctPrivilege(),
+                DATA_PROVIDERS_READ.getAcctPrivilege()
             );
     }
 }

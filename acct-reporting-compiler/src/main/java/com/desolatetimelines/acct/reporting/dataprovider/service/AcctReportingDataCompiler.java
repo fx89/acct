@@ -101,6 +101,18 @@ public class AcctReportingDataCompiler {
         return ret;
     }
 
+    /**
+     * Returns a set of {@link AcctReportingDataProviderId data provider IDs} from all the registered
+     * {@link AbstractAcctReportingDataProviderServiceProvider service providers}.
+     */
+    public Set<AcctReportingDataProviderId> getDataProviderIds() {
+        return
+            serviceProvidersByDataProviderUUID.values().stream()
+                .map(AbstractAcctReportingDataProviderServiceProvider::getSupportedDataProviderIds)
+                .flatMap(Set::stream)
+                .collect(toSet());
+    }
+
     public Set<AcctReportingDataProviderReportParameterSpec> getReportParameters(Set<UUID> dataProviderUUIDs) {
         // TODO: Maybe throw an exception if one or more data provider UUID is not supported by any of the serviceProvidersByDataProviderUUIDs ?
         return

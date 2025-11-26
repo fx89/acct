@@ -23,7 +23,7 @@
 // TODO: REP-06002: Reporting backend: Catalog items data provider
 // TODO: REP-06002: Reporting backend: Workspace SQL data provider
 
-// TODO: REP-07001: Data providers endpoint: Get data providers (includes instance properties and supported runtime parameters)
+// DONE: REP-07001: Data providers endpoint: Get data providers (includes instance properties and supported runtime parameters)
 
 // TODO: REP-08001: Data provider instances endpoint: Register or update data provider instance (including properties)
 // TODO: REP-08002: Data provider instances endpoint: Get data provider instances
