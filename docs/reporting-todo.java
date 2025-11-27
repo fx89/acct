@@ -19,7 +19,7 @@
 // TODO: REP-05001: Privileges
 
 // DONE: REP-06001: Reporting backend: Report compiler
-// TODO: REP-06002: Reporting backend: Currency history data provider
+// DONE: REP-06002: Reporting backend: Currency history data provider
 // TODO: REP-06002: Reporting backend: Catalog items data provider
 // TODO: REP-06002: Reporting backend: Workspace SQL data provider
 

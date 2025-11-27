@@ -54,6 +54,23 @@ public interface AcctMonitoredCurrencyRecordsRepository {
      *
      * @param monitoredCurrency the referenced monitored currency
      */
-    Collection<AcctMonitoredCurrencyRecord> findAllByMonitoredCurrency(AcctMonitoredCurrency monitoredCurrency);
+    Collection<AcctMonitoredCurrencyRecord> findAllByMonitoredCurrency(
+        AcctMonitoredCurrency monitoredCurrency
+    );
+
+    /**
+     * Returns a collection of all the {@link AcctMonitoredCurrencyRecord records}
+     * of the referenced monitored currency that lie within the time interval defined
+     * by the given start date and the given end date
+     *
+     * @param monitoredCurrency the referenced monitored currency
+     * @param startDate         the given start date
+     * @param endDate           the given end date
+     */
+    Collection<AcctMonitoredCurrencyRecord> findAllByMonitoredCurrencyAndMonitoredCurrencyRecordDateBetween(
+        AcctMonitoredCurrency monitoredCurrency,
+        Instant startDate,
+        Instant endDate
+    );
 
 }

@@ -65,4 +65,18 @@ public class InMemoryAcctMonitoredCurrencyRecordsRepository implements AcctMonit
                 .toList();
     }
 
+    @Override
+    public Collection<AcctMonitoredCurrencyRecord> findAllByMonitoredCurrencyAndMonitoredCurrencyRecordDateBetween(
+        AcctMonitoredCurrency monitoredCurrency,
+        Instant startDate,
+        Instant endDate
+    ) {
+        return
+            records.stream()
+                .filter(r -> Objects.equals(monitoredCurrency, r.getMonitoredCurrency()))
+                .filter(r -> r.getMonitoredCurrencyRecordDate().isAfter(startDate))
+                .filter(r -> r.getMonitoredCurrencyRecordDate().isBefore(endDate))
+                .toList();
+    }
+
 }

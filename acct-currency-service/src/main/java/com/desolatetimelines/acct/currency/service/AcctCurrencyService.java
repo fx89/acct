@@ -16,6 +16,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -211,6 +212,36 @@ public class AcctCurrencyService {
         // Get the records, sort and return
         return
             dataService.findMonitoredCurrencyRecordsByMonitoredCurrency(monitoredCurrency)
+                .stream()
+                .sorted(Comparator.comparing(AcctMonitoredCurrencyRecord::getMonitoredCurrencyRecordDate))
+                .toList();
+    }
+
+    /**
+     * Returns a collection of all the available {@link AcctMonitoredCurrencyRecord monitored currency
+     * records} for the currency with the given monitored currency UUID that lie within the time interval
+     * defined by the given start date and the given end date, sorted by
+     * {@link AcctMonitoredCurrencyRecord#getMonitoredCurrencyRecordDate() record date}
+     *
+     * @param monitoredCurrencyUUID the given monitored currency UUID
+     * @param startDate             the given start date
+     * @param endDate               the given end date
+     */
+    public Collection<AcctMonitoredCurrencyRecord> getMonitoredCurrencyRecordsBetweenDatesSortedByDate(
+        String monitoredCurrencyUUID,
+        Instant startDate,
+        Instant endDate
+    ) {
+        // Attempt to find the monitored currency or throw an exception if not found
+        final AcctMonitoredCurrency monitoredCurrency = findMonitoredCurrencyOrFail(monitoredCurrencyUUID);
+
+        // Get the records, sort and return
+        return
+            dataService.findMonitoredCurrencyRecordsBetweenDatesByMonitoredCurrency(
+                    monitoredCurrency,
+                    startDate,
+                    endDate
+                )
                 .stream()
                 .sorted(Comparator.comparing(AcctMonitoredCurrencyRecord::getMonitoredCurrencyRecordDate))
                 .toList();

@@ -77,4 +77,21 @@ public class SpringJpaAcctMonitoredCurrencyRecordsRepository implements AcctMoni
                 .toList();
 
     }
+
+    @Override
+    public Collection<AcctMonitoredCurrencyRecord> findAllByMonitoredCurrencyAndMonitoredCurrencyRecordDateBetween(
+        AcctMonitoredCurrency monitoredCurrency,
+        Instant startDate,
+        Instant endDate
+    ) {
+        return
+            jpaAcctMonitoredCurrencyRecordsRepository.findAllByMonitoredCurrencyAndMonitoredCurrencyRecordDateBetween(
+                    doWithJpaAcctMonitoredCurrencyReturning(monitoredCurrency, identity()),
+                    startDate,
+                    endDate
+                )
+                .stream()
+                .map(jpaAcctMonitoredCurrencyRecord -> (AcctMonitoredCurrencyRecord) jpaAcctMonitoredCurrencyRecord)
+                .toList();
+    }
 }

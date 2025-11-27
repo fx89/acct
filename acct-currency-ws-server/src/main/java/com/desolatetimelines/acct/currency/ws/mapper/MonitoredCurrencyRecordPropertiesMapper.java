@@ -22,7 +22,7 @@ public abstract class MonitoredCurrencyRecordPropertiesMapper {
                 .build();
     }
 
-    public static Collection<MonitoredCurrencyRecordProperties> fromCollectionOfAcctMonitoredCurrencyRecord(
+    public static Collection<MonitoredCurrencyRecordProperties> fromCollectionOfAcctMonitoredCurrencyRecords(
         Collection<AcctMonitoredCurrencyRecord> acctMonitoredCurrencyRecord
     ) {
         return

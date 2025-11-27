@@ -3,6 +3,7 @@ package com.desolatetimelines.acct.currency.ws.endpoint;
 import com.desolatetimelines.acct.currency.ws.model.*;
 
 import java.util.Collection;
+import java.util.Date;
 
 /**
  * Defines operations that are supported by the Currency service for monitored currencies
@@ -40,6 +41,21 @@ public interface MonitoredCurrenciesEndpoint {
      * @param monitoredCurrencyUUID the given monitored currency UUID
      */
     Collection<MonitoredCurrencyRecordProperties> getMonitoredCurrencyRecords(String monitoredCurrencyUUID);
+
+    /**
+     * Returns the monitored currency records for the monitored currency identified by the given monitored
+     * currency UUID within the time interval defined by the given start date and the given end date,
+     * sorted by {@link MonitoredCurrencyRecordProperties#monitoredCurrencyRecordDate() record date}
+     *
+     * @param monitoredCurrencyUUID the given monitored currency UUID
+     * @param startDate             the given start date
+     * @param endDate               the given end date
+     */
+    Collection<MonitoredCurrencyRecordProperties> getMonitoredCurrencyRecordsBetweenDates(
+        String monitoredCurrencyUUID,
+        Date startDate,
+        Date endDate
+    );
 
     /**
      * Deletes the monitored currency with the given monitored currency UUID

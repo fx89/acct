@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Optional;
 
 /**
@@ -162,6 +163,28 @@ public class AcctCurrencyDataService {
         AcctMonitoredCurrency monitoredCurrency
     ) {
         return monitoredCurrencyRecordsRepository.findAllByMonitoredCurrency(monitoredCurrency);
+    }
+
+    /**
+     * Returns a collection of all the {@link AcctMonitoredCurrencyRecord records}
+     * of the referenced monitored currency that lie within the time interval defined
+     * by the given start date and the given end date
+     *
+     * @param monitoredCurrency the referenced monitored currency
+     * @param startDate         the given start date
+     * @param endDate           the given end date
+     */
+    public Collection<AcctMonitoredCurrencyRecord> findMonitoredCurrencyRecordsBetweenDatesByMonitoredCurrency(
+        AcctMonitoredCurrency monitoredCurrency,
+        Instant startDate,
+        Instant endDate
+    ) {
+        return
+            monitoredCurrencyRecordsRepository.findAllByMonitoredCurrencyAndMonitoredCurrencyRecordDateBetween(
+                monitoredCurrency,
+                startDate,
+                endDate
+            );
     }
 
     /**

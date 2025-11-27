@@ -17,4 +17,10 @@ public interface JpaAcctMonitoredCurrencyRecordsRepository extends CrudRepositor
         JpaAcctMonitoredCurrency monitoredCurrency
     );
 
+    Collection<JpaAcctMonitoredCurrencyRecord> findAllByMonitoredCurrencyAndMonitoredCurrencyRecordDateBetween(
+        JpaAcctMonitoredCurrency monitoredCurrency,
+        Instant startDate,
+        Instant endDate
+    );
+
 }

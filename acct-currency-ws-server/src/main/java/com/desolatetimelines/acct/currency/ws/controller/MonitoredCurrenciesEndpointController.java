@@ -4,15 +4,17 @@ package com.desolatetimelines.acct.currency.ws.controller;
 import com.desolatetimelines.acct.currency.service.AcctCurrencyService;
 import com.desolatetimelines.acct.currency.ws.endpoint.MonitoredCurrenciesEndpoint;
 import com.desolatetimelines.acct.currency.ws.model.*;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.Date;
 
 import static com.desolatetimelines.acct.currency.privilegesprovider.model.CurrencyPrivilegeIds.*;
 import static com.desolatetimelines.acct.currency.ws.mapper.MonitoredCurrencyCollectorsMapper.fromMapOfStringAndCurrencyCollectorService;
 import static com.desolatetimelines.acct.currency.ws.mapper.MonitoredCurrencyPropertiesMapper.fromCollectionOfAcctMonitoredCurrencies;
-import static com.desolatetimelines.acct.currency.ws.mapper.MonitoredCurrencyRecordPropertiesMapper.fromCollectionOfAcctMonitoredCurrencyRecord;
+import static com.desolatetimelines.acct.currency.ws.mapper.MonitoredCurrencyRecordPropertiesMapper.fromCollectionOfAcctMonitoredCurrencyRecords;
 import static com.desolatetimelines.acct.currency.ws.mapper.MonitoredCurrencyRecordPropertiesMapper.toCollectionOfMonitoredCurrencyRecord;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -71,8 +73,26 @@ public class MonitoredCurrenciesEndpointController implements MonitoredCurrencie
         @RequestParam(name = "monitoredCurrencyUUID") String monitoredCurrencyUUID
     ) {
         return
-            fromCollectionOfAcctMonitoredCurrencyRecord(
+            fromCollectionOfAcctMonitoredCurrencyRecords(
                 currencyService.getMonitoredCurrencyRecordsSortedByDate(monitoredCurrencyUUID)
+            );
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + MONITORED_CURRENCY_RECORDS_READ + "')")
+    @GetMapping(value = "/records/interval", produces = APPLICATION_JSON_VALUE)
+    public Collection<MonitoredCurrencyRecordProperties> getMonitoredCurrencyRecordsBetweenDates(
+        @RequestParam(name = "monitoredCurrencyUUID") String monitoredCurrencyUUID,
+        @RequestParam(name = "startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
+        @RequestParam(name = "endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate
+    ) {
+        return
+            fromCollectionOfAcctMonitoredCurrencyRecords(
+                currencyService.getMonitoredCurrencyRecordsBetweenDatesSortedByDate(
+                    monitoredCurrencyUUID,
+                    startDate.toInstant(),
+                    endDate.toInstant()
+                )
             );
     }
 
