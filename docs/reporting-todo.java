@@ -20,7 +20,7 @@
 
 // DONE: REP-06001: Reporting backend: Report compiler
 // DONE: REP-06002: Reporting backend: Currency history data provider
-// TODO: REP-06002: Reporting backend: Catalog items data provider
+// DONE: REP-06002: Reporting backend: Catalog items data provider
 // TODO: REP-06002: Reporting backend: Workspace SQL data provider
 
 // DONE: REP-07001: Data providers endpoint: Get data providers (includes instance properties and supported runtime parameters)
