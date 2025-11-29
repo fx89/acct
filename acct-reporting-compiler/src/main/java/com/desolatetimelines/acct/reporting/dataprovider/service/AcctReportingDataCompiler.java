@@ -8,8 +8,9 @@ import org.springframework.stereotype.Service;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Stream;
 
-import static com.desolatetimelines.acct.reporting.dataprovider.AcctReportingDataProviderDataSetColumnDataTypeMapper.toSQLiteDataTypeName;
+import static com.desolatetimelines.acct.reporting.dataprovider.mapper.AcctReportingDataProviderDataSetColumnDataTypeMapper.toSQLiteDataTypeName;
 import static java.util.stream.Collectors.*;
 
 /**
@@ -113,14 +114,30 @@ public class AcctReportingDataCompiler {
                 .collect(toSet());
     }
 
-    public Set<AcctReportingDataProviderReportParameterSpec> getReportParameters(Set<UUID> dataProviderUUIDs) {
-        // TODO: Maybe throw an exception if one or more data provider UUID is not supported by any of the serviceProvidersByDataProviderUUIDs ?
-        return
+    public Set<AcctReportingDataProviderReportParameterSpec> getReportParameters(
+        Set<DataProviderInstanceSpecification> dataProviderInstances
+    ) {
+        // Get the set of data provider UUIDs
+        final Set<UUID> dataProviderUUIDs =
+            dataProviderInstances.stream()
+                .map(DataProviderInstanceSpecification::dataProviderUUID)
+                .collect(toSet());
+
+        // Get the report parameters specified by the data providers
+        final Stream<AcctReportingDataProviderReportParameterSpec> baseParameters =
             serviceProvidersByDataProviderUUID.values().stream()
                 .flatMap(sp -> sp.getSupportedDataProviderIds().stream())
                 .filter(id -> dataProviderUUIDs.contains(id.uuid()))
-                .flatMap(id -> id.parameters().stream())
-                .collect(toSet());
+                .flatMap(id -> id.parameters().stream());
+
+        // Get the instance-specific report parameters
+        final Stream<AcctReportingDataProviderReportParameterSpec> instanceSpecificReportParameters =
+            dataProviderInstances.stream()
+                .map(DataProviderInstanceSpecification::additionalRuntimeParameters)
+                .flatMap(Set::stream);
+
+        // Combine the two data sets and return a reference to the combined data set
+        return Stream.concat(baseParameters, instanceSpecificReportParameters).collect(toSet());
     }
 
     public AcctReportingDataProviderDataSet compileReport(ReportCompilationRequest request) {
@@ -153,7 +170,7 @@ public class AcctReportingDataCompiler {
         validateRequestMandatoryInstanceProperties(request);
         validateRequestInstancePropertyDataTypes(request);
         validateRequestMandatoryRuntimeParameters(request);
-        validateRequestRuntimeParamterDataTypes(request);
+        validateRequestRuntimeParameterDataTypes(request);
     }
 
     private AbstractAcctReportingDataProviderServiceProvider findServiceProviderByDataProviderUUID(
@@ -273,7 +290,7 @@ public class AcctReportingDataCompiler {
         }
     }
 
-    private void validateRequestRuntimeParamterDataTypes(ReportCompilationRequest request) {
+    private void validateRequestRuntimeParameterDataTypes(ReportCompilationRequest request) {
         // For each instance
         request.dataProviderInstances().forEach(instance -> {
             // Get the referred instance or throw an exception

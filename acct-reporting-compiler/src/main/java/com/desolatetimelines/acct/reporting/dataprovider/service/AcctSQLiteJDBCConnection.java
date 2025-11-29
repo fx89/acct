@@ -12,7 +12,7 @@ import java.util.LinkedHashSet;
 import java.util.UUID;
 
 import static com.desolatetimelines.acct.common.utils.JDBCUtils.resultSetToDataArray;
-import static com.desolatetimelines.acct.reporting.dataprovider.AcctReportingDataProviderDataSetColumnDataTypeMapper.fromJdbcColumnType;
+import static com.desolatetimelines.acct.reporting.dataprovider.utils.ResultSetUtils.getColumnsFromResultSet;
 
 /**
  * Boiler-plating for in-memory data crunching using SQLite with the following
@@ -110,27 +110,6 @@ public class AcctSQLiteJDBCConnection implements AutoCloseable {
                 e
             );
         }
-    }
-
-    private static LinkedHashSet<AcctReportingDataProviderDataSetColumn> getColumnsFromResultSet(
-        ResultSet resultSet
-    ) throws SQLException {
-        // Create the columns set
-        final LinkedHashSet<AcctReportingDataProviderDataSetColumn> columns =
-            new LinkedHashSet<>(resultSet.getMetaData().getColumnCount());
-
-        // Populate the columns set from the meta-data in the result set
-        for (int c = 1; c <= resultSet.getMetaData().getColumnCount(); c++) {
-            columns.add(
-                new AcctReportingDataProviderDataSetColumn(
-                    resultSet.getMetaData().getColumnLabel(c),
-                    fromJdbcColumnType(resultSet.getMetaData().getColumnType(c))
-                )
-            );
-        }
-
-        // Return a reference to the populated columns set
-        return columns;
     }
 
     /**

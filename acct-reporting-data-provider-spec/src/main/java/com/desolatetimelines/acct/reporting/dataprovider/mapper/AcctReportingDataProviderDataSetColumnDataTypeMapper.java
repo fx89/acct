@@ -1,4 +1,4 @@
-package com.desolatetimelines.acct.reporting.dataprovider;
+package com.desolatetimelines.acct.reporting.dataprovider.mapper;
 
 import com.desolatetimelines.acct.reporting.dataprovider.model.AcctReportingDataProviderDataSetColumnDataType;
 

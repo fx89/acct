@@ -130,6 +130,7 @@
         <module>acct-reporting-data-provider-spec-redist-model</module>
         <module>acct-reporting-data-provider-currency-history</module>
         <module>acct-reporting-data-provider-catalog-items</module>
+        <module>acct-reporting-data-provider-workspace-sql</module>
 
         <!-- Catalog -->
         <module>acct-catalog-ws-spec</module>

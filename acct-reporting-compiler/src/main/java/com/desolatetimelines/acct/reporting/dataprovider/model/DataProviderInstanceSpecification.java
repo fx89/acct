@@ -3,10 +3,7 @@ package com.desolatetimelines.acct.reporting.dataprovider.model;
 import com.desolatetimelines.acct.reporting.dataprovider.service.AcctReportingDataCompiler;
 import com.desolatetimelines.acct.reporting.dataprovider.service.AcctReportingDataProvider;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 import static com.desolatetimelines.acct.common.utils.ValidationUtils.throwIfNull;
 import static com.desolatetimelines.acct.common.utils.ValidationUtils.throwIfNullOrEmpty;
@@ -27,11 +24,14 @@ import static com.desolatetimelines.acct.common.utils.ValidationUtils.throwIfNul
  *                                       provider.
  * @param dataProviderInstanceProperties The properties to be put into the data provider instance when it is
  *                                       initialized.
+ * @param additionalRuntimeParameters    Allows the specification of instance-specific runtime parameters that
+ *                                       are applied alongside the ones specified by the data provider.
  */
 public record DataProviderInstanceSpecification(
     String instanceName,
     UUID dataProviderUUID,
-    Map<String, String> dataProviderInstanceProperties
+    Map<String, String> dataProviderInstanceProperties,
+    Set<AcctReportingDataProviderReportParameterSpec> additionalRuntimeParameters
 ) {
     public static DataProviderInstanceSpecificationBuilder builder() {
         return new DataProviderInstanceSpecificationBuilder();
@@ -63,6 +63,7 @@ public record DataProviderInstanceSpecification(
         private String instanceName;
         private UUID dataProviderUUID;
         private final Map<String, String> dataProviderInstanceProperties = new HashMap<>();
+        private final Set<AcctReportingDataProviderReportParameterSpec> additionalParameters = new HashSet<>();
 
         /**
          * Sets the {@link DataProviderInstanceSpecification#instanceName() instance name}.
@@ -101,6 +102,28 @@ public record DataProviderInstanceSpecification(
         }
 
         /**
+         * Adds a runtime parameter to the data provider instance to be built. If the parameter
+         * was already added, then the old parameter instance is replaced by the new one.
+         */
+        public DataProviderInstanceSpecificationBuilder withAdditionalParameter(
+            AcctReportingDataProviderReportParameterSpec additionalParameter
+        ) {
+            additionalParameters.add(additionalParameter);
+            return this;
+        }
+
+        /**
+         * Adds a set of runtime parameters to the data provider instance to be built. If any parameter
+         * was already added, then the old parameter instance is replaced by the new one.
+         */
+        public DataProviderInstanceSpecificationBuilder withAdditionalParameters(
+            Set<AcctReportingDataProviderReportParameterSpec> additionalParameters
+        ) {
+            this.additionalParameters.addAll(additionalParameters);
+            return this;
+        }
+
+        /**
          * Creates a new {@link DataProviderInstanceSpecification} instance, runs the validation and
          * returns a reference to the newly created instance.
          */
@@ -109,7 +132,8 @@ public record DataProviderInstanceSpecification(
                 new DataProviderInstanceSpecification(
                     instanceName,
                     dataProviderUUID,
-                    dataProviderInstanceProperties
+                    dataProviderInstanceProperties,
+                    additionalParameters
                 );
 
             DataProviderInstanceSpecification.validate(dataProviderInstanceSpecification);
