@@ -1,0 +1,40 @@
+package com.desolatetimelines.acct.reporting.ws.controller;
+
+import com.desolatetimelines.acct.reporting.service.AcctReportingService;
+import com.desolatetimelines.acct.reporting.ws.endpoint.DataProviderInstancesEndpoint;
+import com.desolatetimelines.acct.reporting.ws.model.DataProviderInstanceProperties;
+import com.desolatetimelines.acct.reporting.ws.model.DataProviderInstanceUUIDResponse;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import static com.desolatetimelines.acct.reporting.privilegesprovider.model.ReportingPrivilegeIds.DATA_PROVIDER_INSTANCES_SAVE;
+import static com.desolatetimelines.acct.reporting.ws.mapper.DataProviderInstanceDetailsMapper.fromDataProviderInstanceProperties;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
+@RestController
+@RequestMapping("/dataProviderInstances")
+public class DataProviderInstancesEndpointController implements DataProviderInstancesEndpoint {
+
+    private final AcctReportingService reportingService;
+
+    public DataProviderInstancesEndpointController(AcctReportingService reportingService) {
+        this.reportingService = reportingService;
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + DATA_PROVIDER_INSTANCES_SAVE + "')")
+    @PostMapping(value = "", produces = APPLICATION_JSON_VALUE)
+    public DataProviderInstanceUUIDResponse saveDataProviderInstance(
+        @RequestParam(name = "dataProviderInstanceUUID", required = false) String dataProviderInstanceUUID,
+        @RequestBody DataProviderInstanceProperties dataProviderInstanceProperties
+    ) {
+        return
+            new DataProviderInstanceUUIDResponse(
+                reportingService.saveDataProviderInstance(
+                    dataProviderInstanceUUID,
+                    fromDataProviderInstanceProperties(dataProviderInstanceProperties)
+                )
+            );
+    }
+
+}

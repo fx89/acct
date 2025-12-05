@@ -31,6 +31,14 @@ public class AcctReportingServiceNotFoundException extends AcctReportingServiceE
             return errors.RESOURCE_NOT_FOUND_DASHBOARD;
         }
 
+        if (ObjectTypes.DATA_PROVIDER == resourceType) {
+            return errors.RESOURCE_NOT_FOUND_DATA_PROVIDER;
+        }
+        if (ObjectTypes.DATA_PROVIDER_INSTANCE == resourceType) {
+            return errors.RESOURCE_NOT_FOUND_DATA_PROVIDER_INSTANCE;
+        }
+
+
         throw new IllegalStateException(
             "Developer forgot to add the code that handles the resource type " +
                 (resourceType == null ? "null" : resourceType.name())

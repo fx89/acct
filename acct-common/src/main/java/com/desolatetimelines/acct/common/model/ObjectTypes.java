@@ -21,6 +21,8 @@ public enum ObjectTypes {
 
     DASHBOARD,
     REPORT,
+    DATA_PROVIDER,
+    DATA_PROVIDER_INSTANCE,
 
     JOB
 }

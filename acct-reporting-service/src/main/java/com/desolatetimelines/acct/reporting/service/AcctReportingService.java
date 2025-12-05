@@ -4,12 +4,11 @@ import com.desolatetimelines.acct.common.model.ObjectTypes;
 import com.desolatetimelines.acct.reporting.data.service.AcctReportingDataService;
 import com.desolatetimelines.acct.reporting.dataprovider.model.AcctReportingDataProviderId;
 import com.desolatetimelines.acct.reporting.dataprovider.service.AcctReportingDataCompiler;
+import com.desolatetimelines.acct.reporting.exception.AcctReportingServiceException;
 import com.desolatetimelines.acct.reporting.exception.AcctReportingServiceNotFoundException;
 import com.desolatetimelines.acct.reporting.exception.AcctReportingServiceSecurityException;
 import com.desolatetimelines.acct.reporting.mapper.DashboardReadablePropertiesMapper;
-import com.desolatetimelines.acct.reporting.model.AcctDashboard;
-import com.desolatetimelines.acct.reporting.model.DashboardDetails;
-import com.desolatetimelines.acct.reporting.model.DashboardsContainer;
+import com.desolatetimelines.acct.reporting.model.*;
 import com.desolatetimelines.acct.security.client.data.AcctSecurityClientService;
 import com.desolatetimelines.acct.security.client.model.ResourceType;
 import com.desolatetimelines.acct.security.client.model.UserResourceAccessRights;
@@ -25,8 +24,10 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
-import static com.desolatetimelines.acct.common.model.ObjectTypes.DASHBOARD;
+import static com.desolatetimelines.acct.common.model.ObjectTypes.*;
+import static com.desolatetimelines.acct.reporting.mapper.AcctDataProviderInstanceRuntimeParameterDataTypeMapper.fromDataProviderParameterDataType;
 import static com.desolatetimelines.acct.reporting.privilegesprovider.model.ReportingPrivilegeIds.DASHBOARDS_DELETE_GROUP;
 
 /**
@@ -287,6 +288,128 @@ public class AcctReportingService {
      */
     public Set<AcctReportingDataProviderId> getDataProviders() {
         return reportCompiler.getDataProviderIds();
+    }
+
+    /**
+     * Creates a new {@link AcctDataProviderInstance data provider instance} or updates an existing one.
+     *
+     * @param dataProviderInstanceUUID    The UUID that identifies the data provider instance to be updated.
+     *                                    If this parameter is missing, a new data provider instance is created.
+     * @param dataProviderInstanceDetails Container for the attributes of the data provider instance,
+     *                                    including {@link AcctDataProviderInstanceProperty instance properties}
+     *                                    and {@link AcctDataProviderInstanceRuntimeParameter runtime parameters}.
+     *                                    In case an existing data provider instance is updated, any existing
+     *                                    instance properties or runtime parameters are removed and replaced
+     *                                    by the ones contained here.
+     * @return the UUID of the persisted data provider instance.
+     */
+    @Transactional
+    public String saveDataProviderInstance(
+        String dataProviderInstanceUUID,
+        DataProviderInstanceDetails dataProviderInstanceDetails
+    ) {
+        // Make sure the referenced data provider exists before registering an instance
+        final AcctReportingDataProviderId dataProviderId =
+            getDataProviders().stream()
+                .filter(dpId ->
+                    Objects.equals(
+                        dpId.uuid().toString(),
+                        dataProviderInstanceDetails.dataProviderUUID()
+                    )
+                )
+                .findFirst()
+                .orElseThrow(() -> new AcctReportingServiceNotFoundException(
+                    errors, DATA_PROVIDER, dataProviderInstanceDetails.dataProviderUUID()
+                ));
+
+        // Make sure all the instance properties have been provided with values
+        final Set<String> suppliedInstancePropertyNames =
+            dataProviderInstanceDetails.instanceProperties().stream()
+                .map(DataProviderInstanceDetails.DataProviderInstanceProperty::propertyName)
+                .collect(Collectors.toSet());
+
+        if (!dataProviderId.instanceProperties().stream()
+            .allMatch(p -> suppliedInstancePropertyNames.contains(p.name()))
+        ) {
+            throw new AcctReportingServiceException(errors.DATA_PROVIDER_INSTANCE_PROPERTY_NOT_SUPPLIED);
+        }
+
+        // If the data provider instance UUID was supplied, then find it in the database
+        // or fail if not found. If the data provider instance UUID was not supplied, then
+        // create a new data provider instance.
+        final AcctDataProviderInstance dataProviderInstance =
+            Optional
+                .ofNullable(dataProviderInstanceUUID)
+                .map(uuid ->
+                    dataService.findDataProviderInstanceByDataProviderInstanceUUID(uuid)
+                        .orElseThrow(() -> new AcctReportingServiceNotFoundException(errors, DATA_PROVIDER_INSTANCE, uuid))
+                )
+                .orElseGet(() -> {
+                    final AcctDataProviderInstance newInstance = dataService.createNewDataProviderInstance();
+                    newInstance.setDataProviderInstanceUUID(UUID.randomUUID().toString());
+                    return newInstance;
+                });
+
+
+        // Set the properties
+        dataProviderInstance.setDataProviderInstanceName(dataProviderInstanceDetails.name());
+        dataProviderInstance.setDataProviderUUID(dataProviderInstanceDetails.dataProviderUUID());
+
+        // Save the data provider instance
+        final AcctDataProviderInstance savedDataProviderInstance =
+            dataService.saveDataProviderInstance(dataProviderInstance);
+
+        // Fetch any existing data provider instance properties
+        final Set<AcctDataProviderInstanceProperty> existingInstanceProperties =
+            dataService.findAllDataProviderInstancePropertiesByDataProviderInstance(
+                savedDataProviderInstance
+            );
+
+        // Fetch any existing data provider instance runtime parameters
+        final Set<AcctDataProviderInstanceRuntimeParameter> existingRuntimeParameters =
+            dataService.findAllDataProviderInstanceRuntimeParametersByDataProviderInstance(
+                savedDataProviderInstance
+            );
+
+        // Create or update the instance properties for the data provider instance
+        dataProviderInstanceDetails.instanceProperties().forEach(instanceProperty -> {
+            final AcctDataProviderInstanceProperty storedInstanceProperty =
+                existingInstanceProperties.stream()
+                    .filter(p -> Objects.equals(p.getPropertyName(), instanceProperty.propertyName()))
+                    .findFirst()
+                    .orElseGet(dataService::createNewDataProviderInstanceProperty);
+
+            storedInstanceProperty.setDataProviderInstance(savedDataProviderInstance);
+            storedInstanceProperty.setPropertyName(instanceProperty.propertyName());
+            storedInstanceProperty.setPropertyValue(instanceProperty.propertyValue());
+
+            dataService.saveDataProviderInstanceProperty(storedInstanceProperty);
+        });
+
+        // Create or update the runtime parameters for the data provider instance
+        dataProviderInstanceDetails.runtimeParameters().forEach(runtimeParameter -> {
+            final AcctDataProviderInstanceRuntimeParameter storedRuntimeParameter =
+                existingRuntimeParameters.stream()
+                    .filter(p -> Objects.equals(p.getParameterName(), runtimeParameter.parameterName()))
+                    .findFirst()
+                    .orElseGet(dataService::createNewDataProviderInstanceRuntimeParameter);
+
+            storedRuntimeParameter.setDataProviderInstance(savedDataProviderInstance);
+            storedRuntimeParameter.setParameterName(runtimeParameter.parameterName());
+            storedRuntimeParameter.setParameterDefaultValue(runtimeParameter.parameterDefaultValue());
+            storedRuntimeParameter.setMandatory(runtimeParameter.mandatory());
+            storedRuntimeParameter.setParameterDataType(fromDataProviderParameterDataType(runtimeParameter.parameterDataType()));
+
+            dataService.saveDataProviderInstanceRuntimeParameter(storedRuntimeParameter);
+        });
+
+        // Delete any runtime parameters that have not been supplied in the request
+        existingRuntimeParameters.stream()
+            .filter(p -> dataProviderInstanceDetails.runtimeParameters().stream().noneMatch(sp -> Objects.equals(sp.parameterName(), p.getParameterName())))
+            .forEach(dataService::deleteDataProviderInstanceRuntimeParameter);
+
+        // Return the UUID of the saved data provider instance
+        return savedDataProviderInstance.getDataProviderInstanceUUID();
     }
 
 }

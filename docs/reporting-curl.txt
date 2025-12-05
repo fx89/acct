@@ -90,3 +90,140 @@ curl \
     -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
     -X GET 'http://localhost:8088/service/reporting/v1/dataProviders' \
     | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X POST 'http://localhost:8088/service/reporting/v1/dataProviderInstances' \
+    --data-raw '
+        {
+            "instanceName": "My Workspace SQL Data Provider Instance",
+            "dataProviderUUID": "726151dd-23d0-47cd-8692-994a39b33c43",
+            "instanceProperties": [
+            ],
+            "runtimeParameters": [
+            ]
+        }
+    ' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X POST 'http://localhost:8088/service/reporting/v1/dataProviderInstances' \
+    --data-raw '
+        {
+            "instanceName": "My Workspace SQL Data Provider Instance",
+            "dataProviderUUID": "726151dd-23d0-47cd-8692-994c39b33c43",
+            "instanceProperties": [
+                {
+                    "propertyName": "sql",
+                    "propertyValue": "SELECT 1 test_field"
+                }
+            ],
+            "runtimeParameters": [
+            ]
+        }
+    ' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X POST 'http://localhost:8088/service/reporting/v1/dataProviderInstances?dataProviderInstanceUUID=134c7e4e-88ef-4e12-b58b-99a4c4e258fe' \
+    --data-raw '
+        {
+            "instanceName": "My Workspace SQL Data Provider Instance",
+            "dataProviderUUID": "726151dd-23d0-47cd-8692-994c39b33c43",
+            "instanceProperties": [
+                {
+                    "propertyName": "sql",
+                    "propertyValue": "SELECT 1 test_field"
+                }
+            ],
+            "runtimeParameters": [
+                {
+                    "parameterName": "testNumericParam",
+                    "parameterDefaultValue": "10",
+                    "parameterDataType": "NUMERIC",
+                    "mandatory": true
+                },
+                {
+                    "parameterName": "testBooleanParam",
+                    "parameterDefaultValue": "true",
+                    "parameterDataType": "BOOLEAN",
+                    "mandatory": false
+                }
+            ]
+        }
+    ' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X POST 'http://localhost:8088/service/reporting/v1/dataProviderInstances?dataProviderInstanceUUID=8485e8f4-877f-4ab2-b364-d172654dcf6c' \
+    --data-raw '
+        {
+            "instanceName": "My Workspace SQL Data Provider Instance",
+            "dataProviderUUID": "726151dd-23d0-47cd-8692-994c39b33c43",
+            "instanceProperties": [
+                {
+                    "propertyName": "sql",
+                    "propertyValue": "SELECT 3 test_field"
+                }
+            ],
+            "runtimeParameters": [
+                {
+                    "parameterName": "testNumericParam",
+                    "parameterDefaultValue": "10",
+                    "parameterDataType": "NUMERIC",
+                    "mandatory": true
+                },
+                {
+                    "parameterName": "testBooleanParam",
+                    "parameterDefaultValue": "true",
+                    "parameterDataType": "BOOLEAN",
+                    "mandatory": false
+                }
+            ]
+        }
+    ' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X POST 'http://localhost:8088/service/reporting/v1/dataProviderInstances?dataProviderInstanceUUID=8485e8f4-877f-4ab2-b364-d172654dcf6c' \
+    --data-raw '
+        {
+            "instanceName": "My Workspace SQL Data Provider Instance",
+            "dataProviderUUID": "726151dd-23d0-47cd-8692-994c39b33c43",
+            "instanceProperties": [
+                {
+                    "propertyName": "sql",
+                    "propertyValue": "SELECT 4 test_field"
+                }
+            ],
+            "runtimeParameters": [
+                {
+                    "parameterName": "testStringParam",
+                    "parameterDefaultValue": "ten",
+                    "parameterDataType": "STRING",
+                    "mandatory": true
+                },
+                {
+                    "parameterName": "testBooleanParam",
+                    "parameterDefaultValue": "true",
+                    "parameterDataType": "BOOLEAN",
+                    "mandatory": false
+                }
+            ]
+        }
+    ' \
+    | jq

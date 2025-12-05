@@ -45,8 +45,15 @@ public enum ReportingPrivilege {
             .withPrivilegeName("Read data provider meta-data")
             .withPrivilegeDescription("Allows reading of the meta-data of reporting data providers")
             .build()
-    );
+    ),
 
+    DATA_PROVIDER_INSTANCES_SAVE(
+        AcctPrivilege.builder()
+            .withPrivilegeId(ReportingPrivilegeIds.DATA_PROVIDER_INSTANCES_SAVE)
+            .withPrivilegeName("Save data provider instance definitions")
+            .withPrivilegeDescription("Allows creating or updating data provider instance definitions")
+            .build()
+    );
 
     private final AcctPrivilege acctPrivilege;
 

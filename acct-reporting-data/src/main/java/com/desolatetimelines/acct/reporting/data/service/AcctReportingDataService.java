@@ -1,11 +1,18 @@
 package com.desolatetimelines.acct.reporting.data.service;
 
 import com.desolatetimelines.acct.reporting.model.AcctDashboard;
+import com.desolatetimelines.acct.reporting.model.AcctDataProviderInstance;
+import com.desolatetimelines.acct.reporting.model.AcctDataProviderInstanceProperty;
+import com.desolatetimelines.acct.reporting.model.AcctDataProviderInstanceRuntimeParameter;
 import com.desolatetimelines.acct.reporting.repository.AcctDashboardsRepository;
+import com.desolatetimelines.acct.reporting.repository.AcctDataProviderInstancePropertiesRepository;
+import com.desolatetimelines.acct.reporting.repository.AcctDataProviderInstanceRuntimeParametersRepository;
+import com.desolatetimelines.acct.reporting.repository.AcctDataProviderInstancesRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Facade for the ACCT Workspace data layer
@@ -15,10 +22,21 @@ public class AcctReportingDataService {
 
     private final AcctDashboardsRepository dashboardsRepository;
 
+    private final AcctDataProviderInstancesRepository dataProviderInstancesRepository;
+
+    private final AcctDataProviderInstanceRuntimeParametersRepository dataProviderInstanceRuntimeParametersRepository;
+
+    private final AcctDataProviderInstancePropertiesRepository dataProviderInstancePropertiesRepository;
+
     public AcctReportingDataService(
-        AcctDashboardsRepository dashboardsRepository
+        AcctDashboardsRepository dashboardsRepository,
+        AcctDataProviderInstancesRepository dataProviderInstancesRepository,
+        AcctDataProviderInstanceRuntimeParametersRepository dataProviderInstanceRuntimeParametersRepository, AcctDataProviderInstancePropertiesRepository dataProviderInstancePropertiesRepository
     ) {
         this.dashboardsRepository = dashboardsRepository;
+        this.dataProviderInstancesRepository = dataProviderInstancesRepository;
+        this.dataProviderInstanceRuntimeParametersRepository = dataProviderInstanceRuntimeParametersRepository;
+        this.dataProviderInstancePropertiesRepository = dataProviderInstancePropertiesRepository;
     }
 
     /**
@@ -93,4 +111,146 @@ public class AcctReportingDataService {
         dashboardsRepository.delete(dashboard);
     }
 
+    /**
+     * Creates a new {@link AcctDataProviderInstance data provider instance}
+     *
+     * @return a reference to the newly created data provider instance
+     */
+    public AcctDataProviderInstance createNewDataProviderInstance() {
+        return dataProviderInstancesRepository.createNew();
+    }
+
+    /**
+     * Retrieves the data provider instance with the given UUID. If no such instance exists, then an empty
+     * optional is returned.
+     *
+     * @param dataProviderInstanceUUID the given data provider instance UUID
+     * @return an {@link Optional} containing the data provider instance if found,
+     * otherwise an empty optional
+     */
+    public Optional<AcctDataProviderInstance> findDataProviderInstanceByDataProviderInstanceUUID(
+        String dataProviderInstanceUUID
+    ) {
+        return
+            dataProviderInstancesRepository.findFirstByDataProviderInstanceUUID(dataProviderInstanceUUID);
+    }
+
+    /**
+     * Persists the referenced data provider instance
+     *
+     * @param dataProviderInstance the referenced data provider instance
+     * @return a reference to the persisted data provider instance
+     */
+    public AcctDataProviderInstance saveDataProviderInstance(
+        AcctDataProviderInstance dataProviderInstance
+    ) {
+        return dataProviderInstancesRepository.save(dataProviderInstance);
+    }
+
+    /**
+     * Creates a new {@link AcctDataProviderInstanceProperty data provider instance property}
+     *
+     * @return a reference to the newly created data provider instance property
+     */
+    public AcctDataProviderInstanceProperty createNewDataProviderInstanceProperty() {
+        return dataProviderInstancePropertiesRepository.createNew();
+    }
+
+    /**
+     * Persists the referenced data provider instance property
+     *
+     * @param instanceProperty the referenced data provider instance property
+     * @return a reference to the persisted data provider instance property
+     */
+    @SuppressWarnings("UnusedReturnValue")
+    public AcctDataProviderInstanceProperty saveDataProviderInstanceProperty(
+        AcctDataProviderInstanceProperty instanceProperty
+    ) {
+        return dataProviderInstancePropertiesRepository.save(instanceProperty);
+    }
+
+    /**
+     * Returns a set of all {@link AcctDataProviderInstanceProperty instance properties} that are linked
+     * to the referenced {@link AcctDataProviderInstance data provider instance}.
+     *
+     * @param dataProviderInstance Reference to the data provider instance that contains the properties
+     *                             to be fetched.
+     */
+    public Set<AcctDataProviderInstanceProperty> findAllDataProviderInstancePropertiesByDataProviderInstance(
+        AcctDataProviderInstance dataProviderInstance
+    ) {
+        return dataProviderInstancePropertiesRepository.findAllByDataProviderInstance(dataProviderInstance);
+    }
+
+    /**
+     * Deletes all of the
+     * {@link com.desolatetimelines.acct.reporting.model.AcctDataProviderInstanceProperty instance properties}
+     * that are linked to the referenced {@link AcctDataProviderInstance data provider instance}.
+     *
+     * @param dataProviderInstance reference to the data provider instance from which the properties are removed.
+     */
+    public void deleteDataProviderInstancePropertiesByDataProviderInstance(
+        AcctDataProviderInstance dataProviderInstance
+    ) {
+        dataProviderInstancePropertiesRepository.deleteByDataProviderInstance(dataProviderInstance);
+    }
+
+    /**
+     * Creates a new {@link AcctDataProviderInstanceRuntimeParameter data provider instance runtime parameter}
+     *
+     * @return a reference to the newly created data provider instance runtime parameter
+     */
+    public AcctDataProviderInstanceRuntimeParameter createNewDataProviderInstanceRuntimeParameter() {
+        return dataProviderInstanceRuntimeParametersRepository.createNew();
+    }
+
+    /**
+     * Persists the referenced data provider instance runtime parameter
+     *
+     * @param runtimeParameter the referenced data provider instance runtime parameter
+     * @return a reference to the persisted data provider instance runtime parameter
+     */
+    @SuppressWarnings("UnusedReturnValue")
+    public AcctDataProviderInstanceRuntimeParameter saveDataProviderInstanceRuntimeParameter(
+        AcctDataProviderInstanceRuntimeParameter runtimeParameter
+    ) {
+        return dataProviderInstanceRuntimeParametersRepository.save(runtimeParameter);
+    }
+
+    /**
+     * Returns a set of all {@link AcctDataProviderInstanceRuntimeParameter runtime parameters} that
+     * are linked to the referenced {@link AcctDataProviderInstance data provider instance}.
+     *
+     * @param dataProviderInstance Reference to the data provider instance that contains the runtime
+     *                             parameters to be fetched.
+     */
+    public Set<AcctDataProviderInstanceRuntimeParameter> findAllDataProviderInstanceRuntimeParametersByDataProviderInstance(
+        AcctDataProviderInstance dataProviderInstance
+    ) {
+        return dataProviderInstanceRuntimeParametersRepository.findAllByDataProviderInstance(dataProviderInstance);
+    }
+
+    /**
+     * Deletes all of the
+     * {@link AcctDataProviderInstanceRuntimeParameter runtime parameters} that are linked to the referenced
+     * {@link AcctDataProviderInstance data provider instance}.
+     *
+     * @param dataProviderInstance reference to the data provider instance from which the properties are removed.
+     */
+    public void deleteDataProviderInstanceRuntimeParametersByDataProviderInstance(
+        AcctDataProviderInstance dataProviderInstance
+    ) {
+        dataProviderInstanceRuntimeParametersRepository.deleteByDataProviderInstance(dataProviderInstance);
+    }
+
+    /**
+     * Deletes the referenced {@link AcctDataProviderInstanceRuntimeParameter data provider instance runtime parameter}.
+     *
+     * @param runtimeParameter Reference to the data provider instance runtime parameter to be deleted.
+     */
+    public void deleteDataProviderInstanceRuntimeParameter(
+        AcctDataProviderInstanceRuntimeParameter runtimeParameter
+    ) {
+        dataProviderInstanceRuntimeParametersRepository.delete(runtimeParameter);
+    }
 }
