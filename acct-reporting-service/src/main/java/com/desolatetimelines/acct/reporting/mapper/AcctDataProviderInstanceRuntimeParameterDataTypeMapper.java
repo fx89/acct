@@ -21,6 +21,18 @@ public abstract class AcctDataProviderInstanceRuntimeParameterDataTypeMapper {
         };
     }
 
+    public static DataProviderInstanceDetails.DataProviderParameterDataType
+    toDataProviderParameterDataType(
+        AcctDataProviderInstanceRuntimeParameterDataType acctDataProviderInstanceRuntimeParameterDataType
+    ) {
+        return switch (acctDataProviderInstanceRuntimeParameterDataType) {
+            case NUMERIC -> DataProviderInstanceDetails.DataProviderParameterDataType.NUMERIC;
+            case BOOLEAN -> DataProviderInstanceDetails.DataProviderParameterDataType.BOOLEAN;
+            case STRING -> DataProviderInstanceDetails.DataProviderParameterDataType.STRING;
+            case DATETIME -> DataProviderInstanceDetails.DataProviderParameterDataType.DATETIME;
+        };
+    }
+
     public static AcctDataProviderInstanceRuntimeParameterDataType fromAcctReportingDataProviderReportParameterType(
         AcctReportingDataProviderReportParameterType acctReportingDataProviderReportParameterType
     ) {

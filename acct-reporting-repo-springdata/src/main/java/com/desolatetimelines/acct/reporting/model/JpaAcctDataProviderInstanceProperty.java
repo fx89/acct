@@ -12,7 +12,7 @@ public class JpaAcctDataProviderInstanceProperty implements AcctDataProviderInst
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long dataProviderInstancePropertyId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "data_provider_instance_id", nullable = false)
     private JpaAcctDataProviderInstance dataProviderInstance;
 

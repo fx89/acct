@@ -3,7 +3,10 @@ package com.desolatetimelines.acct.reporting.ws.model;
 import com.desolatetimelines.acct.reporting.dataprovider.model.AcctReportingDataProviderId;
 import org.springframework.lang.NonNull;
 
+import java.util.HashSet;
 import java.util.Set;
+
+import static com.desolatetimelines.acct.common.utils.ValidationUtils.throwIfNullOrEmpty;
 
 /**
  * Container for the editable properties of a data provider instance.
@@ -30,4 +33,51 @@ public record DataProviderInstanceProperties(
     @NonNull Set<DataProviderInstanceProperty> instanceProperties,
     @NonNull Set<DataProviderInstanceRuntimeParameter> runtimeParameters
 ) {
+    public static DataProviderInstancePropertiesBuilder builder() {
+        return new DataProviderInstancePropertiesBuilder();
+    }
+
+    public static class DataProviderInstancePropertiesBuilder {
+        private String instanceName;
+        private String dataProviderUUID;
+        private final Set<DataProviderInstanceProperty> instanceProperties = new HashSet<>();
+        private final Set<DataProviderInstanceRuntimeParameter> runtimeParameters = new HashSet<>();
+
+        public DataProviderInstancePropertiesBuilder withInstanceName(String instanceName) {
+            this.instanceName = instanceName;
+            return this;
+        }
+
+        public DataProviderInstancePropertiesBuilder withDataProviderUUID(String dataProviderUUID) {
+            this.dataProviderUUID = dataProviderUUID;
+            return this;
+        }
+
+        public DataProviderInstancePropertiesBuilder withInstanceProperties(
+            Set<DataProviderInstanceProperty> instanceProperties
+        ) {
+            this.instanceProperties.addAll(instanceProperties);
+            return this;
+        }
+
+        public DataProviderInstancePropertiesBuilder withRuntimeParameters(
+            Set<DataProviderInstanceRuntimeParameter> runtimeParameters
+        ) {
+            this.runtimeParameters.addAll(runtimeParameters);
+            return this;
+        }
+
+        public DataProviderInstanceProperties build() {
+            throwIfNullOrEmpty(instanceName, () -> new IllegalArgumentException("Instance name not provided"));
+            throwIfNullOrEmpty(dataProviderUUID, () -> new IllegalArgumentException("Data provider UUID not provided"));
+
+            return
+                new DataProviderInstanceProperties(
+                    instanceName,
+                    dataProviderUUID,
+                    instanceProperties,
+                    runtimeParameters
+                );
+        }
+    }
 }

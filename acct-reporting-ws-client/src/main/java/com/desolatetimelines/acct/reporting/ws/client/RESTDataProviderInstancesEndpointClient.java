@@ -6,6 +6,7 @@ import com.desolatetimelines.acct.reporting.ws.model.DataProviderInstancePropert
 import com.desolatetimelines.acct.reporting.ws.model.DataProviderInstanceRuntimeParameter;
 import com.desolatetimelines.acct.reporting.ws.model.DataProviderInstanceUUIDResponse;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,6 +32,12 @@ public interface RESTDataProviderInstancesEndpointClient extends DataProviderIns
     @Override
     @GetMapping(value = "", produces = APPLICATION_JSON_VALUE)
     Set<DataProviderInstanceInfo> getDataProviderInstances();
+
+    @Override
+    @GetMapping(value = "/details", produces = APPLICATION_JSON_VALUE)
+    DataProviderInstanceProperties getDataProviderInstanceDetails(
+        @NonNull @RequestParam(name = "dataProviderInstanceUUID") String dataProviderInstanceUUID
+    );
 
     @Override
     @GetMapping(value = "/parameters", produces = APPLICATION_JSON_VALUE)

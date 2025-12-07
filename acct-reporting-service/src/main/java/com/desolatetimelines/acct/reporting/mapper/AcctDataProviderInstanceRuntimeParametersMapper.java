@@ -4,8 +4,13 @@ import com.desolatetimelines.acct.reporting.dataprovider.model.AcctReportingData
 import com.desolatetimelines.acct.reporting.model.AcctDataProviderInstance;
 import com.desolatetimelines.acct.reporting.model.AcctDataProviderInstanceRuntimeParameter;
 import com.desolatetimelines.acct.reporting.model.AcctDataProviderInstanceRuntimeParameterDataType;
+import com.desolatetimelines.acct.reporting.model.DataProviderInstanceDetails;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.desolatetimelines.acct.reporting.mapper.AcctDataProviderInstanceRuntimeParameterDataTypeMapper.fromAcctReportingDataProviderReportParameterType;
+import static com.desolatetimelines.acct.reporting.mapper.AcctDataProviderInstanceRuntimeParameterDataTypeMapper.toDataProviderParameterDataType;
 
 /**
  * Provides mappers for the {@link AcctDataProviderInstanceRuntimeParameter} type
@@ -79,6 +84,40 @@ public abstract class AcctDataProviderInstanceRuntimeParametersMapper {
                     throw new UnsupportedOperationException("read only");
                 }
             };
+    }
+
+    public static DataProviderInstanceDetails.DataProviderInstanceRuntimeParameter toDataProviderInstanceDetailsDataProviderInstanceRuntimeParameter(
+        AcctDataProviderInstanceRuntimeParameter acctDataProviderInstanceRuntimeParameter
+    ) {
+        if (acctDataProviderInstanceRuntimeParameter == null) {
+            return null;
+        }
+
+        return
+            DataProviderInstanceDetails.DataProviderInstanceRuntimeParameter.builder()
+                .withParameterName(acctDataProviderInstanceRuntimeParameter.getParameterName())
+                .withParameterDefaultValue(acctDataProviderInstanceRuntimeParameter.getParameterDefaultValue())
+                .withMandatory(acctDataProviderInstanceRuntimeParameter.isMandatory())
+                .withParameterDataType(
+                    toDataProviderParameterDataType(
+                        acctDataProviderInstanceRuntimeParameter.getParameterDataType()
+                    )
+                )
+                .build();
+    }
+
+    public static Set<DataProviderInstanceDetails.DataProviderInstanceRuntimeParameter>
+    toDataProviderInstanceDetailsDataProviderInstanceRuntimeParameters(
+        Set<AcctDataProviderInstanceRuntimeParameter> acctDataProviderInstanceRuntimeParameters
+    ) {
+        if (acctDataProviderInstanceRuntimeParameters == null) {
+            return null;
+        }
+
+        return
+            acctDataProviderInstanceRuntimeParameters.stream()
+                .map(AcctDataProviderInstanceRuntimeParametersMapper::toDataProviderInstanceDetailsDataProviderInstanceRuntimeParameter)
+                .collect(Collectors.toSet());
     }
 
 }

@@ -28,8 +28,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.desolatetimelines.acct.common.model.ObjectTypes.*;
+import static com.desolatetimelines.acct.reporting.mapper.AcctDataProviderInstancePropertiesMapper.toDataProviderInstanceProperties;
 import static com.desolatetimelines.acct.reporting.mapper.AcctDataProviderInstanceRuntimeParameterDataTypeMapper.fromDataProviderParameterDataType;
 import static com.desolatetimelines.acct.reporting.mapper.AcctDataProviderInstanceRuntimeParametersMapper.fromAcctReportingDataProviderReportParameterSpec;
+import static com.desolatetimelines.acct.reporting.mapper.AcctDataProviderInstanceRuntimeParametersMapper.toDataProviderInstanceDetailsDataProviderInstanceRuntimeParameters;
 import static com.desolatetimelines.acct.reporting.privilegesprovider.model.ReportingPrivilegeIds.DASHBOARDS_DELETE_GROUP;
 
 /**
@@ -405,6 +407,45 @@ public class AcctReportingService {
         return dataService.findAllAcctDataProviderInstances();
     }
 
+    /**
+     * Returns a {@link DataProviderInstanceDetails container} with the details of the referenced data
+     * provider instance and the related instance properties and instance-defined runtime parameters.
+     *
+     * @param dataProviderInstanceUUID Unique identifier for the data provider instance whose details
+     *                                 are being retrieved.
+     */
+    public DataProviderInstanceDetails getDataProviderInstanceDetails(String dataProviderInstanceUUID) {
+        // Find the data provider instance
+        final AcctDataProviderInstance dataProviderInstance =
+            findDataProviderInstance(dataProviderInstanceUUID);
+
+        // Find the instance properties for the instance
+        final Set<AcctDataProviderInstanceProperty> instanceProperties =
+            dataService.findAllDataProviderInstancePropertiesByDataProviderInstance(dataProviderInstance);
+
+        // Find the runtime parameters for the instance
+        final Set<AcctDataProviderInstanceRuntimeParameter> runtimeParameters =
+            dataService.findAllDataProviderInstanceRuntimeParametersByDataProviderInstance(dataProviderInstance);
+
+        // Put it all together
+        return
+            DataProviderInstanceDetails.builder()
+                .withName(dataProviderInstance.getDataProviderInstanceName())
+                .withDataProviderUUID(dataProviderInstance.getDataProviderUUID())
+                .withInstanceProperties(toDataProviderInstanceProperties(instanceProperties))
+                .withRuntimeParameters(
+                    toDataProviderInstanceDetailsDataProviderInstanceRuntimeParameters(runtimeParameters)
+                )
+                .build();
+    }
+
+    /**
+     * Returns a set of {@link AcctDataProviderInstanceRuntimeParameter data provider instnace runtime parameters}
+     * that are defined by either the referenced data provider instance or the related data provider.
+     *
+     * @param dataProviderInstanceUUID Unique identifier for the data provider instance whose runtime parameters
+     *                                 are being retrieved.
+     */
     public Set<AcctDataProviderInstanceRuntimeParameter> getDataProviderInstanceRuntimeParameters(
         String dataProviderInstanceUUID
     ) {

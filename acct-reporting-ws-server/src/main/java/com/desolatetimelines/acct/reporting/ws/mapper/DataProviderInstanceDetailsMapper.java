@@ -28,9 +28,90 @@ public abstract class DataProviderInstanceDetailsMapper {
         );
     }
 
+    public static DataProviderInstanceProperties toDataProviderInstanceProperties(
+        DataProviderInstanceDetails dataProviderInstanceDetails
+    ) {
+        return
+            DataProviderInstanceProperties.builder()
+                .withInstanceName(dataProviderInstanceDetails.name())
+                .withDataProviderUUID(dataProviderInstanceDetails.dataProviderUUID())
+                .withInstanceProperties(
+                    mapToDataProviderInstanceProperties(
+                        dataProviderInstanceDetails.instanceProperties()
+                    )
+                )
+                .withRuntimeParameters(
+                    mapToDataProviderInstanceRuntimeParameters(
+                        dataProviderInstanceDetails.runtimeParameters()
+                    )
+                )
+                .build();
+    }
+
+    private static Set<com.desolatetimelines.acct.reporting.ws.model.DataProviderInstanceProperty>
+    mapToDataProviderInstanceProperties(
+        Set<DataProviderInstanceDetails.DataProviderInstanceProperty> instanceProperties
+    ) {
+        if (instanceProperties == null) {
+            return null;
+        }
+
+        return instanceProperties.stream()
+            .map(instanceProperty -> new com.desolatetimelines.acct.reporting.ws.model.DataProviderInstanceProperty(
+                instanceProperty.propertyName(),
+                instanceProperty.propertyValue()
+            ))
+            .collect(toSet());
+    }
+
+    private static Set<com.desolatetimelines.acct.reporting.ws.model.DataProviderInstanceRuntimeParameter>
+    mapToDataProviderInstanceRuntimeParameters(
+        Set<DataProviderInstanceDetails.DataProviderInstanceRuntimeParameter> runtimeParameters
+    ) {
+        if (runtimeParameters == null) {
+            return null;
+        }
+
+        return runtimeParameters.stream()
+            .map(runtimeParameter ->
+                com.desolatetimelines.acct.reporting.ws.model.DataProviderInstanceRuntimeParameter.builder()
+                    .withParameterName(runtimeParameter.parameterName())
+                    .withParameterDefaultValue(runtimeParameter.parameterDefaultValue())
+                    .withParameterDataType(
+                        toDataWsProviderParameterDataType(
+                            runtimeParameter.parameterDataType()
+                        )
+                    )
+                    .withMandatory(runtimeParameter.mandatory())
+                    .build()
+            )
+            .collect(toSet());
+    }
+
+    private static com.desolatetimelines.acct.reporting.ws.model.DataProviderParameterDataType
+    toDataWsProviderParameterDataType(
+        DataProviderInstanceDetails.DataProviderParameterDataType dataProviderParameterDataType
+    ) {
+        if (dataProviderParameterDataType == null) {
+            return null;
+        }
+
+        return
+            switch (dataProviderParameterDataType) {
+                case NUMERIC -> com.desolatetimelines.acct.reporting.ws.model.DataProviderParameterDataType.NUMERIC;
+                case BOOLEAN -> com.desolatetimelines.acct.reporting.ws.model.DataProviderParameterDataType.BOOLEAN;
+                case STRING -> com.desolatetimelines.acct.reporting.ws.model.DataProviderParameterDataType.STRING;
+                case DATETIME -> com.desolatetimelines.acct.reporting.ws.model.DataProviderParameterDataType.DATETIME;
+            };
+    }
+
     private static Set<DataProviderInstanceDetails.DataProviderInstanceProperty> mapProperties(
         Set<com.desolatetimelines.acct.reporting.ws.model.DataProviderInstanceProperty> instanceProperties
     ) {
+        if (instanceProperties == null) {
+            return null;
+        }
+
         return instanceProperties.stream()
             .map(prop -> new DataProviderInstanceDetails.DataProviderInstanceProperty(
                 prop.propertyName(),

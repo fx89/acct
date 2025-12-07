@@ -4,6 +4,7 @@ import com.desolatetimelines.acct.reporting.ws.model.DataProviderInstanceInfo;
 import com.desolatetimelines.acct.reporting.ws.model.DataProviderInstanceProperties;
 import com.desolatetimelines.acct.reporting.ws.model.DataProviderInstanceRuntimeParameter;
 import com.desolatetimelines.acct.reporting.ws.model.DataProviderInstanceUUIDResponse;
+import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import java.util.Set;
@@ -35,6 +36,17 @@ public interface DataProviderInstancesEndpoint {
      * Returns a set of {@link DataProviderInstanceInfo data provider instances} to be displayed to the user.
      */
     Set<DataProviderInstanceInfo> getDataProviderInstances();
+
+    /**
+     * Returns a container with the {@link DataProviderInstanceProperties details} of the data provider
+     * instance identified by the given data provider instance UUID.
+     *
+     * @param dataProviderInstanceUUID Unique identifier to the data provider instance whose details are
+     *                                 being retrieved.
+     */
+    DataProviderInstanceProperties getDataProviderInstanceDetails(
+        @NonNull String dataProviderInstanceUUID
+    );
 
     /**
      * Returns a set of {@link DataProviderInstanceRuntimeParameter descriptors} for the runtime parameters
