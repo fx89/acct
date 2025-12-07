@@ -12,7 +12,7 @@ public class JpaAcctDataProviderInstanceRuntimeParameter implements AcctDataProv
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long dataProviderInstanceRuntimeParameterId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "data_provider_instance_id", nullable = false)
     private JpaAcctDataProviderInstance dataProviderInstance;
 

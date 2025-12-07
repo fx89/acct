@@ -2,6 +2,11 @@ package com.desolatetimelines.acct.reporting.ws.model;
 
 import org.springframework.lang.NonNull;
 
+import java.util.Objects;
+
+import static com.desolatetimelines.acct.common.utils.ValidationUtils.throwIfNull;
+import static com.desolatetimelines.acct.common.utils.ValidationUtils.throwIfNullOrEmpty;
+
 /**
  * Runtime parameters are give by users through the UI to the reporting back-end.
  * The result set returned by the reporting back-end are influenced by these parameters.
@@ -32,4 +37,68 @@ public record DataProviderInstanceRuntimeParameter(
     @NonNull DataProviderParameterDataType parameterDataType,
     @NonNull Boolean mandatory
 ) {
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        DataProviderInstanceRuntimeParameter that = (DataProviderInstanceRuntimeParameter) o;
+        return Objects.equals(parameterName, that.parameterName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(parameterName);
+    }
+
+    public static DataProviderInstanceRuntimeParameterBuilder builder() {
+        return new DataProviderInstanceRuntimeParameterBuilder();
+    }
+
+    public static final class DataProviderInstanceRuntimeParameterBuilder {
+
+        String parameterName;
+        String parameterDefaultValue = "";
+        DataProviderParameterDataType parameterDataType = DataProviderParameterDataType.STRING;
+        Boolean mandatory = false;
+
+        public DataProviderInstanceRuntimeParameterBuilder withParameterName(String parameterName) {
+            this.parameterName = parameterName;
+            return this;
+        }
+
+        public DataProviderInstanceRuntimeParameterBuilder withParameterDefaultValue(
+            String parameterDefaultValue
+        ) {
+            this.parameterDefaultValue = parameterDefaultValue;
+            return this;
+        }
+
+        public DataProviderInstanceRuntimeParameterBuilder withParameterDataType(
+            DataProviderParameterDataType parameterDataType
+        ) {
+            this.parameterDataType = parameterDataType;
+            return this;
+        }
+
+        public DataProviderInstanceRuntimeParameterBuilder withMandatory(Boolean mandatory) {
+            this.mandatory = mandatory;
+            return this;
+        }
+
+        public DataProviderInstanceRuntimeParameter build() {
+            throwIfNullOrEmpty(parameterName, () -> new IllegalArgumentException("The parameter name is missing"));
+            throwIfNullOrEmpty(parameterDefaultValue, () -> new IllegalArgumentException("The parameter default value is missing"));
+            throwIfNull(parameterDataType, () -> new IllegalArgumentException("The parameter data type is missing"));
+            throwIfNull(mandatory, () -> new IllegalArgumentException("The mandatory flag is missing"));
+
+            return
+                new DataProviderInstanceRuntimeParameter(
+                    parameterName,
+                    parameterDefaultValue,
+                    parameterDataType,
+                    mandatory
+                );
+        }
+
+    }
+
 }

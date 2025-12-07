@@ -25,9 +25,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.desolatetimelines.acct.common.model.ObjectTypes.*;
 import static com.desolatetimelines.acct.reporting.mapper.AcctDataProviderInstanceRuntimeParameterDataTypeMapper.fromDataProviderParameterDataType;
+import static com.desolatetimelines.acct.reporting.mapper.AcctDataProviderInstanceRuntimeParametersMapper.fromAcctReportingDataProviderReportParameterSpec;
 import static com.desolatetimelines.acct.reporting.privilegesprovider.model.ReportingPrivilegeIds.DASHBOARDS_DELETE_GROUP;
 
 /**
@@ -310,17 +312,7 @@ public class AcctReportingService {
     ) {
         // Make sure the referenced data provider exists before registering an instance
         final AcctReportingDataProviderId dataProviderId =
-            getDataProviders().stream()
-                .filter(dpId ->
-                    Objects.equals(
-                        dpId.uuid().toString(),
-                        dataProviderInstanceDetails.dataProviderUUID()
-                    )
-                )
-                .findFirst()
-                .orElseThrow(() -> new AcctReportingServiceNotFoundException(
-                    errors, DATA_PROVIDER, dataProviderInstanceDetails.dataProviderUUID()
-                ));
+            findDataProvider(dataProviderInstanceDetails.dataProviderUUID());
 
         // Make sure all the instance properties have been provided with values
         final Set<String> suppliedInstancePropertyNames =
@@ -340,10 +332,7 @@ public class AcctReportingService {
         final AcctDataProviderInstance dataProviderInstance =
             Optional
                 .ofNullable(dataProviderInstanceUUID)
-                .map(uuid ->
-                    dataService.findDataProviderInstanceByDataProviderInstanceUUID(uuid)
-                        .orElseThrow(() -> new AcctReportingServiceNotFoundException(errors, DATA_PROVIDER_INSTANCE, uuid))
-                )
+                .map(this::findDataProviderInstance)
                 .orElseGet(() -> {
                     final AcctDataProviderInstance newInstance = dataService.createNewDataProviderInstance();
                     newInstance.setDataProviderInstanceUUID(UUID.randomUUID().toString());
@@ -414,6 +403,71 @@ public class AcctReportingService {
 
     public Set<AcctDataProviderInstance> getDataProviderInstances() {
         return dataService.findAllAcctDataProviderInstances();
+    }
+
+    public Set<AcctDataProviderInstanceRuntimeParameter> getDataProviderInstanceRuntimeParameters(
+        String dataProviderInstanceUUID
+    ) {
+        // Get the data provider instance or fail
+        final AcctDataProviderInstance dataProviderInstance =
+            findDataProviderInstance(dataProviderInstanceUUID);
+
+        // Get the data provider referenced by the data provider instance or fail
+        final AcctReportingDataProviderId dataProviderId =
+            findDataProvider(dataProviderInstance.getDataProviderUUID());
+
+        // Get any runtime parameters that might be registered for the data provider instance
+        final Stream<AcctDataProviderInstanceRuntimeParameter> instanceRuntimeParameters =
+            dataService.findAllDataProviderInstanceRuntimeParametersByDataProviderInstance(
+                dataProviderInstance
+            ).stream();
+
+        // Get any runtime parameters that might be defined by the data provider
+        final Stream<AcctDataProviderInstanceRuntimeParameter> dataProviderRuntimeParameters =
+            dataProviderId.parameters().stream()
+                .map(p ->
+                    fromAcctReportingDataProviderReportParameterSpec(p, dataProviderInstance)
+                );
+
+        // Join the runtime parameters provided by both the data provider and the data provider instance
+        return
+            Stream
+                .concat(
+                    dataProviderRuntimeParameters,
+                    instanceRuntimeParameters
+                )
+                .collect(Collectors.toSet());
+    }
+
+    private AcctDataProviderInstance findDataProviderInstance(String dataProviderInstanceUUID) {
+        return
+            dataService.findDataProviderInstanceByDataProviderInstanceUUID(dataProviderInstanceUUID)
+                .orElseThrow(
+                    () -> new AcctReportingServiceNotFoundException(
+                        errors,
+                        DATA_PROVIDER_INSTANCE,
+                        dataProviderInstanceUUID
+                    )
+                );
+    }
+
+    private AcctReportingDataProviderId findDataProvider(String dataProviderUUID) {
+        return
+            getDataProviders().stream()
+                .filter(dpId ->
+                    Objects.equals(
+                        dpId.uuid().toString(),
+                        dataProviderUUID
+                    )
+                )
+                .findFirst()
+                .orElseThrow(
+                    () -> new AcctReportingServiceNotFoundException(
+                        errors,
+                        DATA_PROVIDER,
+                        dataProviderUUID
+                    )
+                );
     }
 
 }

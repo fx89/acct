@@ -1,5 +1,6 @@
 package com.desolatetimelines.acct.reporting.mapper;
 
+import com.desolatetimelines.acct.reporting.dataprovider.model.AcctReportingDataProviderReportParameterType;
 import com.desolatetimelines.acct.reporting.model.AcctDataProviderInstanceRuntimeParameterDataType;
 import com.desolatetimelines.acct.reporting.model.DataProviderInstanceDetails;
 
@@ -13,6 +14,17 @@ public abstract class AcctDataProviderInstanceRuntimeParameterDataTypeMapper {
         DataProviderInstanceDetails.DataProviderParameterDataType dataProviderParameterDataType
     ) {
         return switch (dataProviderParameterDataType) {
+            case NUMERIC -> AcctDataProviderInstanceRuntimeParameterDataType.NUMERIC;
+            case BOOLEAN -> AcctDataProviderInstanceRuntimeParameterDataType.BOOLEAN;
+            case STRING -> AcctDataProviderInstanceRuntimeParameterDataType.STRING;
+            case DATETIME -> AcctDataProviderInstanceRuntimeParameterDataType.DATETIME;
+        };
+    }
+
+    public static AcctDataProviderInstanceRuntimeParameterDataType fromAcctReportingDataProviderReportParameterType(
+        AcctReportingDataProviderReportParameterType acctReportingDataProviderReportParameterType
+    ) {
+        return switch (acctReportingDataProviderReportParameterType) {
             case NUMERIC -> AcctDataProviderInstanceRuntimeParameterDataType.NUMERIC;
             case BOOLEAN -> AcctDataProviderInstanceRuntimeParameterDataType.BOOLEAN;
             case STRING -> AcctDataProviderInstanceRuntimeParameterDataType.STRING;

@@ -2,6 +2,7 @@ package com.desolatetimelines.acct.reporting.ws.endpoint;
 
 import com.desolatetimelines.acct.reporting.ws.model.DataProviderInstanceInfo;
 import com.desolatetimelines.acct.reporting.ws.model.DataProviderInstanceProperties;
+import com.desolatetimelines.acct.reporting.ws.model.DataProviderInstanceRuntimeParameter;
 import com.desolatetimelines.acct.reporting.ws.model.DataProviderInstanceUUIDResponse;
 import org.springframework.lang.Nullable;
 
@@ -34,5 +35,16 @@ public interface DataProviderInstancesEndpoint {
      * Returns a set of {@link DataProviderInstanceInfo data provider instances} to be displayed to the user.
      */
     Set<DataProviderInstanceInfo> getDataProviderInstances();
+
+    /**
+     * Returns a set of {@link DataProviderInstanceRuntimeParameter descriptors} for the runtime parameters
+     * defined by the data provider instance and the data provider pointed to by the data provider instance.
+     *
+     * @param dataProviderInstanceUUID Unique identifier for the data provider instance whose runtime
+     *                                 parameters are being fetched.
+     */
+    Set<DataProviderInstanceRuntimeParameter> getDataProviderInstanceRuntimeParameters(
+        String dataProviderInstanceUUID
+    );
 
 }

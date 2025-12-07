@@ -61,4 +61,21 @@ public abstract class ValidationUtils {
         }
     }
 
+    /**
+     * Throws the {@link Throwable} supplied by the given {@code throwableSupplier} if the referenced
+     * {@code string} is null or empty.
+     *
+     * @param string            The referenced string
+     * @param throwableSupplier The given throwableSupplier
+     * @param <E>               The type of the supplied throwable
+     */
+    public static <E extends Throwable> void throwIfNullOrEmpty(
+        String string,
+        Supplier<E> throwableSupplier
+    ) throws E {
+        if (string == null || string.isEmpty()) {
+            throw throwableSupplier.get();
+        }
+    }
+
 }
