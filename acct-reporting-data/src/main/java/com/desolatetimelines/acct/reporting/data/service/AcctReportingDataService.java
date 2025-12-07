@@ -148,6 +148,14 @@ public class AcctReportingDataService {
     }
 
     /**
+     * Returns a set of all the {@link AcctDataProviderInstance data provider instances}
+     * that are registered in the ACCT reporting data store
+     */
+    public Set<AcctDataProviderInstance> findAllAcctDataProviderInstances() {
+        return dataProviderInstancesRepository.findAll();
+    }
+
+    /**
      * Creates a new {@link AcctDataProviderInstanceProperty data provider instance property}
      *
      * @return a reference to the newly created data provider instance property

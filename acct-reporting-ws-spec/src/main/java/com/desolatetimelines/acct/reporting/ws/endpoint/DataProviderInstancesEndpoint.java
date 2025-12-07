@@ -1,8 +1,11 @@
 package com.desolatetimelines.acct.reporting.ws.endpoint;
 
+import com.desolatetimelines.acct.reporting.ws.model.DataProviderInstanceInfo;
 import com.desolatetimelines.acct.reporting.ws.model.DataProviderInstanceProperties;
 import com.desolatetimelines.acct.reporting.ws.model.DataProviderInstanceUUIDResponse;
 import org.springframework.lang.Nullable;
+
+import java.util.Set;
 
 /**
  * Specification for the Data Provider Instances endpoint, which allows creating, editing,
@@ -26,5 +29,10 @@ public interface DataProviderInstancesEndpoint {
         @Nullable String dataProviderInstanceUUID,
         DataProviderInstanceProperties dataProviderInstanceProperties
     );
+
+    /**
+     * Returns a set of {@link DataProviderInstanceInfo data provider instances} to be displayed to the user.
+     */
+    Set<DataProviderInstanceInfo> getDataProviderInstances();
 
 }

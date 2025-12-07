@@ -53,6 +53,14 @@ public enum ReportingPrivilege {
             .withPrivilegeName("Save data provider instance definitions")
             .withPrivilegeDescription("Allows creating or updating data provider instance definitions")
             .build()
+    ),
+
+    DATA_PROVIDER_INSTANCES_READ(
+        AcctPrivilege.builder()
+            .withPrivilegeId(ReportingPrivilegeIds.DATA_PROVIDER_INSTANCES_READ)
+            .withPrivilegeName("Read data provider instance definitions")
+            .withPrivilegeDescription("Allows reading data provider instance definitions")
+            .build()
     );
 
     private final AcctPrivilege acctPrivilege;

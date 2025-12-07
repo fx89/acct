@@ -412,4 +412,8 @@ public class AcctReportingService {
         return savedDataProviderInstance.getDataProviderInstanceUUID();
     }
 
+    public Set<AcctDataProviderInstance> getDataProviderInstances() {
+        return dataService.findAllAcctDataProviderInstances();
+    }
+
 }

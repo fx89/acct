@@ -6,6 +6,9 @@ import com.desolatetimelines.acct.reporting.springrepository.JpaAcctDataProvider
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static com.desolatetimelines.acct.reporting.util.AcctReportingRepoSpringDataUtils.doWithJpaAcctDataProviderInstanceReturning;
 import static java.util.function.Function.identity;
@@ -38,6 +41,14 @@ public class SpringJpaAcctDataProviderInstancesRepository implements AcctDataPro
                 .findFirstByDataProviderInstanceUUID(dataProviderInstanceUUID)
                 .map(identity())
             ;
+    }
+
+    @Override
+    public Set<AcctDataProviderInstance> findAll() {
+        return
+            StreamSupport
+                .stream(jpaAcctDataProviderInstancesRepository.findAll().spliterator(), false)
+                .collect(Collectors.toSet());
     }
 
     @Override

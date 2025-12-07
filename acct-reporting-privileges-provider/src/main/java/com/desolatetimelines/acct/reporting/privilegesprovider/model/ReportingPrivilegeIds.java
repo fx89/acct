@@ -17,4 +17,6 @@ public abstract class ReportingPrivilegeIds {
 
     public static final String DATA_PROVIDER_INSTANCES_SAVE = "DATA_PROVIDER_INSTANCES_SAVE";
 
+    public static final String DATA_PROVIDER_INSTANCES_READ = "DATA_PROVIDER_INSTANCES_READ";
+
 }

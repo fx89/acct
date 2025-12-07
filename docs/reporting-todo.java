@@ -26,6 +26,7 @@
 // DONE: REP-07001: Data providers endpoint: Get data providers (includes instance properties and supported runtime parameters)
 
 // DONE: REP-08001: Data provider instances endpoint: Register or update data provider instance (including properties)
-// TODO: REP-08002: Data provider instances endpoint: Get data provider instances
+// DONE: REP-08002: Data provider instances endpoint: Get data provider instances
 // TODO: REP-08003: Data provider instances endpoint: Get data provider instance runtime parameters (both the ones defined by the data provider and those defined by the instance itself)
 // TODO: REP-08004: Data provider instances endpoint: Delete data provider instance
+// TODO: REP-08005: Data provider instances endpoint: Get data provider instance data set - to show to the user when choosing which data provider instnaces to link into reports
