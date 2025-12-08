@@ -1,6 +1,7 @@
 package com.desolatetimelines.acct.reporting.mapper;
 
 import com.desolatetimelines.acct.reporting.dataprovider.model.AcctReportingDataProviderReportParameterSpec;
+import com.desolatetimelines.acct.reporting.dataprovider.model.AcctReportingDataProviderReportParameterType;
 import com.desolatetimelines.acct.reporting.model.AcctDataProviderInstance;
 import com.desolatetimelines.acct.reporting.model.AcctDataProviderInstanceRuntimeParameter;
 import com.desolatetimelines.acct.reporting.model.AcctDataProviderInstanceRuntimeParameterDataType;
@@ -117,6 +118,41 @@ public abstract class AcctDataProviderInstanceRuntimeParametersMapper {
         return
             acctDataProviderInstanceRuntimeParameters.stream()
                 .map(AcctDataProviderInstanceRuntimeParametersMapper::toDataProviderInstanceDetailsDataProviderInstanceRuntimeParameter)
+                .collect(Collectors.toSet());
+    }
+
+    public static AcctReportingDataProviderReportParameterSpec
+    toAcctReportingDataProviderReportParameterSpec(
+        AcctDataProviderInstanceRuntimeParameter acctDataProviderInstanceRuntimeParameter
+    ) {
+        if (acctDataProviderInstanceRuntimeParameter == null) {
+            return null;
+        }
+
+        return
+            new AcctReportingDataProviderReportParameterSpec(
+                acctDataProviderInstanceRuntimeParameter.getParameterName(),
+                switch (acctDataProviderInstanceRuntimeParameter.getParameterDataType()) {
+                    case NUMERIC -> AcctReportingDataProviderReportParameterType.NUMERIC;
+                    case BOOLEAN -> AcctReportingDataProviderReportParameterType.BOOLEAN;
+                    case STRING -> AcctReportingDataProviderReportParameterType.STRING;
+                    case DATETIME -> AcctReportingDataProviderReportParameterType.DATETIME;
+                },
+                acctDataProviderInstanceRuntimeParameter.isMandatory()
+            );
+    }
+
+    public static Set<AcctReportingDataProviderReportParameterSpec>
+    toSetOfAcctReportingDataProviderReportParameterSpecs(
+        Set<AcctDataProviderInstanceRuntimeParameter> acctDataProviderInstanceRuntimeParameters
+    ) {
+        if (acctDataProviderInstanceRuntimeParameters == null) {
+            return null;
+        }
+
+        return
+            acctDataProviderInstanceRuntimeParameters.stream()
+                .map(AcctDataProviderInstanceRuntimeParametersMapper::toAcctReportingDataProviderReportParameterSpec)
                 .collect(Collectors.toSet());
     }
 

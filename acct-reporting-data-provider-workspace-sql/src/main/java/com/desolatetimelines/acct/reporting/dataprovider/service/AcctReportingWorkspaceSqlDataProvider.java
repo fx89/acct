@@ -5,10 +5,8 @@ import com.desolatetimelines.acct.reporting.dataprovider.exception.AcctReporting
 import com.desolatetimelines.acct.reporting.dataprovider.exception.AcctReportingDataProviderRuntimeException;
 import com.desolatetimelines.acct.reporting.dataprovider.model.AcctReportingDataProviderDataSet;
 import com.desolatetimelines.acct.reporting.dataprovider.model.AcctReportingDataProviderDataSetColumn;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -17,19 +15,20 @@ import java.util.Optional;
 import static com.desolatetimelines.acct.common.utils.JDBCUtils.resultSetToDataArray;
 import static com.desolatetimelines.acct.reporting.dataprovider.service.Constants.INSTANCE_PROPERTY_NAME_SQL;
 import static com.desolatetimelines.acct.reporting.dataprovider.utils.ResultSetUtils.getColumnsFromResultSet;
+import static java.sql.Types.VARCHAR;
 
 public class AcctReportingWorkspaceSqlDataProvider implements AcctReportingDataProvider {
 
     private static final int ESTIMATED_RESULT_SET_SIZE = 100000;
 
-    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate jdbcTemplate;
 
     private String sql = "SELECT 1 the_one";
 
     public AcctReportingWorkspaceSqlDataProvider(
         AcctWorkspaceDataSourceProvider dataSourceProvider
     ) {
-        jdbcTemplate = new JdbcTemplate(dataSourceProvider.createNewDataSource());
+        jdbcTemplate = new NamedParameterJdbcTemplate(dataSourceProvider.createNewDataSource());
     }
 
     @Override
@@ -46,7 +45,18 @@ public class AcctReportingWorkspaceSqlDataProvider implements AcctReportingDataP
     public AcctReportingDataProviderDataSet provideData(Map<String, String> reportParameters) throws AcctReportingDataProviderRuntimeException {
 
         // Create the SQL parameter source for the parameters map
-        SqlParameterSource namedParameters = new MapSqlParameterSource().addValues(reportParameters);
+        final MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+
+        // Add the parameters
+        if (reportParameters != null) {
+            reportParameters.forEach((reportParameterName, reportParameterValue) ->
+                namedParameters.addValue(
+                    reportParameterName,
+                    reportParameterValue,
+                    VARCHAR
+                )
+            );
+        }
 
         // Prepare the container for the data set
         final Container<AcctReportingDataProviderDataSet> dataSetContainer = new Container<>();
@@ -54,10 +64,10 @@ public class AcctReportingWorkspaceSqlDataProvider implements AcctReportingDataP
 
         // Run the SQL query using the SQL parameter source and compile the data set out of the
         // JDBC ResultSet that's been retrieved by the JDBC template
-        jdbcTemplate.queryForList(
+        jdbcTemplate.query(
             sql,
             namedParameters,
-            (ResultSetExtractor<AcctReportingDataProviderDataSet>) resultSet -> {
+            resultSet -> {
 
                 dataSetContainer.set(
                     new AcctReportingDataProviderDataSet() {

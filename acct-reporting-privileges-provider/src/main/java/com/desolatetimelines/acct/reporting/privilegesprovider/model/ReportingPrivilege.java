@@ -61,6 +61,14 @@ public enum ReportingPrivilege {
             .withPrivilegeName("Read data provider instance definitions")
             .withPrivilegeDescription("Allows reading data provider instance definitions")
             .build()
+    ),
+
+    REPORT_RUN(
+        AcctPrivilege.builder()
+            .withPrivilegeId(ReportingPrivilegeIds.REPORT_RUN)
+            .withPrivilegeName("Run reports")
+            .withPrivilegeDescription("Allows running reports and individual data provider instances and retrieving data sets resulted from these runs")
+            .build()
     );
 
     private final AcctPrivilege acctPrivilege;

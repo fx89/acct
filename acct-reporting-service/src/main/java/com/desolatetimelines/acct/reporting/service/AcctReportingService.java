@@ -2,7 +2,7 @@ package com.desolatetimelines.acct.reporting.service;
 
 import com.desolatetimelines.acct.common.model.ObjectTypes;
 import com.desolatetimelines.acct.reporting.data.service.AcctReportingDataService;
-import com.desolatetimelines.acct.reporting.dataprovider.model.AcctReportingDataProviderId;
+import com.desolatetimelines.acct.reporting.dataprovider.model.*;
 import com.desolatetimelines.acct.reporting.dataprovider.service.AcctReportingDataCompiler;
 import com.desolatetimelines.acct.reporting.exception.AcctReportingServiceException;
 import com.desolatetimelines.acct.reporting.exception.AcctReportingServiceNotFoundException;
@@ -30,8 +30,7 @@ import java.util.stream.Stream;
 import static com.desolatetimelines.acct.common.model.ObjectTypes.*;
 import static com.desolatetimelines.acct.reporting.mapper.AcctDataProviderInstancePropertiesMapper.toDataProviderInstanceProperties;
 import static com.desolatetimelines.acct.reporting.mapper.AcctDataProviderInstanceRuntimeParameterDataTypeMapper.fromDataProviderParameterDataType;
-import static com.desolatetimelines.acct.reporting.mapper.AcctDataProviderInstanceRuntimeParametersMapper.fromAcctReportingDataProviderReportParameterSpec;
-import static com.desolatetimelines.acct.reporting.mapper.AcctDataProviderInstanceRuntimeParametersMapper.toDataProviderInstanceDetailsDataProviderInstanceRuntimeParameters;
+import static com.desolatetimelines.acct.reporting.mapper.AcctDataProviderInstanceRuntimeParametersMapper.*;
 import static com.desolatetimelines.acct.reporting.privilegesprovider.model.ReportingPrivilegeIds.DASHBOARDS_DELETE_GROUP;
 
 /**
@@ -478,6 +477,57 @@ public class AcctReportingService {
                     instanceRuntimeParameters
                 )
                 .collect(Collectors.toSet());
+    }
+
+    public AcctReportingDataProviderDataSet getDataProviderInstanceDataSet(
+        String dataProviderInstanceUUID,
+        Map<String, String> runtimeParameters
+    ) {
+        // Find the data provider instance or fail
+        final AcctDataProviderInstance dataProviderInstance =
+            findDataProviderInstance(dataProviderInstanceUUID);
+
+        // Find the data provider instance properties
+        final Set<AcctDataProviderInstanceProperty> instanceProperties =
+            dataService.findAllDataProviderInstancePropertiesByDataProviderInstance(
+                dataProviderInstance
+            );
+
+        // Get the instance properties into a key/value map
+        final Map<String, String> kvmInstanceProperties =
+            instanceProperties.stream()
+                .collect(
+                    Collectors.toMap(
+                        AcctDataProviderInstanceProperty::getPropertyName,
+                        AcctDataProviderInstanceProperty::getPropertyValue
+                    )
+                );
+
+        // Get the additional runtime parameters for the instance
+        final Set<AcctReportingDataProviderReportParameterSpec> additionalParameters =
+            toSetOfAcctReportingDataProviderReportParameterSpecs(
+                dataService.findAllDataProviderInstanceRuntimeParametersByDataProviderInstance(
+                    dataProviderInstance
+                )
+            );
+
+        // Create a compilation request that contains only the referenced data provider instance
+        // and feed it into the report compiler to produce the requested data set
+        return
+            reportCompiler.compileReport(
+                ReportCompilationRequest.builder()
+                    .withInstance(
+                        DataProviderInstanceSpecification.builder()
+                            .withInstanceName("temp_instance")
+                            .withDataProviderInstanceProperties(kvmInstanceProperties)
+                            .withDataProviderUUID(UUID.fromString(dataProviderInstance.getDataProviderUUID()))
+                            .withAdditionalParameters(additionalParameters)
+                            .build()
+                    )
+                    .withReportSqlStatement("SELECT * from temp_instance")
+                    .withReportParameters(runtimeParameters)
+                    .build()
+            );
     }
 
     private AcctDataProviderInstance findDataProviderInstance(String dataProviderInstanceUUID) {

@@ -2,18 +2,16 @@ package com.desolatetimelines.acct.reporting.ws.controller;
 
 import com.desolatetimelines.acct.reporting.service.AcctReportingService;
 import com.desolatetimelines.acct.reporting.ws.endpoint.DataProviderInstancesEndpoint;
-import com.desolatetimelines.acct.reporting.ws.model.DataProviderInstanceInfo;
-import com.desolatetimelines.acct.reporting.ws.model.DataProviderInstanceProperties;
-import com.desolatetimelines.acct.reporting.ws.model.DataProviderInstanceRuntimeParameter;
-import com.desolatetimelines.acct.reporting.ws.model.DataProviderInstanceUUIDResponse;
+import com.desolatetimelines.acct.reporting.ws.model.*;
 import org.springframework.lang.NonNull;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Set;
 
-import static com.desolatetimelines.acct.reporting.privilegesprovider.model.ReportingPrivilegeIds.DATA_PROVIDER_INSTANCES_READ;
-import static com.desolatetimelines.acct.reporting.privilegesprovider.model.ReportingPrivilegeIds.DATA_PROVIDER_INSTANCES_SAVE;
+import static com.desolatetimelines.acct.reporting.privilegesprovider.model.ReportingPrivilegeIds.*;
+import static com.desolatetimelines.acct.reporting.ws.mapper.AcctReportingDataSetsMapper.fromAcctReportingDataProviderDataSet;
 import static com.desolatetimelines.acct.reporting.ws.mapper.DataProviderInstanceDetailsMapper.fromDataProviderInstanceProperties;
 import static com.desolatetimelines.acct.reporting.ws.mapper.DataProviderInstanceDetailsMapper.toDataProviderInstanceProperties;
 import static com.desolatetimelines.acct.reporting.ws.mapper.DataProviderInstanceInfoMapper.fromSetOfAcctDataProviderInstance;
@@ -74,6 +72,22 @@ public class DataProviderInstancesEndpointController implements DataProviderInst
         return
             fromSetOfAcctDataProviderInstanceRuntimeParameter(
                 reportingService.getDataProviderInstanceRuntimeParameters(dataProviderInstanceUUID)
+            );
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + REPORT_RUN + "')")
+    @PostMapping(value = "/dataSet", produces = APPLICATION_JSON_VALUE)
+    public AcctReportingDataSet getDataProviderInstanceDataSet(
+        @NonNull @RequestParam(name = "dataProviderInstanceUUID") String dataProviderInstanceUUID,
+        @NonNull @RequestBody() Map<String, String> runtimeParameters
+    ) {
+        return
+            fromAcctReportingDataProviderDataSet(
+                reportingService.getDataProviderInstanceDataSet(
+                    dataProviderInstanceUUID,
+                    runtimeParameters
+                )
             );
     }
 

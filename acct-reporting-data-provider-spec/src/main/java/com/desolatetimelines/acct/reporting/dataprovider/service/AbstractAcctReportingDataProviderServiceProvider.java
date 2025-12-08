@@ -5,6 +5,7 @@ import com.desolatetimelines.acct.reporting.dataprovider.exception.AcctReporting
 import com.desolatetimelines.acct.reporting.dataprovider.model.AcctReportingDataProviderId;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -27,7 +28,7 @@ public abstract class AbstractAcctReportingDataProviderServiceProvider {
         return
             getSupportedDataProviderIds()
                 .stream()
-                .filter(dataProviderId -> dataProviderId.uuid() == dataProviderUUID)
+                .filter(dataProviderId -> Objects.equals(dataProviderId.uuid(), dataProviderUUID))
                 .findFirst()
                 .orElseThrow(() -> new AcctReportingUnsupportedDataProviderException(
                     "Data provider with UUID = " + dataProviderUUID + " is not supported"

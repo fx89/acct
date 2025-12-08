@@ -1,10 +1,7 @@
 package com.desolatetimelines.acct.reporting.ws.client;
 
 import com.desolatetimelines.acct.reporting.ws.endpoint.DataProviderInstancesEndpoint;
-import com.desolatetimelines.acct.reporting.ws.model.DataProviderInstanceInfo;
-import com.desolatetimelines.acct.reporting.ws.model.DataProviderInstanceProperties;
-import com.desolatetimelines.acct.reporting.ws.model.DataProviderInstanceRuntimeParameter;
-import com.desolatetimelines.acct.reporting.ws.model.DataProviderInstanceUUIDResponse;
+import com.desolatetimelines.acct.reporting.ws.model.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Map;
 import java.util.Set;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -43,6 +41,13 @@ public interface RESTDataProviderInstancesEndpointClient extends DataProviderIns
     @GetMapping(value = "/parameters", produces = APPLICATION_JSON_VALUE)
     Set<DataProviderInstanceRuntimeParameter> getDataProviderInstanceRuntimeParameters(
         @RequestParam(name = "dataProviderInstanceUUID") String dataProviderInstanceUUID
+    );
+
+    @Override
+    @PostMapping(value = "/dataSet", produces = APPLICATION_JSON_VALUE)
+    AcctReportingDataSet getDataProviderInstanceDataSet(
+        @NonNull @RequestParam(name = "dataProviderInstanceUUID") String dataProviderInstanceUUID,
+        @NonNull @RequestBody() Map<String, String> runtimeParameters
     );
 
 }
