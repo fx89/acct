@@ -91,4 +91,13 @@ public class DataProviderInstancesEndpointController implements DataProviderInst
             );
     }
 
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + DATA_PROVIDER_INSTANCES_DELETE + "')")
+    @DeleteMapping(value = "", produces = APPLICATION_JSON_VALUE)
+    @Override
+    public void deleteDataProviderInstance(
+        @NonNull @RequestParam(name = "dataProviderInstanceUUID") String dataProviderInstanceUUID
+    ) {
+        reportingService.deleteDataProviderInstance(dataProviderInstanceUUID);
+    }
+
 }

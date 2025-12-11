@@ -530,6 +530,16 @@ public class AcctReportingService {
             );
     }
 
+    @Transactional
+    public void deleteDataProviderInstance(String dataProviderInstanceUUID) {
+        // Find the data provider instance or fail
+        final AcctDataProviderInstance dataProviderInstance =
+            findDataProviderInstance(dataProviderInstanceUUID);
+
+        // Cascade-delete data provider instance
+        dataService.cascadeDeleteDataProviderInstance(dataProviderInstance);
+    }
+
     private AcctDataProviderInstance findDataProviderInstance(String dataProviderInstanceUUID) {
         return
             dataService.findDataProviderInstanceByDataProviderInstanceUUID(dataProviderInstanceUUID)

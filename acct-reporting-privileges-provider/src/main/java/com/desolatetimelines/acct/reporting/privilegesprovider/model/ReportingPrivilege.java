@@ -63,6 +63,14 @@ public enum ReportingPrivilege {
             .build()
     ),
 
+    DATA_PROVIDER_INSTANCES_DELETE(
+        AcctPrivilege.builder()
+            .withPrivilegeId(ReportingPrivilegeIds.DATA_PROVIDER_INSTANCES_DELETE)
+            .withPrivilegeName("Delete data provider instances")
+            .withPrivilegeDescription("Allows deleting data provider instances")
+            .build()
+    ),
+
     REPORT_RUN(
         AcctPrivilege.builder()
             .withPrivilegeId(ReportingPrivilegeIds.REPORT_RUN)

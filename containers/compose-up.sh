@@ -13,7 +13,7 @@ mkdir data/catalog
 mkdir data/reporting
 
 # Start the services
-docker-compose \
+docker compose \
   --env-file _environment.txt \
   --project-name acct \
   --profile everything \

@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import static com.desolatetimelines.acct.reporting.util.AcctReportingRepoSpringDataUtils.doWithJpaAcctDataProviderInstance;
 import static com.desolatetimelines.acct.reporting.util.AcctReportingRepoSpringDataUtils.doWithJpaAcctDataProviderInstanceReturning;
 import static java.util.function.Function.identity;
 
@@ -49,6 +50,14 @@ public class SpringJpaAcctDataProviderInstancesRepository implements AcctDataPro
             StreamSupport
                 .stream(jpaAcctDataProviderInstancesRepository.findAll().spliterator(), false)
                 .collect(Collectors.toSet());
+    }
+
+    @Override
+    public void delete(AcctDataProviderInstance dataProviderInstance) {
+        doWithJpaAcctDataProviderInstance(
+            dataProviderInstance,
+            jpaAcctDataProviderInstancesRepository::delete
+        );
     }
 
     @Override

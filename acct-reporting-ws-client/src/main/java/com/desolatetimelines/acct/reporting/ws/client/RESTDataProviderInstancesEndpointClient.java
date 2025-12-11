@@ -4,10 +4,7 @@ import com.desolatetimelines.acct.reporting.ws.endpoint.DataProviderInstancesEnd
 import com.desolatetimelines.acct.reporting.ws.model.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.lang.NonNull;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 import java.util.Set;
@@ -48,6 +45,12 @@ public interface RESTDataProviderInstancesEndpointClient extends DataProviderIns
     AcctReportingDataSet getDataProviderInstanceDataSet(
         @NonNull @RequestParam(name = "dataProviderInstanceUUID") String dataProviderInstanceUUID,
         @NonNull @RequestBody() Map<String, String> runtimeParameters
+    );
+
+    @Override
+    @DeleteMapping(value = "", produces = APPLICATION_JSON_VALUE)
+    void deleteDataProviderInstance(
+        @NonNull @RequestParam(name = "dataProviderInstanceUUID") String dataProviderInstanceUUID
     );
 
 }

@@ -18,4 +18,6 @@ public interface AcctDataProviderInstancesRepository {
 
     Set<AcctDataProviderInstance> findAll();
 
+    void delete(AcctDataProviderInstance dataProviderInstance);
+
 }

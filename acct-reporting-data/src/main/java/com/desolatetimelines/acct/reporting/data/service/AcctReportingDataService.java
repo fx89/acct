@@ -155,6 +155,17 @@ public class AcctReportingDataService {
         return dataProviderInstancesRepository.findAll();
     }
 
+    public void cascadeDeleteDataProviderInstance(AcctDataProviderInstance dataProviderInstance) {
+        // Delete any data provider instance properties that are linked to the data provider instance
+        dataProviderInstancePropertiesRepository.deleteByDataProviderInstance(dataProviderInstance);
+
+        // Delete any data provider instance runtime parameters that are linked to the data provider instance
+        deleteDataProviderInstanceRuntimeParametersByDataProviderInstance(dataProviderInstance);
+
+        // Delete the data provider instance itself
+        dataProviderInstancesRepository.delete(dataProviderInstance);
+    }
+
     /**
      * Creates a new {@link AcctDataProviderInstanceProperty data provider instance property}
      *

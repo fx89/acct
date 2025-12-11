@@ -70,4 +70,12 @@ public interface DataProviderInstancesEndpoint {
         @NonNull Map<String, String> runtimeParameters
     );
 
+    /**
+     * Deletes the referenced data provider instance together with the underlying child entities
+     * such as instance properties and additional runtime parameters.
+     *
+     * @param dataProviderInstanceUUID Unique identifier for the referenced data provider instance.
+     */
+    void deleteDataProviderInstance(@NonNull String dataProviderInstanceUUID);
+
 }

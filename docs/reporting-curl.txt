@@ -258,3 +258,10 @@ curl \
         }
     ' \
     | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X DELETE 'http://localhost:8088/service/reporting/v1/dataProviderInstances?dataProviderInstanceUUID=8485e8f4-877f-4ab2-b364-d172654dcf6c' \
+    | jq
