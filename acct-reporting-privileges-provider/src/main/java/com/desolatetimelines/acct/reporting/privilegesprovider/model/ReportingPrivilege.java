@@ -71,6 +71,14 @@ public enum ReportingPrivilege {
             .build()
     ),
 
+    REPORT_SAVE(
+        AcctPrivilege.builder()
+            .withPrivilegeId(ReportingPrivilegeIds.REPORT_SAVE)
+            .withPrivilegeName("Save reports")
+            .withPrivilegeDescription("Allows creating new reports or updating existing reports that are accessible to the current user either directly or via groups")
+            .build()
+    ),
+
     REPORT_RUN(
         AcctPrivilege.builder()
             .withPrivilegeId(ReportingPrivilegeIds.REPORT_RUN)

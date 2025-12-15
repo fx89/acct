@@ -34,8 +34,13 @@ public class AcctReportingServiceNotFoundException extends AcctReportingServiceE
         if (ObjectTypes.DATA_PROVIDER == resourceType) {
             return errors.RESOURCE_NOT_FOUND_DATA_PROVIDER;
         }
+
         if (ObjectTypes.DATA_PROVIDER_INSTANCE == resourceType) {
             return errors.RESOURCE_NOT_FOUND_DATA_PROVIDER_INSTANCE;
+        }
+
+        if (ObjectTypes.REPORT == resourceType) {
+            return errors.RESOURCE_NOT_FOUND_REPORT;
         }
 
 

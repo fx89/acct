@@ -25,6 +25,7 @@ public class AcctReportingServicePrivilegesProvider implements AcctServicePrivil
                 DATA_PROVIDER_INSTANCES_SAVE.getAcctPrivilege(),
                 DATA_PROVIDER_INSTANCES_READ.getAcctPrivilege(),
                 DATA_PROVIDER_INSTANCES_DELETE.getAcctPrivilege(),
+                REPORT_SAVE.getAcctPrivilege(),
                 REPORT_RUN.getAcctPrivilege()
             );
     }

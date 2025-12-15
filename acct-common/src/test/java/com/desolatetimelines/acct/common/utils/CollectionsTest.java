@@ -4,6 +4,10 @@ import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
+import static com.desolatetimelines.acct.common.utils.Collections.intersect;
+import static com.desolatetimelines.acct.common.utils.Collections.minus;
+import static java.util.Collections.emptySet;
+import static java.util.function.Function.identity;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CollectionsTest {
@@ -78,6 +82,66 @@ public class CollectionsTest {
 
         // Expect a RuntimeException due to unsupported collection type
         assertThrows(RuntimeException.class, () -> Collections.concat(listA, listB));
+    }
+
+    /**
+     * Tests that the minus() operation does not crash when presented with null or empty parameters
+     */
+    @Test
+    void testMinus_doesNotCrashOnNullOrEmpty() {
+        assertEquals(0, minus(null, null, null, null).size());
+        assertEquals(0, minus(emptySet(), null, null, null).size());
+        assertEquals(0, minus(null, emptySet(), null, null).size());
+        assertEquals(5, minus(Set.of("1", "2", "3", "4", "5"), null, identity(), null).size());
+        assertEquals(0, minus(null, Set.of(1, 2, 3), null, identity()).size());
+    }
+
+    /**
+     * Tests that the minus() operation works according to plan
+     */
+    @Test
+    void testMinus_worksCorrectly() {
+        // Create the minuend
+        final Set<String> minuend = Set.of("one", "two", "three", "four", "five");
+
+        // Create the subtrahend
+        final Set<String> subtrahend = Set.of("three", "five");
+
+        // Perform the subtraction operation
+        final Set<String> result = minus(minuend, subtrahend, identity(), identity());
+
+        // Verify that the result is correct
+        assertTrue(result.containsAll(Set.of("one", "two", "four")));
+    }
+
+    /**
+     * Tests that the intersect() operation does not crash when presented with null or empty parameters
+     */
+    @Test
+    void testIntersect_doesNotCrashOnNullOrEmpty() {
+        assertEquals(0, intersect(null, null, null, null).size());
+        assertEquals(0, intersect(emptySet(), null, null, null).size());
+        assertEquals(0, intersect(null, emptySet(), null, null).size());
+        assertEquals(0, intersect(Set.of("1", "2", "3", "4", "5"), null, identity(), null).size());
+        assertEquals(0, intersect(null, Set.of(1, 2, 3), null, identity()).size());
+    }
+
+    /**
+     * Tests that the minus() operation works according to plan
+     */
+    @Test
+    void testIntersect_worksCorrectly() {
+        // Create the minuend
+        final Set<String> setA = Set.of("one", "two", "three", "four", "five");
+
+        // Create the subtrahend
+        final Set<String> setB = Set.of("three", "five", "four", "fun");
+
+        // Perform the intersection
+        final Set<String> result = intersect(setA, setB, identity(), identity());
+
+        // Verify that the result is correct
+        assertTrue(result.containsAll(Set.of("three", "four", "five")));
     }
 
 }

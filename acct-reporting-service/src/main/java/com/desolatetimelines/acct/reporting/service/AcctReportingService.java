@@ -15,6 +15,7 @@ import com.desolatetimelines.acct.security.client.model.UserResourceAccessRights
 import com.desolatetimelines.acct.security.ws.endpoint.model.DashboardOwner;
 import com.desolatetimelines.acct.security.ws.endpoint.model.OwnedDashboardsGroup;
 import com.desolatetimelines.acct.security.ws.endpoint.model.OwnerType;
+import com.desolatetimelines.acct.security.ws.endpoint.model.ReportOwner;
 import com.desolatetimelines.acct.usage.ws.client.RESTUsageEndpointClient;
 import com.desolatetimelines.acct.usage.ws.model.ServiceItemTypesList;
 import jakarta.transaction.Transactional;
@@ -24,14 +25,18 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.desolatetimelines.acct.common.model.ObjectTypes.*;
+import static com.desolatetimelines.acct.common.utils.Collections.intersect;
+import static com.desolatetimelines.acct.common.utils.Collections.minus;
 import static com.desolatetimelines.acct.reporting.mapper.AcctDataProviderInstancePropertiesMapper.toDataProviderInstanceProperties;
 import static com.desolatetimelines.acct.reporting.mapper.AcctDataProviderInstanceRuntimeParameterDataTypeMapper.fromDataProviderParameterDataType;
 import static com.desolatetimelines.acct.reporting.mapper.AcctDataProviderInstanceRuntimeParametersMapper.*;
 import static com.desolatetimelines.acct.reporting.privilegesprovider.model.ReportingPrivilegeIds.DASHBOARDS_DELETE_GROUP;
+import static java.util.function.Function.identity;
 
 /**
  * Reporting services layer
@@ -540,6 +545,172 @@ public class AcctReportingService {
         dataService.cascadeDeleteDataProviderInstance(dataProviderInstance);
     }
 
+    @Transactional
+    public AcctReport saveReport(
+        String reportUUID,
+        ReportDetails reportDetails,
+        String userUUID
+    ) {
+        // Acquire the report by either fetching the referenced report and raising an error if it doesn't exist
+        // or creating a new report in case the UUID was not provided.
+        final AcctReport report =
+            Optional
+                .ofNullable(reportUUID)
+                .map(this::findReport)
+                .orElseGet(() -> {
+                    final AcctReport newReport = dataService.createNewReport();
+                    newReport.setReportUUID(UUID.randomUUID().toString());
+                    return newReport;
+                });
+
+        // Set the report properties
+        report.setReportName(reportDetails.reportName());
+        report.setReportDescription(reportDetails.reportDescription());
+        report.setReportSQLStatement(reportDetails.reportSQL());
+        report.setReportType(reportDetails.reportType());
+        report.setReportCategoryColumnName(reportDetails.reportCategoryColumnName());
+
+        // Save the report
+        final AcctReport savedReport = dataService.saveReport(report);
+
+        // Update the report series to match those in the request
+        updateReportSeries(savedReport, reportDetails.reportSeries());
+
+        // Update the report data provider instances to match those in the request
+        updateReportDataProviderInstances(savedReport, reportDetails.dataProviderInstanceUUIDs());
+
+        // Add the ownership mapping
+        securityClientService.addReportOwner(
+            ReportOwner.builder()
+                .withOwnerType(OwnerType.USER)
+                .withOwnerUUID(userUUID)
+                .withReportUUID(savedReport.getReportUUID())
+                .build()
+        );
+
+        // Return a reference to the saved report
+        return savedReport;
+    }
+
+    private void updateReportSeries(AcctReport report, Set<ReportSeriesDetails> reportSeriesDetails) {
+        // Fetch any report series that might already have been set
+        final Set<AcctReportSeries> reportSeries = dataService.findAllReportSeriesByReport(report);
+
+        // Identify existing report series
+        final Set<AcctReportSeries> existingReportSeries =
+            intersect(
+                reportSeries,
+                reportSeriesDetails,
+                AcctReportSeries::getReportSeriesName,
+                ReportSeriesDetails::reportSeriesName
+            );
+
+        // Identify new report series
+        final Set<ReportSeriesDetails> newReportSeries =
+            minus(
+                reportSeriesDetails,
+                reportSeries,
+                ReportSeriesDetails::reportSeriesName,
+                AcctReportSeries::getReportSeriesName
+            );
+
+        // Identify removed report series
+        final Set<AcctReportSeries> removedReportSeries =
+            minus(
+                reportSeries,
+                reportSeriesDetails,
+                AcctReportSeries::getReportSeriesName,
+                ReportSeriesDetails::reportSeriesName
+            );
+
+        // Update the existing report series
+        existingReportSeries.forEach(acctReportSeries -> {
+            // Identify the source series
+            final ReportSeriesDetails sourceReportSeries =
+                reportSeriesDetails.stream()
+                    .filter(rsd ->
+                        Objects.equals(
+                            rsd.reportSeriesName(),
+                            acctReportSeries.getReportSeriesName()
+                        )
+                    )
+                    .findFirst()
+                    .orElseThrow();
+
+            // Update the series details
+            acctReportSeries.setReportColumnName(sourceReportSeries.reportColumnName());
+            acctReportSeries.setReportSeriesType(sourceReportSeries.reportSeriesType());
+
+            // Save the series
+            dataService.saveReportSeries(acctReportSeries);
+        });
+
+        // Add the new report series
+        newReportSeries.stream()
+            .map(rs -> {
+                final AcctReportSeries acctReportSeries = dataService.createNewReportSeries();
+                acctReportSeries.setReport(report);
+
+                acctReportSeries.setReportColumnName(rs.reportColumnName());
+                acctReportSeries.setReportSeriesName(rs.reportSeriesName());
+                acctReportSeries.setReportSeriesType(rs.reportSeriesType());
+
+                return acctReportSeries;
+            })
+            .forEach(dataService::saveReportSeries);
+
+        // Delete the removed report series
+        removedReportSeries.forEach(dataService::deleteReportSeries);
+    }
+
+    private void updateReportDataProviderInstances(AcctReport report, Set<String> dataProviderInstanceUUIDs) {
+        // Fetch any existing data provider instances mapped to the report
+        final Set<AcctReportDataProviderInstance> reportDataProviderInstances =
+            dataService.findReportDataProviderInstances(report);
+
+        // Declare the key extractor function for report data provider instances
+        final Function<AcctReportDataProviderInstance, String> reportDataProviderInstanceKeyExtractor =
+            rdpi -> rdpi.getDataProviderInstance().getDataProviderInstanceUUID();
+
+        // Identify new data provider instances
+        final Set<String> newDataProviderInstanceUUIDs =
+            minus(
+                dataProviderInstanceUUIDs,
+                reportDataProviderInstances,
+                identity(),
+                reportDataProviderInstanceKeyExtractor
+            );
+
+        // Identify removed data provider instances
+        final Set<AcctReportDataProviderInstance> removedReportDataProviderInstances =
+            minus(
+                reportDataProviderInstances,
+                dataProviderInstanceUUIDs,
+                reportDataProviderInstanceKeyExtractor,
+                identity()
+            );
+
+        // Add the new data provider instances
+        newDataProviderInstanceUUIDs.forEach(dataProviderInstanceUUID -> {
+            // Find the referenced data provider instance (also makes sure it exists)
+            final AcctDataProviderInstance dataProviderInstance = findDataProviderInstance(dataProviderInstanceUUID);
+
+            // Create a new report / data provider instance many to many mapper
+            final AcctReportDataProviderInstance reportDataProviderInstance =
+                dataService.createNewReportDataProviderInstance();
+
+            // Populate the mapper
+            reportDataProviderInstance.setReport(report);
+            reportDataProviderInstance.setDataProviderInstance(dataProviderInstance);
+
+            // Save the mapper
+            dataService.saveReportDataProviderInstance(reportDataProviderInstance);
+        });
+
+        // Delete the removed data provider instance
+        removedReportDataProviderInstances.forEach(dataService::deleteReportDataProviderInstance);
+    }
+
     private AcctDataProviderInstance findDataProviderInstance(String dataProviderInstanceUUID) {
         return
             dataService.findDataProviderInstanceByDataProviderInstanceUUID(dataProviderInstanceUUID)
@@ -571,4 +742,15 @@ public class AcctReportingService {
                 );
     }
 
+    private AcctReport findReport(String reportUUID) {
+        return
+            dataService.findReportByReportUUID(reportUUID)
+                .orElseThrow(
+                    () -> new AcctReportingServiceNotFoundException(
+                        errors,
+                        REPORT,
+                        reportUUID
+                    )
+                );
+    }
 }

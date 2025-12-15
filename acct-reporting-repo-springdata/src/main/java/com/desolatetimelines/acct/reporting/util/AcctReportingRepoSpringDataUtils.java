@@ -111,4 +111,89 @@ public abstract class AcctReportingRepoSpringDataUtils {
         );
     }
 
+    public static void doWithJpaAcctReport(
+        AcctReport acctReport,
+        Consumer<JpaAcctReport> todo
+    ) {
+        if (acctReport instanceof JpaAcctReport jpaAcctReport) {
+            todo.accept(jpaAcctReport);
+            return;
+        }
+
+        throw new IllegalArgumentException(
+            "The referenced " + AcctReport.class.getName() +
+                " is not of type " + JpaAcctReport.class.getCanonicalName()
+        );
+    }
+
+    public static JpaAcctReport doWithJpaAcctReportReturning(
+        AcctReport acctReport,
+        Function<JpaAcctReport, JpaAcctReport> todo
+    ) {
+        if (acctReport instanceof JpaAcctReport jpaAcctReport) {
+            return todo.apply(jpaAcctReport);
+        }
+
+        throw new IllegalArgumentException(
+            "The referenced " + AcctReport.class.getName() +
+                " is not of type " + JpaAcctReport.class.getCanonicalName()
+        );
+    }
+
+    public static JpaAcctReportDataProviderInstance doWithJpaAcctReportDataProviderInstanceReturning(
+        AcctReportDataProviderInstance acctReportDataProviderInstance,
+        Function<JpaAcctReportDataProviderInstance, JpaAcctReportDataProviderInstance> todo
+    ) {
+        if (acctReportDataProviderInstance instanceof JpaAcctReportDataProviderInstance jpaAcctReportDataProviderInstance) {
+            return todo.apply(jpaAcctReportDataProviderInstance);
+        }
+
+        throw new IllegalArgumentException(
+            "The referenced " + AcctReportDataProviderInstance.class.getName() +
+                " is not of type " + JpaAcctReportDataProviderInstance.class.getCanonicalName()
+        );
+    }
+
+    public static void doWithJpaAcctReportDataProviderInstance(
+        AcctReportDataProviderInstance acctReportDataProviderInstance,
+        Consumer<JpaAcctReportDataProviderInstance> todo
+    ) {
+        if (acctReportDataProviderInstance instanceof JpaAcctReportDataProviderInstance jpaAcctReportDataProviderInstance) {
+            todo.accept(jpaAcctReportDataProviderInstance);
+        }
+
+        throw new IllegalArgumentException(
+            "The referenced " + AcctReportDataProviderInstance.class.getName() +
+                " is not of type " + JpaAcctReportDataProviderInstance.class.getCanonicalName()
+        );
+    }
+
+    public static JpaAcctReportSeries doWithJpaAcctReportSeriesReturning(
+        AcctReportSeries acctReportSeries,
+        Function<JpaAcctReportSeries, JpaAcctReportSeries> todo
+    ) {
+        if (acctReportSeries instanceof JpaAcctReportSeries jpaAcctReportSeries) {
+            return todo.apply(jpaAcctReportSeries);
+        }
+
+        throw new IllegalArgumentException(
+            "The referenced " + AcctReportSeries.class.getName() +
+                " is not of type " + JpaAcctReportSeries.class.getCanonicalName()
+        );
+    }
+
+    public static void doWithJpaAcctReportSeries(
+        AcctReportSeries acctReportSeries,
+        Consumer<JpaAcctReportSeries> todo
+    ) {
+        if (acctReportSeries instanceof JpaAcctReportSeries jpaAcctReportSeries) {
+            todo.accept(jpaAcctReportSeries);
+        }
+
+        throw new IllegalArgumentException(
+            "The referenced " + AcctReportSeries.class.getName() +
+                " is not of type " + JpaAcctReportSeries.class.getCanonicalName()
+        );
+    }
+
 }

@@ -24,7 +24,7 @@ curl \
 curl \
     --insecure \
     -v \
-    --cookie 'JSESSIONID=339DA7973C2AD9D7EA02572668CD52D2' \
+    --cookie 'JSESSIONID=44BDD785AB1A71718545C998108E4CFE' \
     -X GET 'http://localhost:9001/service/authorization/v1/oauth2/authorize?response_type=code&client_id=frontend-client'
 
 export ACCT_USER_ACCESS_TOKEN=$(\
@@ -33,7 +33,7 @@ curl \
     -v \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'grant_type=authorization_code' \
-    -d 'code=iExXdtQJX7ReQFwVp0Y2qtqRv7QlmkHu1U2m0RFsBqqPgxPmbi6jiADo_qIWi-7Q02sc-3GTV5_E0ViqSXprB90WzIS7nmjuvLPhdwQ8em_lY4EMSveD5h-AC4TOHSeO' \
+    -d 'code=bzyKheL5eoot0tCjIblVbcjhhaYT7shMVD_r71Ktox-EvWYr1IxhsxASws_AY6h3k8e1oCZS-PSeEfWbSi3zJCvXyauo2bdQI0mQfiRRXf_edflEt1a05xfiJpaW2rG9' \
     -d 'client_id=frontend-client' \
     -d 'client_secret=lkjdwsf23odnwqkld23odfbqweorh23oihd' \
     -X POST 'http://localhost:9001/service/authorization/v1/oauth2/token' \
@@ -264,4 +264,56 @@ curl \
     -H "Authorization: Bearer ${ACCT_BACKEND_CLIENT_ACCESS_TOKEN}" \
     -H "Content-Type: application/json; charset=utf-8" \
     -X DELETE 'http://localhost:8088/service/reporting/v1/dataProviderInstances?dataProviderInstanceUUID=8485e8f4-877f-4ab2-b364-d172654dcf6c' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X POST 'http://localhost:8088/service/reporting/v1/reports' \
+    --data-raw '
+        {
+            "reportName": "My first report",
+            "reportDescription": "The first report I ever made using ACCT 2.0, and it is for testing purposes",
+            "reportType": "SERIES",
+            "dataProviderInstanceUUIDs": [
+                "18ed13b3-dda4-489c-8314-0e90e1b96e23"
+            ],
+            "reportSQL": "SELECT 1 as bau_bau",
+            "reportCategoryColumnName": "bau_bau",
+            "reportSeries": [
+                {
+                    "reportColumnName": "bau_bau",
+                    "reportSeriesName": "Bau Bau",
+                    "reportSeriesType": "LINE"
+                }
+            ]
+        }
+    ' \
+    | jq
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X POST 'http://localhost:8088/service/reporting/v1/reports?reportUUID=9e49ba31-587f-4636-a511-b83cf25de23e' \
+    --data-raw '
+        {
+            "reportName": "My first report",
+            "reportDescription": "The first report I ever made using ACCT 2.0, and it is for testing purposes",
+            "reportType": "SERIES",
+            "dataProviderInstanceUUIDs": [
+                "18ed13b3-dda4-489c-8314-0e90e1b96e23"
+            ],
+            "reportSQL": "SELECT 13 as bau_bau",
+            "reportCategoryColumnName": "bau_bau",
+            "reportSeries": [
+                {
+                    "reportColumnName": "bau_bau",
+                    "reportSeriesName": "Bau Bau",
+                    "reportSeriesType": "COLUMN"
+                }
+            ]
+        }
+    ' \
     | jq

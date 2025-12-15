@@ -9,6 +9,7 @@ public class AcctReportingErrorCodesRegistryService extends AbstractErrorCodesRe
     public String RESOURCE_NOT_FOUND_DASHBOARD;
     public String RESOURCE_NOT_FOUND_DATA_PROVIDER;
     public String RESOURCE_NOT_FOUND_DATA_PROVIDER_INSTANCE;
+    public String RESOURCE_NOT_FOUND_REPORT;
     public String SECURITY_INACCESSIBLE_DASHBOARD;
     public String DATA_PROVIDER_INSTANCE_PROPERTY_NOT_SUPPLIED;
 
@@ -41,6 +42,13 @@ public class AcctReportingErrorCodesRegistryService extends AbstractErrorCodesRe
                 CAT_NAME_DATA_ACCESS,
                 "Data provider instance not found",
                 "The service was requested to run operations invoking a data provider instance that does not exist"
+            );
+
+        RESOURCE_NOT_FOUND_REPORT =
+            resolveErrorCode(
+                CAT_NAME_DATA_ACCESS,
+                "Report not found",
+                "The service was requested to run operations invoking a report that does not exist"
             );
 
         SECURITY_INACCESSIBLE_DASHBOARD =

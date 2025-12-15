@@ -160,6 +160,15 @@ public class AcctSecurityClientService {
     }
 
     /**
+     * Creates the referenced report owner
+     *
+     * @param reportOwner reference to the report owner to be created
+     */
+    public void addReportOwner(ReportOwner reportOwner) {
+        reportOwnershipEndpointClient.addReportOwner(reportOwner);
+    }
+
+    /**
      * Queries the security service for the accessibility report for the given
      * resource type, user UUID and resource UUID
      *
