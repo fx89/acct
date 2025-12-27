@@ -9,6 +9,6 @@ import java.util.Set;
 public interface JpaAcctReportDataProviderInstancesRepository
     extends CrudRepository<JpaAcctReportDataProviderInstance, Long> {
 
-    Set<JpaAcctReportDataProviderInstance> findAllByReport(JpaAcctReport report);
+    Set<JpaAcctReportDataProviderInstance> findAllByReportIn(Set<JpaAcctReport> report);
 
 }

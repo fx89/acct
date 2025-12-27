@@ -8,6 +8,6 @@ import java.util.Set;
 
 public interface JpaAcctReportSeriesRepository extends CrudRepository<JpaAcctReportSeries, Long> {
 
-    Set<JpaAcctReportSeries> findAllByReport(JpaAcctReport report);
+    Set<JpaAcctReportSeries> findAllByReportIn(Set<JpaAcctReport> reports);
 
 }

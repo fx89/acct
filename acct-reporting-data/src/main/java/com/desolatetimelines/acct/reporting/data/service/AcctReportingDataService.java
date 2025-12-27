@@ -1,5 +1,6 @@
 package com.desolatetimelines.acct.reporting.data.service;
 
+import com.desolatetimelines.acct.common.model.Page;
 import com.desolatetimelines.acct.reporting.model.*;
 import com.desolatetimelines.acct.reporting.repository.*;
 import org.springframework.stereotype.Service;
@@ -312,6 +313,20 @@ public class AcctReportingDataService {
     }
 
     /**
+     * Retrieves a {@link Page page} of {@link AcctReport reports} identified by the given UUIDs. The page is sorted
+     * by {@link AcctReport#getReportName() report name}.
+     *
+     * @param reportUUIDs A set of UUIDs that identify the reports to be fetched. If the size of this set is larger
+     *                    than the given page size, then only the reports that are relevant to the given combination
+     *                    of page number and page size are fetched.
+     * @param pageNumber  Identifies the page to be fetched.
+     * @param pageSize    Determines the number of reports to be retrieved in a given page.
+     */
+    public Page<AcctReport> findAllReportsByReportUUIDIn(Set<String> reportUUIDs, int pageNumber, int pageSize) {
+        return reportsRepository.findAllByReportUUIDIn(reportUUIDs, pageNumber, pageSize);
+    }
+
+    /**
      * Creates a new {@link AcctReportSeries report series}.
      *
      * @return a reference to the newly created report series instance.
@@ -338,7 +353,17 @@ public class AcctReportingDataService {
      * @return a set of all the report series associated with the referenced report.
      */
     public Set<AcctReportSeries> findAllReportSeriesByReport(AcctReport report) {
-        return reportSeriesRepository.findAllByReport(report);
+        return findAllReportSeriesByReportIn(Set.of(report));
+    }
+
+    /**
+     * Retrieves a set of all the {@link AcctReportSeries report series} associated with any
+     * of the referenced reports.
+     *
+     * @param reports A set that contains the reports for which the report series are being fetched.
+     */
+    public Set<AcctReportSeries> findAllReportSeriesByReportIn(Set<AcctReport> reports) {
+        return reportSeriesRepository.findAllByReportIn(reports);
     }
 
     /**
@@ -372,6 +397,16 @@ public class AcctReportingDataService {
     }
 
     /**
+     * Retrieves a set of all the {@link AcctReportDataProviderInstance report data provider instances}
+     * associated with any of the referenced reports.
+     *
+     * @param reports A set that contains the reports for which the data provider instances are being fetched.
+     */
+    public Set<AcctReportDataProviderInstance> findAllDataProviderInstancesByReportIn(Set<AcctReport> reports) {
+        return reportDataProviderInstancesRepository.findAllByReportIn(reports);
+    }
+
+    /**
      * Looks up all the {@link AcctReportDataProviderInstance report data provider instances}
      * associated with the referenced {@link AcctReport report}.
      *
@@ -380,8 +415,8 @@ public class AcctReportingDataService {
      * @return A set of all the data provider instances associated with the referenced report.
      * If none found, then an {@link Collections#emptySet() empty set} is returned.
      */
-    public Set<AcctReportDataProviderInstance> findReportDataProviderInstances(AcctReport report) {
-        return reportDataProviderInstancesRepository.findAllByReport(report);
+    public Set<AcctReportDataProviderInstance> findReportDataProviderInstancesByReport(AcctReport report) {
+        return findAllDataProviderInstancesByReportIn(Set.of(report));
     }
 
     /**

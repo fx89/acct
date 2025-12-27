@@ -11,6 +11,7 @@ import java.util.Set;
 
 import static com.desolatetimelines.acct.reporting.util.AcctReportingRepoSpringDataUtils.*;
 import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toSet;
 
 /**
  * Implementation of the
@@ -41,11 +42,13 @@ public class SpringJpaAcctReportSeriesRepository implements AcctReportSeriesRepo
     }
 
     @Override
-    public Set<AcctReportSeries> findAllByReport(AcctReport report) {
+    public Set<AcctReportSeries> findAllByReportIn(Set<AcctReport> reports) {
         return
             new HashSet<>(
-                jpaAcctReportSeriesRepository.findAllByReport(
-                    doWithJpaAcctReportReturning(report, identity())
+                jpaAcctReportSeriesRepository.findAllByReportIn(
+                    reports.stream()
+                        .map(report -> doWithJpaAcctReportReturning(report, identity()))
+                        .collect(toSet())
                 )
             );
     }

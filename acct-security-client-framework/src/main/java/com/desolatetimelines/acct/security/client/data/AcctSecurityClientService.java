@@ -169,6 +169,20 @@ public class AcctSecurityClientService {
     }
 
     /**
+     * Returns a group of collections containing the UUIDs of the reports accessible to the user
+     * via each possible ownership type: <ul>
+     * <li>{@link OwnerType#USER accessible to the user}</li>
+     * <li>{@link OwnerType#GROUP accessible to the user's group}</li>
+     * <li>{@link OwnerType#PUBLIC accessible to everyone}</li>
+     * </ul>
+     *
+     * @param userUUID the UUID of the user whose resources are being queried
+     */
+    public OwnedReportsGroup getUserAccessibleReports(String userUUID) {
+        return reportOwnershipEndpointClient.getUserAccessibleReports(userUUID);
+    }
+
+    /**
      * Queries the security service for the accessibility report for the given
      * resource type, user UUID and resource UUID
      *

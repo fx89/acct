@@ -71,17 +71,25 @@ public enum ReportingPrivilege {
             .build()
     ),
 
-    REPORT_SAVE(
+    REPORTS_SAVE(
         AcctPrivilege.builder()
-            .withPrivilegeId(ReportingPrivilegeIds.REPORT_SAVE)
+            .withPrivilegeId(ReportingPrivilegeIds.REPORTS_SAVE)
             .withPrivilegeName("Save reports")
             .withPrivilegeDescription("Allows creating new reports or updating existing reports that are accessible to the current user either directly or via groups")
             .build()
     ),
 
-    REPORT_RUN(
+    REPORTS_READ(
         AcctPrivilege.builder()
-            .withPrivilegeId(ReportingPrivilegeIds.REPORT_RUN)
+            .withPrivilegeId(ReportingPrivilegeIds.REPORTS_SAVE)
+            .withPrivilegeName("Read reports")
+            .withPrivilegeDescription("Allows listing and reading the properties of reports that are accessible to the current user either directly or via groups")
+            .build()
+    ),
+
+    REPORTS_RUN(
+        AcctPrivilege.builder()
+            .withPrivilegeId(ReportingPrivilegeIds.REPORTS_RUN)
             .withPrivilegeName("Run reports")
             .withPrivilegeDescription("Allows running reports and individual data provider instances and retrieving data sets resulted from these runs")
             .build()

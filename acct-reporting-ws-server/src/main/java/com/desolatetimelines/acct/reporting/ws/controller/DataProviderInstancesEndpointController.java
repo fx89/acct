@@ -76,7 +76,7 @@ public class DataProviderInstancesEndpointController implements DataProviderInst
     }
 
     @Override
-    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + REPORT_RUN + "')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + REPORTS_RUN + "')")
     @PostMapping(value = "/dataSet", produces = APPLICATION_JSON_VALUE)
     public AcctReportingDataSet getDataProviderInstanceDataSet(
         @NonNull @RequestParam(name = "dataProviderInstanceUUID") String dataProviderInstanceUUID,

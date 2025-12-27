@@ -6,6 +6,7 @@ import com.desolatetimelines.acct.reporting.ws.model.ReportSeries;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.desolatetimelines.acct.reporting.ws.mapper.ReportSeriesTypeMapper.fromAcctReportSeriesType;
 import static com.desolatetimelines.acct.reporting.ws.mapper.ReportSeriesTypeMapper.toAcctReportSeriesType;
 
 /**
@@ -14,11 +15,28 @@ import static com.desolatetimelines.acct.reporting.ws.mapper.ReportSeriesTypeMap
 public abstract class ReportSeriesMapper {
 
     public static ReportSeriesDetails toReportSeriesDetails(ReportSeries reportSeries) {
+        if (reportSeries == null) {
+            return null;
+        }
+
         return
             ReportSeriesDetails.builder()
                 .withReportColumnName(reportSeries.reportColumnName())
                 .withReportSeriesName(reportSeries.reportSeriesName())
                 .withReportSeriesType(toAcctReportSeriesType(reportSeries.reportSeriesType()))
+                .build();
+    }
+
+    public static ReportSeries fromReportSeriesDetails(ReportSeriesDetails reportSeriesDetails) {
+        if (reportSeriesDetails == null) {
+            return null;
+        }
+
+        return
+            ReportSeries.builder()
+                .withReportColumnName(reportSeriesDetails.reportColumnName())
+                .withReportSeriesName(reportSeriesDetails.reportSeriesName())
+                .withReportSeriesType(fromAcctReportSeriesType(reportSeriesDetails.reportSeriesType()))
                 .build();
     }
 
@@ -30,6 +48,17 @@ public abstract class ReportSeriesMapper {
         return
             reportSeries.stream()
                 .map(ReportSeriesMapper::toReportSeriesDetails)
+                .collect(Collectors.toSet());
+    }
+
+    public static Set<ReportSeries> fromReportSeriesDetailsSet(Set<ReportSeriesDetails> reportSeriesDetails) {
+        if (reportSeriesDetails == null) {
+            return null;
+        }
+
+        return
+            reportSeriesDetails.stream()
+                .map(ReportSeriesMapper::fromReportSeriesDetails)
                 .collect(Collectors.toSet());
     }
 

@@ -28,14 +28,14 @@ public interface AcctReportDataProviderInstancesRepository {
 
     /**
      * Looks up all the {@link AcctReportDataProviderInstance report data provider instances}
-     * associated with the referenced {@link AcctReport report}.
+     * associated with any of the referenced {@link AcctReport reports}.
      *
-     * @param report A reference to the report for which the data provider instances need to
-     *               be fetched.
+     * @param reports A set of references to the reports for which the data provider instances
+     *                need to be fetched.
      * @return A set of all the data provider instances associated with the referenced report.
      * If none found, then an {@link Collections#emptySet() empty set} is returned.
      */
-    Set<AcctReportDataProviderInstance> findAllByReport(AcctReport report);
+    Set<AcctReportDataProviderInstance> findAllByReportIn(Set<AcctReport> reports);
 
     /**
      * Deletes the referenced {@link AcctReportDataProviderInstance report data provider instance}.

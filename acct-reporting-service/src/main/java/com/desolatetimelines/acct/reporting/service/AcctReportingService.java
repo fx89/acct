@@ -1,21 +1,21 @@
 package com.desolatetimelines.acct.reporting.service;
 
 import com.desolatetimelines.acct.common.model.ObjectTypes;
+import com.desolatetimelines.acct.common.model.Page;
+import com.desolatetimelines.acct.common.utils.Streams;
 import com.desolatetimelines.acct.reporting.data.service.AcctReportingDataService;
 import com.desolatetimelines.acct.reporting.dataprovider.model.*;
 import com.desolatetimelines.acct.reporting.dataprovider.service.AcctReportingDataCompiler;
 import com.desolatetimelines.acct.reporting.exception.AcctReportingServiceException;
 import com.desolatetimelines.acct.reporting.exception.AcctReportingServiceNotFoundException;
 import com.desolatetimelines.acct.reporting.exception.AcctReportingServiceSecurityException;
+import com.desolatetimelines.acct.reporting.mapper.AcctReportSeriesMapper;
 import com.desolatetimelines.acct.reporting.mapper.DashboardReadablePropertiesMapper;
 import com.desolatetimelines.acct.reporting.model.*;
 import com.desolatetimelines.acct.security.client.data.AcctSecurityClientService;
 import com.desolatetimelines.acct.security.client.model.ResourceType;
 import com.desolatetimelines.acct.security.client.model.UserResourceAccessRights;
-import com.desolatetimelines.acct.security.ws.endpoint.model.DashboardOwner;
-import com.desolatetimelines.acct.security.ws.endpoint.model.OwnedDashboardsGroup;
-import com.desolatetimelines.acct.security.ws.endpoint.model.OwnerType;
-import com.desolatetimelines.acct.security.ws.endpoint.model.ReportOwner;
+import com.desolatetimelines.acct.security.ws.endpoint.model.*;
 import com.desolatetimelines.acct.usage.ws.client.RESTUsageEndpointClient;
 import com.desolatetimelines.acct.usage.ws.model.ServiceItemTypesList;
 import jakarta.transaction.Transactional;
@@ -37,6 +37,7 @@ import static com.desolatetimelines.acct.reporting.mapper.AcctDataProviderInstan
 import static com.desolatetimelines.acct.reporting.mapper.AcctDataProviderInstanceRuntimeParametersMapper.*;
 import static com.desolatetimelines.acct.reporting.privilegesprovider.model.ReportingPrivilegeIds.DASHBOARDS_DELETE_GROUP;
 import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toSet;
 
 /**
  * Reporting services layer
@@ -324,7 +325,7 @@ public class AcctReportingService {
         final Set<String> suppliedInstancePropertyNames =
             dataProviderInstanceDetails.instanceProperties().stream()
                 .map(DataProviderInstanceDetails.DataProviderInstanceProperty::propertyName)
-                .collect(Collectors.toSet());
+                .collect(toSet());
 
         if (!dataProviderId.instanceProperties().stream()
             .allMatch(p -> suppliedInstancePropertyNames.contains(p.name()))
@@ -481,7 +482,7 @@ public class AcctReportingService {
                     dataProviderRuntimeParameters,
                     instanceRuntimeParameters
                 )
-                .collect(Collectors.toSet());
+                .collect(toSet());
     }
 
     public AcctReportingDataProviderDataSet getDataProviderInstanceDataSet(
@@ -592,6 +593,85 @@ public class AcctReportingService {
         return savedReport;
     }
 
+    public Page<ExtendedReportDetails> findSortedPageOfUserAccessibleReports(
+        int pageNumber,
+        int pageSize,
+        String userUUID
+    ) {
+        // Fetch the lists of accessible reports
+        final OwnedReportsGroup ownedReportsGroup = securityClientService.getUserAccessibleReports(userUUID);
+
+        // concatenate the lists of accessible reports into a single set
+        final Set<String> userAccessibleReports =
+            Streams.multiConcat(
+                ownedReportsGroup.groupReports().stream(),
+                ownedReportsGroup.publicReports().stream(),
+                ownedReportsGroup.userReports().stream()
+            ).collect(toSet());
+
+        // Fetch the requested page
+        final Page<AcctReport> pageOfReports =
+            dataService.findAllReportsByReportUUIDIn(
+                userAccessibleReports,
+                pageNumber,
+                pageSize
+            );
+
+        // Put the page content into a set
+        final Set<AcctReport> reportsInPage = new HashSet<>(pageOfReports.data());
+
+        // Fetch the data provider instances for all the reports in the page
+        final Set<AcctReportDataProviderInstance> dataProviderInstances =
+            dataService.findAllDataProviderInstancesByReportIn(reportsInPage);
+
+        // Fetch the report series for all the reports in the page
+        final Set<AcctReportSeries> series =
+            dataService.findAllReportSeriesByReportIn(reportsInPage);
+
+        // Map the fetched entities to the response type
+        return new Page<>(
+            reportsInPage.stream()
+                .map(report -> combineExtendedReportDetails(report, dataProviderInstances, series))
+                .toList(),
+            pageOfReports.numElements(),
+            pageOfReports.maxElements()
+        );
+    }
+
+    private static ExtendedReportDetails combineExtendedReportDetails(
+        AcctReport report,
+        Set<AcctReportDataProviderInstance> dataProviderInstances,
+        Set<AcctReportSeries> series
+    ) {
+        if (report == null) {
+            return null;
+        }
+
+        return
+            new ExtendedReportDetails(
+                report.getReportUUID(),
+                ReportDetails.builder()
+                    .withReportName(report.getReportName())
+                    .withReportDescription(report.getReportDescription())
+                    .withReportSQL(report.getReportSQLStatement())
+                    .withReportType(report.getReportType())
+                    .withReportCategoryColumnName(report.getReportCategoryColumnName())
+                    .withDataProviderInstanceUUIDs(
+                        dataProviderInstances.stream()
+                            .filter(dpi -> Objects.equals(dpi.getReport(), report))
+                            .map(dpi -> dpi.getDataProviderInstance().getDataProviderInstanceUUID())
+                            .collect(toSet())
+                    )
+                    .withReportSeries(
+                        series.stream()
+                            .filter(s -> Objects.equals(s.getReport(), report))
+                            .map(AcctReportSeriesMapper::toReportSeriesDetails)
+                            .collect(toSet())
+                    )
+                    .build()
+            );
+    }
+
     private void updateReportSeries(AcctReport report, Set<ReportSeriesDetails> reportSeriesDetails) {
         // Fetch any report series that might already have been set
         final Set<AcctReportSeries> reportSeries = dataService.findAllReportSeriesByReport(report);
@@ -666,7 +746,7 @@ public class AcctReportingService {
     private void updateReportDataProviderInstances(AcctReport report, Set<String> dataProviderInstanceUUIDs) {
         // Fetch any existing data provider instances mapped to the report
         final Set<AcctReportDataProviderInstance> reportDataProviderInstances =
-            dataService.findReportDataProviderInstances(report);
+            dataService.findReportDataProviderInstancesByReport(report);
 
         // Declare the key extractor function for report data provider instances
         final Function<AcctReportDataProviderInstance, String> reportDataProviderInstanceKeyExtractor =

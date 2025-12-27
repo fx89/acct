@@ -28,14 +28,14 @@ public interface AcctReportSeriesRepository {
 
     /**
      * Returns a set of all {@link AcctReportSeries report series} that are
-     * associated with the referenced report.
+     * associated with any of the referenced reports.
      *
-     * @param report A reference to the report whose report series are to
-     *               be fetched.
+     * @param reports A set of references to the reports whose report series
+     *                are to be fetched.
      * @return A set containing the fetched report series. If none found,
      * then an {@link Collections#emptySet() empty set} is returned.
      */
-    Set<AcctReportSeries> findAllByReport(AcctReport report);
+    Set<AcctReportSeries> findAllByReportIn(Set<AcctReport> reports);
 
     /**
      * Deletes the referenced {@link AcctReportSeries report series}.

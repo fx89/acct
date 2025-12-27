@@ -1,6 +1,10 @@
 package com.desolatetimelines.acct.reporting.ws.model;
 
+import java.util.HashSet;
 import java.util.Set;
+
+import static com.desolatetimelines.acct.common.utils.ValidationUtils.throwIfNull;
+import static com.desolatetimelines.acct.common.utils.ValidationUtils.throwIfNullOrEmpty;
 
 /**
  * Container for the properties of ACCT reports.
@@ -27,4 +31,75 @@ public record ReportProperties(
     String reportCategoryColumnName,
     Set<ReportSeries> reportSeries
 ) {
+
+    public static ReportPropertiesBuilder builder() {
+        return new ReportPropertiesBuilder();
+    }
+
+    public static class ReportPropertiesBuilder {
+        private String reportName;
+        private String reportDescription;
+        private ReportType reportType;
+        private final Set<String> dataProviderInstanceUUIDs = new HashSet<>();
+        private String reportSQL;
+        private String reportCategoryColumnName;
+        private final Set<ReportSeries> reportSeries = new HashSet<>();
+
+        public ReportPropertiesBuilder withReportName(String reportName) {
+            this.reportName = reportName;
+            return this;
+        }
+
+        public ReportPropertiesBuilder withReportDescription(String reportDescription) {
+            this.reportDescription = reportDescription;
+            return this;
+        }
+
+        public ReportPropertiesBuilder withReportType(ReportType reportType) {
+            this.reportType = reportType;
+            return this;
+        }
+
+        public ReportPropertiesBuilder withDataProviderInstanceUUIDs(Set<String> dataProviderInstanceUUIDs) {
+            throwIfNullOrEmpty(dataProviderInstanceUUIDs, () -> new IllegalArgumentException("Data provider instance UUIDs not provided"));
+            this.dataProviderInstanceUUIDs.addAll(dataProviderInstanceUUIDs);
+            return this;
+        }
+
+        public ReportPropertiesBuilder withReportSQL(String reportSQL) {
+            this.reportSQL = reportSQL;
+            return this;
+        }
+
+        public ReportPropertiesBuilder withReportCategoryColumnName(String reportCategoryColumnName) {
+            this.reportCategoryColumnName = reportCategoryColumnName;
+            return this;
+        }
+
+        public ReportPropertiesBuilder withReportSeries(Set<ReportSeries> reportSeries) {
+            throwIfNullOrEmpty(reportSeries, () -> new IllegalArgumentException("Report series not provided"));
+            this.reportSeries.addAll(reportSeries);
+            return this;
+        }
+
+        public ReportProperties build() {
+            throwIfNullOrEmpty(reportName, () -> new IllegalArgumentException("Report name not provided"));
+            throwIfNull(reportType, () -> new IllegalArgumentException("Report type not provided"));
+            throwIfNullOrEmpty(dataProviderInstanceUUIDs, () -> new IllegalArgumentException("Data provider instance UUIDs not provided"));
+            throwIfNullOrEmpty(reportSQL, () -> new IllegalArgumentException("Report SQL not provided"));
+            throwIfNullOrEmpty(reportSeries, () -> new IllegalArgumentException("Report series not provided"));
+
+            return
+                new ReportProperties(
+                    reportName,
+                    reportDescription,
+                    reportType,
+                    dataProviderInstanceUUIDs,
+                    reportSQL,
+                    reportCategoryColumnName,
+                    reportSeries
+                );
+        }
+    }
+
 }

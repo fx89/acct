@@ -21,8 +21,10 @@ public abstract class ReportingPrivilegeIds {
 
     public static final String DATA_PROVIDER_INSTANCES_DELETE = "DATA_PROVIDER_INSTANCES_DELETE";
 
-    public static final String REPORT_SAVE = "REPORT_SAVE";
+    public static final String REPORTS_SAVE = "REPORTS_SAVE";
 
-    public static final String REPORT_RUN = "REPORT_RUN";
+    public static final String REPORTS_READ = "REPORTS_READ";
+
+    public static final String REPORTS_RUN = "REPORTS_RUN";
 
 }
