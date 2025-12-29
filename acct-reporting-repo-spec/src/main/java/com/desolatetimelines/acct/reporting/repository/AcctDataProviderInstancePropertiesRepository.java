@@ -16,6 +16,8 @@ public interface AcctDataProviderInstancePropertiesRepository {
 
     void deleteByDataProviderInstance(AcctDataProviderInstance dataProviderInstance);
 
-    Set<AcctDataProviderInstanceProperty> findAllByDataProviderInstance(AcctDataProviderInstance dataProviderInstance);
+    Set<AcctDataProviderInstanceProperty> findAllByDataProviderInstanceIn(
+        Set<AcctDataProviderInstance> dataProviderInstances
+    );
 
 }

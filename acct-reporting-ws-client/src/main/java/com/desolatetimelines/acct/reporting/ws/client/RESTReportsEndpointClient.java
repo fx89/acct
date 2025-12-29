@@ -2,9 +2,7 @@ package com.desolatetimelines.acct.reporting.ws.client;
 
 import com.desolatetimelines.acct.common.ws.model.AcctPage;
 import com.desolatetimelines.acct.reporting.ws.endpoint.ReportsEndpoint;
-import com.desolatetimelines.acct.reporting.ws.model.ReportExtendedProperties;
-import com.desolatetimelines.acct.reporting.ws.model.ReportProperties;
-import com.desolatetimelines.acct.reporting.ws.model.ReportUUIDResponse;
+import com.desolatetimelines.acct.reporting.ws.model.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
@@ -12,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Set;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -33,6 +33,13 @@ public interface RESTReportsEndpointClient extends ReportsEndpoint {
     AcctPage<ReportExtendedProperties> findSortedPageOfUserAccessibleReports(
         @RequestParam(name = "pageNumber") int pageNumber,
         @RequestParam(name = "pageSize") int pageSize
+    );
+
+    @Override
+    @PostMapping(value = "/data", produces = APPLICATION_JSON_VALUE)
+    AcctReportingDataSet getReportDataWithParameters(
+        @RequestParam(name = "reportUUID") String reportUUID,
+        @RequestBody Set<ReportParameter> parameters
     );
 
 }

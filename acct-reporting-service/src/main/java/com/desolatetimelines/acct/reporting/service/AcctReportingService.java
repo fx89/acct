@@ -638,6 +638,80 @@ public class AcctReportingService {
         );
     }
 
+    public AcctReportingDataProviderDataSet getReportDataWithParameters(
+        String reportUUID,
+        Map<String, String> parameters,
+        String userUUID
+    ) {
+        // Make sure the user has access to the report
+        if (!securityClientService.resourceIsAccessibleToUser(
+            ResourceType.REPORT,
+            userUUID,
+            reportUUID,
+            UserResourceAccessRights.builder()
+                .withAnyResources(true)
+                .withGroupResources(true)
+                .withOwnResources(true)
+                .build()
+        )) {
+            throw new AcctReportingServiceSecurityException(
+                errors,
+                REPORT,
+                reportUUID
+            );
+        }
+
+        // Find the report or throw an exception
+        final AcctReport report = findReport(reportUUID);
+
+        // Find the data provider instances for the report
+        final Set<AcctReportDataProviderInstance> reportDataProviderInstances =
+            dataService.findReportDataProviderInstancesByReport(report);
+
+        // Find the data provider instance properties for the data provider instances found at the previous step
+        final Set<AcctDataProviderInstanceProperty> instanceProperties =
+            dataService.findAllDataProviderInstancePropertiesByDataProviderInstanceIn(
+                reportDataProviderInstances.stream()
+                    .map(AcctReportDataProviderInstance::getDataProviderInstance)
+                    .collect(toSet())
+            );
+
+        // Build the set of data provider instance specifications to be fed into the report compilation request builder
+        final Set<DataProviderInstanceSpecification> dataProviderInstanceSpecifications =
+            reportDataProviderInstances.stream()
+                .map(reportDataProviderInstance ->
+                    DataProviderInstanceSpecification.builder()
+                        .withDataProviderUUID(UUID.fromString(reportDataProviderInstance.getDataProviderInstance().getDataProviderUUID()))
+                        .withInstanceName(reportDataProviderInstance.getDataProviderInstance().getDataProviderInstanceName())
+                        .withDataProviderInstanceProperties(
+                            instanceProperties.stream()
+                                .filter(instanceProperty ->
+                                    Objects.equals(
+                                        instanceProperty.getDataProviderInstance(),
+                                        reportDataProviderInstance.getDataProviderInstance()
+                                    )
+                                )
+                                .collect(Collectors.toMap(
+                                    AcctDataProviderInstanceProperty::getPropertyName,
+                                    AcctDataProviderInstanceProperty::getPropertyValue
+                                ))
+                        )
+                        .build()
+                )
+                .collect(toSet());
+
+        // Build the report compilation request
+        final ReportCompilationRequest reportCompilationRequest =
+            ReportCompilationRequest.builder()
+                .withInstances(dataProviderInstanceSpecifications)
+                .withReportParameters(parameters)
+                .withReportSqlStatement(report.getReportSQLStatement())
+                .build();
+
+        // Execute the report compilation request and retrieve the data set
+        return reportCompiler.compileReport(reportCompilationRequest);
+    }
+
     private static ExtendedReportDetails combineExtendedReportDetails(
         AcctReport report,
         Set<AcctReportDataProviderInstance> dataProviderInstances,

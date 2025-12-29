@@ -9,7 +9,8 @@
 // DONE: REP-02001: Reports endpoint: Save report for user (reports without UUID are considered to be new) - includes columns and series
 // TODO: REP-02002: Reports endpoint: Update report groups list - sets which group can access the report
 // DONE: REP-02003: Reports endpoint: Get sorted page of user accessible reports (user reports and group reports) - call SEC-03002
-// TODO: REP-02004: Reports endpoint: Get report data with filters
+// TODO: REP-02004: Reports endpoint: Get report parameters
+// DONE: REP-02005: Reports endpoint: Get report data with filters
 
 // DONE: REP-03001: Used items endpoint: Get items in use of type
 

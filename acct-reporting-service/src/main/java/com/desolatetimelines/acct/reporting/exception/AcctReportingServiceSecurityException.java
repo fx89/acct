@@ -31,6 +31,10 @@ public class AcctReportingServiceSecurityException extends AcctReportingServiceE
             return errors.SECURITY_INACCESSIBLE_DASHBOARD;
         }
 
+        if (ObjectTypes.REPORT == resourceType) {
+            return errors.SECURITY_INACCESSIBLE_REPORT;
+        }
+
         throw new IllegalStateException(
             "Developer forgot to add the code that handles the resource type " +
                 (resourceType == null ? "null" : resourceType.name())

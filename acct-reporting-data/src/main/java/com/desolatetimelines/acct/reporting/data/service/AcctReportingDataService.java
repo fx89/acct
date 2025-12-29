@@ -208,7 +208,23 @@ public class AcctReportingDataService {
     public Set<AcctDataProviderInstanceProperty> findAllDataProviderInstancePropertiesByDataProviderInstance(
         AcctDataProviderInstance dataProviderInstance
     ) {
-        return dataProviderInstancePropertiesRepository.findAllByDataProviderInstance(dataProviderInstance);
+        return
+            findAllDataProviderInstancePropertiesByDataProviderInstanceIn(
+                Set.of(dataProviderInstance)
+            );
+    }
+
+    /**
+     * Returns a set of all {@link AcctDataProviderInstanceProperty instance properties} that are linked
+     * to any of the referenced {@link AcctDataProviderInstance data provider instances}.
+     *
+     * @param dataProviderInstances A set that contains references to the data provider instances that
+     *                              contain the properties to be fetched.
+     */
+    public Set<AcctDataProviderInstanceProperty> findAllDataProviderInstancePropertiesByDataProviderInstanceIn(
+        Set<AcctDataProviderInstance> dataProviderInstances
+    ) {
+        return dataProviderInstancePropertiesRepository.findAllByDataProviderInstanceIn(dataProviderInstances);
     }
 
     /**

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.desolatetimelines.acct.reporting.util.AcctReportingRepoSpringDataUtils.*;
 import static java.util.function.Function.identity;
@@ -52,14 +53,16 @@ public class SpringJpaAcctDataProviderInstancePropertiesRepository
     }
 
     @Override
-    public Set<AcctDataProviderInstanceProperty> findAllByDataProviderInstance(
-        AcctDataProviderInstance dataProviderInstance
+    public Set<AcctDataProviderInstanceProperty> findAllByDataProviderInstanceIn(
+        Set<AcctDataProviderInstance> dataProviderInstances
     ) {
         return
             new HashSet<>(
                 jpaAcctDataProviderInstancePropertiesRepository
-                    .findAllByDataProviderInstance(
-                        doWithJpaAcctDataProviderInstanceReturning(dataProviderInstance, identity())
+                    .findAllByDataProviderInstanceIn(
+                        dataProviderInstances.stream()
+                            .map(dataProviderInstance -> doWithJpaAcctDataProviderInstanceReturning(dataProviderInstance, identity()))
+                            .collect(Collectors.toSet())
                     )
             );
     }

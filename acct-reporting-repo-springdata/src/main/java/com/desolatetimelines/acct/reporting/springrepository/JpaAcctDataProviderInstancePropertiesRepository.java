@@ -10,8 +10,8 @@ public interface JpaAcctDataProviderInstancePropertiesRepository extends CrudRep
 
     void deleteByDataProviderInstance(JpaAcctDataProviderInstance dataProviderInstance);
 
-    Set<JpaAcctDataProviderInstanceProperty> findAllByDataProviderInstance(
-        JpaAcctDataProviderInstance dataProviderInstance
+    Set<JpaAcctDataProviderInstanceProperty> findAllByDataProviderInstanceIn(
+        Set<JpaAcctDataProviderInstance> dataProviderInstances
     );
 
 }

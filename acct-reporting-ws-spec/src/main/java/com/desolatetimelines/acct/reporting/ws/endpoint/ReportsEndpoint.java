@@ -1,11 +1,11 @@
 package com.desolatetimelines.acct.reporting.ws.endpoint;
 
 import com.desolatetimelines.acct.common.ws.model.AcctPage;
-import com.desolatetimelines.acct.reporting.ws.model.ReportExtendedProperties;
-import com.desolatetimelines.acct.reporting.ws.model.ReportProperties;
-import com.desolatetimelines.acct.reporting.ws.model.ReportUUIDResponse;
+import com.desolatetimelines.acct.reporting.ws.model.*;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
+
+import java.util.Set;
 
 /**
  * Specification for the Reports endpoint, which provides an API that lets consumers define, edit,
@@ -36,6 +36,19 @@ public interface ReportsEndpoint {
     AcctPage<ReportExtendedProperties> findSortedPageOfUserAccessibleReports(
         int pageNumber,
         int pageSize
+    );
+
+    /**
+     * Runs the referenced report and returns the data set resulted from running the report.
+     *
+     * @param reportUUID Uniquely identifies the report to run.
+     * @param parameters Contains the runtime parameters for the report. At least the mandatory
+     *                   parameters need to be provided.
+     * @return A data structure that contains the retrieved data and the meta-data that defines it.
+     */
+    AcctReportingDataSet getReportDataWithParameters(
+        String reportUUID,
+        Set<ReportParameter> parameters
     );
 
 }

@@ -4,17 +4,18 @@ import com.desolatetimelines.acct.common.ws.model.AcctPage;
 import com.desolatetimelines.acct.common.ws.model.AcctUserClaims;
 import com.desolatetimelines.acct.reporting.service.AcctReportingService;
 import com.desolatetimelines.acct.reporting.ws.endpoint.ReportsEndpoint;
-import com.desolatetimelines.acct.reporting.ws.model.ReportExtendedProperties;
-import com.desolatetimelines.acct.reporting.ws.model.ReportProperties;
-import com.desolatetimelines.acct.reporting.ws.model.ReportUUIDResponse;
+import com.desolatetimelines.acct.reporting.ws.model.*;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import static com.desolatetimelines.acct.common.ws.util.AcctJwtUtils.extractCurrentUserClaims;
-import static com.desolatetimelines.acct.reporting.privilegesprovider.model.ReportingPrivilegeIds.REPORTS_READ;
-import static com.desolatetimelines.acct.reporting.privilegesprovider.model.ReportingPrivilegeIds.REPORTS_SAVE;
+import static com.desolatetimelines.acct.reporting.privilegesprovider.model.ReportingPrivilegeIds.*;
+import static com.desolatetimelines.acct.reporting.ws.mapper.AcctReportingDataSetsMapper.fromAcctReportingDataProviderDataSet;
 import static com.desolatetimelines.acct.reporting.ws.mapper.ReportExtendedPropertiesMapper.fromPageOfExtendedReportDetails;
 import static com.desolatetimelines.acct.reporting.ws.mapper.ReportPropertiesMapper.toReportDetails;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -71,6 +72,31 @@ public class ReportsEndpointController implements ReportsEndpoint {
                     userClaims.userUUID()
                 ),
                 pageNumber
+            );
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + REPORTS_RUN + "')")
+    @PostMapping(value = "/data", produces = APPLICATION_JSON_VALUE)
+    public AcctReportingDataSet getReportDataWithParameters(
+        @RequestParam(name = "reportUUID") String reportUUID,
+        @RequestBody Set<ReportParameter> parameters
+    ) {
+        // Get the user claims
+        final AcctUserClaims userClaims = extractCurrentUserClaims();
+
+        // Run the report for the user, perform all the mappings and return the resulted data set
+        return
+            fromAcctReportingDataProviderDataSet(
+                reportingService.getReportDataWithParameters(
+                    reportUUID,
+                    parameters.stream()
+                        .collect(Collectors.toMap(
+                            ReportParameter::parameterName,
+                            ReportParameter::parameterValue
+                        )),
+                    userClaims.userUUID()
+                )
             );
     }
 
