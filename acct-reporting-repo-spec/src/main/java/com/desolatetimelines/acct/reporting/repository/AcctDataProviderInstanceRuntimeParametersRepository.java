@@ -19,6 +19,6 @@ public interface AcctDataProviderInstanceRuntimeParametersRepository {
 
     void deleteByDataProviderInstance(AcctDataProviderInstance dataProviderInstance);
 
-    Set<AcctDataProviderInstanceRuntimeParameter> findAllByDataProviderInstance(AcctDataProviderInstance dataProviderInstance);
+    Set<AcctDataProviderInstanceRuntimeParameter> findAllByDataProviderInstanceIn(Set<AcctDataProviderInstance> dataProviderInstances);
 
 }

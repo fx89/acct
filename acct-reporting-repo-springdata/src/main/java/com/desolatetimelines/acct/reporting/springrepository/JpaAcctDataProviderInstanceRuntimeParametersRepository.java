@@ -11,8 +11,8 @@ public interface JpaAcctDataProviderInstanceRuntimeParametersRepository
 
     void deleteByDataProviderInstance(JpaAcctDataProviderInstance dataProviderInstance);
 
-    Set<JpaAcctDataProviderInstanceRuntimeParameter> findAllByDataProviderInstance(
-        JpaAcctDataProviderInstance dataProviderInstance
+    Set<JpaAcctDataProviderInstanceRuntimeParameter> findAllByDataProviderInstanceIn(
+        Set<JpaAcctDataProviderInstance> dataProviderInstance
     );
 
 }

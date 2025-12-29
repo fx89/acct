@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import static com.desolatetimelines.acct.common.ws.util.AcctJwtUtils.extractCurrentUserClaims;
 import static com.desolatetimelines.acct.reporting.privilegesprovider.model.ReportingPrivilegeIds.*;
 import static com.desolatetimelines.acct.reporting.ws.mapper.AcctReportingDataSetsMapper.fromAcctReportingDataProviderDataSet;
+import static com.desolatetimelines.acct.reporting.ws.mapper.DataProviderInstanceRuntimeParametersMapper.fromSetOfAcctDataProviderInstanceRuntimeParameterSpec;
 import static com.desolatetimelines.acct.reporting.ws.mapper.ReportExtendedPropertiesMapper.fromPageOfExtendedReportDetails;
 import static com.desolatetimelines.acct.reporting.ws.mapper.ReportPropertiesMapper.toReportDetails;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -76,9 +77,25 @@ public class ReportsEndpointController implements ReportsEndpoint {
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + REPORTS_READ + "')")
+    @GetMapping(value = "/parameters", produces = APPLICATION_JSON_VALUE)
+    public Set<DataProviderInstanceRuntimeParameter> getReportRuntimeParameters(
+        @RequestParam(name = "reportUUID") String reportUUID
+    ) {
+        // Get the user claims
+        final AcctUserClaims userClaims = extractCurrentUserClaims();
+
+        // Fetch the runtime parameters, do the mapping and return the set
+        return
+            fromSetOfAcctDataProviderInstanceRuntimeParameterSpec(
+                reportingService.getReportRuntimeParameters(reportUUID, userClaims.userUUID())
+            );
+    }
+
+    @Override
     @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + REPORTS_RUN + "')")
     @PostMapping(value = "/data", produces = APPLICATION_JSON_VALUE)
-    public AcctReportingDataSet getReportDataWithParameters(
+    public AcctReportingDataSet getReportDataWithRuntimeParameters(
         @RequestParam(name = "reportUUID") String reportUUID,
         @RequestBody Set<ReportParameter> parameters
     ) {
@@ -99,6 +116,5 @@ public class ReportsEndpointController implements ReportsEndpoint {
                 )
             );
     }
-
 
 }

@@ -39,6 +39,13 @@ public interface ReportsEndpoint {
     );
 
     /**
+     * Retrieves a set of all the runtime parameters accepted by the referenced report.
+     *
+     * @param reportUUID Uniquely identifies the report.
+     */
+    Set<DataProviderInstanceRuntimeParameter> getReportRuntimeParameters(String reportUUID);
+
+    /**
      * Runs the referenced report and returns the data set resulted from running the report.
      *
      * @param reportUUID Uniquely identifies the report to run.
@@ -46,7 +53,7 @@ public interface ReportsEndpoint {
      *                   parameters need to be provided.
      * @return A data structure that contains the retrieved data and the meta-data that defines it.
      */
-    AcctReportingDataSet getReportDataWithParameters(
+    AcctReportingDataSet getReportDataWithRuntimeParameters(
         String reportUUID,
         Set<ReportParameter> parameters
     );

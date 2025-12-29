@@ -44,4 +44,15 @@ public abstract class AcctDataProviderInstanceRuntimeParameterDataTypeMapper {
         };
     }
 
+    public static AcctReportingDataProviderReportParameterType toAcctReportingDataProviderReportParameterType(
+        AcctDataProviderInstanceRuntimeParameterDataType acctDataProviderInstanceRuntimeParameterDataType
+    ) {
+        return switch (acctDataProviderInstanceRuntimeParameterDataType) {
+            case NUMERIC -> AcctReportingDataProviderReportParameterType.NUMERIC;
+            case BOOLEAN -> AcctReportingDataProviderReportParameterType.BOOLEAN;
+            case STRING -> AcctReportingDataProviderReportParameterType.STRING;
+            case DATETIME -> AcctReportingDataProviderReportParameterType.DATETIME;
+        };
+    }
+
 }

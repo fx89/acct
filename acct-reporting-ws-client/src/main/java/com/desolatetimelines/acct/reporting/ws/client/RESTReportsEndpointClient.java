@@ -36,8 +36,14 @@ public interface RESTReportsEndpointClient extends ReportsEndpoint {
     );
 
     @Override
+    @GetMapping(value = "/parameters", produces = APPLICATION_JSON_VALUE)
+    Set<DataProviderInstanceRuntimeParameter> getReportRuntimeParameters(
+        @RequestParam(name = "reportUUID") String reportUUID
+    );
+
+    @Override
     @PostMapping(value = "/data", produces = APPLICATION_JSON_VALUE)
-    AcctReportingDataSet getReportDataWithParameters(
+    AcctReportingDataSet getReportDataWithRuntimeParameters(
         @RequestParam(name = "reportUUID") String reportUUID,
         @RequestBody Set<ReportParameter> parameters
     );

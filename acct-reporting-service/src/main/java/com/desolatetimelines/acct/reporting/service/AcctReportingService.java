@@ -34,6 +34,7 @@ import static com.desolatetimelines.acct.common.utils.Collections.intersect;
 import static com.desolatetimelines.acct.common.utils.Collections.minus;
 import static com.desolatetimelines.acct.reporting.mapper.AcctDataProviderInstancePropertiesMapper.toDataProviderInstanceProperties;
 import static com.desolatetimelines.acct.reporting.mapper.AcctDataProviderInstanceRuntimeParameterDataTypeMapper.fromDataProviderParameterDataType;
+import static com.desolatetimelines.acct.reporting.mapper.AcctDataProviderInstanceRuntimeParameterDataTypeMapper.toAcctReportingDataProviderReportParameterType;
 import static com.desolatetimelines.acct.reporting.mapper.AcctDataProviderInstanceRuntimeParametersMapper.*;
 import static com.desolatetimelines.acct.reporting.privilegesprovider.model.ReportingPrivilegeIds.DASHBOARDS_DELETE_GROUP;
 import static java.util.function.Function.identity;
@@ -644,6 +645,119 @@ public class AcctReportingService {
         String userUUID
     ) {
         // Make sure the user has access to the report
+        enforceReportAccessibility(reportUUID, userUUID);
+
+        // Find the report or throw an exception
+        final AcctReport report = findReport(reportUUID);
+
+        // Find the data provider instances for the report
+        final Set<AcctReportDataProviderInstance> reportDataProviderInstances =
+            dataService.findReportDataProviderInstancesByReport(report);
+
+        // Map the found report data provider instances to data provider instances
+        final Set<AcctDataProviderInstance> dataProviderInstances =
+            reportDataProviderInstances.stream()
+                .map(AcctReportDataProviderInstance::getDataProviderInstance)
+                .collect(toSet());
+
+        // Build the data provider instance specifications to feed into the report compilation request
+        final Set<DataProviderInstanceSpecification> dataProviderInstanceSpecifications =
+            buildDataProviderInstanceSpecifications(dataProviderInstances);
+
+        // Build the report compilation request
+        final ReportCompilationRequest reportCompilationRequest =
+            ReportCompilationRequest.builder()
+                .withInstances(dataProviderInstanceSpecifications)
+                .withReportParameters(parameters)
+                .withReportSqlStatement(report.getReportSQLStatement())
+                .build();
+
+        // Execute the report compilation request and retrieve the data set
+        return reportCompiler.compileReport(reportCompilationRequest);
+    }
+
+    public Set<AcctReportingDataProviderReportParameterSpec> getReportRuntimeParameters(
+        String reportUUID,
+        String userUUID
+    ) {
+        // Make sure the user has access to the report
+        enforceReportAccessibility(reportUUID, userUUID);
+
+        // Find the report or throw an exception
+        final AcctReport report = findReport(reportUUID);
+
+        // Find the data provider instances for the report
+        final Set<AcctReportDataProviderInstance> reportDataProviderInstances =
+            dataService.findReportDataProviderInstancesByReport(report);
+
+        // Map the found report data provider instances to data provider instances
+        final Set<AcctDataProviderInstance> dataProviderInstances =
+            reportDataProviderInstances.stream()
+                .map(AcctReportDataProviderInstance::getDataProviderInstance)
+                .collect(toSet());
+
+        // Build the data provider instance specifications to feed into the report compilation request
+        final Set<DataProviderInstanceSpecification> dataProviderInstanceSpecifications =
+            buildDataProviderInstanceSpecifications(dataProviderInstances);
+
+        // Get the runtime parameters for any and all the data provider instance specifications
+        return reportCompiler.getReportParameters(dataProviderInstanceSpecifications);
+    }
+
+    private Set<DataProviderInstanceSpecification> buildDataProviderInstanceSpecifications(
+        Set<AcctDataProviderInstance> acctDataProviderInstances
+    ) {
+        // Find the data provider instance properties for the data provider instances found at the previous step
+        final Set<AcctDataProviderInstanceProperty> instanceProperties =
+            dataService.findAllDataProviderInstancePropertiesByDataProviderInstanceIn(acctDataProviderInstances);
+
+        // Find additional parameters
+        final Set<AcctDataProviderInstanceRuntimeParameter> runtimeParameters =
+            dataService.findAllDataProviderInstanceRuntimeParametersByDataProviderInstanceIn(acctDataProviderInstances);
+
+        // Build the set of data provider instance specifications to be fed into the report compilation request builder
+        return
+            acctDataProviderInstances.stream()
+                .map(dataProviderInstance ->
+                    DataProviderInstanceSpecification.builder()
+                        .withDataProviderUUID(UUID.fromString(dataProviderInstance.getDataProviderUUID()))
+                        .withInstanceName(dataProviderInstance.getDataProviderInstanceName())
+                        .withDataProviderInstanceProperties(
+                            instanceProperties.stream()
+                                .filter(instanceProperty ->
+                                    Objects.equals(
+                                        instanceProperty.getDataProviderInstance(),
+                                        dataProviderInstance
+                                    )
+                                )
+                                .collect(Collectors.toMap(
+                                    AcctDataProviderInstanceProperty::getPropertyName,
+                                    AcctDataProviderInstanceProperty::getPropertyValue
+                                ))
+                        )
+                        .withAdditionalParameters(
+                            runtimeParameters.stream()
+                                .filter(runtimeParameter ->
+                                    Objects.equals(
+                                        runtimeParameter.getDataProviderInstance(),
+                                        dataProviderInstance
+                                    )
+                                )
+                                .map(runtimeParameter ->
+                                    new AcctReportingDataProviderReportParameterSpec(
+                                        runtimeParameter.getParameterName(),
+                                        toAcctReportingDataProviderReportParameterType(runtimeParameter.getParameterDataType()),
+                                        runtimeParameter.isMandatory()
+                                    )
+                                )
+                                .collect(toSet())
+                        )
+                        .build()
+                )
+                .collect(toSet());
+    }
+
+    private void enforceReportAccessibility(String reportUUID, String userUUID) {
         if (!securityClientService.resourceIsAccessibleToUser(
             ResourceType.REPORT,
             userUUID,
@@ -660,56 +774,6 @@ public class AcctReportingService {
                 reportUUID
             );
         }
-
-        // Find the report or throw an exception
-        final AcctReport report = findReport(reportUUID);
-
-        // Find the data provider instances for the report
-        final Set<AcctReportDataProviderInstance> reportDataProviderInstances =
-            dataService.findReportDataProviderInstancesByReport(report);
-
-        // Find the data provider instance properties for the data provider instances found at the previous step
-        final Set<AcctDataProviderInstanceProperty> instanceProperties =
-            dataService.findAllDataProviderInstancePropertiesByDataProviderInstanceIn(
-                reportDataProviderInstances.stream()
-                    .map(AcctReportDataProviderInstance::getDataProviderInstance)
-                    .collect(toSet())
-            );
-
-        // Build the set of data provider instance specifications to be fed into the report compilation request builder
-        final Set<DataProviderInstanceSpecification> dataProviderInstanceSpecifications =
-            reportDataProviderInstances.stream()
-                .map(reportDataProviderInstance ->
-                    DataProviderInstanceSpecification.builder()
-                        .withDataProviderUUID(UUID.fromString(reportDataProviderInstance.getDataProviderInstance().getDataProviderUUID()))
-                        .withInstanceName(reportDataProviderInstance.getDataProviderInstance().getDataProviderInstanceName())
-                        .withDataProviderInstanceProperties(
-                            instanceProperties.stream()
-                                .filter(instanceProperty ->
-                                    Objects.equals(
-                                        instanceProperty.getDataProviderInstance(),
-                                        reportDataProviderInstance.getDataProviderInstance()
-                                    )
-                                )
-                                .collect(Collectors.toMap(
-                                    AcctDataProviderInstanceProperty::getPropertyName,
-                                    AcctDataProviderInstanceProperty::getPropertyValue
-                                ))
-                        )
-                        .build()
-                )
-                .collect(toSet());
-
-        // Build the report compilation request
-        final ReportCompilationRequest reportCompilationRequest =
-            ReportCompilationRequest.builder()
-                .withInstances(dataProviderInstanceSpecifications)
-                .withReportParameters(parameters)
-                .withReportSqlStatement(report.getReportSQLStatement())
-                .build();
-
-        // Execute the report compilation request and retrieve the data set
-        return reportCompiler.compileReport(reportCompilationRequest);
     }
 
     private static ExtendedReportDetails combineExtendedReportDetails(

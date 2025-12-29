@@ -1,5 +1,6 @@
 package com.desolatetimelines.acct.reporting.ws.mapper;
 
+import com.desolatetimelines.acct.reporting.dataprovider.model.AcctReportingDataProviderReportParameterType;
 import com.desolatetimelines.acct.reporting.model.AcctDataProviderInstanceRuntimeParameterDataType;
 import com.desolatetimelines.acct.reporting.ws.model.DataProviderParameterDataType;
 
@@ -27,6 +28,18 @@ public abstract class DataProviderParameterDataTypesMapper {
         }
 
         throw new IllegalArgumentException("Unsupported parameter data type");
+    }
+
+    public static DataProviderParameterDataType fromAcctReportingDataProviderReportParameterType(
+        AcctReportingDataProviderReportParameterType acctReportingDataProviderReportParameterType
+    ) {
+        return
+            switch (acctReportingDataProviderReportParameterType) {
+                case STRING -> DataProviderParameterDataType.STRING;
+                case NUMERIC -> DataProviderParameterDataType.NUMERIC;
+                case DATETIME -> DataProviderParameterDataType.DATETIME;
+                case BOOLEAN -> DataProviderParameterDataType.BOOLEAN;
+            };
     }
 
 }

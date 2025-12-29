@@ -272,7 +272,23 @@ public class AcctReportingDataService {
     public Set<AcctDataProviderInstanceRuntimeParameter> findAllDataProviderInstanceRuntimeParametersByDataProviderInstance(
         AcctDataProviderInstance dataProviderInstance
     ) {
-        return dataProviderInstanceRuntimeParametersRepository.findAllByDataProviderInstance(dataProviderInstance);
+        return
+            findAllDataProviderInstanceRuntimeParametersByDataProviderInstanceIn(
+                Set.of(dataProviderInstance)
+            );
+    }
+
+    /**
+     * Returns a set of all {@link AcctDataProviderInstanceRuntimeParameter runtime parameters} that
+     * are linked to any of the referenced {@link AcctDataProviderInstance data provider instances}.
+     *
+     * @param dataProviderInstances A set of references to the data provider instances that contain
+     *                              the runtime parameters to be fetched.
+     */
+    public Set<AcctDataProviderInstanceRuntimeParameter> findAllDataProviderInstanceRuntimeParametersByDataProviderInstanceIn(
+        Set<AcctDataProviderInstance> dataProviderInstances
+    ) {
+        return dataProviderInstanceRuntimeParametersRepository.findAllByDataProviderInstanceIn(dataProviderInstances);
     }
 
     /**
