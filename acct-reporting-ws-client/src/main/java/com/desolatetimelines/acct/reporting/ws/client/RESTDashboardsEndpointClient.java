@@ -2,6 +2,7 @@ package com.desolatetimelines.acct.reporting.ws.client;
 
 import com.desolatetimelines.acct.reporting.ws.endpoint.DashboardsEndpoint;
 import com.desolatetimelines.acct.reporting.ws.model.DashboardProperties;
+import com.desolatetimelines.acct.reporting.ws.model.DashboardReportProperties;
 import com.desolatetimelines.acct.reporting.ws.model.DashboardUUIDResponse;
 import com.desolatetimelines.acct.reporting.ws.model.UserAccessibleDashboardsContainer;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -34,6 +35,14 @@ public interface RESTDashboardsEndpointClient extends DashboardsEndpoint {
     void deleteDashboard(
         @RequestParam(name = "workspaceUUID") String workspaceUUID,
         @RequestParam(name = "dashboardUUID") String dashboardUUID
+    );
+
+    @Override
+    @PutMapping(value = "/reports", produces = APPLICATION_JSON_VALUE)
+    void saveDashboardReportWithFilters(
+        @RequestParam(name = "workspaceUUID") String workspaceUUID,
+        @RequestParam(name = "dashboardUUID") String dashboardUUID,
+        @RequestBody DashboardReportProperties dashboardReportProperties
     );
 
 }

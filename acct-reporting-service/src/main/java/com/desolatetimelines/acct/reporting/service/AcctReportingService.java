@@ -37,6 +37,7 @@ import static com.desolatetimelines.acct.reporting.mapper.AcctDataProviderInstan
 import static com.desolatetimelines.acct.reporting.mapper.AcctDataProviderInstanceRuntimeParameterDataTypeMapper.toAcctReportingDataProviderReportParameterType;
 import static com.desolatetimelines.acct.reporting.mapper.AcctDataProviderInstanceRuntimeParametersMapper.*;
 import static com.desolatetimelines.acct.reporting.privilegesprovider.model.ReportingPrivilegeIds.DASHBOARDS_DELETE_GROUP;
+import static com.desolatetimelines.acct.reporting.privilegesprovider.model.ReportingPrivilegeIds.DASHBOARDS_SAVE_GROUP;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toSet;
 
@@ -241,47 +242,15 @@ public class AcctReportingService {
         String userUUID,
         Collection<String> privilegeNames
     ) {
-        // Check if the user owns the dashboard directly
-        final boolean isUserDashboard =
-            securityClientService.resourceIsAccessibleToUser(
-                ResourceType.DASHBOARD,
-                userUUID,
-                dashboardUUID,
-                UserResourceAccessRights.builder()
-                    .withOwnResources(true)
-                    .withGroupResources(false)
-                    .withAnyResources(false)
-                    .build()
-            );
-
-        // Check if the user owns the dashboard via a users group
-        final boolean isGroupDashboard =
-            securityClientService.resourceIsAccessibleToUser(
-                ResourceType.DASHBOARD,
-                userUUID,
-                dashboardUUID,
-                UserResourceAccessRights.builder()
-                    .withOwnResources(false)
-                    .withGroupResources(true)
-                    .withAnyResources(false)
-                    .build()
-            );
-
-        // The user does not have the rights to delete the dashboard if the dashboard is not owned
-        // by the user or if the user doesn't have the right to delete group dashboards
-        if (!(isUserDashboard || (isGroupDashboard && privilegeNames.contains(DASHBOARDS_DELETE_GROUP)))) {
-            throw new AcctReportingServiceSecurityException(
-                errors,
-                DASHBOARD,
-                dashboardUUID
-            );
-        }
+        // Make sure the user can access the dashboard
+        verifyDashboardOwnership(userUUID, dashboardUUID, privilegeNames, DASHBOARDS_DELETE_GROUP);
 
         // If the user has the proper access right, then retrieve the dashboard or throw an exception if not found
-        final AcctDashboard dashboard =
-            dataService.findDashboardsByWorkspaceUUIDAndDashboardUUIDIn(workspaceUUID, List.of(dashboardUUID)).stream()
-                .findFirst()
-                .orElseThrow(() -> new AcctReportingServiceNotFoundException(errors, DASHBOARD, dashboardUUID));
+        final AcctDashboard dashboard = findDashboard(workspaceUUID, dashboardUUID);
+
+        // Remove dependencies
+        dataService.deleteDashboardReportFiltersByDashboardReportDashboard(dashboard);
+        dataService.deleteDashboardReportsByDashboard(dashboard);
 
         // Delete the dashboard ownership records
         securityClientService.deleteAllDashboardOwnersByDashboardUUID(dashboardUUID);
@@ -289,6 +258,97 @@ public class AcctReportingService {
         // Delete the dashboard
         dataService.deleteDashboard(dashboard);
 
+    }
+
+    @Transactional
+    public void saveDashboardReportWithFilters(
+        String workspaceUUID,
+        String dashboardUUID,
+        DashboardReportDetails dashboardReportDetails,
+        String userUUID,
+        Collection<String> privilegeNames
+    ) {
+        // Verify that the user may access the dashboard
+        verifyDashboardOwnership(userUUID, dashboardUUID, privilegeNames, DASHBOARDS_SAVE_GROUP);
+
+        // Find the dashboard
+        final AcctDashboard dashboard = findDashboard(workspaceUUID, dashboardUUID);
+
+        // Find any existing dashboard report at the given location and, if not found, then create one
+        final AcctDashboardReport dashboardReport =
+            dataService.findDashboardReportByDashboardAndRowNumberAndColumnNumber(
+                dashboard,
+                dashboardReportDetails.rowNumber(),
+                dashboardReportDetails.columnNumber()
+            ).orElseGet(() -> {
+                final AcctDashboardReport dRep = dataService.createNewDashboardReport();
+                dRep.setDashboard(dashboard);
+                dRep.setRowNumber(dashboardReportDetails.rowNumber());
+                dRep.setColumnNumber(dashboardReportDetails.columnNumber());
+                return dRep;
+            });
+
+        // Update the properties of the dashboard report
+        dashboardReport.setReport(findReport(dashboardReportDetails.reportUUID()));
+        dashboardReport.setContainerHeightPx(dashboardReportDetails.containerHeightPx());
+        dashboardReport.setContainerName(dashboardReportDetails.containerName());
+
+        // Save the dashboard report and get a reference to the saved entity
+        final AcctDashboardReport persistedDashboardReport =
+            dataService.saveDashboardReport(dashboardReport);
+
+        // Find any existing dashboard report filters for the dashboard report
+        final Set<AcctDashboardReportFilter> dashboardReportFilters =
+            dataService.findAllDashboardReportFiltersByDashboardReport(dashboardReport);
+
+        // Compute the set of dashboard report filters that exist in the database but not in the request
+        final Set<AcctDashboardReportFilter> dashboardReportFiltersToBeDeleted =
+            minus(
+                dashboardReportFilters,
+                dashboardReportDetails.filters().entrySet(),
+                AcctDashboardReportFilter::getFilterName,
+                Map.Entry::getKey
+            );
+
+        // Compute the set of dashboard report filters that exist in both the database and the request
+        final Set<AcctDashboardReportFilter> dashboardReportFiltersToBeUpdated =
+            intersect(
+                dashboardReportFilters,
+                dashboardReportDetails.filters().entrySet(),
+                AcctDashboardReportFilter::getFilterName,
+                Map.Entry::getKey
+            );
+
+        // Compute the set of dashboard report filters that do not exist in the database but exist in the request
+        final Set<AcctDashboardReportFilter> dashboardReportFiltersToBeCreated =
+            minus(
+                dashboardReportDetails.filters().entrySet(),
+                dashboardReportFilters,
+                Map.Entry::getKey,
+                AcctDashboardReportFilter::getFilterName
+            ).stream()
+                .map(entry -> {
+                    final AcctDashboardReportFilter newFilter = dataService.createNewDashboardReportFilter();
+                    newFilter.setDashboardReport(dashboardReport);
+                    newFilter.setFilterName(entry.getKey());
+                    newFilter.setReportColumnName(entry.getValue());
+                    return newFilter;
+                })
+                .collect(toSet());
+
+        // Delete the dashboard report filters that exist in the database but not in the request
+        dashboardReportFiltersToBeDeleted.forEach(dataService::deleteDashboardReportFilter);
+
+        // Update the dashboard report filters that exist in both the database and the request
+        dashboardReportFiltersToBeUpdated.forEach(filter ->
+            filter.setReportColumnName(
+                dashboardReportDetails.filters().get(filter.getFilterName())
+            )
+        );
+
+        // Save the updated and created dashboard report filters
+        dashboardReportFiltersToBeUpdated.forEach(dataService::saveDashboardReportFilter);
+        dashboardReportFiltersToBeCreated.forEach(dataService::saveDashboardReportFilter);
     }
 
     /**
@@ -702,6 +762,56 @@ public class AcctReportingService {
 
         // Get the runtime parameters for any and all the data provider instance specifications
         return reportCompiler.getReportParameters(dataProviderInstanceSpecifications);
+    }
+
+    private void verifyDashboardOwnership(
+        String userUUID,
+        String dashboardUUID,
+        Collection<String> privilegeNames,
+        String requiredPrivilege
+    ) {
+        // Check if the user owns the dashboard directly
+        final boolean isUserDashboard =
+            securityClientService.resourceIsAccessibleToUser(
+                ResourceType.DASHBOARD,
+                userUUID,
+                dashboardUUID,
+                UserResourceAccessRights.builder()
+                    .withOwnResources(true)
+                    .withGroupResources(false)
+                    .withAnyResources(false)
+                    .build()
+            );
+
+        // Check if the user owns the dashboard via a users group
+        final boolean isGroupDashboard =
+            securityClientService.resourceIsAccessibleToUser(
+                ResourceType.DASHBOARD,
+                userUUID,
+                dashboardUUID,
+                UserResourceAccessRights.builder()
+                    .withOwnResources(false)
+                    .withGroupResources(true)
+                    .withAnyResources(false)
+                    .build()
+            );
+
+        // The user does not have the rights to delete the dashboard if the dashboard is not owned
+        // by the user or if the user doesn't have the right to delete group dashboards
+        if (!(isUserDashboard || (isGroupDashboard && privilegeNames.contains(requiredPrivilege)))) {
+            throw new AcctReportingServiceSecurityException(
+                errors,
+                DASHBOARD,
+                dashboardUUID
+            );
+        }
+    }
+
+    private AcctDashboard findDashboard(String workspaceUUID, String dashboardUUID) {
+        return
+            dataService.findDashboardsByWorkspaceUUIDAndDashboardUUIDIn(workspaceUUID, List.of(dashboardUUID)).stream()
+                .findFirst()
+                .orElseThrow(() -> new AcctReportingServiceNotFoundException(errors, DASHBOARD, dashboardUUID));
     }
 
     private Set<DataProviderInstanceSpecification> buildDataProviderInstanceSpecifications(

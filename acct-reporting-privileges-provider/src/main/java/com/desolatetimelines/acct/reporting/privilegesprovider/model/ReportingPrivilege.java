@@ -39,6 +39,14 @@ public enum ReportingPrivilege {
             .build()
     ),
 
+    DASHBOARDS_SAVE_GROUP(
+        AcctPrivilege.builder()
+            .withPrivilegeId(ReportingPrivilegeIds.DASHBOARDS_SAVE_GROUP)
+            .withPrivilegeName("Updates user-accessible dashboards")
+            .withPrivilegeDescription("Allows updating of existing dashboards that are accessible to the user via a users group")
+            .build()
+    ),
+
     DATA_PROVIDERS_READ(
         AcctPrivilege.builder()
             .withPrivilegeId(ReportingPrivilegeIds.DATA_PROVIDERS_READ)

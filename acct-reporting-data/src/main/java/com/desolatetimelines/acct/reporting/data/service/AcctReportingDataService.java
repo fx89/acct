@@ -31,6 +31,10 @@ public class AcctReportingDataService {
 
     private final AcctReportDataProviderInstancesRepository reportDataProviderInstancesRepository;
 
+    private final AcctDashboardReportsRepository dashboardReportsRepository;
+
+    private final AcctDashboardReportFiltersRepository dashboardReportFiltersRepository;
+
     public AcctReportingDataService(
         AcctDashboardsRepository dashboardsRepository,
         AcctDataProviderInstancesRepository dataProviderInstancesRepository,
@@ -38,7 +42,9 @@ public class AcctReportingDataService {
         AcctDataProviderInstancePropertiesRepository dataProviderInstancePropertiesRepository,
         AcctReportsRepository reportsRepository,
         AcctReportSeriesRepository reportSeriesRepository,
-        AcctReportDataProviderInstancesRepository reportDataProviderInstancesRepository
+        AcctReportDataProviderInstancesRepository reportDataProviderInstancesRepository,
+        AcctDashboardReportsRepository dashboardReportsRepository,
+        AcctDashboardReportFiltersRepository dashboardReportFiltersRepository
     ) {
         this.dashboardsRepository = dashboardsRepository;
         this.dataProviderInstancesRepository = dataProviderInstancesRepository;
@@ -47,6 +53,8 @@ public class AcctReportingDataService {
         this.reportsRepository = reportsRepository;
         this.reportSeriesRepository = reportSeriesRepository;
         this.reportDataProviderInstancesRepository = reportDataProviderInstancesRepository;
+        this.dashboardReportsRepository = dashboardReportsRepository;
+        this.dashboardReportFiltersRepository = dashboardReportFiltersRepository;
     }
 
     /**
@@ -460,4 +468,116 @@ public class AcctReportingDataService {
     public void deleteReportDataProviderInstance(AcctReportDataProviderInstance reportDataProviderInstance) {
         reportDataProviderInstancesRepository.delete(reportDataProviderInstance);
     }
+
+    /**
+     * Creates a new {@link AcctDashboardReport dashboard report} instance.
+     *
+     * @return A reference to the newly created instance.
+     */
+    public AcctDashboardReport createNewDashboardReport() {
+        return dashboardReportsRepository.createNew();
+    }
+
+    /**
+     * Persists the referenced {@link AcctDashboardReport dashboard report}.
+     *
+     * @return A reference to the persisted dashboard report.
+     */
+    public AcctDashboardReport saveDashboardReport(AcctDashboardReport dashboardReport) {
+        return dashboardReportsRepository.save(dashboardReport);
+    }
+
+    /**
+     * Looks up the {@link AcctDashboardReport dashboard report} that is set to be
+     * displayed on the referenced dashboard at the referenced location.
+     *
+     * @param dashboard    Reference to the dashboard where the dashboard report is expected to be found.
+     * @param rowNumber    The vertical coordinate of the referenced location.
+     * @param columnNumber The horizontal coordinate of the referenced location.
+     * @return An optional reference to the referenced dashboard report. If there is no such dashboard
+     * report, then an {@link Optional#empty() empty optional} is returned.
+     */
+    public Optional<AcctDashboardReport> findDashboardReportByDashboardAndRowNumberAndColumnNumber(
+        AcctDashboard dashboard,
+        Integer rowNumber,
+        Integer columnNumber
+    ) {
+        return
+            dashboardReportsRepository.findFirstByDashboardAndRowNumberAndColumnNumber(
+                dashboard,
+                rowNumber,
+                columnNumber
+            );
+    }
+
+    /**
+     * Deletes all {@link AcctDashboardReport dashboard reports} mapped to the referenced dashboard.
+     *
+     * @param dashboard Reference to the dashboard for which the reports need to be deleted.
+     */
+    public void deleteDashboardReportsByDashboard(AcctDashboard dashboard) {
+        dashboardReportsRepository.deleteByDashboard(dashboard);
+    }
+
+    /**
+     * Deletes the referenced dashboard report.
+     *
+     * @param dashboardReport Reference to the dashboard report to be deleted.
+     */
+    public void deleteDashboardReport(AcctDashboardReport dashboardReport) {
+        dashboardReportsRepository.delete(dashboardReport);
+    }
+
+    /**
+     * Creates a new {@link AcctDashboardReportFilter dashboard report filter} instance.
+     *
+     * @return A reference to the newly created instance.
+     */
+    public AcctDashboardReportFilter createNewDashboardReportFilter() {
+        return dashboardReportFiltersRepository.createNew();
+    }
+
+    /**
+     * Persists the referenced {@link AcctDashboardReportFilter dashboard report filter}.
+     *
+     * @param dashboardReportFilter Reference to the dashboard report filter to be persisted.
+     * @return A reference to the persisted dashboard report filter.
+     */
+    public AcctDashboardReportFilter saveDashboardReportFilter(AcctDashboardReportFilter dashboardReportFilter) {
+        return dashboardReportFiltersRepository.save(dashboardReportFilter);
+    }
+
+    /**
+     * Retrieves a set of all the {@link AcctDashboardReportFilter dashboard report filters} that are
+     * connected to the referenced {@link AcctDashboardReport dashboard report}.
+     *
+     * @param dashboardReport A reference to the dashboard report for which the filters are being retrieved.
+     * @return The set of dashboard report filters related to the referenced dashboard report. If no such
+     * dashboard report filters exist, then an {@link Collections#emptySet() empty set} is returned.
+     */
+    public Set<AcctDashboardReportFilter> findAllDashboardReportFiltersByDashboardReport(
+        AcctDashboardReport dashboardReport
+    ) {
+        return dashboardReportFiltersRepository.findAllByDashboardReport(dashboardReport);
+    }
+
+    /**
+     * Deletes the referenced {@link AcctDashboardReportFilter dashboard report filter}.
+     *
+     * @param dashboardReportFilter Reference to the dashboard report filter to be deleted.
+     */
+    public void deleteDashboardReportFilter(AcctDashboardReportFilter dashboardReportFilter) {
+        dashboardReportFiltersRepository.delete(dashboardReportFilter);
+    }
+
+    /**
+     * Deletes all {@link AcctDashboardReportFilter dashboard report filters} mapped to all the
+     * {@link AcctDashboardReport dashboards reports} mapped to the referenced {@link AcctDashboard dashboard}.
+     *
+     * @param dashboard Reference to the dashboard for which the report filters need to be deleted.
+     */
+    public void deleteDashboardReportFiltersByDashboardReportDashboard(AcctDashboard dashboard) {
+        dashboardReportFiltersRepository.deleteByDashboardReportDashboard(dashboard);
+    }
+
 }

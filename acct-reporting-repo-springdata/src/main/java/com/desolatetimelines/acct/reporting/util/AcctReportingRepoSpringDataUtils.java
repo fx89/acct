@@ -160,6 +160,7 @@ public abstract class AcctReportingRepoSpringDataUtils {
     ) {
         if (acctReportDataProviderInstance instanceof JpaAcctReportDataProviderInstance jpaAcctReportDataProviderInstance) {
             todo.accept(jpaAcctReportDataProviderInstance);
+            return;
         }
 
         throw new IllegalArgumentException(
@@ -188,11 +189,70 @@ public abstract class AcctReportingRepoSpringDataUtils {
     ) {
         if (acctReportSeries instanceof JpaAcctReportSeries jpaAcctReportSeries) {
             todo.accept(jpaAcctReportSeries);
+            return;
         }
 
         throw new IllegalArgumentException(
             "The referenced " + AcctReportSeries.class.getName() +
                 " is not of type " + JpaAcctReportSeries.class.getCanonicalName()
+        );
+    }
+
+    public static void doWithJpaAcctDashboardReport(
+        AcctDashboardReport acctDashboardReport,
+        Consumer<JpaAcctDashboardReport> todo
+    ) {
+        if (acctDashboardReport instanceof JpaAcctDashboardReport jpaAcctDashboardReport) {
+            todo.accept(jpaAcctDashboardReport);
+            return;
+        }
+
+        throw new IllegalArgumentException(
+            "The referenced " + AcctDashboardReport.class.getName() +
+                " is not of type " + JpaAcctDashboardReport.class.getCanonicalName()
+        );
+    }
+
+    public static JpaAcctDashboardReport doWithJpaAcctDashboardReportReturning(
+        AcctDashboardReport acctDashboardReport,
+        Function<JpaAcctDashboardReport, JpaAcctDashboardReport> todo
+    ) {
+        if (acctDashboardReport instanceof JpaAcctDashboardReport jpaAcctDashboardReport) {
+            return todo.apply(jpaAcctDashboardReport);
+        }
+
+        throw new IllegalArgumentException(
+            "The referenced " + AcctDashboardReport.class.getName() +
+                " is not of type " + JpaAcctDashboardReport.class.getCanonicalName()
+        );
+    }
+
+    public static JpaAcctDashboardReportFilter doWithJpaAcctDashboardReportFilterReturning(
+        AcctDashboardReportFilter acctDashboardReportFilter,
+        Function<JpaAcctDashboardReportFilter, JpaAcctDashboardReportFilter> todo
+    ) {
+        if (acctDashboardReportFilter instanceof JpaAcctDashboardReportFilter jpaAcctDashboardReportFilter) {
+            return todo.apply(jpaAcctDashboardReportFilter);
+        }
+
+        throw new IllegalArgumentException(
+            "The referenced " + AcctDashboardReportFilter.class.getName() +
+                " is not of type " + JpaAcctDashboardReportFilter.class.getCanonicalName()
+        );
+    }
+
+    public static void doWithJpaAcctDashboardReportFilter(
+        AcctDashboardReportFilter acctDashboardReportFilter,
+        Consumer<JpaAcctDashboardReportFilter> todo
+    ) {
+        if (acctDashboardReportFilter instanceof JpaAcctDashboardReportFilter jpaAcctDashboardReportFilter) {
+            todo.accept(jpaAcctDashboardReportFilter);
+            return;
+        }
+
+        throw new IllegalArgumentException(
+            "The referenced " + AcctDashboardReportFilter.class.getName() +
+                " is not of type " + JpaAcctDashboardReportFilter.class.getCanonicalName()
         );
     }
 

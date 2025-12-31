@@ -1,6 +1,7 @@
 package com.desolatetimelines.acct.reporting.ws.endpoint;
 
 import com.desolatetimelines.acct.reporting.ws.model.DashboardProperties;
+import com.desolatetimelines.acct.reporting.ws.model.DashboardReportProperties;
 import com.desolatetimelines.acct.reporting.ws.model.DashboardUUIDResponse;
 import com.desolatetimelines.acct.reporting.ws.model.UserAccessibleDashboardsContainer;
 
@@ -40,5 +41,20 @@ public interface DashboardsEndpoint {
      * @param dashboardUUID Unique identifier of the referenced dashboard
      */
     void deleteDashboard(String workspaceUUID, String dashboardUUID);
+
+    /**
+     * Adds a report on the referenced dashboard at the specified location. Overrides any report that might already
+     * exist at the specified location.
+     *
+     * @param workspaceUUID             Uniquely identifies the workspace where the dashboard can be found.
+     * @param dashboardUUID             Uniquely identifies the dashboard where the report is to be placed.
+     * @param dashboardReportProperties Specifies the report and the dashboard location where the report is to be placed,
+     *                                  as well as filters and container properties.
+     */
+    void saveDashboardReportWithFilters(
+        String workspaceUUID,
+        String dashboardUUID,
+        DashboardReportProperties dashboardReportProperties
+    );
 
 }

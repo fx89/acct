@@ -4,7 +4,7 @@
 // DONE: REP-01004: Dashboards endpoint: Edit dashboard (user or group) - create if UUID not specified
 // DONE: REP-01005: Dashboards endpoint: Delete dashboard (user or group[with special permission for deleting group dashboards])
 // TODO: REP-01006: Dashboards endpoint: Get dashboard reports (including filters, reports and report series)
-// TODO: REP-01007: Dashboards endpoint: Add/edit dashboard report (including filters)
+// DONE: REP-01007: Dashboards endpoint: Add/edit dashboard report (including filters)
 
 // DONE: REP-02001: Reports endpoint: Save report for user (reports without UUID are considered to be new) - includes columns and series
 // TODO: REP-02002: Reports endpoint: Update report groups list - sets which group can access the report

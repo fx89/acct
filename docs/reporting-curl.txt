@@ -24,7 +24,7 @@ curl \
 curl \
     --insecure \
     -v \
-    --cookie 'JSESSIONID=01DD223850DDD205FA1FAB89BFF50ADE' \
+    --cookie 'JSESSIONID=EFB3691E2F0B84A47BFA84F85D5E603D' \
     -X GET 'http://localhost:9001/service/authorization/v1/oauth2/authorize?response_type=code&client_id=frontend-client'
 
 export ACCT_USER_ACCESS_TOKEN=$(\
@@ -33,7 +33,7 @@ curl \
     -v \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'grant_type=authorization_code' \
-    -d 'code=QJKu82c8uEFDrrzvo9-MNMk_8w5RCScugOj29WXDn85eL7N6-jTjf_z-JyMXy5fUKHOPOxSCCKGBGiLtTiJR5OErqhRgHatw5v1bkjY2tek629pCMsv8Gx49PiOBOWbM' \
+    -d 'code=dyN6AvkOHjfShwzTosD6uYquhLmmdF-ijJlWNkJEDmljeI0DxikjnWatAj8DbPPt4RhPby8lFJBQpKtRfSe8i4VZ_hOgZ9Omdt0BBFwWtLP7oR3RjWFMXiFaLOBfEXm6' \
     -d 'client_id=frontend-client' \
     -d 'client_secret=lkjdwsf23odnwqkld23odfbqweorh23oihd' \
     -X POST 'http://localhost:9001/service/authorization/v1/oauth2/token' \
@@ -349,5 +349,29 @@ curl \
                 "parameterValue": "testParamValue"
             }
         ]
+    ' \
+    | jq
+
+
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X PUT 'http://localhost:8088/service/reporting/v1/dashboards/reports?workspaceUUID=108a5846-859d-4b09-b548-8cf352064a9d&dashboardUUID=28ba5f94-98d2-4576-bd6b-aff7304a93c0' \
+    --data-raw '
+        {
+            "reportUUID": "9e49ba31-587f-4636-a511-b83cf25de23e",
+            "rowNumber": 0,
+            "columnNumber": 0,
+            "containerName": "Test report",
+            "containerHeightPx": 170,
+            "filters": [
+                {
+                    "filterName": "Test filter",
+                    "reportColumnName": "bau_bau"
+                }
+            ]
+        }
     ' \
     | jq
