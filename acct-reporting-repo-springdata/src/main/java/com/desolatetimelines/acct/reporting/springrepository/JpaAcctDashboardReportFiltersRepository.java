@@ -9,7 +9,7 @@ import java.util.Set;
 
 public interface JpaAcctDashboardReportFiltersRepository extends CrudRepository<JpaAcctDashboardReportFilter, Long> {
 
-    Set<JpaAcctDashboardReportFilter> findAllByDashboardReport(JpaAcctDashboardReport dashboardReport);
+    Set<JpaAcctDashboardReportFilter> findAllByDashboardReportIn(Set<JpaAcctDashboardReport> dashboardReport);
 
     void deleteByDashboardReportDashboard(JpaAcctDashboard dashboard);
 

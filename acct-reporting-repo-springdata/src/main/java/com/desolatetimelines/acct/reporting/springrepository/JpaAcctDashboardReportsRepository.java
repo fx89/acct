@@ -6,6 +6,7 @@ import com.desolatetimelines.acct.reporting.model.JpaAcctDashboardReport;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
+import java.util.Set;
 
 public interface JpaAcctDashboardReportsRepository extends CrudRepository<JpaAcctDashboardReport, Long> {
 
@@ -14,6 +15,8 @@ public interface JpaAcctDashboardReportsRepository extends CrudRepository<JpaAcc
         Integer rowNumber,
         Integer columnNumber
     );
+
+    Set<JpaAcctDashboardReport> findAllByDashboardDashboardUUID(String dashboardUUID);
 
     void deleteByDashboard(JpaAcctDashboard dashboard);
 

@@ -1,12 +1,11 @@
 package com.desolatetimelines.acct.reporting.ws.client;
 
 import com.desolatetimelines.acct.reporting.ws.endpoint.DashboardsEndpoint;
-import com.desolatetimelines.acct.reporting.ws.model.DashboardProperties;
-import com.desolatetimelines.acct.reporting.ws.model.DashboardReportProperties;
-import com.desolatetimelines.acct.reporting.ws.model.DashboardUUIDResponse;
-import com.desolatetimelines.acct.reporting.ws.model.UserAccessibleDashboardsContainer;
+import com.desolatetimelines.acct.reporting.ws.model.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -43,6 +42,12 @@ public interface RESTDashboardsEndpointClient extends DashboardsEndpoint {
         @RequestParam(name = "workspaceUUID") String workspaceUUID,
         @RequestParam(name = "dashboardUUID") String dashboardUUID,
         @RequestBody DashboardReportProperties dashboardReportProperties
+    );
+
+    @Override
+    @GetMapping(value = "/reports", produces = APPLICATION_JSON_VALUE)
+    Set<DashboardReportExtendedProperties> getDashboardReports(
+        @RequestParam(name = "dashboardUUID") String dashboardUUID
     );
 
 }

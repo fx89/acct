@@ -3,17 +3,17 @@ package com.desolatetimelines.acct.reporting.ws.controller;
 import com.desolatetimelines.acct.common.ws.model.AcctUserClaims;
 import com.desolatetimelines.acct.reporting.service.AcctReportingService;
 import com.desolatetimelines.acct.reporting.ws.endpoint.DashboardsEndpoint;
-import com.desolatetimelines.acct.reporting.ws.model.DashboardProperties;
-import com.desolatetimelines.acct.reporting.ws.model.DashboardReportProperties;
-import com.desolatetimelines.acct.reporting.ws.model.DashboardUUIDResponse;
-import com.desolatetimelines.acct.reporting.ws.model.UserAccessibleDashboardsContainer;
+import com.desolatetimelines.acct.reporting.ws.model.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
 
 import static com.desolatetimelines.acct.common.ws.util.AcctJwtUtils.extractCurrentUserClaims;
 import static com.desolatetimelines.acct.reporting.privilegesprovider.model.ReportingPrivilegeIds.*;
 import static com.desolatetimelines.acct.reporting.ws.mapper.DashboardPropertiesMapper.toDashboardDetails;
 import static com.desolatetimelines.acct.reporting.ws.mapper.DashboardReportDetailsMapper.fromDashboardReportProperties;
+import static com.desolatetimelines.acct.reporting.ws.mapper.DashboardReportExtendedPropertiesMapper.fromSetOfDashboardReportExtendedDetails;
 import static com.desolatetimelines.acct.reporting.ws.mapper.UserAccessibleDashboardsContainerMapper.fromServicesLayerDashboardsContainer;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -104,6 +104,26 @@ public class DashboardsEndpointController implements DashboardsEndpoint {
             userClaims.userUUID(),
             userClaims.privilegeNames()
         );
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + DASHBOARDS_READ + "')")
+    @GetMapping(value = "/reports", produces = APPLICATION_JSON_VALUE)
+    public Set<DashboardReportExtendedProperties> getDashboardReports(
+        @RequestParam(name = "dashboardUUID") String dashboardUUID
+    ) {
+        // Get the user claims
+        final AcctUserClaims userClaims = extractCurrentUserClaims();
+
+        // Get the dashboard reports for the user
+        return
+            fromSetOfDashboardReportExtendedDetails(
+                reportingService.getDashboardReports(
+                    dashboardUUID,
+                    userClaims.userUUID(),
+                    userClaims.privilegeNames()
+                )
+            );
     }
 
 }

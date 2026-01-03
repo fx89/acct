@@ -1,9 +1,8 @@
 package com.desolatetimelines.acct.reporting.ws.endpoint;
 
-import com.desolatetimelines.acct.reporting.ws.model.DashboardProperties;
-import com.desolatetimelines.acct.reporting.ws.model.DashboardReportProperties;
-import com.desolatetimelines.acct.reporting.ws.model.DashboardUUIDResponse;
-import com.desolatetimelines.acct.reporting.ws.model.UserAccessibleDashboardsContainer;
+import com.desolatetimelines.acct.reporting.ws.model.*;
+
+import java.util.Set;
 
 /**
  * Specification for the Dashboards endpoint, which provides an API that lets consumers define, edit,
@@ -55,6 +54,16 @@ public interface DashboardsEndpoint {
         String workspaceUUID,
         String dashboardUUID,
         DashboardReportProperties dashboardReportProperties
+    );
+
+    /**
+     * Returns a set of {@link DashboardReportExtendedProperties containers} for the properties of the
+     * reports that are to be displayed on the referenced dashboard.
+     *
+     * @param dashboardUUID Unique identifier of the dashboard for which the reports are being fetched.
+     */
+    Set<DashboardReportExtendedProperties> getDashboardReports(
+        String dashboardUUID
     );
 
 }

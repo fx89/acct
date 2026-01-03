@@ -3,7 +3,9 @@ package com.desolatetimelines.acct.reporting.repository;
 import com.desolatetimelines.acct.reporting.model.AcctDashboard;
 import com.desolatetimelines.acct.reporting.model.AcctDashboardReport;
 
+import java.util.Collections;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Repository for loading and persisting {@link AcctDashboardReport dashboard reports}
@@ -39,6 +41,17 @@ public interface AcctDashboardReportsRepository {
         Integer rowNumber,
         Integer columnNumber
     );
+
+    /**
+     * Returns a set of {@link AcctDashboardReport dashboard reports} for which the
+     * {@link AcctDashboard#getDashboardUUID() UUID} of the {@link AcctDashboardReport#getDashboard() parent dashboard}
+     * matches the given {@code dashboardUUID}.
+     *
+     * @param dashboardUUID Unique identifier of the dashboard for which reports are being fetched.
+     * @return The set of dashboard reports that belong to the referenced dashboard or an
+     * {@link Collections#emptySet() empty set}, in case no such dashboard reports exist.
+     */
+    Set<AcctDashboardReport> findAllByDashboardDashboardUUID(String dashboardUUID);
 
     /**
      * Deletes the referenced dashboard report.

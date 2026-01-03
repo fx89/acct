@@ -36,10 +36,9 @@ import static com.desolatetimelines.acct.reporting.mapper.AcctDataProviderInstan
 import static com.desolatetimelines.acct.reporting.mapper.AcctDataProviderInstanceRuntimeParameterDataTypeMapper.fromDataProviderParameterDataType;
 import static com.desolatetimelines.acct.reporting.mapper.AcctDataProviderInstanceRuntimeParameterDataTypeMapper.toAcctReportingDataProviderReportParameterType;
 import static com.desolatetimelines.acct.reporting.mapper.AcctDataProviderInstanceRuntimeParametersMapper.*;
-import static com.desolatetimelines.acct.reporting.privilegesprovider.model.ReportingPrivilegeIds.DASHBOARDS_DELETE_GROUP;
-import static com.desolatetimelines.acct.reporting.privilegesprovider.model.ReportingPrivilegeIds.DASHBOARDS_SAVE_GROUP;
+import static com.desolatetimelines.acct.reporting.privilegesprovider.model.ReportingPrivilegeIds.*;
 import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.*;
 
 /**
  * Reporting services layer
@@ -278,20 +277,20 @@ public class AcctReportingService {
         final AcctDashboardReport dashboardReport =
             dataService.findDashboardReportByDashboardAndRowNumberAndColumnNumber(
                 dashboard,
-                dashboardReportDetails.rowNumber(),
-                dashboardReportDetails.columnNumber()
+                dashboardReportDetails.getRowNumber(),
+                dashboardReportDetails.getColumnNumber()
             ).orElseGet(() -> {
                 final AcctDashboardReport dRep = dataService.createNewDashboardReport();
                 dRep.setDashboard(dashboard);
-                dRep.setRowNumber(dashboardReportDetails.rowNumber());
-                dRep.setColumnNumber(dashboardReportDetails.columnNumber());
+                dRep.setRowNumber(dashboardReportDetails.getRowNumber());
+                dRep.setColumnNumber(dashboardReportDetails.getColumnNumber());
                 return dRep;
             });
 
         // Update the properties of the dashboard report
-        dashboardReport.setReport(findReport(dashboardReportDetails.reportUUID()));
-        dashboardReport.setContainerHeightPx(dashboardReportDetails.containerHeightPx());
-        dashboardReport.setContainerName(dashboardReportDetails.containerName());
+        dashboardReport.setReport(findReport(dashboardReportDetails.getReportUUID()));
+        dashboardReport.setContainerHeightPx(dashboardReportDetails.getContainerHeightPx());
+        dashboardReport.setContainerName(dashboardReportDetails.getContainerName());
 
         // Save the dashboard report and get a reference to the saved entity
         final AcctDashboardReport persistedDashboardReport =
@@ -305,7 +304,7 @@ public class AcctReportingService {
         final Set<AcctDashboardReportFilter> dashboardReportFiltersToBeDeleted =
             minus(
                 dashboardReportFilters,
-                dashboardReportDetails.filters().entrySet(),
+                dashboardReportDetails.getFilters().entrySet(),
                 AcctDashboardReportFilter::getFilterName,
                 Map.Entry::getKey
             );
@@ -314,7 +313,7 @@ public class AcctReportingService {
         final Set<AcctDashboardReportFilter> dashboardReportFiltersToBeUpdated =
             intersect(
                 dashboardReportFilters,
-                dashboardReportDetails.filters().entrySet(),
+                dashboardReportDetails.getFilters().entrySet(),
                 AcctDashboardReportFilter::getFilterName,
                 Map.Entry::getKey
             );
@@ -322,7 +321,7 @@ public class AcctReportingService {
         // Compute the set of dashboard report filters that do not exist in the database but exist in the request
         final Set<AcctDashboardReportFilter> dashboardReportFiltersToBeCreated =
             minus(
-                dashboardReportDetails.filters().entrySet(),
+                dashboardReportDetails.getFilters().entrySet(),
                 dashboardReportFilters,
                 Map.Entry::getKey,
                 AcctDashboardReportFilter::getFilterName
@@ -342,7 +341,7 @@ public class AcctReportingService {
         // Update the dashboard report filters that exist in both the database and the request
         dashboardReportFiltersToBeUpdated.forEach(filter ->
             filter.setReportColumnName(
-                dashboardReportDetails.filters().get(filter.getFilterName())
+                dashboardReportDetails.getFilters().get(filter.getFilterName())
             )
         );
 
@@ -762,6 +761,98 @@ public class AcctReportingService {
 
         // Get the runtime parameters for any and all the data provider instance specifications
         return reportCompiler.getReportParameters(dataProviderInstanceSpecifications);
+    }
+
+    public Set<DashboardReportExtendedDetails> getDashboardReports(
+        String dashboardUUID,
+        String userUUID,
+        Collection<String> privilegeNames
+    ) {
+        // Verify that the user may access the dashboard
+        verifyDashboardOwnership(userUUID, dashboardUUID, privilegeNames, DASHBOARDS_READ);
+
+        // Get the dashboard reports
+        final Set<AcctDashboardReport> dashboardReports =
+            dataService.findAllDashboardReportsByDashboardDashboardUUID(dashboardUUID);
+
+        // Get the dashboard report filters for the fetched dashboard reports and map them by dashboard report
+        final Map<AcctDashboardReport, List<AcctDashboardReportFilter>> dashboardReportFiltersByDashboardReport =
+            dataService.findAllDashboardReportFiltersByDashboardReportIn(dashboardReports)
+                .stream()
+                .collect(groupingBy(AcctDashboardReportFilter::getDashboardReport));
+
+        // Group dashboard reports by report (required in the next step)
+        final Map<AcctReport, AcctDashboardReport> dashboardReportsByReport =
+            dashboardReports.stream()
+                .collect(toMap(
+                    AcctDashboardReport::getReport,
+                    identity()
+                ));
+
+        // Get the report series for the reports that are referenced by the fetched dashboard reports
+        // and map the mby dashboard report
+        final Map<AcctDashboardReport, List<AcctReportSeries>> reportSeriesByDashboardReport =
+            dataService.findAllReportSeriesByReportIn(
+                    dashboardReports.stream()
+                        .map(AcctDashboardReport::getReport)
+                        .collect(toSet())
+                ).stream()
+                .collect(
+                    groupingBy(s ->
+                        dashboardReportsByReport.get(s.getReport())
+                    )
+                );
+
+        // Build the final set
+        return
+            dashboardReports.stream()
+                .map(dashboardReport -> {
+                    // Get the report series
+                    final Set<AcctReportSeries> reportSeries =
+                        new HashSet<>(
+                            Optional
+                                .ofNullable(reportSeriesByDashboardReport.get(dashboardReport))
+                                .orElseGet(Collections::emptyList)
+                        );
+
+                    // Get the filters
+                    final Map<String, String> dashboardReportFilters =
+                        Optional
+                            .ofNullable(dashboardReportFiltersByDashboardReport.get(dashboardReport))
+                            .orElseGet(Collections::emptyList)
+                            .stream()
+                            .collect(toMap(
+                                AcctDashboardReportFilter::getFilterName,
+                                AcctDashboardReportFilter::getReportColumnName
+                            ));
+
+                    // Create a builder with the main properties
+                    final DashboardReportExtendedDetails.DashboardReportExtendedDetailsBuilder builder =
+                        DashboardReportExtendedDetails.builderExt()
+                            .withReportName(dashboardReport.getReport().getReportName())
+                            .withReportDescription(dashboardReport.getReport().getReportDescription())
+                            .withReportType(dashboardReport.getReport().getReportType())
+                            .withReportUUID(dashboardReport.getReport().getReportUUID())
+                            .withReportCategoryColumnName(dashboardReport.getReport().getReportCategoryColumnName())
+                            .withRowNumber(dashboardReport.getRowNumber())
+                            .withColumnNumber(dashboardReport.getColumnNumber())
+                            .withContainerHeightPx(dashboardReport.getContainerHeightPx())
+                            .withContainerName(dashboardReport.getContainerName());
+
+                    // If there are filters, then add them
+                    if (!dashboardReportFilters.isEmpty()) {
+                        builder.withFilters(dashboardReportFilters);
+                    }
+
+                    // If there are series, then add them
+                    if (!reportSeries.isEmpty()) {
+                        builder.withReportSeries(reportSeries);
+                    }
+
+                    // Build the object
+                    return builder.build();
+                })
+                .collect(toSet());
     }
 
     private void verifyDashboardOwnership(

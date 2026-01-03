@@ -6,14 +6,54 @@ import java.util.Objects;
 
 import static com.desolatetimelines.acct.common.utils.ValidationUtils.throwIfNullOrEmpty;
 
-public record DashboardReportDetails(
-    String reportUUID,
-    Integer rowNumber,
-    Integer columnNumber,
-    String containerName,
-    Integer containerHeightPx,
-    Map<String, String> filters
-) {
+public class DashboardReportDetails {
+
+    private final String reportUUID;
+    private final Integer rowNumber;
+    private final Integer columnNumber;
+    private final String containerName;
+    private final Integer containerHeightPx;
+    private final Map<String, String> filters;
+
+    public DashboardReportDetails(
+        String reportUUID,
+        Integer rowNumber,
+        Integer columnNumber,
+        String containerName,
+        Integer containerHeightPx,
+        Map<String, String> filters
+    ) {
+        this.reportUUID = reportUUID;
+        this.rowNumber = rowNumber;
+        this.columnNumber = columnNumber;
+        this.containerName = containerName;
+        this.containerHeightPx = containerHeightPx;
+        this.filters = filters;
+    }
+
+    public String getReportUUID() {
+        return reportUUID;
+    }
+
+    public Integer getRowNumber() {
+        return rowNumber;
+    }
+
+    public Integer getColumnNumber() {
+        return columnNumber;
+    }
+
+    public String getContainerName() {
+        return containerName;
+    }
+
+    public Integer getContainerHeightPx() {
+        return containerHeightPx;
+    }
+
+    public Map<String, String> getFilters() {
+        return filters;
+    }
 
     @Override
     public boolean equals(Object o) {

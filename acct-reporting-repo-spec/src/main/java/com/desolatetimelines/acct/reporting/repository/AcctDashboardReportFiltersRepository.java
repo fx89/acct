@@ -35,7 +35,7 @@ public interface AcctDashboardReportFiltersRepository {
      * @return The set of dashboard report filters related to the referenced dashboard report. If no such
      * dashboard report filters exist, then an {@link Collections#emptySet() empty set} is returned.
      */
-    Set<AcctDashboardReportFilter> findAllByDashboardReport(AcctDashboardReport dashboardReport);
+    Set<AcctDashboardReportFilter> findAllByDashboardReportIn(Set<AcctDashboardReport> dashboardReport);
 
     /**
      * Deletes the referenced {@link AcctDashboardReportFilter dashboard report filter}.

@@ -6,7 +6,9 @@ import com.desolatetimelines.acct.reporting.model.JpaAcctDashboardReport;
 import com.desolatetimelines.acct.reporting.springrepository.JpaAcctDashboardReportsRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import static com.desolatetimelines.acct.reporting.util.AcctReportingRepoSpringDataUtils.*;
 import static java.util.function.Function.identity;
@@ -54,6 +56,16 @@ public class SpringJpaAcctDashboardReportsRepository implements AcctDashboardRep
                     columnNumber
                 )
                 .map(identity());
+    }
+
+    @Override
+    public Set<AcctDashboardReport> findAllByDashboardDashboardUUID(String dashboardUUID) {
+        return
+            new HashSet<>(
+                jpaAcctDashboardReportsRepository.findAllByDashboardDashboardUUID(
+                    dashboardUUID
+                )
+            );
     }
 
     @Override

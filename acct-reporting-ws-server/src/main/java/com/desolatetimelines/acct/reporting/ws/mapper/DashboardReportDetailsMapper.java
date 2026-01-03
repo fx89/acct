@@ -17,19 +17,19 @@ public class DashboardReportDetailsMapper {
 
         final DashboardReportDetails.DashboardReportDetailsBuilder builder =
             DashboardReportDetails.builder()
-                .withReportUUID(dashboardReportProperties.reportUUID())
-                .withColumnNumber(dashboardReportProperties.columnNumber())
-                .withRowNumber(dashboardReportProperties.rowNumber())
-                .withContainerHeightPx(dashboardReportProperties.containerHeightPx())
-                .withContainerName(dashboardReportProperties.containerName());
+                .withReportUUID(dashboardReportProperties.getReportUUID())
+                .withColumnNumber(dashboardReportProperties.getColumnNumber())
+                .withRowNumber(dashboardReportProperties.getRowNumber())
+                .withContainerHeightPx(dashboardReportProperties.getContainerHeightPx())
+                .withContainerName(dashboardReportProperties.getContainerName());
 
-        if (dashboardReportProperties.filters() != null) {
-            dashboardReportProperties.filters().forEach(filter -> {
+        if (dashboardReportProperties.getFilters() != null) {
+            dashboardReportProperties.getFilters().forEach(filter ->
                 builder.withFilter(
                     filter.filterName(),
                     filter.reportColumnName()
-                );
-            });
+                )
+            );
         }
 
         return builder.build();

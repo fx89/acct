@@ -2,6 +2,8 @@ package com.desolatetimelines.acct.reporting.model;
 
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 import static com.desolatetimelines.acct.reporting.util.AcctReportingRepoSpringDataUtils.doWithJpaAcctDashboard;
 import static com.desolatetimelines.acct.reporting.util.AcctReportingRepoSpringDataUtils.doWithJpaAcctReport;
 
@@ -109,4 +111,15 @@ public class JpaAcctDashboardReport implements AcctDashboardReport {
         this.containerHeightPx = containerHeightPx;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        JpaAcctDashboardReport that = (JpaAcctDashboardReport) o;
+        return Objects.equals(dashboard, that.dashboard) && Objects.equals(report, that.report);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(dashboard, report);
+    }
 }

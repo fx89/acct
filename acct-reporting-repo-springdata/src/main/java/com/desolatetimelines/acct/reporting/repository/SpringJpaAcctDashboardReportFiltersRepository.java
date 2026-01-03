@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.desolatetimelines.acct.reporting.util.AcctReportingRepoSpringDataUtils.*;
 import static java.util.function.Function.identity;
@@ -43,15 +44,20 @@ public class SpringJpaAcctDashboardReportFiltersRepository implements AcctDashbo
     }
 
     @Override
-    public Set<AcctDashboardReportFilter> findAllByDashboardReport(AcctDashboardReport dashboardReport) {
+    public Set<AcctDashboardReportFilter> findAllByDashboardReportIn(Set<AcctDashboardReport> dashboardReports) {
         return
             new HashSet<>(
                 jpaAcctDashboardReportFiltersRepository
-                    .findAllByDashboardReport(
-                        doWithJpaAcctDashboardReportReturning(
-                            dashboardReport,
-                            identity()
-                        )
+                    .findAllByDashboardReportIn(
+                        dashboardReports.stream()
+                            .map(dashboardReport ->
+                                doWithJpaAcctDashboardReportReturning(
+                                    dashboardReport,
+                                    identity()
+                                )
+                            )
+                            .collect(Collectors.toSet())
+
                     )
             );
     }

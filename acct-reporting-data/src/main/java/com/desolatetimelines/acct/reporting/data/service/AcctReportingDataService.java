@@ -511,6 +511,19 @@ public class AcctReportingDataService {
     }
 
     /**
+     * Returns a set of {@link AcctDashboardReport dashboard reports} for which the
+     * {@link AcctDashboard#getDashboardUUID() UUID} of the {@link AcctDashboardReport#getDashboard() parent dashboard}
+     * matches the given {@code dashboardUUID}.
+     *
+     * @param dashboardUUID Unique identifier of the dashboard for which reports are being fetched.
+     * @return The set of dashboard reports that belong to the referenced dashboard or an
+     * {@link Collections#emptySet() empty set}, in case no such dashboard reports exist.
+     */
+    public Set<AcctDashboardReport> findAllDashboardReportsByDashboardDashboardUUID(String dashboardUUID) {
+        return dashboardReportsRepository.findAllByDashboardDashboardUUID(dashboardUUID);
+    }
+
+    /**
      * Deletes all {@link AcctDashboardReport dashboard reports} mapped to the referenced dashboard.
      *
      * @param dashboard Reference to the dashboard for which the reports need to be deleted.
@@ -558,7 +571,21 @@ public class AcctReportingDataService {
     public Set<AcctDashboardReportFilter> findAllDashboardReportFiltersByDashboardReport(
         AcctDashboardReport dashboardReport
     ) {
-        return dashboardReportFiltersRepository.findAllByDashboardReport(dashboardReport);
+        return findAllDashboardReportFiltersByDashboardReportIn(Set.of(dashboardReport));
+    }
+
+    /**
+     * Retrieves a set of all the {@link AcctDashboardReportFilter dashboard report filters} that are
+     * connected to any of the referenced {@link AcctDashboardReport dashboard reports}.
+     *
+     * @param dashboardReports A set of references to the dashboard reports for which the filters are being retrieved.
+     * @return The set of dashboard report filters related to the referenced dashboard reports. If no such
+     * dashboard report filters exist, then an {@link Collections#emptySet() empty set} is returned.
+     */
+    public Set<AcctDashboardReportFilter> findAllDashboardReportFiltersByDashboardReportIn(
+        Set<AcctDashboardReport> dashboardReports
+    ) {
+        return dashboardReportFiltersRepository.findAllByDashboardReportIn(dashboardReports);
     }
 
     /**

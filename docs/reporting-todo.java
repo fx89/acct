@@ -3,7 +3,7 @@
 // DONE: REP-01003: Dashboards endpoint: Get user accessible dashboards in workspace (user dashboards and group dashboards) - calls SEC-02002
 // DONE: REP-01004: Dashboards endpoint: Edit dashboard (user or group) - create if UUID not specified
 // DONE: REP-01005: Dashboards endpoint: Delete dashboard (user or group[with special permission for deleting group dashboards])
-// TODO: REP-01006: Dashboards endpoint: Get dashboard reports (including filters, reports and report series)
+// DONE: REP-01006: Dashboards endpoint: Get dashboard reports (including filters, reports and report series)
 // DONE: REP-01007: Dashboards endpoint: Add/edit dashboard report (including filters)
 
 // DONE: REP-02001: Reports endpoint: Save report for user (reports without UUID are considered to be new) - includes columns and series
@@ -16,7 +16,7 @@
 
 // TODO: REP-04001: Reporting client: API client
 
-// TODO: REP-05001: Privileges
+// DONE: REP-05001: Privileges
 
 // DONE: REP-06001: Reporting backend: Report compiler
 // DONE: REP-06002: Reporting backend: Currency history data provider

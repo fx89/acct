@@ -24,7 +24,7 @@ curl \
 curl \
     --insecure \
     -v \
-    --cookie 'JSESSIONID=EFB3691E2F0B84A47BFA84F85D5E603D' \
+    --cookie 'JSESSIONID=FD24C3B472DD5136CA53CD6F3837A18D' \
     -X GET 'http://localhost:9001/service/authorization/v1/oauth2/authorize?response_type=code&client_id=frontend-client'
 
 export ACCT_USER_ACCESS_TOKEN=$(\
@@ -33,7 +33,7 @@ curl \
     -v \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'grant_type=authorization_code' \
-    -d 'code=dyN6AvkOHjfShwzTosD6uYquhLmmdF-ijJlWNkJEDmljeI0DxikjnWatAj8DbPPt4RhPby8lFJBQpKtRfSe8i4VZ_hOgZ9Omdt0BBFwWtLP7oR3RjWFMXiFaLOBfEXm6' \
+    -d 'code=Iogl9BbGkq1ZBW-mZuFZnpQWrysazywVhkNRlDHp1v4adtrCWpJCgJSl_6pZoZzM9zaXDF5qPLrlLvfG2SAQwyRVzaxfjru5InLBPIMivRgu8Dd2tJ4aoiCZp7Z75N3M' \
     -d 'client_id=frontend-client' \
     -d 'client_secret=lkjdwsf23odnwqkld23odfbqweorh23oihd' \
     -X POST 'http://localhost:9001/service/authorization/v1/oauth2/token' \
@@ -374,4 +374,12 @@ curl \
             ]
         }
     ' \
+    | jq
+
+
+curl \
+    --insecure \
+    -H "Authorization: Bearer ${ACCT_USER_ACCESS_TOKEN}" \
+    -H "Content-Type: application/json; charset=utf-8" \
+    -X GET 'http://localhost:8088/service/reporting/v1/dashboards/reports?dashboardUUID=28ba5f94-98d2-4576-bd6b-aff7304a93c0' \
     | jq

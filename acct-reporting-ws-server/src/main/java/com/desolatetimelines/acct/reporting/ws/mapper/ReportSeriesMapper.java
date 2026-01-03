@@ -1,5 +1,6 @@
 package com.desolatetimelines.acct.reporting.ws.mapper;
 
+import com.desolatetimelines.acct.reporting.model.AcctReportSeries;
 import com.desolatetimelines.acct.reporting.model.ReportSeriesDetails;
 import com.desolatetimelines.acct.reporting.ws.model.ReportSeries;
 
@@ -40,6 +41,15 @@ public abstract class ReportSeriesMapper {
                 .build();
     }
 
+    public static ReportSeries fromAcctReportSeries(AcctReportSeries acctReportSeries) {
+        return
+            ReportSeries.builder()
+                .withReportSeriesName(acctReportSeries.getReportSeriesName())
+                .withReportColumnName(acctReportSeries.getReportColumnName())
+                .withReportSeriesType(fromAcctReportSeriesType(acctReportSeries.getReportSeriesType()))
+                .build();
+    }
+
     public static Set<ReportSeriesDetails> toReportSeriesDetailsSet(Set<ReportSeries> reportSeries) {
         if (reportSeries == null) {
             return null;
@@ -59,6 +69,17 @@ public abstract class ReportSeriesMapper {
         return
             reportSeriesDetails.stream()
                 .map(ReportSeriesMapper::fromReportSeriesDetails)
+                .collect(Collectors.toSet());
+    }
+
+    public static Set<ReportSeries> fromAcctReportSeriesSet(Set<AcctReportSeries> AcctReportSeriesSet) {
+        if (AcctReportSeriesSet == null) {
+            return null;
+        }
+
+        return
+            AcctReportSeriesSet.stream()
+                .map(ReportSeriesMapper::fromAcctReportSeries)
                 .collect(Collectors.toSet());
     }
 
