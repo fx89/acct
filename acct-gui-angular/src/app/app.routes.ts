@@ -36,11 +36,11 @@ export const routes: Routes = [
         }
     },
     {
-        path: 'dashboard',
+        path: 'dashboards',
         component: DashboardComponent,
         data: {
             menuItem: {
-                text: "Dashboard",
+                text: "Dashboards",
                 imageRef: "menu-icons/dashboard.png",
                 isWithinWorkspaceContext: true
             }

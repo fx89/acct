@@ -57,6 +57,15 @@ class AcctCurrencyServiceUrlResolver implements HttpConnectorBaseURLsResolver {
     }
 }
 
+/**
+ * Provides the base URLs for the reporting service.
+ */
+class AcctReportingServiceUrlResolver implements HttpConnectorBaseURLsResolver {
+    resolveBaseURLs(): string | string[] {
+        return "http://localhost:8088"
+    }
+}
+
 
 
 /**
@@ -116,6 +125,16 @@ export function provideHttpServicesConfig() {
                 serviceName     : "acct-currency",
                 servicePath     : "/service/currency/v1",
                 urlsResolver    : new AcctCurrencyServiceUrlResolver(),
+                preRequestHooks : [
+                    // Requests to this service need to be authorized
+                    (request:HttpClientWrapperMethodlessRequest<any>) => 
+                        authorizingHttpConnectorPreRequestHook(request, router)
+                ]
+            },
+            {
+                serviceName     : "acct-reporting",
+                servicePath     : "/service/reporting/v1",
+                urlsResolver    : new AcctReportingServiceUrlResolver(),
                 preRequestHooks : [
                     // Requests to this service need to be authorized
                     (request:HttpClientWrapperMethodlessRequest<any>) => 

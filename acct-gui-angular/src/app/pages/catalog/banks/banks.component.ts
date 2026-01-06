@@ -1,5 +1,5 @@
 import { Component, EventEmitter } from '@angular/core';
-import { ItemsManagerCardAction, ItemsManagerCardPropertyExtractor, ItemsManagerComponent, ItemsManagerDataItem, ItemsManagerDataSet, ItemsManagerNewItemFormDirective } from '../../../components-acct/items-manager/items-manager.component';
+import { ItemsManagerCardPropertyExtractor, ItemsManagerComponent, ItemsManagerDataItem, ItemsManagerDataSet, ItemsManagerNewItemFormDirective } from '../../../components-acct/items-manager/items-manager.component';
 import { Observable } from 'rxjs';
 import { errorConsumingObservableOperation, errorConsumingObservableTransform } from '../../../utils-reusalbe/rxjs-utils';
 import { BankProperties, IconifiedBankProperties } from '../../../model-acct/bank-properties';

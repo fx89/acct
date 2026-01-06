@@ -1,1 +1,95 @@
-<p>dashboard works!</p>
+<app-items-manager
+    width="calc(100% - 15px)"
+    height="calc(100vh - 140px)"
+    cardWidth="calc(390px)"
+    cardHeight="60px"
+    addDialogWidth="480px"
+    addDialogHeight="500px"
+    [dataSetProducer]="this.dashboardsListProducer"
+    [cardImageRefExtractor]="this.dashboardCardImageRefExtractor"
+    [cardTitleExtractor]="this.dashboardCardTitleExtractor"
+    [cardTextExtractor]="this.dashboardCardTextExtractor"
+    [itemDeletionConsumer]="this.dashboardDeletionConsumer"
+    [newItemSupplier]="this.newDashboardSupplier"
+    [itemSavingConsumer]="this.dashboardSavingConsumer"
+    [itemPropertiesValidator]="this.dashboardValidator"
+    [(selection)]="this.dashboardsListSelectedItem"
+    [floatingCards]="true"
+    [canEdit]="true"
+    [additionalAction]="this.dashboardLoadAction"
+    additionalActionText="Load"
+    additionalActionButtonWidth="60px"
+    additionalActionButtonColor="blue"
+    [actionButtonIcons]="true"
+    [floatingCards]="true"
+>
+    <ng-template itemsManagerNewItemForm let-item="item">
+        <table>
+            <tr>
+                <td>
+                    Dashboard name
+                </td>
+                <td style="width:10px;"></td>
+                <td>
+                    <app-input
+                        [(value)]="item.dashboardName"
+                        width="300px"
+                        height="30px"
+                        hint="Dashboard name"
+                    ></app-input>
+                </td>
+            </tr><tr>
+                <td>
+                    Dashboard description
+                </td>
+                <td></td>
+                <td>
+                    <app-input
+                        [(value)]="item.dashboardDescription"
+                        width="300px"
+                        height="30px"
+                        hint="Dashboard description"
+                    ></app-input>
+                </td>
+            </tr><tr>
+                <td>
+                    Icon
+                </td>
+                <td></td>
+                <td>
+                    <app-button
+                        value='Choose icon'
+                        textAlign="center"
+                        (onClick)="onChooseDashboardIconClick()"
+                        color="blue"
+                        width="300px"
+                        height="30px"
+                    ></app-button>
+                    <img
+                        style="width:300px;height:250px;background-color:#000;background-size:contain;"
+                        [src]="item.imageData"
+                    >
+                </td>
+            </tr>
+        </table>
+    </ng-template>
+</app-items-manager>
+
+<!-- The income or expense item icon chooser -->
+<app-dialog
+  title="Select an existing icon or add a new one"
+  width="700px"
+  height="500px"
+  [visible]="this.dashboardIconChooserVisible"
+>
+    <app-icons-manager
+        width="100%"
+        height="450px"
+        iconWidth="190px"
+        iconHeight="190px"
+        [allowUpload]="true"
+        [allowDelete]="false"
+        [pageSize]="9"
+        (selectionChange)="this.onDashboardIconSelected($event)"
+    ></app-icons-manager>
+</app-dialog>

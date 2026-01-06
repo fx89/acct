@@ -36,7 +36,7 @@ class AcctLocalStorage {
      * 
      * @param userUUID the given userUUID
      */
-    public retrieveUserSelectedStorage(userUUID:string) : string {
+    public retrieveUserSelectedWorkspace(userUUID:string) : string {
         const workspaceUUID : string | null = localObjectStorage().getItem(
             this.computeUserSelectedWorkspaceKey(userUUID)
         )

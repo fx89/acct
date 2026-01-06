@@ -3,7 +3,7 @@ import { DepositProperties } from "../../model-acct/deposit-modifiable-attribute
 import { DepositUUIDResponse } from "../../model-acct/deposit-uuid-response";
 import { AcctDepositsRepository } from "../deposits-repository";
 import { HttpConnector } from "../../services-reusable/http-connectors.service";
-import { complete, newObservable } from "../../utils-reusalbe/rxjs-utils";
+import { complete } from "../../utils-reusalbe/rxjs-utils";
 import { AcctPage } from "../../model-acct/acct-page";
 
 /**

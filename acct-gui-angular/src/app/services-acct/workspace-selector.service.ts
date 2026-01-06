@@ -5,7 +5,7 @@ import { acctLocalStore } from '../stores-acct/acct-local-storage';
 import { acctSessionStore } from '../stores-acct/acct-session-storage';
 import { UserManagementService } from './user-management.service';
 import { Observable } from 'rxjs';
-import { complete, errorPipingObservableConsumer, errorPipingObservableOperation } from '../utils-reusalbe/rxjs-utils';
+import { complete } from '../utils-reusalbe/rxjs-utils';
 import { UserDetails } from '../model-acct/user-details';
 
 @Injectable({
@@ -66,7 +66,7 @@ export class WorkspaceSelectorService {
   private resolveSelectedWorkspaceUUID(userDetails:UserDetails) : string {
     // If there's a selected workspace in local storage for the user, then retrieve it.
     if (acctLocalStore().checkUserSelectedWorkspaceStored(userDetails.userUUID)) {
-      return acctLocalStore().retrieveUserSelectedStorage(userDetails.userUUID)
+      return acctLocalStore().retrieveUserSelectedWorkspace(userDetails.userUUID)
     }
 
     // If there's no selected workspace in local storage for the user, then use the default worksapce...
