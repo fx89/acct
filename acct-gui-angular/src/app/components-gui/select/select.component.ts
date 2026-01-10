@@ -85,7 +85,17 @@ export class SelectComponent {
   }
 
   public getSelectedOptionTitle() : string {
-    return this.selectedOption()?.title ?? ""
+    if (this.selectedOption()) {
+      const selectedOption : CardData = this.selectedOption() as CardData
+
+      if (selectedOption.title && selectedOption.title != "") {
+        return selectedOption.title
+      }
+
+      return selectedOption.text ?? ""
+    }
+
+    return ""
   }
 
   public getCardListHeight() : string {

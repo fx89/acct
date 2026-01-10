@@ -1,13 +1,15 @@
 /*
  TODO: APP-01001: Main page: Cards menu
  DONE: APP-01002: Main page: App menu
- DONE: APP-02001: Dashboard page: General layout
- TODO: APP-02002: Dashboard page: Reports manager
- TODO: APP-02003: Dashboard page: Dashboard reports mapper
- TODO: APP-02004: Dashboard page: Dashboard table
- TODO: APP-02005: Dashboard page: Dashboard chart
- TODO: APP-02006: Dashboard page: Dashboard layout
- TODO: APP-02007: Dashboard page: Dashboard display
+ DONE: APP-02001: Dashboards page: General layout
+ TODO: APP-02002: Dashboards page: Dashboard reports mapper
+ TODO: APP-02003: Dashboards page: Dashboard table
+ TODO: APP-02004: Dashboards page: Dashboard chart
+ TODO: APP-02005: Dashboards page: Dashboard layout
+ TODO: APP-02006: Dashboards page: Dashboard display
+ DONE: APP-02101: Reports page: General layout
+ DONE: APP-02102: Reports page: Data provider instances manager
+ TODO: APP-02103: Reports page: reports manager
  DONE: APP-03001: Workspaces page: Cards menu
  DONE: APP-03002: Workspaces page: Workspace selector
  DONE: APP-03003: Workspaces page: Cards menu: Add workspace

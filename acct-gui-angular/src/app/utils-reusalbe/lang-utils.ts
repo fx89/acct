@@ -5,7 +5,7 @@
  * @returns 
  */
 export function isDefined<T>(item:T) : boolean {
-    if (item) {
+    if (item != undefined && item != null) {
         return true
     }
 

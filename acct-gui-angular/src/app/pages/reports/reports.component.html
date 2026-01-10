@@ -1,0 +1,265 @@
+<table style="width:100%"><tr>
+    <td style="width:50%; text-align:center;">
+        Data provider instances
+        <app-items-manager
+            width="calc(100% - 15px)"
+            height="calc(100vh - 140px)"
+            cardWidth="calc(100% - 30px)"
+            cardHeight="60px"
+            addDialogWidth="630px"
+            addDialogHeight="calc(100vh - 100px)"
+            [dataSetProducer]="this.dataProviderInstancesListProducer"
+            [cardTitleExtractor]="this.dataProviderInstanceCardTitleExtractor"
+            [cardTextExtractor]="this.dataProviderInstanceCardTextExtractor"
+            [itemDeletionConsumer]="this.dataProviderInstanceDeletionConsumer"
+            [newItemSupplier]="this.newDataProviderInstanceSupplier"
+            [editedItemTransformingMapper]="this.editedDataProviderInstanceTransformingMapper"
+            [itemSavingConsumer]="this.dataProviderInstanceSavingConsumer"
+            [itemPropertiesValidator]="this.dataProviderInstanceValidator"
+            [(selection)]="this.dataProviderInstancesListSelectedItem"
+            [floatingCards]="true"
+            [canEdit]="true"
+            [additionalAction]="this.dataProviderInstanceRunAction"
+            additionalActionText="Run"
+            additionalActionButtonWidth="60px"
+            additionalActionButtonColor="blue"  
+            [actionButtonIcons]="true"
+            [floatingCards]="false"
+            (onNewItem)="this.onNewDataProviderInstance()"
+        >
+            <ng-template itemsManagerNewItemForm let-item="item">
+                <table style="width:100%">
+                    <tr>
+                        <td style="width:190px;">Instance name</td>
+                        <td style="padding-left:3px;">
+                            <app-input
+                                [(value)]="item.instanceName"
+                                width="365px"
+                                height="30px"
+                                hint="Data provider instance name"
+                            ></app-input>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Data provider
+                        </td>
+                        <td>
+                            <table><tr>
+                                <td>
+                                    <app-select
+                                        width="344px"
+                                        [options]="this.dataProviderSelectOptions"
+                                        [cardHeightPx]="65"
+                                        [selectedOption]="this.dataProviderSelectedOption"
+                                        (selectedOptionChange)="this.onSelectedDataProviderChange($event)"
+                                    ></app-select>
+                                </td>
+                                <td></td>
+                                <td>
+                                    <app-button
+                                        value='Run'
+                                        textAlign="center"
+                                        [enabled]="this.isDataProviderSelected()"
+                                        (onClick)="onRunSelectedDataProviderButtonClick()"
+                                        width="50px"
+                                        height="30px"
+                                        color="blue"
+                                    ></app-button>
+                                </td>
+                            </tr></table>
+                        </td>
+                    </tr>
+                </table>
+
+                <br />
+
+                @if(this.isDataProviderSelected()) {
+                    Instance properties
+                    <hr />
+                    <table>
+                        @for(instanceProperty of this.dataProviderInstancesListSelectedItem.instanceProperties; track instanceProperty) {
+                            <tr>
+                                <td style="width:193px;">{{ instanceProperty.propertyName }}</td>
+                                <td>
+                                    <app-input
+                                        [(value)]="instanceProperty.propertyValue"
+                                        width="365px"
+                                        height="30px"
+                                        [hint]="instanceProperty.propertyName"
+                                    ></app-input>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+
+                    <br /><br />
+
+                    Runtime parameters
+                    <hr />
+                    <table style="width:100%"><tr>
+                        <td></td>
+                        <td style="width:90px;">
+                            <app-button
+                                value='Add'
+                                textAlign="center"
+                                [enabled]="true"
+                                (onClick)="onAddRuntimeParameterButtonClick()"
+                                width="80px"
+                                height="30px"
+                                icon="button-icons/plus.png"
+                                iconAlign="left"
+                                color="blue"
+                            ></app-button>
+                        </td>
+                    </tr></table>
+
+                    @if(
+                        this.dataProviderInstancesListSelectedItem &&
+                        this.dataProviderInstancesListSelectedItem.runtimeParameters &&
+                        this.dataProviderInstancesListSelectedItem.runtimeParameters.length > 0
+                        ) {
+                        <table style="width:100%">
+                            <tr>
+                                <td>Name</td>
+                                <td>Type</td>
+                                <td>Mandatory</td>
+                                <td>Value</td>
+                                <td style="width:90px;"></td>
+                            </tr>
+                            @for(runtimeParameter of this.dataProviderInstancesListSelectedItem.runtimeParameters; track runtimeParameter; let paramIndex = $index) {
+                                <tr>
+                                    <td>
+                                        <app-input
+                                            [(value)]="runtimeParameter.parameterName"
+                                            width="120px"
+                                            height="30px"
+                                            hint="Parameter name"
+                                        ></app-input>
+                                    </td>
+                                    <td>
+                                        <app-select
+                                            width="95px"
+                                            [options]="this.dataProviderPropertyDataTypeSelectOptions"
+                                            [cardHeightPx]="15"
+                                            [selectedOption]="this.dataProviderPropertySelectedOptions[paramIndex].parameterDataType"
+                                            (selectedOptionChange)="this.onSelectedDataProviderPropertyTypeChange(paramIndex, $event)"
+                                        ></app-select>
+                                    </td>
+                                    <td>
+                                        <app-select
+                                            width="85px"
+                                            [options]="this.dataProviderPropertyMandatorySelectOptions"
+                                            [cardHeightPx]="15"
+                                            [selectedOption]="this.dataProviderPropertySelectedOptions[paramIndex].mandatory"
+                                            (selectedOptionChange)="this.onSelectedDataProviderPropertyMandatoryChange(paramIndex, $event)"
+                                        ></app-select>
+                                    </td>
+                                    <td>
+                                        <app-input
+                                            [(value)]="runtimeParameter.parameterDefaultValue"
+                                            width="160px"
+                                            height="30px"
+                                            hint="Default value"
+                                        ></app-input>
+                                    </td>
+                                    <td style="width:90px;">
+                                        <app-button
+                                            value='Del'
+                                            textAlign="center"
+                                            [enabled]="true"
+                                            (onClick)="onDelRuntimeParameterButtonClick(paramIndex)"
+                                            width="80px"
+                                            height="30px"
+                                            icon="button-icons/minus.png"
+                                            iconAlign="left"
+                                            color="red"
+                                        ></app-button>
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+                    }
+                }
+            </ng-template>
+        </app-items-manager>
+    </td>
+    <td style="width:50%; text-align:center;">
+        Reports
+    </td>
+</tr>
+</table>
+
+
+<!-- The data table dialog -->
+<app-dialog
+    title="Retrieved data set"
+    [width]="'calc(100vw - 100px)'"
+    [height]="'calc(100vh - 100px)'"
+    [visible]="this.isDataTableDialogVisible()"
+    [closeButton]="true"
+    (visibleChange)="this.onDataTableDialogVisibilityChange($event)"
+>
+    <app-table
+        [frozenHeader]="true"
+        [zebraStripes]="true"
+        [verticalGridLines]="true"
+        [scrollable]="true"
+        [scrollHeight]="'calc(100vh - 210px)'"
+        [width]="'100%'"
+        [data]="this.getFetchedDataSetData()"
+        [columnNames]="this.getFetchedDataSetColumnNames()"
+        [reloadTrigger]="this.dataTableReloadTrigger"
+    >
+        @for(col of this.getFetchedDataSetColumnNames(); track col; let colIdx = $index) {
+            <ng-template tableColumn let-row="row">
+                {{ row[colIdx] }}
+            </ng-template>
+        }
+    </app-table>
+</app-dialog>
+
+<!-- The runtime parameters dialog -->
+<app-dialog
+    title="Runtime parameters"
+    [width]="'500px'"
+    [height]="'calc(100vh - 100px)'"
+    [visible]="this.isRuntimeParametersDialogVisible()"
+    [closeButton]="true"
+    (visibleChange)="this.onRuntimeParametersDialogVisibilityChange($event)"
+>
+    <table style="width:100%">
+        @for(runtimeParameter of this.runtimeParametersDialogData; track runtimeParameter) {
+            <tr>
+                <td>
+                    {{ runtimeParameter.propertyName }}
+                </td>
+                <td style="width:250px">
+                    <app-input
+                        [(value)]="runtimeParameter.propertyValue"
+                        width="245px"
+                        height="30px"
+                        [hint]="'Value of ' + runtimeParameter.propertyName"
+                    ></app-input>
+                </td>
+            </tr>
+        }
+    </table>
+    <br />
+    <br />
+    <table><tr>
+        <td style="width:215px"></td>
+        <td>
+            <app-button
+                value='Run'
+                textAlign="center"
+                [enabled]="true"
+                (onClick)="this.onRunSelectedDataProviderInstanceButtonClick()"
+                width="50px"
+                height="30px"
+                color="blue"
+            ></app-button>
+        </td>
+    </tr></table>
+</app-dialog>
+

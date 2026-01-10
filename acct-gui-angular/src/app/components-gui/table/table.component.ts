@@ -1,4 +1,4 @@
-import { Component, ContentChildren, Directive, EventEmitter, InputSignal, Output, QueryList, TemplateRef, input } from '@angular/core';
+import { AfterContentInit, Component, ContentChildren, Directive, EventEmitter, InputSignal, OnInit, Output, QueryList, TemplateRef, input } from '@angular/core';
 import {v4 as uuidv4} from 'uuid';
 import { CommonModule } from '@angular/common';
 import { TableColumnSort, TableColumnSortDirection, TableSortEvent } from './table-sort-event';
@@ -35,7 +35,7 @@ export class TableColumnDirective {
   templateUrl: './table.component.html',
   styleUrl: './table.component.less'
 })
-export class TableComponent {
+export class TableComponent implements AfterContentInit, OnInit {
 
   /**
    * The ID of the component is unique in the page
@@ -72,6 +72,9 @@ export class TableComponent {
   @Output() scroll            : EventEmitter<ScrollEvent>      = new EventEmitter<ScrollEvent>
   @Output() sort              : EventEmitter<TableSortEvent>   = new EventEmitter<TableSortEvent>
 
+  // Triggers
+  reloadTrigger : InputSignal<EventEmitter<void>> = input(new EventEmitter<void>())
+
   // Columns
   // https://stackoverflow.com/questions/71411635/in-angular-how-to-do-content-projection-over-the-list-of-children
   // https://angular.dev/guide/templates/ng-template
@@ -84,6 +87,14 @@ export class TableComponent {
 
   // Column widths
   private cachedColumnWidths: string[] = []
+
+  ngOnInit() : void {
+    this.reloadTrigger().subscribe({
+      next: () => {
+        this.ngAfterContentInit()
+      }
+    })
+  }
 
   ngAfterContentInit() : void {
     this.initColumnWidths()

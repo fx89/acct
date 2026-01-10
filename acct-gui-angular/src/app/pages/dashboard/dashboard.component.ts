@@ -96,7 +96,7 @@ export class DashboardComponent implements OnInit {
   dashboardsListProducer : (() => Observable<ItemsManagerDataSet>) = () => {
     // Wait until the selectedWorkspace is fetched
     return waitForCondition(() => isDefined(this.selectedWorkspace)).pipe(
-      // Once the selected workspace has been fetched, go ahead and fetch the accounts
+      // Once the selected workspace has been fetched, go ahead and fetch the dashboards
       switchMap(() => this.reportingService.findUserAccessibleDashboards(this.selectedWorkspace))
     )
   }

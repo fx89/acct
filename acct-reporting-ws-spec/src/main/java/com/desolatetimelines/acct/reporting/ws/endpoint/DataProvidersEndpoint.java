@@ -1,6 +1,9 @@
 package com.desolatetimelines.acct.reporting.ws.endpoint;
 
 import com.desolatetimelines.acct.reporting.dataprovider.model.AcctReportingDataProviderId;
+import com.desolatetimelines.acct.reporting.ws.model.AcctReportingDataSet;
+import com.desolatetimelines.acct.reporting.ws.model.DataProviderRunningParameters;
+import org.springframework.lang.NonNull;
 
 import java.util.Set;
 
@@ -16,5 +19,17 @@ public interface DataProvidersEndpoint {
      * runtime parameters.
      */
     Set<AcctReportingDataProviderId> getDataProviders();
+
+    /**
+     * Returns the data set produced by the referenced data provider using the given instance
+     * properties and runtime parameters.
+     *
+     * @param dataProviderUUID  Unique identifier for the referenced data provider.
+     * @param runningParameters The parameters to use when retrieving the data set.
+     */
+    AcctReportingDataSet getDataProviderDataSet(
+        @NonNull String dataProviderUUID,
+        @NonNull DataProviderRunningParameters runningParameters
+    );
 
 }

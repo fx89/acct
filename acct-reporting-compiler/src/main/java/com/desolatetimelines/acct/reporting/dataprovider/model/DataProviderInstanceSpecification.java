@@ -6,7 +6,6 @@ import com.desolatetimelines.acct.reporting.dataprovider.service.AcctReportingDa
 import java.util.*;
 
 import static com.desolatetimelines.acct.common.utils.ValidationUtils.throwIfNull;
-import static com.desolatetimelines.acct.common.utils.ValidationUtils.throwIfNullOrEmpty;
 
 /**
  * This is used in the {@link ReportCompilationRequest report compilation request} to identify one of the
@@ -92,7 +91,7 @@ public record DataProviderInstanceSpecification(
         public DataProviderInstanceSpecificationBuilder withDataProviderInstanceProperties(
             Map<String, String> dataProviderInstanceProperties
         ) {
-            throwIfNullOrEmpty(
+            throwIfNull(
                 dataProviderInstanceProperties,
                 () -> new IllegalArgumentException("dataProviderInstanceProperties not provided")
             );

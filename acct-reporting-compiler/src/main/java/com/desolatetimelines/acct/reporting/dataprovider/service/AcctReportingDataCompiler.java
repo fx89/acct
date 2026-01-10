@@ -140,6 +140,26 @@ public class AcctReportingDataCompiler {
         return Stream.concat(baseParameters, instanceSpecificReportParameters).collect(toSet());
     }
 
+    public AcctReportingDataProviderDataSet retrieveDataProviderDataSet(
+        UUID dataProviderUUID,
+        Map<String, String> dataProviderInstanceProperties,
+        Map<String, String> reportParameters
+    ) {
+        // Get the data provider or fail
+        final AcctReportingDataProvider dataProvider =
+            Optional
+                .ofNullable(serviceProvidersByDataProviderUUID.get(dataProviderUUID))
+                .map(serviceProvider ->
+                    serviceProvider.provideByUUIDAndInstanceProperties(
+                        dataProviderUUID, dataProviderInstanceProperties
+                    )
+                )
+                .orElseThrow(() -> new IllegalStateException("Data provider not found for UUID = " + dataProviderUUID));
+
+        // Run the data provider
+        return dataProvider.provideData(reportParameters);
+    }
+
     public AcctReportingDataProviderDataSet compileReport(ReportCompilationRequest request) {
         // Validate the request
         validateRequest(request);
@@ -338,7 +358,7 @@ public class AcctReportingDataCompiler {
             initializeDataProviderInstancesByInstanceNameMap(request);
 
         // Fetch the data from the data providers (in parallel since data providers, by contract, do not
-        // interfere wirth each other's operation)
+        // interfere with each other's operation)
         return
             dataProviderInstancesByInstanceName.entrySet().parallelStream()
                 .collect(

@@ -37,6 +37,7 @@ import static com.desolatetimelines.acct.reporting.mapper.AcctDataProviderInstan
 import static com.desolatetimelines.acct.reporting.mapper.AcctDataProviderInstanceRuntimeParameterDataTypeMapper.toAcctReportingDataProviderReportParameterType;
 import static com.desolatetimelines.acct.reporting.mapper.AcctDataProviderInstanceRuntimeParametersMapper.*;
 import static com.desolatetimelines.acct.reporting.privilegesprovider.model.ReportingPrivilegeIds.*;
+import static java.util.Collections.emptyMap;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.*;
 
@@ -357,6 +358,29 @@ public class AcctReportingService {
      */
     public Set<AcctReportingDataProviderId> getDataProviders() {
         return reportCompiler.getDataProviderIds();
+    }
+
+    /**
+     * Fetches the {@link AcctReportingDataProviderDataSet data set} of the referenced data provider
+     * for the given runtime parameters after it has been initialized with the given instance properties.
+     *
+     * @param dataProviderUUID   Unique identifier of the reference data provider.
+     * @param instanceProperties Properties to be used when initializing an instance of the referenced
+     *                           data provider.
+     * @param runtimeParameters  Parameters to be used when running the initialized data provider instance.
+     * @return The data set resulted form running the initialized data provider instance.
+     */
+    public AcctReportingDataProviderDataSet getDataProviderDataSet(
+        String dataProviderUUID,
+        Map<String, String> instanceProperties,
+        Map<String, String> runtimeParameters
+    ) {
+        return
+            reportCompiler.retrieveDataProviderDataSet(
+                UUID.fromString(dataProviderUUID),
+                Optional.ofNullable(instanceProperties).orElse(emptyMap()),
+                Optional.ofNullable(runtimeParameters).orElse(emptyMap())
+            );
     }
 
     /**

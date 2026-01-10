@@ -1,3 +1,5 @@
+import { isDefined } from "./lang-utils";
+
 /**
  * Extracts the last token from the given string, after splitting it by the given separator
  * 
@@ -32,4 +34,11 @@ export function extractFirstToken(string:string, separator:string) : string {
 export function extractToken(string:string, separator:string, tokenIndex:number) : string {
     const tokens = string.split(separator);
     return tokens[tokenIndex];
+}
+
+/**
+ * Returns true if the given string reference is null or undefined or if the referenced sting is empty
+ */
+export function isEmptyString(string?:string) : boolean {
+    return !isDefined(string) || (string?.length == 0)
 }

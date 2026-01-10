@@ -1,5 +1,6 @@
 package com.desolatetimelines.acct.reporting.dataprovider.service;
 
+import com.desolatetimelines.acct.catalog.ws.client.RESTBanksEndpointClient;
 import com.desolatetimelines.acct.catalog.ws.client.RESTCurrenciesEndpointClient;
 import com.desolatetimelines.acct.currency.ws.client.RESTMonitoredCurrenciesEndpointClient;
 import com.desolatetimelines.acct.reporting.dataprovider.exception.AcctReportingUnsupportedDataProviderException;
@@ -12,8 +13,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
-import static com.desolatetimelines.acct.reporting.dataprovider.service.Constants.INSTANCE_PROPERTY_NAME_CURRENCY_CODE;
-import static com.desolatetimelines.acct.reporting.dataprovider.service.Constants.INSTANCE_PROPERTY_NAME_NUM_DAYS_AGO;
+import static com.desolatetimelines.acct.reporting.dataprovider.service.Constants.*;
 
 /**
  * {@link AbstractAcctReportingDataProviderServiceProvider service provider} for the
@@ -43,6 +43,12 @@ public class AcctReportingCurrencyHistoryDataProviderServiceProvider
                 )
                 .withInstanceProperty(
                     new AcctReportingDataProviderInstancePropertySpec(
+                        INSTANCE_PROPERTY_NAME_BANK_CODE,
+                        AcctReportingDataProviderReportParameterType.STRING
+                    )
+                )
+                .withInstanceProperty(
+                    new AcctReportingDataProviderInstancePropertySpec(
                         INSTANCE_PROPERTY_NAME_NUM_DAYS_AGO,
                         AcctReportingDataProviderReportParameterType.NUMERIC
                     )
@@ -52,13 +58,17 @@ public class AcctReportingCurrencyHistoryDataProviderServiceProvider
 
     private final RESTCurrenciesEndpointClient currenciesEndpointClient;
 
+    private final RESTBanksEndpointClient banksEndpointClient;
+
     private final RESTMonitoredCurrenciesEndpointClient monitoredCurrenciesEndpointClient;
 
     public AcctReportingCurrencyHistoryDataProviderServiceProvider(
         RESTCurrenciesEndpointClient currenciesEndpointClient,
+        RESTBanksEndpointClient banksEndpointClient,
         RESTMonitoredCurrenciesEndpointClient monitoredCurrenciesEndpointClient
     ) {
         this.currenciesEndpointClient = currenciesEndpointClient;
+        this.banksEndpointClient = banksEndpointClient;
         this.monitoredCurrenciesEndpointClient = monitoredCurrenciesEndpointClient;
     }
 
@@ -72,6 +82,7 @@ public class AcctReportingCurrencyHistoryDataProviderServiceProvider
         if (Objects.equals(CURRENCY_HISTORY_DATA_PROVIDER_UUID, dataProviderUUID)) {
             return new AcctReportingCurrencyHistoryDataProvider(
                 currenciesEndpointClient,
+                banksEndpointClient,
                 monitoredCurrenciesEndpointClient
             );
         }

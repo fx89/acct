@@ -9,6 +9,7 @@ import { CatalogComponent } from './pages/catalog/catalog.component';
 import { ShowcaseComponent } from './components-gui/showcase/showcase.component';
 import { LoginFormComponent } from './components-acct/login-form/login-form.component';
 import { DepositsComponent } from './pages/deposits/deposits.component';
+import { ReportsComponent } from './pages/reports/reports.component';
 
 export const routes: Routes = [
     {
@@ -32,6 +33,16 @@ export const routes: Routes = [
             menuItem: {
                 text: "User information",
                 imageRef: "menu-icons/user-information.png"
+            }
+        }
+    },
+    {
+        path: 'reports',
+        component: ReportsComponent,
+        data: {
+            menuItem: {
+                text: "Reports",
+                imageRef: "menu-icons/report.png"
             }
         }
     },

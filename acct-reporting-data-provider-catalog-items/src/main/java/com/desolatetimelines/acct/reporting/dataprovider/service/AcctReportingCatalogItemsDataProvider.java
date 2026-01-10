@@ -10,12 +10,10 @@ import com.desolatetimelines.acct.reporting.dataprovider.model.AcctReportingData
 import com.desolatetimelines.acct.reporting.dataprovider.model.AcctReportingDataProviderDataSetColumn;
 import com.desolatetimelines.acct.reporting.dataprovider.model.AcctReportingDataProviderDataSetColumnDataType;
 
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import static java.util.stream.Collectors.groupingBy;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
 
 public class AcctReportingCatalogItemsDataProvider implements AcctReportingDataProvider {
 
@@ -35,31 +33,39 @@ public class AcctReportingCatalogItemsDataProvider implements AcctReportingDataP
     @Override
     public AcctReportingDataProviderDataSet provideData(Map<String, String> reportParameters) throws AcctReportingDataProviderRuntimeException {
         // Get the categories
-        final Map<String, List<IncomeOrExpenseItemCategoryProperties>> categories =
+        final Map<String, IncomeOrExpenseItemCategoryProperties> categories =
             itemsEndpointClient.getIncomeOrExpenseItemCategories().parallelStream()
-                .collect(groupingBy(IncomeOrExpenseItemCategoryProperties::incomeOrExpenseItemCategoryUUID));
+                .collect(
+                    toMap(
+                        IncomeOrExpenseItemCategoryProperties::incomeOrExpenseItemCategoryUUID,
+                        identity()
+                    )
+                );
 
         // Get the sub-categories of all categories
-        final Map<String, List<ItemAndOwnerUUID<IncomeOrExpenseItemSubcategoryProperties>>> subCategories =
-            categories.values().parallelStream()
-                .flatMap(List::stream)
-                .map(cat ->
-                    itemsEndpointClient.getIncomeOrExpenseItemSubcategories(cat.incomeOrExpenseItemCategoryUUID())
+        final Map<String, ItemAndOwnerUUID<IncomeOrExpenseItemSubcategoryProperties>> subCategories =
+            categories.keySet().parallelStream()
+                .map(catUUID ->
+                    itemsEndpointClient.getIncomeOrExpenseItemSubcategories(catUUID)
                         .stream()
-                        .map(subCat -> new ItemAndOwnerUUID<>(cat.incomeOrExpenseItemCategoryUUID(), subCat))
+                        .map(subCat -> new ItemAndOwnerUUID<>(catUUID, subCat))
                         .toList()
                 )
                 .flatMap(List::stream)
-                .collect(groupingBy(ItemAndOwnerUUID::ownerUUID));
+                .collect(
+                    toMap(
+                        ino -> ino.item().incomeOrExpenseItemSubcategoryUUID(),
+                        identity()
+                    )
+                );
 
         // Get the items of all sub-categories
         final List<ItemAndOwnerUUID<IncomeOrExpenseItemProperties>> items =
-            subCategories.values().parallelStream()
-                .flatMap(List::stream)
-                .map(subCat ->
-                    itemsEndpointClient.getIncomeOrExpenseItems(subCat.item().incomeOrExpenseItemSubcategoryUUID())
+            subCategories.keySet().parallelStream()
+                .map(subCatUUID ->
+                    itemsEndpointClient.getIncomeOrExpenseItems(subCatUUID)
                         .stream()
-                        .map(item -> new ItemAndOwnerUUID<>(subCat.item().incomeOrExpenseItemSubcategoryUUID(), item))
+                        .map(item -> new ItemAndOwnerUUID<>(subCatUUID, item))
                         .toList()
                 )
                 .flatMap(Collection::stream)
@@ -131,11 +137,11 @@ public class AcctReportingCatalogItemsDataProvider implements AcctReportingDataP
                 for (ItemAndOwnerUUID<IncomeOrExpenseItemProperties> item : items) {
                     // Identify the sub-category related to the item
                     final ItemAndOwnerUUID<IncomeOrExpenseItemSubcategoryProperties> subCategory =
-                        subCategories.get(item.ownerUUID()).stream().findFirst().orElseThrow();
+                        Optional.ofNullable(subCategories.get(item.ownerUUID())).orElseThrow();
 
                     // Identify the category related to the sub-category
                     final IncomeOrExpenseItemCategoryProperties category =
-                        categories.get(subCategory.ownerUUID()).stream().findFirst().orElseThrow();
+                        Optional.ofNullable(categories.get(subCategory.ownerUUID())).orElseThrow();
 
                     // Put the data into the array at the current index
                     records[currentIndex][0] = category.incomeOrExpenseItemCategoryUUID();

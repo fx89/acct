@@ -1,13 +1,14 @@
-import { AfterContentInit, AfterViewChecked, AfterViewInit, Component, ContentChildren, Directive, EventEmitter, input, InputSignal, OnInit, Output, QueryList, TemplateRef } from '@angular/core';
+import { AfterContentInit, Component, ContentChildren, Directive, EventEmitter, input, InputSignal, OnInit, Output, QueryList, TemplateRef } from '@angular/core';
 import {v4 as uuidv4} from 'uuid';
 import { CardsListComponent, ItemAwareCardActionButton } from '../../components-gui/cards-list/cards-list.component';
 import { CardData } from '../../components-gui/cards-list/card-data';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { ButtonComponent } from '../../components-gui/button/button.component';
 import { MsgboxComponent } from '../../components-gui/msgbox/msgbox.component';
 import { MsgboxType } from '../../components-gui/msgbox/msgbox-type';
 import { DialogComponent } from '../../components-gui/dialog/dialog.component';
 import { CommonModule } from '@angular/common';
+import { newObservable } from '../../utils-reusalbe/rxjs-utils';
 
 const EDIT_BUTTON_ICON_REF : string = "button-icons/edit.png"
 
@@ -124,6 +125,12 @@ export class ItemsManagerComponent implements OnInit, AfterContentInit {
    * Supplier that initializes a new item for the new item creation form
    */
   newItemSupplier : InputSignal<() => ItemsManagerDataItem<any>> = input.required()
+
+  /**
+   * Mapper that allows the transformation of an item before it's edited
+   */
+  editedItemTransformingMapper : InputSignal<(item:ItemsManagerDataItem<any>) => Observable<ItemsManagerDataItem<any>>> =
+    input((item) => newObservable(item))
 
   /**
    * Consumer that saves the new item initialized using the the newItemInitializationRunnable
@@ -433,8 +440,17 @@ export class ItemsManagerComponent implements OnInit, AfterContentInit {
   }
 
   cardEditButtonClicked(cardData:ItemCardData) : void {
-    this.editedItemItem = cardData.item
-    this.showNewItemCreationDialog()
+    this.editedItemTransformingMapper()(cardData.item)
+      .subscribe({
+        next: transformedItem => {
+          this.editedItemItem = transformedItem
+          this.showNewItemCreationDialog()
+        },
+        error : err => {
+          // TODO: Toast
+          console.log(err)
+        }
+      })
   }
 
   cardChildrenButtonClicked(cardData:ItemCardData) : void {

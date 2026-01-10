@@ -12,6 +12,11 @@ public abstract class Constants {
     public static final String INSTANCE_PROPERTY_NAME_CURRENCY_CODE = "currency_code";
 
     /**
+     * The name of the instance property that determines which bank is queried
+     */
+    public static final String INSTANCE_PROPERTY_NAME_BANK_CODE = "bank_code";
+
+    /**
      * The name of the instance property that determines how far in the past
      * the currency history goes
      */

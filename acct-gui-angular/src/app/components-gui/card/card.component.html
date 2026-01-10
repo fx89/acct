@@ -32,7 +32,13 @@
                     {{ this.getTitle() }}
                 </div>
             }
-            {{ this.getText() }}
+            <div
+                id="{{ this.id }}_content_text"
+                class="card-text"
+                [style.textAlign]="this.getImageFloat()"
+            >
+                {{ this.getText() }}
+            </div>
         </div>
     }
 
