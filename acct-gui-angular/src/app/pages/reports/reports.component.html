@@ -17,7 +17,6 @@
             [itemSavingConsumer]="this.dataProviderInstanceSavingConsumer"
             [itemPropertiesValidator]="this.dataProviderInstanceValidator"
             [(selection)]="this.dataProviderInstancesListSelectedItem"
-            [floatingCards]="true"
             [canEdit]="true"
             [additionalAction]="this.dataProviderInstanceRunAction"
             additionalActionText="Run"
@@ -186,6 +185,213 @@
     </td>
     <td style="width:50%; text-align:center;">
         Reports
+        <app-items-manager
+            width="calc(100% - 15px)"
+            height="calc(100vh - 140px)"
+            cardWidth="calc(100% - 30px)"
+            cardHeight="60px"
+            addDialogWidth="560px"
+            addDialogHeight="calc(100vh - 100px)"
+            [dataSetProducer]="this.reportsListProducer"
+            [cardTitleExtractor]="this.reportCardTitleExtractor"
+            [cardTextExtractor]="this.reportCardTextExtractor"
+            [itemDeletionConsumer]="this.reportDeletionConsumer"
+            [newItemSupplier]="this.newReportSupplier"
+            [itemSavingConsumer]="this.reportSavingConsumer"
+            [itemPropertiesValidator]="this.reportValidator"
+            [(selection)]="this.reportsListSelectedItem"
+            [canEdit]="true"
+            [additionalAction]="this.reportRunAction"
+            additionalActionText="Run"
+            additionalActionButtonWidth="60px"
+            additionalActionButtonColor="blue"  
+            [actionButtonIcons]="true"
+            [floatingCards]="false"
+            [editedItemTransformingMapper]="this.editedReportTransformingMapper"
+            (onNewItem)="this.onNewReport($event)"
+        >
+            <ng-template itemsManagerNewItemForm let-item="item">
+                <app-panel
+                    width="calc(100% - 30px)"
+                    height="calc(100% - 30px)"
+                >
+                    <table>
+                        <tr>
+                            <td>
+                                Report name
+                            </td>
+                            <td>
+                                <app-input
+                                    [(value)]="item.reportProperties.reportName"
+                                    width="365px"
+                                    height="30px"
+                                    hint="Report name"
+                                ></app-input>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Report description
+                            </td>
+                            <td>
+                                <app-input
+                                    [(value)]="item.reportProperties.reportDescription"
+                                    width="365px"
+                                    height="30px"
+                                    hint="Report description"
+                                ></app-input>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Report type
+                            </td>
+                            <td>
+                                <app-select
+                                    width="344px"
+                                    [options]="this.reportTypeSelectOptions"
+                                    [cardHeightPx]="65"
+                                    [selectedOption]="this.reportTypeSelectedOption"
+                                    (selectedOptionChange)="this.onSelectedReportTypeChange($event)"
+                                ></app-select>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <br >
+                    <hr />
+                    <br />
+
+                    <table style="width:100%"><tr>
+                        <td>
+                            Data providers instances
+                        </td>
+                        <td style="width:60px">
+                            <app-button
+                                value='Add'
+                                textAlign="center"
+                                (onClick)="onAddReportDataProviderButtonClick()"
+                                width="50px"
+                                height="30px"
+                                color="blue"
+                            ></app-button>
+                        </td>
+                    </tr></table>
+
+                    @for(reportDataProviderInstanceSelectOption of this.reportDataProviderInstanceSelectedOptions; track reportDataProviderInstanceSelectOption) {
+                        <div style="margin-top:5px">
+                            <app-card
+                                width="calc(100% - 23px)"
+                                height="80"
+                                [title]="this.dataProviderInstanceCardTitleExtractor(reportDataProviderInstanceSelectOption)"
+                                [text]="this.dataProviderInstanceCardTextExtractor(reportDataProviderInstanceSelectOption)"
+                                [actions]="this.reportDataProviderInstanceCardAdditionalActions.get(reportDataProviderInstanceSelectOption.dataProviderInstanceUUID ?? '') ?? []"
+                            ></app-card>
+                        </div>
+                    }
+
+                    <br >
+                    <hr />
+                    <br />
+
+                    Report SQL: <br />
+                    <app-input
+                        [multiLine]="true"
+                        [(value)]="item.reportProperties.reportSQL"
+                        width="500px"
+                        height="100px"
+                        hint="select 13 as numeric_value"
+                    ></app-input>
+
+                    <table><tr>
+                        <td>Category column name</td>
+                        <td>
+                            <app-input
+                                [(value)]="item.reportProperties.reportCategoryColumnName"
+                                width="340px"
+                                height="30px"
+                                hint="Category column name"
+                            ></app-input>
+                        </td>
+                    </tr></table>
+
+                    <br >
+                    <hr />
+                    <br />
+
+                    <table style="width:100%"><tr>
+                        <td>
+                            Series
+                        </td>
+                        <td style="width:60px">
+                            <app-button
+                                value='Add'
+                                textAlign="center"
+                                (onClick)="onAddReportSeriesButtonClick()"
+                                width="50px"
+                                height="30px"
+                                color="blue"
+                            ></app-button>
+                        </td>
+                    </tr></table>
+
+                    @if(this.editedReportSeries.length !== 0) {
+                        <table style="width:100%">
+                            <tr>
+                                <td>Column name</td>
+                                <td>Series name</td>
+                                <td>Series type</td>
+                                <td style="width:90px;"></td>
+                            </tr>
+
+                            @for(reportSeries of this.editedReportSeries; track reportSeries; let seriesIndex = $index) {
+                                <tr>
+                                    <td>
+                                        <app-input
+                                            [(value)]="reportSeries.reportColumnName"
+                                            width="120px"
+                                            height="30px"
+                                            hint="Column name"
+                                        ></app-input>
+                                    </td>
+                                    <td>
+                                        <app-input
+                                            [(value)]="reportSeries.reportSeriesName"
+                                            width="120px"
+                                            height="30px"
+                                            hint="Series name"
+                                        ></app-input>
+                                    </td>
+                                    <td>
+                                        <app-select
+                                            width="95px"
+                                            [options]="this.reportSeriesTypeSelectOptions"
+                                            [cardHeightPx]="15"
+                                            [selectedOption]="this.reportSeriesTypeSelectedOptions[seriesIndex]"
+                                            (selectedOptionChange)="this.onEditedReportSeriesTypeChange(seriesIndex, $event)"
+                                        ></app-select>
+                                    </td>
+                                    <td style="width:90px;">
+                                        <app-button
+                                            value='Del'
+                                            textAlign="center"
+                                            [enabled]="true"
+                                            (onClick)="onDelReportSeriesButtonClick(seriesIndex)"
+                                            width="80px"
+                                            height="30px"
+                                            icon="button-icons/minus.png"
+                                            iconAlign="left"
+                                            color="red"
+                                        ></app-button>
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+                            
+                    }
+                </app-panel>
+            </ng-template>
+        </app-items-manager>
     </td>
 </tr>
 </table>
@@ -263,3 +469,25 @@
     </tr></table>
 </app-dialog>
 
+<!-- The report data provider instance selection dialog -->
+<app-dialog
+    title="Data provider instances"
+    width="350px"
+    height="400px"
+    [visible]="this.isReportDataproviderInstancesDialogVisible()"
+    [closeButton]="true"
+    (visibleChange)="this.onReportDataproviderInstancesDialogVisibilityChange($event)"
+>
+    @for(reportDataProviderInstanceSelectOption of this.reportDataProviderInstanceSelectOptions; track reportDataProviderInstanceSelectOptions) {
+        <div class="cards-list-card-wrapper selectable" style="margin-top:5px">
+            <app-card
+                width="calc(100% - 23px)"
+                height="80"
+                [title]="this.dataProviderInstanceCardTitleExtractor(reportDataProviderInstanceSelectOption)"
+                [text]="this.dataProviderInstanceCardTextExtractor(reportDataProviderInstanceSelectOption)"
+                [clickable]="true"
+                (onClick)="this.onReportDataproviderInstanceSelectOptionCardClick(reportDataProviderInstanceSelectOption)"
+            ></app-card>
+        </div>
+    }
+</app-dialog>

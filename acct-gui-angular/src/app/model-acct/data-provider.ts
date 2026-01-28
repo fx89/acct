@@ -74,10 +74,10 @@ export interface DataProviderParameter {
  * can be expected to have
  */
 export enum DataProviderPropertyDataType {
-    STRING,
-    NUMERIC,
-    DATETIME,
-    BOOLEAN
+    STRING = 'STRING',
+    NUMERIC = 'NUMERIC',
+    DATETIME = 'DATETIME',
+    BOOLEAN = 'BOOLEAN'
 }
 
 /**

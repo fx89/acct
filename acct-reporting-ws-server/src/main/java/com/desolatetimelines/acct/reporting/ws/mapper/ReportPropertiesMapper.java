@@ -14,16 +14,21 @@ import static com.desolatetimelines.acct.reporting.ws.mapper.ReportTypeMapper.to
 public abstract class ReportPropertiesMapper {
 
     public static ReportDetails toReportDetails(ReportProperties reportProperties) {
-        return
+
+        final ReportDetails.ReportDetailsBuilder builder =
             ReportDetails.builder()
                 .withReportName(reportProperties.reportName())
                 .withReportDescription(reportProperties.reportDescription())
                 .withReportType(toAcctReportType(reportProperties.reportType()))
                 .withReportSQL(reportProperties.reportSQL())
                 .withReportCategoryColumnName(reportProperties.reportCategoryColumnName())
-                .withDataProviderInstanceUUIDs(reportProperties.dataProviderInstanceUUIDs())
-                .withReportSeries(toReportSeriesDetailsSet(reportProperties.reportSeries()))
-                .build();
+                .withDataProviderInstanceUUIDs(reportProperties.dataProviderInstanceUUIDs());
+
+        if (reportProperties.reportSeries() != null && !reportProperties.reportSeries().isEmpty()) {
+            builder.withReportSeries(toReportSeriesDetailsSet(reportProperties.reportSeries()));
+        }
+
+        return builder.build();
     }
 
     public static ReportProperties fromReportDetails(ReportDetails reportDetails) {
@@ -31,16 +36,20 @@ public abstract class ReportPropertiesMapper {
             return null;
         }
 
-        return
+        final ReportProperties.ReportPropertiesBuilder builder =
             ReportProperties.builder()
                 .withReportName(reportDetails.reportName())
                 .withReportDescription(reportDetails.reportDescription())
                 .withReportSQL(reportDetails.reportSQL())
                 .withReportType(fromAcctReportType(reportDetails.reportType()))
                 .withReportCategoryColumnName(reportDetails.reportCategoryColumnName())
-                .withDataProviderInstanceUUIDs(reportDetails.dataProviderInstanceUUIDs())
-                .withReportSeries(fromReportSeriesDetailsSet(reportDetails.reportSeries()))
-                .build();
+                .withDataProviderInstanceUUIDs(reportDetails.dataProviderInstanceUUIDs());
+
+        if (reportDetails.reportSeries() != null && !reportDetails.reportSeries().isEmpty()) {
+            builder.withReportSeries(fromReportSeriesDetailsSet(reportDetails.reportSeries()));
+        }
+
+        return builder.build();
     }
 
 }

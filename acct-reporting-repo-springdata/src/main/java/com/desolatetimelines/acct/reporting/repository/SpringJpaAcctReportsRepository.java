@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.desolatetimelines.acct.reporting.util.AcctReportingRepoSpringDataUtils.doWithJpaAcctReport;
 import static com.desolatetimelines.acct.reporting.util.AcctReportingRepoSpringDataUtils.doWithJpaAcctReportReturning;
 import static java.util.function.Function.identity;
 
@@ -59,6 +60,11 @@ public class SpringJpaAcctReportsRepository implements AcctReportsRepository {
                 page.getNumberOfElements(),
                 page.getTotalElements()
             );
+    }
+
+    @Override
+    public void delete(AcctReport report) {
+        doWithJpaAcctReport(report, jpaAcctReportsRepository::delete);
     }
 
 }

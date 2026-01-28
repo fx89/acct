@@ -45,7 +45,7 @@ public abstract class DataProviderInstanceRuntimeParametersMapper {
         return
             DataProviderInstanceRuntimeParameter.builder()
                 .withParameterName(acctDataProviderInstanceRuntimeParameterSpec.name())
-                .withParameterDefaultValue("")
+                .withParameterDefaultValue(acctDataProviderInstanceRuntimeParameterSpec.parameterDefaultValue())
                 .withMandatory(acctDataProviderInstanceRuntimeParameterSpec.mandatory())
                 .withParameterDataType(
                     fromAcctReportingDataProviderReportParameterType(

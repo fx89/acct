@@ -8,13 +8,21 @@ import { isDefined } from '../utils-reusalbe/lang-utils';
 import { DashboardCollections } from '../model-acct/dashboard-collections';
 import { distinctElementsArray } from '../utils-reusalbe/array-utils';
 import { DashboardUUIDResponse } from '../model-acct/dashboard-uuid-response';
-import { DataProvider, DataProviderInstanceProperty } from '../model-acct/data-provider';
+import { DataProvider } from '../model-acct/data-provider';
 import { AcctDataProvidersRepository } from '../repositories-acct/data-providers-repository';
 import { DataProviderInstance } from '../model-acct/data-provider-instance';
 import { DataProviderInstanceUUIDResponse } from '../model-acct/data-provider-instance-uuid-response';
 import { AcctDataProviderInstancesRepository } from '../repositories-acct/data-provider-instances-repository';
-import { DataProviderInstanceProperties } from '../model-acct/data-provider-instance-properties';
+import { DataProviderInstanceProperties, DataProviderInstanceRuntimeParameter } from '../model-acct/data-provider-instance-properties';
 import { ReportingDataSet } from '../model-acct/reporting-data-set';
+import { ReportExtendedProperties } from '../model-acct/report-properties';
+import { AcctReportsRepository } from '../repositories-acct/reports-repository';
+import { ReportParameter } from '../model-acct/report-parameter';
+
+// Constants that define the boundaries of a page that's supposed to contain all elements ever to
+// have been created in the entire ACCT ecosystem.
+const ALL_RESULTS_PAGE_NUMBER : number = 0
+const ALL_RESULTS_PAGE_SIZE : number = 10000000
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +33,7 @@ export class ReportingService {
     private dashboardsRepository : AcctDashboardsRepository,
     private dataProvidersRepository : AcctDataProvidersRepository,
     private dataProviderInstancesRepository : AcctDataProviderInstancesRepository,
+    private reportsRepository : AcctReportsRepository,
     private catalogService : CatalogService
   ) { }
 
@@ -170,6 +179,71 @@ export class ReportingService {
   }
 
   /**
+   * Returns an observable that produces an array of all the {@link ReportExtendedProperties reports}
+   * that are owned by or accessible to the current user within the ACCT ecosystem.
+   */
+  public findAllReports() : Observable<ReportExtendedProperties[]> {
+    return this.reportsRepository
+      .findSortedPageOfUserAccessibleReports(ALL_RESULTS_PAGE_NUMBER, ALL_RESULTS_PAGE_SIZE)
+      .pipe(
+        map(page => page.data)
+      )
+  }
+
+  public saveReport(report : ReportExtendedProperties) : Observable<void> {
+    return this.reportsRepository
+      .saveReport(
+        report.reportProperties,
+        report.reportUUID
+      )
+      .pipe(map(() => {}))
+  }
+
+  public deleteReport(report:ReportExtendedProperties) : Observable<void> {
+    // Get the report UUID
+    const reportUUID = this.verifyReportAndReturnReportUUID(report)
+
+    //Delete the report
+    return this.reportsRepository.deleteReport(reportUUID)
+  }
+
+  /**
+   * Retrieves a set of all the runtime parameters accepted by the referenced report.
+   * 
+   * @param reportUUID Uniquely identifies the report.
+   */
+  public getReportRuntimeParameters(reportUUID:string) : Observable<DataProviderInstanceRuntimeParameter[]> {
+    return this.reportsRepository.getReportRuntimeParameters(reportUUID)
+  }
+
+  /**
+   * Runs the referenced report for the given parameters and retrieves the resulting data set
+   * @param reportUUID Uniquely identifies the referenced report
+   * @param runtimeParmaters The given runtime parameters
+   * @returns 
+   */
+  public getReportDataWithRuntimeParameters(reportUUID:string, runtimeParmaters:ReportParameter[]) : Observable<ReportingDataSet> {
+    return this.reportsRepository.getReportDataWithRuntimeParameters(
+      reportUUID,
+      runtimeParmaters
+    )
+  }
+
+  /**
+   * Makes sure that the referenced report is defined and has a reportUUID that is also defined.
+   * If everything is in order, then the reportUUID is returned. If not, then an exception is thrown.
+   * @param report the report to be verified.
+   * @returns the UUID of the report.
+   */
+  private verifyReportAndReturnReportUUID(report? : ReportExtendedProperties) : string {
+    if (!isDefined(report?.reportUUID)) {
+      throw "Report UUID not provided"
+    }
+
+    return (report?.reportUUID ?? "")
+  }
+
+  /**
    * Makes sure that the referenced workspace is defined and has a workspaceUUID that is also defined.
    * If everything is in order, then the workspaceUUID is returned. If not, then an exception is thrown.
    * @param workspace the workspace to be verified.
@@ -191,19 +265,6 @@ export class ReportingService {
           // Dashboards are uniquely identified by the dashboardUUID
           (dashboard:Dashboard) => dashboard.dashboardUUID
         )
-  }
-
-  private mapFromDataProviderInstancePropertyArray(array : DataProviderInstanceProperty[]) : Map<string, string> {
-    // Create the map
-    const ret : Map<string,string> = new Map<string,string>()
-
-    // Populate the map
-    array.forEach(property => {
-      ret.set(property.name, "")
-    })
-
-    // Return a reference to the populated map
-    return ret
   }
 
 }

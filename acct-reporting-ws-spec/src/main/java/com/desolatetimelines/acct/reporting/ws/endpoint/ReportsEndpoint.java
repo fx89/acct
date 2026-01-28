@@ -58,4 +58,11 @@ public interface ReportsEndpoint {
         Set<ReportParameter> parameters
     );
 
+    /**
+     * Deletes the referenced report.
+     *
+     * @param reportUUID Uniquely identifies the report to delete.
+     */
+    void deleteReport(String reportUUID);
+
 }

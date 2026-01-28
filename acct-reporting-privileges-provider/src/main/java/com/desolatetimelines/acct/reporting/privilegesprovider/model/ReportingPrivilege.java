@@ -101,6 +101,14 @@ public enum ReportingPrivilege {
             .withPrivilegeName("Run reports")
             .withPrivilegeDescription("Allows running reports and individual data provider instances and retrieving data sets resulted from these runs")
             .build()
+    ),
+
+    REPORTS_DELETE(
+        AcctPrivilege.builder()
+            .withPrivilegeId(ReportingPrivilegeIds.REPORTS_DELETE)
+            .withPrivilegeName("Delete reports")
+            .withPrivilegeDescription("Allows deleting reports")
+            .build()
     );
 
     private final AcctPrivilege acctPrivilege;

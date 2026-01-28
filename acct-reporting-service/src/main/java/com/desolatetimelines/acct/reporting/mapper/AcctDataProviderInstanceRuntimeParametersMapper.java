@@ -138,6 +138,7 @@ public abstract class AcctDataProviderInstanceRuntimeParametersMapper {
                     case STRING -> AcctReportingDataProviderReportParameterType.STRING;
                     case DATETIME -> AcctReportingDataProviderReportParameterType.DATETIME;
                 },
+                acctDataProviderInstanceRuntimeParameter.getParameterDefaultValue(),
                 acctDataProviderInstanceRuntimeParameter.isMandatory()
             );
     }

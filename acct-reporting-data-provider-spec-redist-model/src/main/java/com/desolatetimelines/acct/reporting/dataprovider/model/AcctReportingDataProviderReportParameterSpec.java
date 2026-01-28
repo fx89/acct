@@ -11,6 +11,7 @@ import java.util.Objects;
 public record AcctReportingDataProviderReportParameterSpec(
     String name,
     AcctReportingDataProviderReportParameterType dataType,
+    String parameterDefaultValue,
     boolean mandatory
 ) {
     @Override

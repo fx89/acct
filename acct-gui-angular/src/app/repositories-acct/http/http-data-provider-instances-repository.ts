@@ -4,7 +4,6 @@ import { AcctDataProviderInstancesRepository } from "../data-provider-instances-
 import { createBodyProcessingHttpClientWrapperHandlers, HttpConnector } from "../../services-reusable/http-connectors.service";
 import { DataProviderInstanceProperties } from "../../model-acct/data-provider-instance-properties";
 import { DataProviderInstanceUUIDResponse } from "../../model-acct/data-provider-instance-uuid-response";
-import { DataProviderPropertyDataType } from "../../model-acct/data-provider";
 import { ReportingDataSet } from "../../model-acct/reporting-data-set";
 
 /**
@@ -47,44 +46,11 @@ export class HttpAcctDataProviderInstancesRepository extends AcctDataProviderIns
                 },
                 createBodyProcessingHttpClientWrapperHandlers(
                     subscriber,
-                    (response:DataProviderInstanceProperties) => ({
-                        instanceName : response.instanceName,
-                        dataProviderUUID : response.dataProviderUUID,
-                        instanceProperties : response.instanceProperties,
-                        runtimeParameters : response.runtimeParameters.map(param => ({
-                            parameterName : param.parameterName,
-                            parameterDefaultValue : param.parameterDefaultValue,
-                            parameterDataType : this.fixDataProviderPropertyDataType(param.parameterDataType),
-                            mandatory : param.mandatory
-                        }))
-                    }),
+                    (response:DataProviderInstanceProperties) => response,
                     "Data provider instance properties not found."
                 )
             )
         })
-    }
-
-    /**
-     * The parameter type comes in as a string from the back-end. TS thinks it's an enum, but it's not.
-     */
-    private fixDataProviderPropertyDataType(type : DataProviderPropertyDataType) : DataProviderPropertyDataType {
-        // Make it think it's a string
-        const strType = "" + type
-
-        // Get the right enum value for the string
-        if (strType == "BOOLEAN") {
-            return DataProviderPropertyDataType.BOOLEAN
-        }
-
-        if (strType == "DATETIME") {
-            return DataProviderPropertyDataType.DATETIME
-        }
-
-        if (strType == "NUMERIC") {
-            return DataProviderPropertyDataType.NUMERIC
-        }
-
-        return DataProviderPropertyDataType.STRING
     }
 
     /**

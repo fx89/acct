@@ -86,9 +86,12 @@ public record DataProviderInstanceRuntimeParameter(
 
         public DataProviderInstanceRuntimeParameter build() {
             throwIfNullOrEmpty(parameterName, () -> new IllegalArgumentException("The parameter name is missing"));
-            throwIfNullOrEmpty(parameterDefaultValue, () -> new IllegalArgumentException("The parameter default value is missing"));
             throwIfNull(parameterDataType, () -> new IllegalArgumentException("The parameter data type is missing"));
             throwIfNull(mandatory, () -> new IllegalArgumentException("The mandatory flag is missing"));
+
+            if (mandatory) {
+                throwIfNullOrEmpty(parameterDefaultValue, () -> new IllegalArgumentException("The parameter default value is missing"));
+            }
 
             return
                 new DataProviderInstanceRuntimeParameter(

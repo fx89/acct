@@ -343,6 +343,15 @@ public class AcctReportingDataService {
     }
 
     /**
+     * Deletes the referenced {@link AcctReport report}.
+     *
+     * @param report Reference to the report to be deleted.
+     */
+    public void deleteReport(AcctReport report) {
+        reportsRepository.delete(report);
+    }
+
+    /**
      * Retrieves the report with the given report UUID. If no such report exists, then an empty
      * optional is returned.
      *

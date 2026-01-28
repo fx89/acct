@@ -48,7 +48,8 @@ public class ReportsEndpointController implements ReportsEndpoint {
                     .saveReport(
                         reportUUID,
                         toReportDetails(reportProperties),
-                        userClaims.userUUID()
+                        userClaims.userUUID(),
+                        userClaims.privilegeNames()
                     )
                     .getReportUUID()
             );
@@ -115,6 +116,23 @@ public class ReportsEndpointController implements ReportsEndpoint {
                     userClaims.userUUID()
                 )
             );
+    }
+
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + REPORTS_DELETE + "')")
+    @DeleteMapping(value = "")
+    public void deleteReport(
+        @RequestParam(name = "reportUUID") String reportUUID
+    ) {
+        // Get the user claims
+        final AcctUserClaims userClaims = extractCurrentUserClaims();
+
+        // Delete the report for the user
+        reportingService.deleteReport(
+            reportUUID,
+            userClaims.userUUID(),
+            userClaims.privilegeNames()
+        );
     }
 
 }

@@ -634,8 +634,19 @@ public class AcctReportingService {
     public AcctReport saveReport(
         String reportUUID,
         ReportDetails reportDetails,
-        String userUUID
+        String userUUID,
+        Collection<String> privilegeNames
     ) {
+        // If the report is not new, then make sure the current user is able to access the report
+        if (reportUUID != null) {
+            verifyReportOwnership(
+                userUUID,
+                reportUUID,
+                privilegeNames,
+                REPORTS_SAVE
+            );
+        }
+
         // Acquire the report by either fetching the referenced report and raising an error if it doesn't exist
         // or creating a new report in case the UUID was not provided.
         final AcctReport report =
@@ -664,18 +675,45 @@ public class AcctReportingService {
         // Update the report data provider instances to match those in the request
         updateReportDataProviderInstances(savedReport, reportDetails.dataProviderInstanceUUIDs());
 
-        // Add the ownership mapping
-        securityClientService.addReportOwner(
-            ReportOwner.builder()
-                .withOwnerType(OwnerType.USER)
-                .withOwnerUUID(userUUID)
-                .withReportUUID(savedReport.getReportUUID())
-                .build()
-        );
+        // If the report is new, then add the ownership mapping
+        if (reportUUID == null) {
+            securityClientService.addReportOwner(
+                ReportOwner.builder()
+                    .withOwnerType(OwnerType.USER)
+                    .withOwnerUUID(userUUID)
+                    .withReportUUID(savedReport.getReportUUID())
+                    .build()
+            );
+        }
 
         // Return a reference to the saved report
         return savedReport;
     }
+
+    @Transactional
+    public void deleteReport(
+        String reportUUID,
+        String userUUID,
+        Collection<String> privilegeNames
+    ) {
+        // Make sure the user owns the report
+        verifyReportOwnership(
+            userUUID,
+            reportUUID,
+            privilegeNames,
+            REPORTS_DELETE
+        );
+
+        // Find the report
+        final AcctReport report = findReport(reportUUID);
+
+        // Delete the report
+        dataService.deleteReport(report);
+
+        // TODO: Remove all ownership records for the report
+        //      - need to update the security service and I don't have time for this right now
+    }
+
 
     public Page<ExtendedReportDetails> findSortedPageOfUserAccessibleReports(
         int pageNumber,
@@ -972,6 +1010,7 @@ public class AcctReportingService {
                                     new AcctReportingDataProviderReportParameterSpec(
                                         runtimeParameter.getParameterName(),
                                         toAcctReportingDataProviderReportParameterType(runtimeParameter.getParameterDataType()),
+                                        runtimeParameter.getParameterDefaultValue(),
                                         runtimeParameter.isMandatory()
                                     )
                                 )
@@ -1010,28 +1049,33 @@ public class AcctReportingService {
             return null;
         }
 
+        final ReportDetails.ReportDetailsBuilder builder =
+            ReportDetails.builder()
+                .withReportName(report.getReportName())
+                .withReportDescription(report.getReportDescription())
+                .withReportSQL(report.getReportSQLStatement())
+                .withReportType(report.getReportType())
+                .withReportCategoryColumnName(report.getReportCategoryColumnName())
+                .withDataProviderInstanceUUIDs(
+                    dataProviderInstances.stream()
+                        .filter(dpi -> Objects.equals(dpi.getReport(), report))
+                        .map(dpi -> dpi.getDataProviderInstance().getDataProviderInstanceUUID())
+                        .collect(toSet())
+                );
+
+        if (series != null && !series.isEmpty()) {
+            builder.withReportSeries(
+                series.stream()
+                    .filter(s -> Objects.equals(s.getReport(), report))
+                    .map(AcctReportSeriesMapper::toReportSeriesDetails)
+                    .collect(toSet())
+            );
+        }
+
         return
             new ExtendedReportDetails(
                 report.getReportUUID(),
-                ReportDetails.builder()
-                    .withReportName(report.getReportName())
-                    .withReportDescription(report.getReportDescription())
-                    .withReportSQL(report.getReportSQLStatement())
-                    .withReportType(report.getReportType())
-                    .withReportCategoryColumnName(report.getReportCategoryColumnName())
-                    .withDataProviderInstanceUUIDs(
-                        dataProviderInstances.stream()
-                            .filter(dpi -> Objects.equals(dpi.getReport(), report))
-                            .map(dpi -> dpi.getDataProviderInstance().getDataProviderInstanceUUID())
-                            .collect(toSet())
-                    )
-                    .withReportSeries(
-                        series.stream()
-                            .filter(s -> Objects.equals(s.getReport(), report))
-                            .map(AcctReportSeriesMapper::toReportSeriesDetails)
-                            .collect(toSet())
-                    )
-                    .build()
+                builder.build()
             );
     }
 
@@ -1104,6 +1148,36 @@ public class AcctReportingService {
 
         // Delete the removed report series
         removedReportSeries.forEach(dataService::deleteReportSeries);
+    }
+
+    private void verifyReportOwnership(
+        String userUUID,
+        String reportUUID,
+        Collection<String> privilegeNames,
+        String requiredPrivilege
+    ) {
+        // Check if the user owns the dashboard directly
+        final boolean isReportAccessible =
+            securityClientService.resourceIsAccessibleToUser(
+                ResourceType.REPORT,
+                userUUID,
+                reportUUID,
+                UserResourceAccessRights.builder()
+                    .withOwnResources(true)
+                    .withGroupResources(true)
+                    .withAnyResources(false)
+                    .build()
+            );
+
+        // The user does not have the rights to delete the dashboard if the dashboard is not owned
+        // by the user or if the user doesn't have the right to delete group dashboards
+        if (!isReportAccessible) {
+            throw new AcctReportingServiceSecurityException(
+                errors,
+                REPORT,
+                reportUUID
+            );
+        }
     }
 
     private void updateReportDataProviderInstances(AcctReport report, Set<String> dataProviderInstanceUUIDs) {

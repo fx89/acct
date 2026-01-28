@@ -29,4 +29,6 @@ public abstract class ReportingPrivilegeIds {
 
     public static final String REPORTS_RUN = "REPORTS_RUN";
 
+    public static final String REPORTS_DELETE = "REPORTS_DELETE";
+
 }

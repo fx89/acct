@@ -6,10 +6,7 @@ import com.desolatetimelines.acct.reporting.ws.model.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 
@@ -26,6 +23,12 @@ public interface RESTReportsEndpointClient extends ReportsEndpoint {
     ReportUUIDResponse saveReportForCurrentUser(
         @Nullable @RequestParam(name = "reportUUID") String reportUUID,
         @NonNull @RequestBody ReportProperties reportProperties
+    );
+
+    @Override
+    @DeleteMapping(value = "")
+    void deleteReport(
+        @RequestParam(name = "reportUUID") String reportUUID
     );
 
     @Override

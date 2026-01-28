@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit } from '@angular/core';
 import { map, Observable, switchMap } from 'rxjs';
 import { ItemsManagerCardAction, ItemsManagerCardPropertyExtractor, ItemsManagerComponent, ItemsManagerDataItem, ItemsManagerDataSet, ItemsManagerNewItemFormDirective } from '../../components-acct/items-manager/items-manager.component';
-import { complete, errorConsumingObservableOperation, errorConsumingObservableTransform,  waitForCondition } from '../../utils-reusalbe/rxjs-utils';
+import { complete, errorConsumingObservableOperation, errorConsumingObservableTransform,  newObservable,  waitForCondition } from '../../utils-reusalbe/rxjs-utils';
 import { ReportingService } from '../../services-acct/reporting.service';
 import { isDefined } from '../../utils-reusalbe/lang-utils';
 import { DataProviderInstance } from '../../model-acct/data-provider-instance';
@@ -16,6 +16,11 @@ import { CardData } from '../../components-gui/cards-list/card-data';
 import { newReportingDataSet, ReportingDataSet } from '../../model-acct/reporting-data-set';
 import { TableColumnDirective, TableComponent } from '../../components-gui/table/table.component';
 import { isEmptyString } from '../../utils-reusalbe/string-utils';
+import { allSeriesTypes, ReportExtendedProperties, ReportSeries, ReportSeriesType, ReportType } from '../../model-acct/report-properties';
+import { PanelComponent } from '../../components-gui/panel/panel.component';
+import { CardActionButton, CardComponent } from '../../components-gui/card/card.component';
+import { removeArrayElement } from '../../utils-reusalbe/array-utils';
+import { ReportParameter } from '../../model-acct/report-parameter';
 
 export interface DataProviderInstanceWithDataproviderReference extends DataProviderInstance  {
   dataProvider : DataProvider
@@ -43,6 +48,18 @@ export interface DataProviderInstancePropertiesWithDataproviderRefernce extends 
   dataProviderInstanceUUID? : string
 }
 
+export interface ReportTypeSelectOption extends CardData {
+  value : ReportType
+}
+
+export interface DataProviderInstanceCardData extends CardData {
+  dataProviderInstance : DataProviderInstancePropertiesWithDataproviderRefernce
+}
+
+export interface ReportSeriesTypeCardData extends CardData {
+  value : ReportSeriesType
+}
+
 @Component({
   selector: 'app-reports',
   imports: [
@@ -53,7 +70,9 @@ export interface DataProviderInstancePropertiesWithDataproviderRefernce extends 
     ButtonComponent,
     DialogComponent,
     TableComponent,
-    TableColumnDirective
+    TableColumnDirective,
+    PanelComponent,
+    CardComponent
   ],
   templateUrl: './reports.component.html',
   styleUrl: './reports.component.less'
@@ -124,6 +143,17 @@ export class ReportsComponent implements OnInit {
   runtimeParametersDialogVisible : boolean = false
 
   /**
+   * Determines if the runtime parameters dialog's "Run" button calls the report running function
+   * or just the data provider instance running function
+   */
+  runtimeParametersDialogForReport : boolean = false
+
+  /**
+   * Controls the visibility of the report data provider instnace selection dialog
+   */
+  reportDataproviderInstancesDialogVisible : boolean = false
+
+  /**
    * Data set fetched from the back-end, to be displayed in the data table dialog
    */
   fetchedDataSet : ReportingDataSet = newReportingDataSet()
@@ -152,6 +182,61 @@ export class ReportsComponent implements OnInit {
    * The UUID of the data provider instance selected for running
    */
   runtimeParametersDialogDataProviderInstanceUUID : string = ""
+
+  /**
+   * The report that's selected for editing or deleting reports in the reports manager
+   */
+  reportsListSelectedItem! : ReportExtendedProperties
+
+  /**
+   * The options that are available for the report type selection box
+   */
+  reportTypeSelectOptions : ReportTypeSelectOption[] = [
+    {
+      title: "Table",
+      text: "Report appears as a data table",
+      value: ReportType.TABLE
+    },
+    {
+      title: "Series",
+      text: "Report appears as a line chart or a column chart",
+      value: ReportType.SERIES
+    },
+    /*
+    {
+      title: "Pie",
+      text: "Report appears as a pie chart",
+      value: false
+    }
+    */
+  ]
+
+  reportTypeSelectedOption! : ReportTypeSelectOption
+
+  dataProviderInstancesList : DataProviderInstanceWithDataproviderReference[] = []
+
+  reportDataProviderInstanceSelectOptions : DataProviderInstanceWithDataproviderReference[] = []
+
+  reportDataProviderInstanceSelectedOptions : DataProviderInstanceWithDataproviderReference[] = []
+
+  reportDataProviderInstanceCardAdditionalActions : Map<string,CardActionButton[]> = new Map()
+
+  editedReportSeries : ReportSeries[] = []
+
+  reportSeriesTypeSelectOptions : ReportSeriesTypeCardData[] = 
+    allSeriesTypes().map(seriesType => ({
+      title: "",
+      text: ReportSeriesType[seriesType],
+      value: seriesType
+    }))
+
+  reportSeriesTypeSelectedOptions: ReportSeriesTypeCardData[] = []
+
+  reportUUID : string = ""
+
+  reportDataSet? : ReportingDataSet
+
+  reportViewerVisible : boolean = false
 
   constructor(
     private reportingService : ReportingService
@@ -214,6 +299,9 @@ export class ReportsComponent implements OnInit {
                     dataProviderInstance.dataProvider = dataProvider
                   }
                 })
+
+                // Store the list of data provider instances to be selected in the report editor form
+                this.dataProviderInstancesList = dataProviderInstances
 
                 return dataProviderInstances
             })
@@ -319,6 +407,16 @@ export class ReportsComponent implements OnInit {
 
       return false
     }
+
+  editedReportTransformingMapper : ((item:ReportExtendedProperties) => Observable<ReportExtendedProperties>) =
+    (item:ReportExtendedProperties) => {
+      this.computeSelectedReportTypeSelectedOption(item)
+      this.computeReportDataProviderInstanceSelectedOptions()
+      this.computeEditedReportSeries()
+      this.computeReportSeriesTypeSelectedOptions()
+      return newObservable(item)
+    }
+
   isInstancePropertiesArrayCorrect(item:DataProviderInstancePropertiesWithDataproviderRefernce) : boolean {
     // If there are no instance properties defined by the data provider, then there is nothing to validate
     if (!(item.dataProvider?.instanceProperties)) {
@@ -432,6 +530,26 @@ export class ReportsComponent implements OnInit {
       }
     }
 
+  reportRunAction : ItemsManagerCardAction =
+    (report:ItemsManagerDataItem<ReportExtendedProperties>) => {
+      // Get the runtime parameters for the report
+      this.reportingService.getReportRuntimeParameters(report.reportUUID ?? "")
+        .subscribe(
+          data => {
+            // If there are parameters, then show the runtime parameters dialog
+            if (data?.length > 0) {
+              this.reportUUID = report.reportUUID ?? ""
+              this.prepareRuntimeParametersDialogData(data)
+              this.showRuntimeParametersDialog(true)
+            }
+            // If there are no paramters, then proceed straight to running
+            else {
+              this.runReport(report.reportUUID ?? "")
+            }
+          }
+        )
+    }
+
   prepareRuntimeParametersDialogData(runtimeParameters:DataProviderInstanceRuntimeParameter[]) : void {
     this.runtimeParametersDialogData =
       runtimeParameters.map(runtimeParameter => ({
@@ -459,6 +577,106 @@ export class ReportsComponent implements OnInit {
     })
   }
 
+  runReport(reportUUID:string, parameters?:ReportParameter[]) : void {
+    // Run the report
+    this.reportingService.getReportDataWithRuntimeParameters(
+      reportUUID,
+      parameters ?? []
+    ).subscribe({
+      // Upon successful run, store the data set and show the report viewer
+      next: (dataSet:ReportingDataSet) => {
+        this.reportDataSet = dataSet
+        this.showReportViewer()
+      },
+      error: err => {
+        // TODO: toast
+        console.log(err)
+      }
+    })
+  }
+
+  /**
+   * Produces the list of reports for the item manager
+   */
+  reportsListProducer : (() => Observable<ItemsManagerDataSet>) = () => {
+    return this.reportingService.findAllReports()
+  }
+
+  /**
+   * Supplies new report objects to the item manager
+   */
+  newReportSupplier : (() => ReportExtendedProperties) = () => ({
+    reportProperties: {
+      dataProviderInstanceUUIDs: [],
+      reportCategoryColumnName: "",
+      reportDescription: "",
+      reportName: "",
+      reportSeries: [],
+      reportSQL: "",
+      reportType: ReportType.TABLE
+    }
+  })
+
+  /**
+   * Saves a report for the items manager
+   */
+  reportSavingConsumer : ((item:ReportExtendedProperties) => Observable<void>) =
+    (item:ReportExtendedProperties) => {
+      // Update the selected data provider instance UUIDs of the report
+      item.reportProperties.dataProviderInstanceUUIDs =
+        this.reportDataProviderInstanceSelectedOptions.map(option => option.dataProviderInstanceUUID ?? "")
+
+      // Update the selected report series
+      item.reportProperties.reportSeries = this.editedReportSeries.map((series, index) => ({
+        reportColumnName: series.reportColumnName,
+        reportSeriesName: series.reportSeriesName,
+        reportSeriesType: this.reportSeriesTypeSelectedOptions[index].value
+      }))
+
+      // Save the report
+      return errorConsumingObservableTransform(
+        this.reportingService.saveReport(item),
+        () => {},
+        err => {
+          // TODO: toast
+          console.log(err)
+        }
+      )
+  }
+
+  /**
+   * Deletes a report for the items manager
+   */
+  reportDeletionConsumer : ((item:ItemsManagerDataItem<ReportExtendedProperties>) => Observable<void>) =
+    (item:ItemsManagerDataItem<ReportExtendedProperties>) => errorConsumingObservableOperation(
+      this.reportingService.deleteReport(item),
+      err => {
+        // TODO: toast
+        console.log(err)
+      }
+    )
+
+  /**
+   * Validates a report for the items manager, before saving
+   */
+  reportValidator : ((item:ReportExtendedProperties) => boolean) =
+    (item:ReportExtendedProperties) => {
+      return isDefined(item) &&
+             isDefined(item.reportProperties) &&
+             isDefined(this.reportDataProviderInstanceSelectedOptions) &&
+             this.reportDataProviderInstanceSelectedOptions.length > 0 &&
+             isDefined(item.reportProperties.reportCategoryColumnName) &&
+             isDefined(item.reportProperties.reportName) &&
+             isDefined(item.reportProperties.reportSQL) &&
+             (
+              item.reportProperties.reportType != ReportType.SERIES ||
+              (
+                isDefined(this.reportSeriesTypeSelectedOptions) &&
+                this.reportSeriesTypeSelectedOptions.length > 0
+              )
+             )
+    }
+
   /**
    * Extracts the dashboard name for the item manager
    */
@@ -471,6 +689,18 @@ export class ReportsComponent implements OnInit {
   dataProviderInstanceCardTextExtractor : ItemsManagerCardPropertyExtractor = 
     (item:DataProviderInstanceWithDataproviderReference) => 
       item.dataProvider.humanReadableName + ": " + item.dataProvider.description
+
+  /**
+   * Extracts the report name for the item manager
+   */
+  reportCardTitleExtractor : ItemsManagerCardPropertyExtractor =
+    (item:ReportExtendedProperties) => item.reportProperties.reportName
+
+  /**
+   * Extracts report's description
+   */
+  reportCardTextExtractor : ItemsManagerCardPropertyExtractor = 
+    (item:ReportExtendedProperties) => item.reportProperties.reportDescription
 
   /**
    * Triggered by selecting a data provider in the data provider instance editing dialog
@@ -537,6 +767,10 @@ export class ReportsComponent implements OnInit {
     this.runtimeParametersDialogVisible = visibility
   }
 
+  onReportDataproviderInstancesDialogVisibilityChange(visibility:boolean) {
+    this.reportDataproviderInstancesDialogVisible = visibility
+  }
+
   onAddRuntimeParameterButtonClick() {
     this.dataProviderInstancesListSelectedItem.runtimeParameters.push({
       mandatory: false,
@@ -577,17 +811,161 @@ export class ReportsComponent implements OnInit {
   }
 
   onRunSelectedDataProviderInstanceButtonClick() : void {
+    // If it's a report that needs to be run, then run the report
+    if (this.runtimeParametersDialogForReport) {
+      this.prepareAndrunReport()
+    }
+    // If it's a data provider instance that needs to be run, then run the data provider instance
+    else {
+      this.prepareAndRunDataProviderInstance()
+    }
+  }
+
+  prepareAndRunDataProviderInstance() : void {
     // Prepare the runtime parameters map
     const runtimeParameters : Map<string,string> = new Map<string,string>()
     this.runtimeParametersDialogData.forEach(param => {
       runtimeParameters.set(param.propertyName, param.propertyValue)
     })
 
-    // Start running the data provider instance
+    // Run the data provider instance
     this.runDataProviderInstance(
       this.runtimeParametersDialogDataProviderInstanceUUID,
       runtimeParameters
     )
+  }
+
+  prepareAndrunReport() : void {
+    // Prepare the report parameters
+    const reportParameters : ReportParameter[] =
+      this.runtimeParametersDialogData.map(param => 
+        ({
+          parameterName : param.propertyName,
+          parameterValue : param.propertyValue
+        })
+      )
+
+    // Run the report
+    this.runReport(this.reportUUID, reportParameters)
+  }
+
+  onSelectedReportTypeChange : ((event:CardData|undefined) => void) = (event:CardData|undefined) => {
+    const reportTypeSelectEvent : ReportTypeSelectOption = event as ReportTypeSelectOption
+    this.reportTypeSelectedOption = reportTypeSelectEvent
+    this.reportsListSelectedItem.reportProperties.reportType = reportTypeSelectEvent.value
+  }
+
+  onNewReport : ((newReport:ReportExtendedProperties) => void) = (newReport:ReportExtendedProperties) => {
+    this.computeSelectedReportTypeSelectedOption(newReport)
+    this.reportsListSelectedItem = newReport
+    this.computeReportDataProviderInstanceSelectedOptions()
+    this.computeReportDataProviderInstanceSelectOptions()
+    this.computeEditedReportSeries()
+    this.computeReportSeriesTypeSelectedOptions()
+  }
+
+  onAddReportDataProviderButtonClick() : void {
+    this.computeReportDataProviderInstanceSelectOptions()
+    this.showReportDataproviderInstancesDialog()    
+  }
+
+  onReportDataproviderInstanceSelectOptionCardClick(reportDataProviderInstanceSelectOption:DataProviderInstanceWithDataproviderReference) : void {
+    this.reportDataProviderInstanceSelectedOptions.push(
+      reportDataProviderInstanceSelectOption
+    )
+
+    this.computeReportDataProviderInstanceSelectedOptionsAdditionalCardActions()
+
+    this.hideReportDataproviderInstancesDialog()
+  }
+
+  onAddReportSeriesButtonClick() : void {
+    // Add a new report series
+    this.editedReportSeries.push({
+      reportColumnName: "",
+      reportSeriesName: "",
+      reportSeriesType: ReportSeriesType.LINE
+    })
+  }
+
+  onEditedReportSeriesTypeChange(seriesIndex:number, event:CardData|undefined) : void {
+    const reportSeriesTypeSelectEvent : ReportSeriesTypeCardData = event as ReportSeriesTypeCardData
+    this.reportSeriesTypeSelectedOptions[seriesIndex] = reportSeriesTypeSelectEvent
+  }
+
+  onDelReportSeriesButtonClick(seriesIndex:number) : void {
+    this.editedReportSeries.splice(seriesIndex,1)
+    this.computeReportSeriesTypeSelectedOptions()
+  }
+
+  computeEditedReportSeries() : void {
+    // Reset the edited report series array
+    this.editedReportSeries = []
+
+    // Deep copy the report series from the report properties of the selected report
+    Object.assign(this.editedReportSeries, this.reportsListSelectedItem.reportProperties.reportSeries ?? [])
+  }
+
+  computeReportSeriesTypeSelectedOptions() : void {
+    this.reportSeriesTypeSelectedOptions = this.editedReportSeries.map(series =>
+      this.reportSeriesTypeSelectOptions.filter(option => option.value == series.reportSeriesType)[0]
+    )
+  }
+
+  computeReportDataProviderInstanceSelectedOptions() : void {
+    // Compute the selected options
+    this.reportDataProviderInstanceSelectedOptions =
+      this.reportsListSelectedItem.reportProperties.dataProviderInstanceUUIDs.map(uuid =>
+        this.dataProviderInstancesList
+          .filter(dataProviderInstance => dataProviderInstance.dataProviderInstanceUUID == uuid)
+          [0]
+      )
+
+    // Compute the additional card actions
+    this.computeReportDataProviderInstanceSelectedOptionsAdditionalCardActions()
+  }
+
+  computeReportDataProviderInstanceSelectedOptionsAdditionalCardActions() : void {
+    this.reportDataProviderInstanceCardAdditionalActions = new Map()
+    this.reportDataProviderInstanceSelectedOptions.forEach(option =>
+      this.reportDataProviderInstanceCardAdditionalActions.set(
+        option.dataProviderInstanceUUID ?? "",
+        [
+          {
+            width: "50px",
+            text:  "remove",
+            color: "red",
+            onClick : () => {
+              // Remove the selected option
+              removeArrayElement(
+                this.reportDataProviderInstanceSelectedOptions,
+                option
+              )
+
+              // Re-compute the select options list
+              this.computeReportDataProviderInstanceSelectOptions()
+            }
+          }
+        ]
+      )
+    )
+  }
+
+  computeReportDataProviderInstanceSelectOptions() : void {
+    // Reset the select options for the report data provider instnaces list
+    this.reportDataProviderInstanceSelectOptions = []
+
+    // Add the data provider instnaces that are not already added to the data provider
+    this.dataProviderInstancesList
+      .filter(dataProviderInstnace => this.reportDataProviderInstanceSelectedOptions.filter(option => option.dataProviderInstanceUUID == dataProviderInstnace.dataProviderInstanceUUID).length == 0)
+      .forEach(dataProviderInstance => this.reportDataProviderInstanceSelectOptions.push(dataProviderInstance))
+  }
+
+  computeSelectedReportTypeSelectedOption(selectedReport:ReportExtendedProperties) : void  {
+    this.reportTypeSelectedOption = 
+        this.reportTypeSelectOptions
+          .filter(option => option.value == selectedReport.reportProperties.reportType)
+          [0]
   }
 
   newDataProviderPropertySelectedOptions() : DataProviderParameterSelectedOption {
@@ -725,8 +1103,9 @@ export class ReportsComponent implements OnInit {
     return this.dataTableDialogVisible
   }
 
-  showRuntimeParametersDialog() {
+  showRuntimeParametersDialog(forReport?:boolean) {
     this.runtimeParametersDialogVisible = true
+    this.runtimeParametersDialogForReport = forReport ?? false
   }
 
   hideRuntimeParametersDialog() {
@@ -735,6 +1114,30 @@ export class ReportsComponent implements OnInit {
 
   isRuntimeParametersDialogVisible() : boolean {
     return this.runtimeParametersDialogVisible
+  }
+
+  showReportDataproviderInstancesDialog() : void {
+    this.reportDataproviderInstancesDialogVisible = true
+  }
+
+  hideReportDataproviderInstancesDialog() : void {
+    this.reportDataproviderInstancesDialogVisible = false
+  }
+
+  isReportDataproviderInstancesDialogVisible() : boolean {
+    return this.reportDataproviderInstancesDialogVisible
+  }
+
+  showReportViewer() : void {
+    this.reportViewerVisible = true
+  }
+
+  hideReportViewer() : void {
+    this.reportViewerVisible = true
+  }
+
+  isReportViewerVisible() : boolean {
+    return this.reportViewerVisible
   }
 
   getFetchedDataSetData() : string[][] {

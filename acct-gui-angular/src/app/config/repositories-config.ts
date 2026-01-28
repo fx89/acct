@@ -23,6 +23,7 @@ import { HttpAcctIconsRepository } from "../repositories-acct/http/http-icons-re
 import { HttpAcctItemsRepository } from "../repositories-acct/http/http-items-repository"
 import { HttpAcctMonitoredCurrenciesRepository } from "../repositories-acct/http/http-monitored-currencies-repository"
 import { HttpAcctPrivilegesRepository } from "../repositories-acct/http/http-privileges-repository"
+import { HttpAcctReportsRepository } from "../repositories-acct/http/http-reports-repository"
 import { HttpAcctUsersRepository } from "../repositories-acct/http/http-users-repository"
 import { HttpAcctWorkspacesRepository } from "../repositories-acct/http/http-workspaces-repository"
 import { AcctIconsRepository } from "../repositories-acct/icons-repository"
@@ -40,10 +41,12 @@ import { MockAcctDepositsRepository } from "../repositories-acct/mock/mock-depos
 import { MockAcctIconsRepository } from "../repositories-acct/mock/mock-icons-repository"
 import { MockAcctItemsRepository } from "../repositories-acct/mock/mock-items-repository"
 import { MockAcctMonitoredCurrenciesRepository } from "../repositories-acct/mock/mock-monitored-currencies-repository"
+import { MockAcctReportsRepository } from "../repositories-acct/mock/mock-reports-repository"
 import { MockAcctUsersRepository } from "../repositories-acct/mock/mock-users-repository"
 import { MockAcctWorkspacesRepository } from "../repositories-acct/mock/mock-workspaces-repository"
 import { AcctMonitoredCurrenciesRepository } from "../repositories-acct/monitored-currencies-repository"
 import { AcctPrivilegesRepository } from "../repositories-acct/privileges-repository"
+import { AcctReportsRepository } from "../repositories-acct/reports-repository"
 import { AcctUsersRepository } from "../repositories-acct/users-repository"
 import { AcctWorkspacesRepository } from "../repositories-acct/workspaces-repository"
 import { HttpConnectorsService } from "../services-reusable/http-connectors.service"
@@ -209,6 +212,18 @@ export function provideAcctDataProviderInstancesRepository() {
             )
     )
 }
+
+export function provideAcctReportsRepository() {
+    return provideRepository(
+        AcctReportsRepository,
+        new MockAcctReportsRepository(),
+        httpConnectorsService => new HttpAcctReportsRepository(
+                httpConnectorsService.getHttpConnectorByServiceName('acct-reporting')
+            )
+    )
+}
+
+
 
 function provideRepository(
     providedType:any,

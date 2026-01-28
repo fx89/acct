@@ -45,4 +45,11 @@ public interface AcctReportsRepository {
      */
     Page<AcctReport> findAllByReportUUIDIn(Set<String> reportUUIDs, int pageNumber, int pageSize);
 
+    /**
+     * Deletes the referenced {@link AcctReport report}.
+     *
+     * @param report Reference to the report to be deleted.
+     */
+    void delete(AcctReport report);
+
 }

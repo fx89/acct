@@ -43,7 +43,7 @@ public class AcctSecurityClientService {
     }
 
     /**
-     * Deletes the workspace ownership record wirth the properties of the given
+     * Deletes the workspace ownership record with the properties of the given
      * {@link WorkspaceOwner workspace owner record}
      */
     public void deleteWorkspaceOwner(WorkspaceOwner workspaceOwner) {

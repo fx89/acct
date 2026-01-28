@@ -211,7 +211,7 @@ export class ItemsManagerComponent implements OnInit, AfterContentInit {
   // Events
   @Output() selectionChange : EventEmitter<ItemsManagerDataItem<any>> = new EventEmitter<ItemsManagerDataItem<any>>()
   @Output() onSelectionChanged : EventEmitter<ItemsManagerDataItem<any>> = new EventEmitter<ItemsManagerDataItem<any>>()
-  @Output() onNewItem : EventEmitter<void> = new EventEmitter<void>()
+  @Output() onNewItem : EventEmitter<ItemsManagerDataItem<any>> = new EventEmitter<ItemsManagerDataItem<any>>()
 
   // Content children
   @ContentChildren(ItemsManagerNewItemFormDirective)
@@ -397,8 +397,8 @@ export class ItemsManagerComponent implements OnInit, AfterContentInit {
   }
 
   onCreateNewButtonClick() : void {
-    this.onNewItem.emit()
     this.editedItemItem = this.newItemSupplierFunction()
+    this.onNewItem.emit(this.editedItemItem)
     this.showNewItemCreationDialog()
   }
 

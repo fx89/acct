@@ -85,7 +85,10 @@ public record ReportDetails(
             throwIfNull(reportType, () -> new IllegalArgumentException("Report type not provided"));
             throwIfNullOrEmpty(reportSQL, () -> new IllegalArgumentException("Report SQL not provided"));
             throwIfNullOrEmpty(dataProviderInstanceUUIDs, () -> new IllegalArgumentException("Data provider instance UUIDs not provided"));
-            throwIfNullOrEmpty(reportSeries, () -> new IllegalArgumentException("Report series not provided"));
+
+            if (reportType != AcctReportType.TABLE) {
+                throwIfNullOrEmpty(reportSeries, () -> new IllegalArgumentException("Report series not provided"));
+            }
 
             return
                 new ReportDetails(
