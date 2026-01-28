@@ -1,17 +1,37 @@
-<input
-    id="{{ this.inputElementId }}"
-    [disabled]="!this.isEnabled()"
-    [type]="this.getInputType()"
-    [(value)]="this.currentValue"
-    [placeholder]="this.getHint()"
-    [class]="{'form-control': true, 'editable': true, 'enabled': this.isEnabled(), 'disabled': !this.isEnabled(), 'invalid': !this.isValid(), 'hint': this.isHintVisible()}"
-    style="padding-left: 5px; padding-right: 5px;"
-    [style.width]="'calc(' + this.getWidth() + ' - 10px)'"
-    [style.height]="this.getHeight()"
-    (keyup)="this.keyupEventHandler($event, itemValue.value)"
-    (focus)="this.focusEventHandler()"
-    (click)="this.focusEventHandler()"
-    (blur)="this.lostFocusEventHandler()"
-    [style.text-align]="this.getTextAlign()"
-    #itemValue
->
+@if ( this.isMultiLine() ) {
+    <textarea
+        id="{{ this.inputElementId }}"
+        [disabled]="!this.isEnabled()"
+        [(value)]="this.currentValue"
+        [placeholder]="this.getHint()"
+        [class]="{'form-control': true, 'editable': true, 'enabled': this.isEnabled(), 'disabled': !this.isEnabled(), 'invalid': !this.isValid(), 'hint': this.isHintVisible()}"
+        style="padding-left: 5px; padding-right: 5px;"
+        [style.width]="'calc(' + this.getWidth() + ' - 10px)'"
+        [style.height]="this.getHeight()"
+        (keyup)="this.keyupEventHandler($event, itemValue.value)"
+        (focus)="this.focusEventHandler()"
+        (click)="this.focusEventHandler()"
+        (blur)="this.lostFocusEventHandler()"
+        [style.text-align]="this.getTextAlign()"
+        #itemValue
+    ></textarea>
+}
+@else {
+    <input
+        id="{{ this.inputElementId }}"
+        [disabled]="!this.isEnabled()"
+        [type]="this.getInputType()"
+        [(value)]="this.currentValue"
+        [placeholder]="this.getHint()"
+        [class]="{'form-control': true, 'editable': true, 'enabled': this.isEnabled(), 'disabled': !this.isEnabled(), 'invalid': !this.isValid(), 'hint': this.isHintVisible()}"
+        style="padding-left: 5px; padding-right: 5px;"
+        [style.width]="'calc(' + this.getWidth() + ' - 10px)'"
+        [style.height]="this.getHeight()"
+        (keyup)="this.keyupEventHandler($event, itemValue.value)"
+        (focus)="this.focusEventHandler()"
+        (click)="this.focusEventHandler()"
+        (blur)="this.lostFocusEventHandler()"
+        [style.text-align]="this.getTextAlign()"
+        #itemValue
+    >
+}

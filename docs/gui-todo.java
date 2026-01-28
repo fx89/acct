@@ -22,3 +22,4 @@
 // DONE: GUI-01022: GUI components: Picture frame
 // DONE: GUI-01023: GUI components: Panel: scroll event
 // DONE: GUI-01024: GUI components: Data scroller
+// DONE: GUI-01025: GUI components: Input: multi-line

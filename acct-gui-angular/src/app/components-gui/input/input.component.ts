@@ -35,6 +35,7 @@ export class InputComponent implements OnChanges, AfterViewInit {
   enabled             : InputSignal<boolean> = input(true)
   valid               : InputSignal<boolean> = input(true)
   masked              : InputSignal<boolean> = input(false)
+  multiLine           : InputSignal<boolean> = input(false)
   value               : InputSignal<string>  = input("")
   width               : InputSignal<string>  = input("100%")
   height              : InputSignal<string>  = input("1.3em")
@@ -178,6 +179,10 @@ export class InputComponent implements OnChanges, AfterViewInit {
     return (strVal === null || strVal === undefined || strVal === '') && 
           strHint !== undefined && strHint !== null && strHint !== '' && 
           !this.isFocused
+  }
+
+  isMultiLine() : boolean {
+    return this.multiLine()
   }
 
 }
