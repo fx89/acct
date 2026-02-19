@@ -1,0 +1,52 @@
+<div
+    [id]="this.reportViewerId"
+    [style.width]="this.getWidth()"
+    [style.height]="this.getHeight()"
+>
+    <div class="chart-style" style="visibility: hidden;">
+        <div [id]="this.cssPropertyValuesComputer.reportViewerLegendColorPropertyComputerId" class="legend"></div>
+        <div [id]="this.cssPropertyValuesComputer.reportViewerGridColorPropertyComputerId" class="grid"></div>
+        <div [id]="this.cssPropertyValuesComputer.reportViewerAxisColorPropertyComputerId" class="axis"></div>
+
+        @for (e of this.cssPropertyValuesComputer.seriesColorElements; track e) {
+            <div
+                [id]="e.elementId"
+                [class]="e.className"
+            ></div>
+        }
+    </div>
+
+    <!-- Table display -->
+    @if (this.isTable()) {
+        <app-table
+            [frozenHeader]="true"
+            [zebraStripes]="true"
+            [selectableRows]="true"
+            [verticalGridLines]="true"
+            [scrollable]="true"
+            [scrollHeight]="this.getHeight()"
+            [width]="'100%'"
+            [data]="this.getCachedDataSetData()"
+            [columnNames]="this.getCachedDataSetColumnNames()"
+            [reloadTrigger]="this.dataTableReloadTrigger"
+        >
+            @for(col of this.getCachedDataSetColumnNames(); track col; let colIdx = $index) {
+                <ng-template tableColumn let-row="row">
+                    {{ row[colIdx] }}
+                </ng-template>
+            }
+        </app-table>
+    }
+
+
+
+
+    <!-- Series chart display -->
+    @if (this.isChart()) {
+        <canvas
+            [id]="this.reportViewerCanvasId"
+            [width]="this.getWidth()"
+            [height]="this.getHeight()"
+        ></canvas>
+    }
+</div>

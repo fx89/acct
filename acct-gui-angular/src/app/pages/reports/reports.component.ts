@@ -21,6 +21,8 @@ import { PanelComponent } from '../../components-gui/panel/panel.component';
 import { CardActionButton, CardComponent } from '../../components-gui/card/card.component';
 import { removeArrayElement } from '../../utils-reusalbe/array-utils';
 import { ReportParameter } from '../../model-acct/report-parameter';
+import { ReportViewerComponent } from '../../components-acct/report-viewer/report-viewer.component';
+import { SpinboxComponent } from '../../components-gui/spinbox/spinbox.component';
 
 export interface DataProviderInstanceWithDataproviderReference extends DataProviderInstance  {
   dataProvider : DataProvider
@@ -72,7 +74,9 @@ export interface ReportSeriesTypeCardData extends CardData {
     TableComponent,
     TableColumnDirective,
     PanelComponent,
-    CardComponent
+    CardComponent,
+    ReportViewerComponent,
+    SpinboxComponent
   ],
   templateUrl: './reports.component.html',
   styleUrl: './reports.component.less'
@@ -232,9 +236,20 @@ export class ReportsComponent implements OnInit {
 
   reportSeriesTypeSelectedOptions: ReportSeriesTypeCardData[] = []
 
-  reportUUID : string = ""
+  report : ReportExtendedProperties = {
+    reportUUID: "",
+    reportProperties: {
+      dataProviderInstanceUUIDs: [],
+      reportCategoryColumnName: "",
+      reportDescription: "",
+      reportName: "",
+      reportSeries: [],
+      reportSQL: "",
+      reportType: ReportType.TABLE,
+    }
+  }
 
-  reportDataSet? : ReportingDataSet
+  reportDataSet! : ReportingDataSet
 
   reportViewerVisible : boolean = false
 
@@ -304,7 +319,9 @@ export class ReportsComponent implements OnInit {
                 this.dataProviderInstancesList = dataProviderInstances
 
                 return dataProviderInstances
-            })
+            }),
+
+            map(dataProviderInstances => dataProviderInstances.sort((dp1, dp2) => dp1.dataProviderInstanceName.localeCompare(dp2.dataProviderInstanceName)))
           )
         )
       )
@@ -538,13 +555,13 @@ export class ReportsComponent implements OnInit {
           data => {
             // If there are parameters, then show the runtime parameters dialog
             if (data?.length > 0) {
-              this.reportUUID = report.reportUUID ?? ""
+              this.report = report
               this.prepareRuntimeParametersDialogData(data)
               this.showRuntimeParametersDialog(true)
             }
-            // If there are no paramters, then proceed straight to running
+            // If there are no parameters, then proceed straight to running
             else {
-              this.runReport(report.reportUUID ?? "")
+              this.runReport(report)
             }
           }
         )
@@ -577,16 +594,18 @@ export class ReportsComponent implements OnInit {
     })
   }
 
-  runReport(reportUUID:string, parameters?:ReportParameter[]) : void {
+  runReport(report:ReportExtendedProperties, parameters?:ReportParameter[]) : void {
     // Run the report
     this.reportingService.getReportDataWithRuntimeParameters(
-      reportUUID,
+      report.reportUUID ?? "",
       parameters ?? []
     ).subscribe({
       // Upon successful run, store the data set and show the report viewer
       next: (dataSet:ReportingDataSet) => {
         this.reportDataSet = dataSet
+        this.report = report
         this.showReportViewer()
+        this.hideRuntimeParametersDialog()
       },
       error: err => {
         // TODO: toast
@@ -599,7 +618,13 @@ export class ReportsComponent implements OnInit {
    * Produces the list of reports for the item manager
    */
   reportsListProducer : (() => Observable<ItemsManagerDataSet>) = () => {
-    return this.reportingService.findAllReports()
+    return this.reportingService.findAllReports().pipe(
+      map(reportsList => 
+        reportsList.sort((r1, r2) => 
+          r1.reportProperties.reportName.localeCompare(r2.reportProperties.reportName)
+      )
+      )
+    )
   }
 
   /**
@@ -630,7 +655,8 @@ export class ReportsComponent implements OnInit {
       item.reportProperties.reportSeries = this.editedReportSeries.map((series, index) => ({
         reportColumnName: series.reportColumnName,
         reportSeriesName: series.reportSeriesName,
-        reportSeriesType: this.reportSeriesTypeSelectedOptions[index].value
+        reportSeriesType: this.reportSeriesTypeSelectedOptions[index].value,
+        reportSeriesOrder: series.reportSeriesOrder
       }))
 
       // Save the report
@@ -771,6 +797,10 @@ export class ReportsComponent implements OnInit {
     this.reportDataproviderInstancesDialogVisible = visibility
   }
 
+  onReportViewerDialogVisibilityChange(visibility:boolean) {
+    this.reportViewerVisible = visibility
+  }
+
   onAddRuntimeParameterButtonClick() {
     this.dataProviderInstancesListSelectedItem.runtimeParameters.push({
       mandatory: false,
@@ -846,7 +876,7 @@ export class ReportsComponent implements OnInit {
       )
 
     // Run the report
-    this.runReport(this.reportUUID, reportParameters)
+    this.runReport(this.report, reportParameters)
   }
 
   onSelectedReportTypeChange : ((event:CardData|undefined) => void) = (event:CardData|undefined) => {
@@ -884,7 +914,8 @@ export class ReportsComponent implements OnInit {
     this.editedReportSeries.push({
       reportColumnName: "",
       reportSeriesName: "",
-      reportSeriesType: ReportSeriesType.LINE
+      reportSeriesType: ReportSeriesType.LINE,
+      reportSeriesOrder: 0
     })
   }
 
@@ -898,12 +929,28 @@ export class ReportsComponent implements OnInit {
     this.computeReportSeriesTypeSelectedOptions()
   }
 
+  onReportSeriesOrderChanged() : void {
+    // Any time the order of a series is changed, the report series need to be reordered
+    // so that their order in the display list changes instantly
+    this.reorderEditedReportSeries()
+  }
+
   computeEditedReportSeries() : void {
     // Reset the edited report series array
     this.editedReportSeries = []
 
     // Deep copy the report series from the report properties of the selected report
     Object.assign(this.editedReportSeries, this.reportsListSelectedItem.reportProperties.reportSeries ?? [])
+
+    // Sort by sort order
+    this.reorderEditedReportSeries()
+  }
+
+  private reorderEditedReportSeries() : void {
+    this.editedReportSeries =
+      this.editedReportSeries.sort((s1, s2) => s1.reportSeriesOrder - s2.reportSeriesOrder)
+
+    this.computeReportSeriesTypeSelectedOptions()
   }
 
   computeReportSeriesTypeSelectedOptions() : void {

@@ -81,11 +81,13 @@
                             <tr>
                                 <td style="width:193px;">{{ instanceProperty.propertyName }}</td>
                                 <td>
+                                    <!-- TODO: instaed of "instanceProperty.propertyName == 'SQL'", add proper typing -->
                                     <app-input
                                         [(value)]="instanceProperty.propertyValue"
                                         width="365px"
                                         height="30px"
                                         [hint]="instanceProperty.propertyName"
+                                        [multiLine]="instanceProperty.propertyName == 'sql'"
                                     ></app-input>
                                 </td>
                             </tr>
@@ -190,7 +192,7 @@
             height="calc(100vh - 140px)"
             cardWidth="calc(100% - 30px)"
             cardHeight="60px"
-            addDialogWidth="560px"
+            addDialogWidth="730px"
             addDialogHeight="calc(100vh - 100px)"
             [dataSetProducer]="this.reportsListProducer"
             [cardTitleExtractor]="this.reportCardTitleExtractor"
@@ -298,7 +300,7 @@
                     <app-input
                         [multiLine]="true"
                         [(value)]="item.reportProperties.reportSQL"
-                        width="500px"
+                        width="670px"
                         height="100px"
                         hint="select 13 as numeric_value"
                     ></app-input>
@@ -308,7 +310,7 @@
                         <td>
                             <app-input
                                 [(value)]="item.reportProperties.reportCategoryColumnName"
-                                width="340px"
+                                width="510px"
                                 height="30px"
                                 hint="Category column name"
                             ></app-input>
@@ -338,6 +340,7 @@
                     @if(this.editedReportSeries.length !== 0) {
                         <table style="width:100%">
                             <tr>
+                                <td>Order</td>
                                 <td>Column name</td>
                                 <td>Series name</td>
                                 <td>Series type</td>
@@ -346,6 +349,18 @@
 
                             @for(reportSeries of this.editedReportSeries; track reportSeries; let seriesIndex = $index) {
                                 <tr>
+                                    <td>
+                                        <app-spinbox
+                                            visualStyle="label"
+                                            width="50px"
+                                            height="20px"
+                                            [minValue]="0"
+                                            [maxValue]="100"
+                                            [increment]="1"
+                                            [(value)]="reportSeries.reportSeriesOrder"
+                                            (onValueChanged)="this.onReportSeriesOrderChanged()"
+                                        ></app-spinbox>
+                                    </td>
                                     <td>
                                         <app-input
                                             [(value)]="reportSeries.reportColumnName"
@@ -409,6 +424,7 @@
     <app-table
         [frozenHeader]="true"
         [zebraStripes]="true"
+        [selectableRows]="true"
         [verticalGridLines]="true"
         [scrollable]="true"
         [scrollHeight]="'calc(100vh - 210px)'"
@@ -490,4 +506,21 @@
             ></app-card>
         </div>
     }
+</app-dialog>
+
+<!-- The report viewer dialog -->
+<app-dialog
+    [title]="this.report.reportProperties.reportName"
+    width="650px"
+    height="500px"
+    [visible]="this.isReportViewerVisible()"
+    [closeButton]="true"
+    (visibleChange)="this.onReportViewerDialogVisibilityChange($event)"
+>
+    <app-report-viewer
+        width="650px"
+        height="415px"
+        [reportProperties]="this.report.reportProperties"
+        [dataSet]="this.reportDataSet"
+    ></app-report-viewer>
 </app-dialog>

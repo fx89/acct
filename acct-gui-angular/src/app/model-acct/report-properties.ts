@@ -22,7 +22,8 @@ export enum ReportType {
 export interface ReportSeries {
     reportColumnName : string,
     reportSeriesName : string,
-    reportSeriesType : ReportSeriesType
+    reportSeriesType : ReportSeriesType,
+    reportSeriesOrder : number
 }
 
 export enum ReportSeriesType {

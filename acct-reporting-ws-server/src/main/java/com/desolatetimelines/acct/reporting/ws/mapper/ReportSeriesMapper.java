@@ -25,6 +25,7 @@ public abstract class ReportSeriesMapper {
                 .withReportColumnName(reportSeries.reportColumnName())
                 .withReportSeriesName(reportSeries.reportSeriesName())
                 .withReportSeriesType(toAcctReportSeriesType(reportSeries.reportSeriesType()))
+                .withReportSeriesOrder(reportSeries.reportSeriesOrder())
                 .build();
     }
 
@@ -38,6 +39,7 @@ public abstract class ReportSeriesMapper {
                 .withReportColumnName(reportSeriesDetails.reportColumnName())
                 .withReportSeriesName(reportSeriesDetails.reportSeriesName())
                 .withReportSeriesType(fromAcctReportSeriesType(reportSeriesDetails.reportSeriesType()))
+                .withReportSeriesOrder(reportSeriesDetails.reportSeriesOrder())
                 .build();
     }
 
@@ -47,6 +49,7 @@ public abstract class ReportSeriesMapper {
                 .withReportSeriesName(acctReportSeries.getReportSeriesName())
                 .withReportColumnName(acctReportSeries.getReportColumnName())
                 .withReportSeriesType(fromAcctReportSeriesType(acctReportSeries.getReportSeriesType()))
+                .withReportSeriesOrder(acctReportSeries.getReportSeriesOrder())
                 .build();
     }
 

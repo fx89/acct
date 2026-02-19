@@ -18,6 +18,7 @@ public abstract class AcctReportSeriesMapper {
                 .withReportSeriesType(acctReportSeries.getReportSeriesType())
                 .withReportSeriesName(acctReportSeries.getReportSeriesName())
                 .withReportColumnName(acctReportSeries.getReportColumnName())
+                .withReportSeriesOrder(acctReportSeries.getReportSeriesOrder())
                 .build();
     }
 

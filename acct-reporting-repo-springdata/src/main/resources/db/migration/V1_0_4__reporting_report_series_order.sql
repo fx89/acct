@@ -1,0 +1,1 @@
+alter table "report_series" add "report_series_order" INTEGER default 0;

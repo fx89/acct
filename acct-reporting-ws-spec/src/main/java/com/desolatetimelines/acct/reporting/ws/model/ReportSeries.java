@@ -8,14 +8,16 @@ import static com.desolatetimelines.acct.common.utils.ValidationUtils.throwIfNul
 /**
  * Defines the type, source column and display name of a report series.
  *
- * @param reportColumnName The name of the report column where the report series data comes from.
- * @param reportSeriesName The name that identifies the series in the chart.
- * @param reportSeriesType The way in which the series is rendered on the chart.
+ * @param reportColumnName  The name of the report column where the report series data comes from.
+ * @param reportSeriesName  The name that identifies the series in the chart.
+ * @param reportSeriesType  The way in which the series is rendered on the chart.
+ * @param reportSeriesOrder The number of precedence that determines the order in which series are displayed on the chart.
  */
 public record ReportSeries(
     String reportColumnName,
     String reportSeriesName,
-    ReportSeriesType reportSeriesType
+    ReportSeriesType reportSeriesType,
+    Integer reportSeriesOrder
 ) {
 
     @Override
@@ -38,6 +40,7 @@ public record ReportSeries(
         private String reportColumnName;
         private String reportSeriesName;
         private ReportSeriesType reportSeriesType;
+        private Integer reportSeriesOrder = 0;
 
         public ReportSeriesBuilder withReportColumnName(String reportColumnName) {
             this.reportColumnName = reportColumnName;
@@ -54,16 +57,23 @@ public record ReportSeries(
             return this;
         }
 
+        public ReportSeriesBuilder withReportSeriesOrder(Integer reportSeriesOrder) {
+            this.reportSeriesOrder = reportSeriesOrder;
+            return this;
+        }
+
         public ReportSeries build() {
             throwIfNullOrEmpty(reportColumnName, () -> new IllegalArgumentException("Report column name not provided"));
             throwIfNullOrEmpty(reportSeriesName, () -> new IllegalArgumentException("Report series name not provided"));
             throwIfNull(reportSeriesType, () -> new IllegalArgumentException("Report series type not provided"));
+            throwIfNull(reportSeriesOrder, () -> new IllegalArgumentException("Report series order not provided"));
 
             return
                 new ReportSeries(
                     reportColumnName,
                     reportSeriesName,
-                    reportSeriesType
+                    reportSeriesType,
+                    reportSeriesOrder
                 );
         }
     }

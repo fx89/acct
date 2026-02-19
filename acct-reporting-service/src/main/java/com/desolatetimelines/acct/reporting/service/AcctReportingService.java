@@ -1064,12 +1064,15 @@ public class AcctReportingService {
                 );
 
         if (series != null && !series.isEmpty()) {
-            builder.withReportSeries(
+            final Set<ReportSeriesDetails> reportSeries =
                 series.stream()
                     .filter(s -> Objects.equals(s.getReport(), report))
                     .map(AcctReportSeriesMapper::toReportSeriesDetails)
-                    .collect(toSet())
-            );
+                    .collect(toSet());
+
+            if (!reportSeries.isEmpty()) {
+                builder.withReportSeries(reportSeries);
+            }
         }
 
         return
@@ -1127,6 +1130,7 @@ public class AcctReportingService {
             // Update the series details
             acctReportSeries.setReportColumnName(sourceReportSeries.reportColumnName());
             acctReportSeries.setReportSeriesType(sourceReportSeries.reportSeriesType());
+            acctReportSeries.setReportSeriesOrder(sourceReportSeries.reportSeriesOrder());
 
             // Save the series
             dataService.saveReportSeries(acctReportSeries);
@@ -1141,6 +1145,7 @@ public class AcctReportingService {
                 acctReportSeries.setReportColumnName(rs.reportColumnName());
                 acctReportSeries.setReportSeriesName(rs.reportSeriesName());
                 acctReportSeries.setReportSeriesType(rs.reportSeriesType());
+                acctReportSeries.setReportSeriesOrder(rs.reportSeriesOrder());
 
                 return acctReportSeries;
             })

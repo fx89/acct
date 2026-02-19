@@ -18,4 +18,8 @@ public interface AcctReportSeries {
 
     void setReportSeriesType(AcctReportSeriesType reportSeriesType);
 
+    Integer getReportSeriesOrder();
+
+    void setReportSeriesOrder(Integer reportSeriesOrder);
+
 }

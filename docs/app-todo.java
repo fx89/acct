@@ -10,7 +10,7 @@
  DONE: APP-02101: Reports page: General layout
  DONE: APP-02102: Reports page: Data provider instances manager
  DONE: APP-02103: Reports page: reports manager
- TODO: APP-02201: Reports page: report viewer
+ DONE: APP-02201: Reports page: report viewer
  DONE: APP-03001: Workspaces page: Cards menu
  DONE: APP-03002: Workspaces page: Workspace selector
  DONE: APP-03003: Workspaces page: Cards menu: Add workspace

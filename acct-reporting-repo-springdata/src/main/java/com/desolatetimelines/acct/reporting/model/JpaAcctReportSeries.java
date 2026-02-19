@@ -28,6 +28,9 @@ public class JpaAcctReportSeries implements AcctReportSeries {
     @Column(name = "report_series_type", nullable = false)
     private AcctReportSeriesType reportSeriesType;
 
+    @Column(name = "report_series_order", nullable = false)
+    private Integer reportSeriesOrder;
+
     public Long getReportSeriesId() {
         return reportSeriesId;
     }
@@ -78,6 +81,16 @@ public class JpaAcctReportSeries implements AcctReportSeries {
     @Override
     public void setReportSeriesType(AcctReportSeriesType reportSeriesType) {
         this.reportSeriesType = reportSeriesType;
+    }
+
+    @Override
+    public Integer getReportSeriesOrder() {
+        return reportSeriesOrder;
+    }
+
+    @Override
+    public void setReportSeriesOrder(Integer reportSeriesOrder) {
+        this.reportSeriesOrder = reportSeriesOrder;
     }
 
     @Override

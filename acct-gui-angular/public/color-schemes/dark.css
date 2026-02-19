@@ -55,4 +55,39 @@
 
     --green-font-color: #8B8;
     --red-font-color: #B55;
+
+    --chart-legend-color: #999;
+    --chart-grid-color: #222;
+    --chart-axis-line-color: #888;
+    --chart-axis-label-color: #999;
+
+    --chart-series-0-color: #0066cc;
+    --chart-series-0-border-color: #003399;
+
+    --chart-series-1-color: #0099ff;
+    --chart-series-1-border-color: #0066ff;
+
+    --chart-series-2-color: #ff9900;
+    --chart-series-2-border-color: #996600;
+
+    --chart-series-3-color: #ffff00;
+    --chart-series-3-border-color: #cccc00;
+
+    --chart-series-4-color: #ff0000;
+    --chart-series-4-border-color: #993333;
+
+    --chart-series-5-color: #990033;
+    --chart-series-5-border-color: #660033;
+
+    --chart-series-6-color: #669900;
+    --chart-series-6-border-color: #666633;
+
+    --chart-series-7-color: #99cc00;
+    --chart-series-7-border-color: #336600;
+
+    --chart-series-8-color: #cccccc;
+    --chart-series-8-border-color: #999999;
+
+    --chart-series-9-color: #737373;
+    --chart-series-9-border-color: #404040;
 }

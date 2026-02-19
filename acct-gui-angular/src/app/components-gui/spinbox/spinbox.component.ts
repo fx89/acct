@@ -37,6 +37,7 @@ export class SpinboxComponent {
 
   // Events
   @Output() valueChange : EventEmitter<number> = new EventEmitter<number>()
+  @Output() onValueChanged : EventEmitter<number> = new EventEmitter<number>()
 
   // Private properties
   private currentValue : number = 0
@@ -80,6 +81,7 @@ export class SpinboxComponent {
     if (newValue != this.currentValue) {
       this.currentValue = newValue
       this.valueChange.emit(this.currentValue)
+      this.onValueChanged.emit(this.currentValue)
     }
   }
  
@@ -89,6 +91,7 @@ export class SpinboxComponent {
     if (newValue != this.currentValue) {
       this.currentValue = newValue
       this.valueChange.emit(this.currentValue)
+      this.onValueChanged.emit(this.currentValue)
     }
   }
 
