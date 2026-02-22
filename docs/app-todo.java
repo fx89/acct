@@ -10,6 +10,7 @@
  DONE: APP-02101: Reports page: General layout
  DONE: APP-02102: Reports page: Data provider instances manager
  DONE: APP-02103: Reports page: reports manager
+ TODO: APP-02104: Reports page: typing for data provider parameters - so that SQL fields can be rendered as multiline inputs
  DONE: APP-02201: Reports page: report viewer
  DONE: APP-03001: Workspaces page: Cards menu
  DONE: APP-03002: Workspaces page: Workspace selector
