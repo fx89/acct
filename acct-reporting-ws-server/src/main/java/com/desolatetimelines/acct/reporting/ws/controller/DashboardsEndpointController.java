@@ -126,4 +126,25 @@ public class DashboardsEndpointController implements DashboardsEndpoint {
             );
     }
 
+    @Override
+    @PreAuthorize("hasAnyAuthority('SCOPE_backend', 'SCOPE_" + DASHBOARDS_SAVE + "')")
+    @DeleteMapping(value = "/reports", produces = APPLICATION_JSON_VALUE)
+    public void deleteDashboardReport(
+        @RequestParam(name = "workspaceUUID") String workspaceUUID,
+        @RequestParam(name = "dashboardUUID") String dashboardUUID,
+        @RequestParam(name = "reportUUID") String reportUUID
+    ) {
+        // Get the user claims
+        final AcctUserClaims userClaims = extractCurrentUserClaims();
+
+        // Delete the dashboard report
+        reportingService.deleteDashboardReport(
+            workspaceUUID,
+            dashboardUUID,
+            reportUUID,
+            userClaims.userUUID(),
+            userClaims.privilegeNames()
+        );
+    }
+
 }

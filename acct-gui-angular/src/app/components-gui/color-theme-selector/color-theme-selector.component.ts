@@ -3,7 +3,6 @@ import { ColorThemesService } from '../../services-reusable/color-themes.service
 import {v4 as uuidv4} from 'uuid';
 import { CardData } from '../cards-list/card-data';
 import { SelectComponent } from '../select/select.component';
-import { Theme } from '../../model-reusable/theme';
 
 type ColorThemeSelectorCardData = CardData & { 
   file : string,

@@ -15,3 +15,5 @@
 // TODO: BUG-00015: Pagination: add validation to the page size to avoid overloads
 // DONE: BUG-00016: Account records: Date input field missing from the account record properties form
 // DONE: BUG-00017: Income or expense items: Lists overflow the page
+// TODO: BUG-00018: Report viewer component: Chart colors not updating when the color theme is changed
+// TODO: BUG-00019: Workspace SQL reporting data provider: Security vulnerability - SQL is not limited to the accessible workspaces

@@ -10,10 +10,9 @@ import java.util.Set;
 
 public interface JpaAcctDashboardReportsRepository extends CrudRepository<JpaAcctDashboardReport, Long> {
 
-    Optional<JpaAcctDashboardReport> findFirstByDashboardAndRowNumberAndColumnNumber(
+    Optional<JpaAcctDashboardReport> findFirstByDashboardAndReportReportUUID(
         AcctDashboard dashboard,
-        Integer rowNumber,
-        Integer columnNumber
+        String reportUUID
     );
 
     Set<JpaAcctDashboardReport> findAllByDashboardDashboardUUID(String dashboardUUID);

@@ -28,6 +28,7 @@ public class DashboardReportExtendedProperties extends DashboardReportProperties
      *                                 Any positive number is permitted, however, the dashboard will look ugly if a sensible
      *                                 number is not chosen.
      * @param containerName            The title of the cell on which the report is to be displayed.
+     * @param containerWidthPx         The width of the report.
      * @param containerHeightPx        The height of the report.
      * @param filters                  A set of {@link DashboardReportFilterProperties filters} to be added to the report.
      * @param reportType               Determines how the report is displayed on the dashboard.
@@ -43,13 +44,14 @@ public class DashboardReportExtendedProperties extends DashboardReportProperties
         Integer rowNumber,
         Integer columnNumber,
         String containerName,
+        Integer containerWidthPx,
         Integer containerHeightPx,
         Set<DashboardReportFilterProperties> filters,
         ReportType reportType,
         String reportCategoryColumnName,
         Set<ReportSeries> reportSeries
     ) {
-        super(reportUUID, rowNumber, columnNumber, containerName, containerHeightPx, filters);
+        super(reportUUID, rowNumber, columnNumber, containerName, containerWidthPx, containerHeightPx, filters);
 
         this.reportName = reportName;
         this.reportDescription = reportDescription;
@@ -71,6 +73,7 @@ public class DashboardReportExtendedProperties extends DashboardReportProperties
             dashboardReportProperties.getRowNumber(),
             dashboardReportProperties.getColumnNumber(),
             dashboardReportProperties.getContainerName(),
+            dashboardReportProperties.getContainerWidthPx(),
             dashboardReportProperties.getContainerHeightPx(),
             dashboardReportProperties.getFilters()
         );
@@ -133,6 +136,11 @@ public class DashboardReportExtendedProperties extends DashboardReportProperties
 
         public DashboardReportExtendedPropertiesBuilder withContainerName(String containerName) {
             this.dashboardReportPropertiesBuilder.withContainerName(containerName);
+            return this;
+        }
+
+        public DashboardReportExtendedPropertiesBuilder withContainerWidthPx(Integer containerWidthPx) {
+            this.dashboardReportPropertiesBuilder.withContainerWidthPx(containerWidthPx);
             return this;
         }
 

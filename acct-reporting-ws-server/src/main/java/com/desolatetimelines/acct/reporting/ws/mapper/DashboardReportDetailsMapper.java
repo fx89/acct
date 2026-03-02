@@ -20,6 +20,7 @@ public class DashboardReportDetailsMapper {
                 .withReportUUID(dashboardReportProperties.getReportUUID())
                 .withColumnNumber(dashboardReportProperties.getColumnNumber())
                 .withRowNumber(dashboardReportProperties.getRowNumber())
+                .withContainerWidthPx(dashboardReportProperties.getContainerWidthPx())
                 .withContainerHeightPx(dashboardReportProperties.getContainerHeightPx())
                 .withContainerName(dashboardReportProperties.getContainerName());
 

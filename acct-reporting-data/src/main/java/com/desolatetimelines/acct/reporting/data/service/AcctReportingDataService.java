@@ -501,21 +501,18 @@ public class AcctReportingDataService {
      * displayed on the referenced dashboard at the referenced location.
      *
      * @param dashboard    Reference to the dashboard where the dashboard report is expected to be found.
-     * @param rowNumber    The vertical coordinate of the referenced location.
-     * @param columnNumber The horizontal coordinate of the referenced location.
+     * @param reportUUID   Uniquely identifies a report in the ACCT ecosystem.
      * @return An optional reference to the referenced dashboard report. If there is no such dashboard
      * report, then an {@link Optional#empty() empty optional} is returned.
      */
-    public Optional<AcctDashboardReport> findDashboardReportByDashboardAndRowNumberAndColumnNumber(
+    public Optional<AcctDashboardReport> findDashboardReportByDashboardAndReportUUID(
         AcctDashboard dashboard,
-        Integer rowNumber,
-        Integer columnNumber
+        String reportUUID
     ) {
         return
-            dashboardReportsRepository.findFirstByDashboardAndRowNumberAndColumnNumber(
+            dashboardReportsRepository.findFirstByDashboardAndReportUUID(
                 dashboard,
-                rowNumber,
-                columnNumber
+                reportUUID
             );
     }
 

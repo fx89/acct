@@ -19,6 +19,7 @@ public class DashboardReportExtendedDetails extends DashboardReportDetails {
         Integer rowNumber,
         Integer columnNumber,
         String containerName,
+        Integer containerWidthPx,
         Integer containerHeightPx,
         Map<String, String> filters,
         String reportName,
@@ -27,7 +28,7 @@ public class DashboardReportExtendedDetails extends DashboardReportDetails {
         String reportCategoryColumnName,
         Set<AcctReportSeries> reportSeries
     ) {
-        super(reportUUID, rowNumber, columnNumber, containerName, containerHeightPx, filters);
+        super(reportUUID, rowNumber, columnNumber, containerName, containerWidthPx, containerHeightPx, filters);
 
         this.reportName = reportName;
         this.reportDescription = reportDescription;
@@ -49,6 +50,7 @@ public class DashboardReportExtendedDetails extends DashboardReportDetails {
             dashboardReportDetails.getRowNumber(),
             dashboardReportDetails.getColumnNumber(),
             dashboardReportDetails.getContainerName(),
+            dashboardReportDetails.getContainerWidthPx(),
             dashboardReportDetails.getContainerHeightPx(),
             dashboardReportDetails.getFilters()
         );
@@ -116,6 +118,11 @@ public class DashboardReportExtendedDetails extends DashboardReportDetails {
 
         public DashboardReportExtendedDetailsBuilder withContainerName(String containerName) {
             this.dashboardReportDetailsBuilder.withContainerName(containerName);
+            return this;
+        }
+
+        public DashboardReportExtendedDetailsBuilder withContainerWidthPx(Integer containerWidthPx) {
+            this.dashboardReportDetailsBuilder.withContainerWidthPx(containerWidthPx);
             return this;
         }
 

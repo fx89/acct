@@ -22,7 +22,11 @@ public interface AcctDashboardReport {
 
     void setContainerName(String containerName);
 
+    Integer getContainerWidthPx();
+
     Integer getContainerHeightPx();
+
+    void setContainerWidthPx(Integer containerWidthPx);
 
     void setContainerHeightPx(Integer containerHeightPx);
 

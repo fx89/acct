@@ -32,6 +32,9 @@ public class JpaAcctDashboardReport implements AcctDashboardReport {
     @Column(name = "container_name")
     private String containerName;
 
+    @Column(name = "container_width_px")
+    private Integer containerWidthPx;
+
     @Column(name = "container_height_px")
     private Integer containerHeightPx;
 
@@ -102,8 +105,18 @@ public class JpaAcctDashboardReport implements AcctDashboardReport {
     }
 
     @Override
+    public Integer getContainerWidthPx() {
+        return containerWidthPx;
+    }
+
+    @Override
     public Integer getContainerHeightPx() {
         return containerHeightPx;
+    }
+
+    @Override
+    public void setContainerWidthPx(Integer containerWidthPx) {
+        this.containerWidthPx = containerWidthPx;
     }
 
     @Override

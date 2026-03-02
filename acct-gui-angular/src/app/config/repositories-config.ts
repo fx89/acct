@@ -5,6 +5,7 @@ import { AcctAccountsRepository } from "../repositories-acct/accounts-repository
 import { AcctAutocompleteRepository } from "../repositories-acct/autocomplete-repository"
 import { AcctBanksRepository } from "../repositories-acct/banks-repository"
 import { AcctCurrenciesRepository } from "../repositories-acct/currencies-repository"
+import { DashboardReportsRepository } from "../repositories-acct/dashboard-reports-repository"
 import { AcctDashboardsRepository } from "../repositories-acct/dashboards-repository"
 import { AcctDataProviderInstancesRepository } from "../repositories-acct/data-provider-instances-repository"
 import { AcctDataProvidersRepository } from "../repositories-acct/data-providers-repository"
@@ -15,6 +16,7 @@ import { HttpAcctAccountsRepository } from "../repositories-acct/http/http-accou
 import { HttpAcctAutocompleteRepository } from "../repositories-acct/http/http-autocomplete-repository"
 import { HttpAcctBanksRepository } from "../repositories-acct/http/http-banks-repository"
 import { HttpAcctCurrenciesRepository } from "../repositories-acct/http/http-currencies-repository"
+import { HttpDashboardReportsRepository } from "../repositories-acct/http/http-dashboard-reports-repository"
 import { HttpAcctDashboardsRepository } from "../repositories-acct/http/http-dashboards-repository"
 import { HttpAcctDataProviderInstancesRepository } from "../repositories-acct/http/http-data-provider-instances-repository"
 import { HttpAcctDataProvidersRepository } from "../repositories-acct/http/http-data-providers-repository"
@@ -34,6 +36,7 @@ import { MockAcctAccountsRepository } from "../repositories-acct/mock/mock-accou
 import { MockAcctAutocompleteRepository } from "../repositories-acct/mock/mock-autocomplete-repository"
 import { MockAcctBanksRepository } from "../repositories-acct/mock/mock-banks-repository"
 import { MockAcctCurrenciesRepository } from "../repositories-acct/mock/mock-currencies-repository"
+import { MockDashboardReportsRepository } from "../repositories-acct/mock/mock-dashboard-reports-repository"
 import { MockAcctDashboardsRepository } from "../repositories-acct/mock/mock-dashboards-repository"
 import { MockAcctDataProviderInstancesRepository } from "../repositories-acct/mock/mock-data-provider-instances-repository"
 import { MockAcctDataProvidersRepository } from "../repositories-acct/mock/mock-data-providers-repository"
@@ -218,6 +221,16 @@ export function provideAcctReportsRepository() {
         AcctReportsRepository,
         new MockAcctReportsRepository(),
         httpConnectorsService => new HttpAcctReportsRepository(
+                httpConnectorsService.getHttpConnectorByServiceName('acct-reporting')
+            )
+    )
+}
+
+export function provideDashboardReportsRepository() {
+    return provideRepository(
+        DashboardReportsRepository,
+        new MockDashboardReportsRepository(),
+        httpConnectorsService => new HttpDashboardReportsRepository(
                 httpConnectorsService.getHttpConnectorByServiceName('acct-reporting')
             )
     )

@@ -1,0 +1,1 @@
+alter table "dashboard_report" add container_width_px INT NOT NULL default 250;

@@ -18,6 +18,8 @@ import { ReportingDataSet } from '../model-acct/reporting-data-set';
 import { ReportExtendedProperties } from '../model-acct/report-properties';
 import { AcctReportsRepository } from '../repositories-acct/reports-repository';
 import { ReportParameter } from '../model-acct/report-parameter';
+import { DashboardReportsRepository } from '../repositories-acct/dashboard-reports-repository';
+import { DashboardReportExtendedProperties, DashboardReportProperties } from '../model-acct/dashboard-report-extended-properties';
 
 // Constants that define the boundaries of a page that's supposed to contain all elements ever to
 // have been created in the entire ACCT ecosystem.
@@ -34,6 +36,7 @@ export class ReportingService {
     private dataProvidersRepository : AcctDataProvidersRepository,
     private dataProviderInstancesRepository : AcctDataProviderInstancesRepository,
     private reportsRepository : AcctReportsRepository,
+    private dashboardReportsRepository : DashboardReportsRepository,
     private catalogService : CatalogService
   ) { }
 
@@ -226,6 +229,49 @@ export class ReportingService {
     return this.reportsRepository.getReportDataWithRuntimeParameters(
       reportUUID,
       runtimeParmaters
+    )
+  }
+
+  /**
+   * Retrieves all the dashboard reports present in the dashboard with the referenced dashboard
+   * @param dashboardUUID Uniquely identifies the referenced dashboard.
+   */
+  public findDashboardReports(dashboardUUID:string) : Observable<DashboardReportExtendedProperties[]> {
+    return this.dashboardReportsRepository.findDashboardReports(dashboardUUID)
+  }
+
+  /**
+   * Persists the referenced dashboard report.
+   * @param dashboardReport The referenced dashboard report.
+   */
+  public saveDashboardReport(
+    workspaceUUID:string,
+    dashboardUUID:string,
+    dashboardReport:DashboardReportProperties
+  ) : Observable<void> {
+    return this.dashboardReportsRepository.saveDashboardReport(
+      workspaceUUID,
+      dashboardUUID,
+      dashboardReport
+    )
+  }
+
+  /**
+   * Deletes the referenced dashboard report.
+   * @param workspaceUUID Uniquely identifies the workspace that the dashboard is part of.
+   * @param dashboardUUID Uniquely identifies the dashboard where the dashboard report resides.
+   * @param dashboardReport The dashboard report to be deleted.
+   * @returns An observable that marks the end of the operation.
+   */
+  public deleteDashboardReport(
+    workspaceUUID:string,
+    dashboardUUID:string,
+    dashboardReport:DashboardReportProperties
+  ) : Observable<void> {
+    return this.dashboardReportsRepository.deleteDashboardReport(
+      workspaceUUID,
+      dashboardUUID,
+      dashboardReport
     )
   }
 

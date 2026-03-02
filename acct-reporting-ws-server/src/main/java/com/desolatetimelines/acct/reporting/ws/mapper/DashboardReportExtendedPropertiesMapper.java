@@ -26,11 +26,14 @@ public abstract class DashboardReportExtendedPropertiesMapper {
                 .withReportDescription(dashboardReportExtendedDetails.getReportDescription())
                 .withReportCategoryColumnName(dashboardReportExtendedDetails.getReportCategoryColumnName())
                 .withContainerName(dashboardReportExtendedDetails.getContainerName())
+                .withContainerWidthPx(dashboardReportExtendedDetails.getContainerWidthPx())
                 .withContainerHeightPx(dashboardReportExtendedDetails.getContainerHeightPx())
                 .withRowNumber(dashboardReportExtendedDetails.getRowNumber())
                 .withColumnNumber(dashboardReportExtendedDetails.getColumnNumber());
 
-        if (!dashboardReportExtendedDetails.getReportSeries().isEmpty()) {
+        if (dashboardReportExtendedDetails.getReportSeries() != null &&
+            !dashboardReportExtendedDetails.getReportSeries().isEmpty()
+        ) {
             builder.withReportSeries(fromAcctReportSeriesSet(dashboardReportExtendedDetails.getReportSeries()));
         }
 

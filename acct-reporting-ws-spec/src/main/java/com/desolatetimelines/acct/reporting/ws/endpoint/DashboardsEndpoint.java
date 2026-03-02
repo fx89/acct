@@ -66,4 +66,18 @@ public interface DashboardsEndpoint {
         String dashboardUUID
     );
 
+    /**
+     * Removes the {@link DashboardReportProperties dashboard report} with the given {@code reportUUID}
+     * from the dashboard with the given {@code dashboardUUID}.
+     *
+     * @param workspaceUUID Uniquely identifies the workspace where the dashboard can be found.
+     * @param dashboardUUID Uniquely identifies the dashboard from where the report is to be deleted.
+     * @param reportUUID    Uniquely identifies the report within the ACCT ecosystem.
+     */
+    void deleteDashboardReport(
+        String workspaceUUID,
+        String dashboardUUID,
+        String reportUUID
+    );
+
 }

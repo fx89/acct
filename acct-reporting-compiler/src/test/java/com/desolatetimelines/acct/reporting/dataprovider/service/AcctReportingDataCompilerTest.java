@@ -315,6 +315,7 @@ public class AcctReportingDataCompilerTest {
                         new AcctReportingDataProviderReportParameterSpec(
                             MANDATORY_RUNTIME_PARAMETER,
                             NUMERIC,
+                            "0",
                             true
                         )
                     )
@@ -322,6 +323,7 @@ public class AcctReportingDataCompilerTest {
                         new AcctReportingDataProviderReportParameterSpec(
                             OPTIONAL_RUNTIME_PARAMETER,
                             STRING,
+                            "0",
                             false
                         )
                     )

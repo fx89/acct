@@ -50,4 +50,12 @@ public interface RESTDashboardsEndpointClient extends DashboardsEndpoint {
         @RequestParam(name = "dashboardUUID") String dashboardUUID
     );
 
+    @Override
+    @GetMapping(value = "/reports", produces = APPLICATION_JSON_VALUE)
+    void deleteDashboardReport(
+        @RequestParam(name = "workspaceUUID") String workspaceUUID,
+        @RequestParam(name = "dashboardUUID") String dashboardUUID,
+        @RequestParam(name = "reportUUID") String reportUUID
+    );
+
 }

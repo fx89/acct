@@ -16,6 +16,7 @@ public class DashboardReportProperties {
     private final Integer rowNumber;
     private final Integer columnNumber;
     private final String containerName;
+    private final Integer containerWidthPx;
     private final Integer containerHeightPx;
     private final Set<DashboardReportFilterProperties> filters;
 
@@ -31,6 +32,7 @@ public class DashboardReportProperties {
      *                          Any positive number is permitted, however, the dashboard will look ugly if a sensible
      *                          number is not chosen.
      * @param containerName     The title of the cell on which the report is to be displayed.
+     * @param containerWidthPx  The width of the report.
      * @param containerHeightPx The height of the report.
      * @param filters           A set of {@link DashboardReportFilterProperties filters} to be added to the report.
      */
@@ -39,6 +41,7 @@ public class DashboardReportProperties {
         Integer rowNumber,
         Integer columnNumber,
         String containerName,
+        Integer containerWidthPx,
         Integer containerHeightPx,
         Set<DashboardReportFilterProperties> filters
     ) {
@@ -46,6 +49,7 @@ public class DashboardReportProperties {
         this.rowNumber = rowNumber;
         this.columnNumber = columnNumber;
         this.containerName = containerName;
+        this.containerWidthPx = containerWidthPx;
         this.containerHeightPx = containerHeightPx;
         this.filters = filters;
     }
@@ -64,6 +68,10 @@ public class DashboardReportProperties {
 
     public String getContainerName() {
         return containerName;
+    }
+
+    public Integer getContainerWidthPx() {
+        return containerWidthPx;
     }
 
     public Integer getContainerHeightPx() {
@@ -95,6 +103,7 @@ public class DashboardReportProperties {
         private Integer rowNumber;
         private Integer columnNumber;
         private String containerName;
+        private Integer containerWidthPx;
         private Integer containerHeightPx;
         private final Set<DashboardReportFilterProperties> filters = new HashSet<>();
 
@@ -115,6 +124,11 @@ public class DashboardReportProperties {
 
         public DashboardReportPropertiesBuilder withContainerName(String containerName) {
             this.containerName = containerName;
+            return this;
+        }
+
+        public DashboardReportPropertiesBuilder withContainerWidthPx(Integer containerWidthPx) {
+            this.containerWidthPx = containerWidthPx;
             return this;
         }
 
@@ -141,6 +155,7 @@ public class DashboardReportProperties {
             throwIfNull(rowNumber, () -> new IllegalArgumentException("Row number not provided"));
             throwIfNull(columnNumber, () -> new IllegalArgumentException("Column number not provided"));
             throwIfNullOrEmpty(containerName, () -> new IllegalArgumentException("Container name not provided"));
+            throwIfNull(containerWidthPx, () -> new IllegalArgumentException("Container width not provided"));
             throwIfNull(containerHeightPx, () -> new IllegalArgumentException("Container height not provided"));
 
             return
@@ -149,6 +164,7 @@ public class DashboardReportProperties {
                     rowNumber,
                     columnNumber,
                     containerName,
+                    containerWidthPx,
                     containerHeightPx,
                     filters
                 );

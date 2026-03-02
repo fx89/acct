@@ -43,6 +43,9 @@ public class AcctReportingServiceNotFoundException extends AcctReportingServiceE
             return errors.RESOURCE_NOT_FOUND_REPORT;
         }
 
+        if (ObjectTypes.DASHBOARD_REPORT == resourceType) {
+            return errors.SECURITY_INACCESSIBLE_DASHBOARD_REPORT;
+        }
 
         throw new IllegalStateException(
             "Developer forgot to add the code that handles the resource type " +

@@ -14,7 +14,7 @@
 
 // DONE: REP-03001: Used items endpoint: Get items in use of type
 
-// TODO: REP-04001: Reporting client: API client
+// DONE: REP-04001: Reporting client: API client
 
 // DONE: REP-05001: Privileges
 

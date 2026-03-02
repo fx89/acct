@@ -242,11 +242,15 @@ public class AcctReportingService {
         String userUUID,
         Collection<String> privilegeNames
     ) {
-        // Make sure the user can access the dashboard
-        verifyDashboardOwnership(userUUID, dashboardUUID, privilegeNames, DASHBOARDS_DELETE_GROUP);
-
-        // If the user has the proper access right, then retrieve the dashboard or throw an exception if not found
-        final AcctDashboard dashboard = findDashboard(workspaceUUID, dashboardUUID);
+        // Find the dashboard while verifying that the user may access the dashboard
+        final AcctDashboard dashboard =
+            findDashboardInWorkspaceWithOwnershipValidation(
+                workspaceUUID,
+                dashboardUUID,
+                userUUID,
+                privilegeNames,
+                DASHBOARDS_DELETE_GROUP
+            );
 
         // Remove dependencies
         dataService.deleteDashboardReportFiltersByDashboardReportDashboard(dashboard);
@@ -268,34 +272,37 @@ public class AcctReportingService {
         String userUUID,
         Collection<String> privilegeNames
     ) {
-        // Verify that the user may access the dashboard
-        verifyDashboardOwnership(userUUID, dashboardUUID, privilegeNames, DASHBOARDS_SAVE_GROUP);
-
-        // Find the dashboard
-        final AcctDashboard dashboard = findDashboard(workspaceUUID, dashboardUUID);
+        // Find the dashboard while verifying that the user may access the dashboard
+        final AcctDashboard dashboard =
+            findDashboardInWorkspaceWithOwnershipValidation(
+                workspaceUUID,
+                dashboardUUID,
+                userUUID,
+                privilegeNames,
+                DASHBOARDS_SAVE_GROUP
+            );
 
         // Find any existing dashboard report at the given location and, if not found, then create one
         final AcctDashboardReport dashboardReport =
-            dataService.findDashboardReportByDashboardAndRowNumberAndColumnNumber(
+            dataService.findDashboardReportByDashboardAndReportUUID(
                 dashboard,
-                dashboardReportDetails.getRowNumber(),
-                dashboardReportDetails.getColumnNumber()
+                dashboardReportDetails.getReportUUID()
             ).orElseGet(() -> {
                 final AcctDashboardReport dRep = dataService.createNewDashboardReport();
                 dRep.setDashboard(dashboard);
-                dRep.setRowNumber(dashboardReportDetails.getRowNumber());
-                dRep.setColumnNumber(dashboardReportDetails.getColumnNumber());
+                dRep.setReport(findReport(dashboardReportDetails.getReportUUID()));
                 return dRep;
             });
 
         // Update the properties of the dashboard report
-        dashboardReport.setReport(findReport(dashboardReportDetails.getReportUUID()));
+        dashboardReport.setContainerWidthPx(dashboardReportDetails.getContainerWidthPx());
         dashboardReport.setContainerHeightPx(dashboardReportDetails.getContainerHeightPx());
         dashboardReport.setContainerName(dashboardReportDetails.getContainerName());
+        dashboardReport.setRowNumber(dashboardReportDetails.getRowNumber());
+        dashboardReport.setColumnNumber(dashboardReportDetails.getColumnNumber());
 
         // Save the dashboard report and get a reference to the saved entity
-        final AcctDashboardReport persistedDashboardReport =
-            dataService.saveDashboardReport(dashboardReport);
+        dataService.saveDashboardReport(dashboardReport);
 
         // Find any existing dashboard report filters for the dashboard report
         final Set<AcctDashboardReportFilter> dashboardReportFilters =
@@ -349,6 +356,41 @@ public class AcctReportingService {
         // Save the updated and created dashboard report filters
         dashboardReportFiltersToBeUpdated.forEach(dataService::saveDashboardReportFilter);
         dashboardReportFiltersToBeCreated.forEach(dataService::saveDashboardReportFilter);
+    }
+
+    @Transactional
+    public void deleteDashboardReport(
+        String workspaceUUID,
+        String dashboardUUID,
+        String reportUUID,
+        String userUUID,
+        Collection<String> privilegeNames
+    ) {
+        // Find the dashboard while verifying that the user may access the dashboard
+        final AcctDashboard dashboard =
+            findDashboardInWorkspaceWithOwnershipValidation(
+                workspaceUUID,
+                dashboardUUID,
+                userUUID,
+                privilegeNames,
+                DASHBOARDS_SAVE_GROUP
+            );
+
+        // Find the dashboard report
+        final AcctDashboardReport dashboardReport =
+            dataService.findDashboardReportByDashboardAndReportUUID(
+                dashboard,
+                reportUUID
+            ).orElseThrow(() ->
+                new AcctReportingServiceNotFoundException(
+                    errors,
+                    DASHBOARD_REPORT,
+                    reportUUID
+                )
+            );
+
+        // Delete the dashboard report
+        dataService.deleteDashboardReport(dashboardReport);
     }
 
     /**
@@ -898,6 +940,7 @@ public class AcctReportingService {
                             .withReportCategoryColumnName(dashboardReport.getReport().getReportCategoryColumnName())
                             .withRowNumber(dashboardReport.getRowNumber())
                             .withColumnNumber(dashboardReport.getColumnNumber())
+                            .withContainerWidthPx(dashboardReport.getContainerWidthPx())
                             .withContainerHeightPx(dashboardReport.getContainerHeightPx())
                             .withContainerName(dashboardReport.getContainerName());
 
@@ -915,6 +958,20 @@ public class AcctReportingService {
                     return builder.build();
                 })
                 .collect(toSet());
+    }
+
+    private AcctDashboard findDashboardInWorkspaceWithOwnershipValidation(
+        String workspaceUUID,
+        String dashboardUUID,
+        String userUUID,
+        Collection<String> privilegeNames,
+        String requiredPrivilegeName
+    ) {
+        // Verify that the user may access the dashboard
+        verifyDashboardOwnership(userUUID, dashboardUUID, privilegeNames, requiredPrivilegeName);
+
+        // Find the dashboard
+        return findDashboard(workspaceUUID, dashboardUUID);
     }
 
     private void verifyDashboardOwnership(

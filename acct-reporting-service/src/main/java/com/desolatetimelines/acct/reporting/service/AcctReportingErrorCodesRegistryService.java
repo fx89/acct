@@ -12,6 +12,7 @@ public class AcctReportingErrorCodesRegistryService extends AbstractErrorCodesRe
     public String RESOURCE_NOT_FOUND_REPORT;
     public String SECURITY_INACCESSIBLE_DASHBOARD;
     public String SECURITY_INACCESSIBLE_REPORT;
+    public String SECURITY_INACCESSIBLE_DASHBOARD_REPORT;
     public String DATA_PROVIDER_INSTANCE_PROPERTY_NOT_SUPPLIED;
 
     protected AcctReportingErrorCodesRegistryService() {
@@ -64,6 +65,13 @@ public class AcctReportingErrorCodesRegistryService extends AbstractErrorCodesRe
                 CAT_NAME_SECURITY,
                 "Report-related operation not allowed",
                 "A user is attempting to run a report-related operation that is not permitted"
+            );
+
+        SECURITY_INACCESSIBLE_DASHBOARD_REPORT =
+            resolveErrorCode(
+                CAT_NAME_SECURITY,
+                "Dashboard report-related operation not allowed",
+                "A user is attempting to run a dashboard report-related operation that is not permitted"
             );
 
         DATA_PROVIDER_INSTANCE_PROPERTY_NOT_SUPPLIED =

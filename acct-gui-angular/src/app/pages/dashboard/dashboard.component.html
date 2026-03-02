@@ -1,95 +1,281 @@
-<app-items-manager
-    width="calc(100% - 15px)"
-    height="calc(100vh - 140px)"
-    cardWidth="calc(390px)"
-    cardHeight="60px"
-    addDialogWidth="480px"
-    addDialogHeight="500px"
-    [dataSetProducer]="this.dashboardsListProducer"
-    [cardImageRefExtractor]="this.dashboardCardImageRefExtractor"
-    [cardTitleExtractor]="this.dashboardCardTitleExtractor"
-    [cardTextExtractor]="this.dashboardCardTextExtractor"
-    [itemDeletionConsumer]="this.dashboardDeletionConsumer"
-    [newItemSupplier]="this.newDashboardSupplier"
-    [itemSavingConsumer]="this.dashboardSavingConsumer"
-    [itemPropertiesValidator]="this.dashboardValidator"
-    [(selection)]="this.dashboardsListSelectedItem"
-    [floatingCards]="true"
-    [canEdit]="true"
-    [additionalAction]="this.dashboardLoadAction"
-    additionalActionText="Load"
-    additionalActionButtonWidth="60px"
-    additionalActionButtonColor="blue"
-    [actionButtonIcons]="true"
-    [floatingCards]="true"
->
-    <ng-template itemsManagerNewItemForm let-item="item">
-        <table>
-            <tr>
-                <td>
-                    Dashboard name
-                </td>
-                <td style="width:10px;"></td>
-                <td>
-                    <app-input
-                        [(value)]="item.dashboardName"
-                        width="300px"
-                        height="30px"
-                        hint="Dashboard name"
-                    ></app-input>
-                </td>
-            </tr><tr>
-                <td>
-                    Dashboard description
-                </td>
-                <td></td>
-                <td>
-                    <app-input
-                        [(value)]="item.dashboardDescription"
-                        width="300px"
-                        height="30px"
-                        hint="Dashboard description"
-                    ></app-input>
-                </td>
-            </tr><tr>
-                <td>
-                    Icon
-                </td>
-                <td></td>
-                <td>
-                    <app-button
-                        value='Choose icon'
-                        textAlign="center"
-                        (onClick)="onChooseDashboardIconClick()"
-                        color="blue"
-                        width="300px"
-                        height="30px"
-                    ></app-button>
-                    <img
-                        style="width:300px;height:250px;background-color:#000;background-size:contain;"
-                        [src]="item.imageData"
-                    >
-                </td>
-            </tr>
-        </table>
-    </ng-template>
-</app-items-manager>
+<!-- If a dashboard has been loaded, then display the loaded dashboard -->
+@if (this.isDashboardLoaded()) {
+    <!-- The reports grid -->
+    @if (this.loadedDashboard?.reports) {
+        @for(reportsColumn of this.loadedDashboard?.reports; track reportsColumn) {
+            <!-- Columns should coalesce if the viewport is not wide enough -->
+            <div style="float:left;">
+                @for(report of reportsColumn; track report) {
+                    <!-- There should be some space in between the report panels -->
+                    <div style="padding:5px">
+                        @if(report) {
+                            <app-panel
+                                [title]="report.dashboardReport.containerName"
+                                [width]="report.dashboardReport.containerWidthPx + 'px'"
+                                [height]="'calc(' + report.dashboardReport.containerHeightPx + 'px + 20px)'"
+                            >
+                                @if(report.dashboardReportDataSet) {
+                                    <app-report-viewer
+                                        [width]="'calc(' + report.dashboardReport.containerWidthPx + 'px)'"
+                                        [height]="'calc(' + report.dashboardReport.containerHeightPx + 'px - 40px)'"
+                                        [reportProperties]="this.castAsReportProperties(report.dashboardReport)"
+                                        [dataSet]="report.dashboardReportDataSet"
+                                    ></app-report-viewer>
+                                }
+                            </app-panel>
+                        }
+                    </div>
+                }
+            </div>
+            
+        }
+    }
 
-<!-- The income or expense item icon chooser -->
-<app-dialog
-  title="Select an existing icon or add a new one"
-  width="700px"
-  height="500px"
-  [visible]="this.dashboardIconChooserVisible"
->
-    <app-icons-manager
-        width="100%"
-        height="450px"
-        iconWidth="190px"
-        iconHeight="190px"
-        [allowUpload]="true"
-        [allowDelete]="false"
-        [pageSize]="9"
-        (selectionChange)="this.onDashboardIconSelected($event)"
-    ></app-icons-manager>
-</app-dialog>
+    <!-- The back button -->
+     <div style="position:fixed; left:10px; bottom:10px;">
+        <app-button
+            value='Back'
+            textAlign="left"
+            icon="button-icons/back.png"
+            (onClick)="onBackButtonClick()"
+            width="80px"
+            height="30px"
+            color="gray"
+            [enabled]="true"
+        ></app-button>
+    </div>
+
+    <!-- The layout editor activation button -->
+     <div style="position:fixed; right:10px; bottom:10px;">
+        <app-button
+            value='Edit'
+            textAlign="left"
+            icon="button-icons/edit.png"
+            (onClick)="onLayoutEditorActivationButtonClick()"
+            width="80px"
+            height="30px"
+            color="blue"
+            [enabled]="true"
+        ></app-button>
+    </div>
+
+    <!-- The layout editor dialog -->
+    <app-dialog
+        title="Edit layout"
+        [width]="'400px'"
+        [height]="'400px'"
+        [(visible)]="this.layoutEditorDialogVisible"
+        [closeButton]="true"
+    >
+        <!-- The dashboard reports manager -->
+        <app-items-manager
+            width="calc(100% - 15px)"
+            height="calc(350px)"
+            cardWidth="calc(100% - 25px)"
+            cardHeight="40px"
+            addDialogWidth="630px"
+            addDialogHeight="300px"
+            [dataSetProducer]="this.dashboardReportsListProducer"
+            [cardTitleExtractor]="this.dashboardReportCardTitleExtractor"
+            [cardTextExtractor]="this.dashboardReportCardTextExtractor"
+            [itemDeletionConsumer]="this.dashboardReportDeletionConsumer"
+            [newItemSupplier]="this.newDashboardReportSupplier"
+            [itemSavingConsumer]="this.dashboardReportSavingConsumer"
+            [itemPropertiesValidator]="this.dashboardReportValidator"
+            [(selection)]="this.dashboardReportsListSelectedItem"
+            [editedItemTransformingMapper]="this.dashboardReportsListSelectedItemTransformingMapper"
+            [canEdit]="true"
+            [floatingCards]="false"
+            [forceReloadEventEmitter]="dashboardReportsListForceLoadEventEmitter"
+        >
+            <ng-template itemsManagerNewItemForm let-item="item">
+                <table>
+                    <tr>
+                        <td>
+                            Container name name
+                        </td>
+                        <td style="width:10px;"></td>
+                        <td>
+                            <app-input
+                                [(value)]="item.containerName"
+                                width="450px"
+                                height="30px"
+                                hint="Container name"
+                            ></app-input>
+                        </td>
+                    </tr><tr>
+                        <td>
+                            Container width (px)
+                        </td>
+                        <td style="width:10px;"></td>
+                        <td>
+                            <app-input
+                                [(value)]="item.containerWidthPx"
+                                width="450px"
+                                height="30px"
+                                hint="200"
+                            ></app-input>
+                        </td>
+                    </tr><tr>
+                        <td>
+                            Container height (px)
+                        </td>
+                        <td style="width:10px;"></td>
+                        <td>
+                            <app-input
+                                [(value)]="item.containerHeightPx"
+                                width="450px"
+                                height="30px"
+                                hint="200"
+                            ></app-input>
+                        </td>
+                    </tr><tr>
+                        <td>
+                            Row number
+                        </td>
+                        <td style="width:10px;"></td>
+                        <td>
+                            <app-spinbox
+                                [(value)]="item.rowNumber"
+                                width="425px"
+                                height="25px"
+                                [minValue]="0"
+                                [maxValue]="3000"
+                            ></app-spinbox>
+                        </td>
+                    </tr><tr>
+                        <td>
+                            Column number
+                        </td>
+                        <td style="width:10px;"></td>
+                        <td>
+                            <app-spinbox
+                                [(value)]="item.columnNumber"
+                                width="425px"
+                                height="25px"
+                                [minValue]="0"
+                                [maxValue]="3000"
+                            ></app-spinbox>
+                        </td>
+                    </tr>
+                    @if (isNewDashboardReport(item)) {
+                        <tr>
+                            <td>
+                                Report
+                            </td>
+                            <td style="width:10px;"></td>
+                            <td>
+                                <app-select
+                                    width="430px"
+                                    [options]="this.reportCards"
+                                    [(selectedOption)]="this.selectedReportCard"
+                                    (selectedOptionChange)="this.onReportCardSelected($event)"
+                                ></app-select>  
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </ng-template>
+        </app-items-manager>
+    </app-dialog>
+}
+
+
+<!-- If a dashboard has not been loaded, then display the dashboards manager -->
+@else {
+    <!-- The dashboards manager -->
+    <app-items-manager
+        width="calc(100% - 15px)"
+        height="calc(100vh - 140px)"
+        cardWidth="calc(390px)"
+        cardHeight="60px"
+        addDialogWidth="480px"
+        addDialogHeight="500px"
+        [dataSetProducer]="this.dashboardsListProducer"
+        [cardImageRefExtractor]="this.dashboardCardImageRefExtractor"
+        [cardTitleExtractor]="this.dashboardCardTitleExtractor"
+        [cardTextExtractor]="this.dashboardCardTextExtractor"
+        [itemDeletionConsumer]="this.dashboardDeletionConsumer"
+        [newItemSupplier]="this.newDashboardSupplier"
+        [itemSavingConsumer]="this.dashboardSavingConsumer"
+        [itemPropertiesValidator]="this.dashboardValidator"
+        [(selection)]="this.dashboardsListSelectedItem"
+        [floatingCards]="true"
+        [canEdit]="true"
+        [additionalAction]="this.dashboardLoadAction"
+        additionalActionText="Load"
+        additionalActionButtonWidth="60px"
+        additionalActionButtonColor="blue"
+        [actionButtonIcons]="true"
+    >
+        <ng-template itemsManagerNewItemForm let-item="item">
+            <table>
+                <tr>
+                    <td>
+                        Dashboard name
+                    </td>
+                    <td style="width:10px;"></td>
+                    <td>
+                        <app-input
+                            [(value)]="item.dashboardName"
+                            width="300px"
+                            height="30px"
+                            hint="Dashboard name"
+                        ></app-input>
+                    </td>
+                </tr><tr>
+                    <td>
+                        Dashboard description
+                    </td>
+                    <td></td>
+                    <td>
+                        <app-input
+                            [(value)]="item.dashboardDescription"
+                            width="300px"
+                            height="30px"
+                            hint="Dashboard description"
+                        ></app-input>
+                    </td>
+                </tr><tr>
+                    <td>
+                        Icon
+                    </td>
+                    <td></td>
+                    <td>
+                        <app-button
+                            value='Choose icon'
+                            textAlign="center"
+                            (onClick)="onChooseDashboardIconClick()"
+                            color="blue"
+                            width="300px"
+                            height="30px"
+                        ></app-button>
+                        <img
+                            style="width:300px;height:250px;background-color:#000;background-size:contain;"
+                            [src]="item.imageData"
+                        >
+                    </td>
+                </tr>
+            </table>
+        </ng-template>
+    </app-items-manager>
+
+    <!-- The dashboard icon chooser -->
+    <app-dialog
+    title="Select an existing icon or add a new one"
+    width="700px"
+    height="500px"
+    [visible]="this.dashboardIconChooserVisible"
+    >
+        <app-icons-manager
+            width="100%"
+            height="450px"
+            iconWidth="190px"
+            iconHeight="190px"
+            [allowUpload]="true"
+            [allowDelete]="false"
+            [pageSize]="9"
+            (selectionChange)="this.onDashboardIconSelected($event)"
+        ></app-icons-manager>
+    </app-dialog>
+}

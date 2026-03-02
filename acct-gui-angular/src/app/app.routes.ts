@@ -90,16 +90,6 @@ export const routes: Routes = [
         }
     },
     {
-        path: 'currency-history',
-        component: CurrencyHistoryComponent,
-        data: {
-            menuItem: {
-                text: "Currency history",
-                imageRef: "menu-icons/currency-history.png"
-            }
-        }
-    },
-    {
         path: 'catalog',
         component: CatalogComponent,
         data: {

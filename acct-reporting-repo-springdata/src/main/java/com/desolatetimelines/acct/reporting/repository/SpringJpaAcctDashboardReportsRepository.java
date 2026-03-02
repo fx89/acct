@@ -43,17 +43,15 @@ public class SpringJpaAcctDashboardReportsRepository implements AcctDashboardRep
     }
 
     @Override
-    public Optional<AcctDashboardReport> findFirstByDashboardAndRowNumberAndColumnNumber(
+    public Optional<AcctDashboardReport> findFirstByDashboardAndReportUUID(
         AcctDashboard dashboard,
-        Integer rowNumber,
-        Integer columnNumber
+        String reportUUID
     ) {
         return
             jpaAcctDashboardReportsRepository
-                .findFirstByDashboardAndRowNumberAndColumnNumber(
+                .findFirstByDashboardAndReportReportUUID(
                     doWithJpaAcctDashboardReturning(dashboard, identity()),
-                    rowNumber,
-                    columnNumber
+                    reportUUID
                 )
                 .map(identity());
     }

@@ -44,8 +44,11 @@ export class SpinboxComponent {
 
 
   ngOnInit() : void {
-    this.currentValue = this.applyValueConstraints(this.value())
-    
+    this.currentValue = this.applyValueConstraints(this.value()) 
+  }
+
+  ngOnChanges() : void {
+    this.currentValue = this.applyValueConstraints(this.value()) 
   }
 
   applyValueConstraints(value: number) : number {

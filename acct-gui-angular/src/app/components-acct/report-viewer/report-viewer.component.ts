@@ -76,8 +76,10 @@ export class ReportViewerComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(): void {
-    this.rebuildCache()
-    setTimeout(() => this.dataTableReloadTrigger.emit(), 100)
+    setTimeout(() => {
+      this.rebuildCache()
+      setTimeout(() => this.dataTableReloadTrigger.emit(), 50)
+    }, 50)
   }
 
   private rebuildCache() : void {

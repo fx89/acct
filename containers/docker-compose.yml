@@ -324,3 +324,25 @@ services:
       - currency-postgres
     links:
       - currency-postgres
+
+  reporting-service:
+    <<: *serviceAcctServiceConfig
+    build:
+      context: ../
+      dockerfile: containers/generic-app.docker
+      args:
+        - ACCT_VERSION=${ACCT_VERSION}
+        - ACCT_MODULE_NAME=acct-reporting-ws-server
+        - DOCKER_ECLIPSE_TEMURIN_IMAGE_VERSION=${DOCKER_ECLIPSE_TEMURIN_IMAGE_VERSION}
+    image: acct-reporting-ws-server:${ACCT_VERSION}
+    hostname: reporting-service
+    ports:
+      - ${REPORTING_SERVER_PORT}:${REPORTING_SERVER_PORT}
+    depends_on:
+      - eureka-service
+      - authorization-service
+      - usage-service
+      - jobs-service
+      - reporting-postgres
+    links:
+      - reporting-postgres

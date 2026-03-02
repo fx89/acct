@@ -12,6 +12,7 @@ public class DashboardReportDetails {
     private final Integer rowNumber;
     private final Integer columnNumber;
     private final String containerName;
+    private final Integer containerWidthPx;
     private final Integer containerHeightPx;
     private final Map<String, String> filters;
 
@@ -20,6 +21,7 @@ public class DashboardReportDetails {
         Integer rowNumber,
         Integer columnNumber,
         String containerName,
+        Integer containerWidthPx,
         Integer containerHeightPx,
         Map<String, String> filters
     ) {
@@ -27,6 +29,7 @@ public class DashboardReportDetails {
         this.rowNumber = rowNumber;
         this.columnNumber = columnNumber;
         this.containerName = containerName;
+        this.containerWidthPx = containerWidthPx;
         this.containerHeightPx = containerHeightPx;
         this.filters = filters;
     }
@@ -45,6 +48,10 @@ public class DashboardReportDetails {
 
     public String getContainerName() {
         return containerName;
+    }
+
+    public Integer getContainerWidthPx() {
+        return containerWidthPx;
     }
 
     public Integer getContainerHeightPx() {
@@ -76,6 +83,7 @@ public class DashboardReportDetails {
         private Integer rowNumber;
         private Integer columnNumber;
         private String containerName;
+        private Integer containerWidthPx;
         private Integer containerHeightPx;
         private final Map<String, String> filters = new HashMap<>();
 
@@ -96,6 +104,11 @@ public class DashboardReportDetails {
 
         public DashboardReportDetailsBuilder withContainerName(String containerName) {
             this.containerName = containerName;
+            return this;
+        }
+
+        public DashboardReportDetailsBuilder withContainerWidthPx(Integer containerWidthPx) {
+            this.containerWidthPx = containerWidthPx;
             return this;
         }
 
@@ -137,6 +150,10 @@ public class DashboardReportDetails {
                 throw new IllegalArgumentException("The column number must be positive");
             }
 
+            if (containerWidthPx <= 0) {
+                throw new IllegalArgumentException("The container width must be positive");
+            }
+
             if (containerHeightPx <= 0) {
                 throw new IllegalArgumentException("The container height must be positive");
             }
@@ -147,6 +164,7 @@ public class DashboardReportDetails {
                     rowNumber,
                     columnNumber,
                     containerName,
+                    containerWidthPx,
                     containerHeightPx,
                     filters
                 );
