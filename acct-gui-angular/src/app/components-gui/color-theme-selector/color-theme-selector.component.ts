@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnChanges, OnInit } from '@angular/core';
 import { ColorThemesService } from '../../services-reusable/color-themes.service';
 import {v4 as uuidv4} from 'uuid';
 import { CardData } from '../cards-list/card-data';
@@ -17,7 +17,7 @@ type ColorThemeSelectorCardData = CardData & {
   templateUrl: './color-theme-selector.component.html',
   styleUrl: './color-theme-selector.component.less'
 })
-export class ColorThemeSelectorComponent {
+export class ColorThemeSelectorComponent implements OnInit {
 
   themeCards: ColorThemeSelectorCardData[] = []
 
@@ -26,10 +26,6 @@ export class ColorThemeSelectorComponent {
   public id = uuidv4()
 
   constructor(private colorThemesServices: ColorThemesService) {
-    
-  }
-
-  public ngOnInit() : void {
     this.colorThemesServices.getThemesLoadedEvent().subscribe(themes => {
       var themeIndex = 0
 
@@ -47,6 +43,10 @@ export class ColorThemeSelectorComponent {
 
       this.selectedThemeCard = this.getThemeCardByName(this.colorThemesServices.getSelectedThemeName())
     })
+  }
+
+  public ngOnInit() : void {
+    this.colorThemesServices.loadThemes()
   }
 
   private getThemeCardByName(themeCardName : string) : ColorThemeSelectorCardData | undefined {

@@ -18,24 +18,28 @@ export class ColorThemesService {
   themesLoadedEvent : EventEmitter<Theme[]> = new EventEmitter<Theme[]>()
 
   constructor(private http: HttpClient) { 
+    this.loadThemes()
+  }
+
+  public loadThemes() : void {
     // Begin loading the themes index
     this.http.get(THEMES_BASE_PATH + '/_index.json')
-    // When done loading:
-    .subscribe(res => {
-      // Assign the loaded themes object for future use
-      this.themes = <Theme[]> res;
+      // When done loading:
+      .subscribe(res => {
+        // Assign the loaded themes object for future use
+        this.themes = <Theme[]> res;
 
-      // Load the themes into the head element
-      for (let themeName in this.themes) {
-        this.loadThemeFile(this.themes[themeName].file)
-      }
+        // Load the themes into the head element
+        for (let themeName in this.themes) {
+          this.loadThemeFile(this.themes[themeName].file)
+        }
 
-      // Assign the selected theme or, if none selected, assign the first loaded theme
-      this.setTheme(this.resolveUserThemeName())
+        // Assign the selected theme or, if none selected, assign the first loaded theme
+        this.setTheme(this.resolveUserThemeName())
 
-      // Emit the "themes loaded" event
-      this.themesLoadedEvent.emit(this.themes)
-    });
+        // Emit the "themes loaded" event
+        this.themesLoadedEvent.emit(this.themes)
+      });
   }
 
   /**

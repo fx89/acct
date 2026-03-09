@@ -1,5 +1,5 @@
 // TODO: BUG-00001: AcctPageInfoMapper: totalPages incorrectly computed
-// TODO: BUG-00002: ColorThemeSelectorComponent: themes list not available after switching pages
+// DONE: BUG-00002: ColorThemeSelectorComponent: themes list not available after switching pages
 // DONE: BUG-00003: Dropdown with cards list: options list contained into parent element instead of floating above
 // DONE: BUG-00004: REST APIs require authentication for preflight requests
 // DONE: BUG-00005: WorkspaceCollectionsResponse: inconsistent field names
@@ -17,3 +17,4 @@
 // DONE: BUG-00017: Income or expense items: Lists overflow the page
 // TODO: BUG-00018: Report viewer component: Chart colors not updating when the color theme is changed
 // TODO: BUG-00019: Workspace SQL reporting data provider: Security vulnerability - SQL is not limited to the accessible workspaces
+// TODO: BUG-00029: Job status remains stuck as RUNNING in the jobs registry if the job is interrupted while running.
