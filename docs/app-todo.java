@@ -90,5 +90,6 @@
  TODO: APP-09029: Catalog page: Currencies: monitored currencies: collection error display
  TODO: APP-10001: Currency extractors: ING currency collector - https://ing.ro/persoane-fizice/curs-valutar
  TODO: APP-10002: Currency extractors: Raiffeisen currency collector - https://www.raiffeisen.ro/ro.exchangerates.20250816.BASE.EUR-USD-GBP-CAD-HUF-BGN-MDL-CHF-SEK-JPY-DKK-RUB-TRY-CZK-PLN-EGP.RON.json
+ DONE: APP-20001: Color themes: Dark pink
 */
 

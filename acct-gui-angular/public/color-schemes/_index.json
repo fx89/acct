@@ -10,5 +10,11 @@
         "description": "Default dark theme",
         "icon": "color-schemes/dark.png",
         "selector": "color-theme-dark"
+    },
+    "Dark pink": {
+        "file": "dark-pink.css",
+        "description": "Dark pink theme",
+        "icon": "color-schemes/dark-pink.png",
+        "selector": "color-theme-dark-pink"
     }
 }

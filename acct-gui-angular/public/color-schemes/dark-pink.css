@@ -1,0 +1,93 @@
+.color-theme-dark-pink {
+    --modal-overlay-background-color: rgba(0,0,0,0.8);
+
+    --application-background-color: #140910;
+    --application-text-color: #d6b8c8;
+
+    --scrollbar-button-color: #7a4c63;
+    --scrollbar-background-color: #1a0e16;
+
+    --form-control-border-color: #7a4c63;
+    --form-control-border-color-editable-invalid: #ff3b6b;
+    --form-control-background-color: #3a1f2f;
+    --form-control-background-color-alt: #140910;
+    --form-control-background-color-alt-disabled: #3a1f2f;
+    --form-control-background-color-hover: #9a5f7f;
+    --form-control-background-color-editable: #0d0409;
+    --form-control-background-color-editable-disabled: #24101c;
+    --form-control-text-color-enabled: #f0d6e4;
+    --form-control-text-color-disabled: #9a6f85;
+    --form-control-text-color-editable: #fff2f8;
+    --form-control-text-color-editable-hint: #7a4c63;
+    --form-control-text-color-hover: #ffffff;
+    --form-control-text-color-status-message: #7a4c63;
+
+    --card-background-color: #2c1624;
+    --card-background-color-hover: #3a1f2f;
+    --card-background-color-selected: #4a273b;
+    --card-background-color-selected-hover: #5b3149;
+
+    --separator-color: #5a3347;
+    --title-color: #fff0f7;
+    --shadow-color: #000;
+
+    --panel-border-color: #24101c;
+    --panel-background-color: #1a0e16;
+
+    --red-background-color: #c2185b;
+    --red-background-color-hover: #ff5c8a;
+    --red-text-color: #fff;
+
+    --green-background-color: #4a8a6b;
+    --green-background-color-hover: #5fd69c;
+    --green-text-color: #fff;
+
+    --blue-background-color: #c03a8a;
+    --blue-background-color-hover: #ff6bb5;
+    --blue-text-color: #fff;
+
+    --flash-background-color: #d6a3bb;
+    --flash-text-color: #200010;
+
+    --table-odd-row-backgroun-color: rgba(40, 15, 30, 0.3);
+    --table-even-row-backgroun-color: rgba(70, 25, 50, 0.3);
+    --table-body-text-color: #c79bb1;
+
+    --green-font-color: #8fd6b2;
+    --red-font-color: #e37a9a;
+
+    --chart-legend-color: #c79bb1;
+    --chart-grid-color: #24101c;
+    --chart-axis-line-color: #b7859f;
+    --chart-axis-label-color: #c79bb1;
+
+    --chart-series-0-color: #ff4da6;
+    --chart-series-0-border-color: #b30059;
+
+    --chart-series-1-color: #ff80bf;
+    --chart-series-1-border-color: #cc3385;
+
+    --chart-series-2-color: #ffb347;
+    --chart-series-2-border-color: #b37400;
+
+    --chart-series-3-color: #ffe066;
+    --chart-series-3-border-color: #ccac00;
+
+    --chart-series-4-color: #ff3b6b;
+    --chart-series-4-border-color: #992040;
+
+    --chart-series-5-color: #cc0066;
+    --chart-series-5-border-color: #660033;
+
+    --chart-series-6-color: #66cc88;
+    --chart-series-6-border-color: #3d8055;
+
+    --chart-series-7-color: #99ffcc;
+    --chart-series-7-border-color: #2f805a;
+
+    --chart-series-8-color: #e6ccd8;
+    --chart-series-8-border-color: #b399a8;
+
+    --chart-series-9-color: #a36b87;
+    --chart-series-9-border-color: #5c3749;
+}
