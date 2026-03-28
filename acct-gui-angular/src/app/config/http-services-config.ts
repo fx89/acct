@@ -3,12 +3,31 @@ import { HttpConnectorBaseURLsResolver } from '../services-reusable/http-connect
 import { Router } from '@angular/router'
 import { HttpClientWrapperMethodlessRequest } from '../services-reusable/http-client-wrapper.service'
 
+type BackendServiceConfig = {
+    urls: string[]
+}
+
+type BackendServicesConfig = {
+    authorizationService: BackendServiceConfig,
+    userManagementService: BackendServiceConfig,
+    securityService: BackendServiceConfig,
+    workspaceService: BackendServiceConfig,
+    catalogService: BackendServiceConfig,
+    currencyService: BackendServiceConfig,
+    reportingService: BackendServiceConfig
+}
+
+function loadBackendServicesConfig() : BackendServicesConfig {
+    return <BackendServicesConfig><any>(JSON.parse(<string>document.head.getAttribute("BACKEND_SERVICES_CONFIG")))
+}
+
 /**
  * Provides the base URLs for the authorization service.
  */
 class AcctAuthorizationServiceUrlResolver implements HttpConnectorBaseURLsResolver {
     resolveBaseURLs(): string | string[] {
-        return "http://localhost:9001"
+        const config = loadBackendServicesConfig()
+        return config?.authorizationService?.urls
     }
 }
 
@@ -17,7 +36,8 @@ class AcctAuthorizationServiceUrlResolver implements HttpConnectorBaseURLsResolv
  */
 class AcctUserManagementServiceUrlResolver implements HttpConnectorBaseURLsResolver {
     resolveBaseURLs(): string | string[] {
-        return "http://localhost:8081"
+        const config = loadBackendServicesConfig()
+        return config?.userManagementService?.urls
     }
 }
 
@@ -26,7 +46,8 @@ class AcctUserManagementServiceUrlResolver implements HttpConnectorBaseURLsResol
  */
 class AcctWorkspaceServiceUrlResolver implements HttpConnectorBaseURLsResolver {
     resolveBaseURLs(): string | string[] {
-        return "http://localhost:8085"
+        const config = loadBackendServicesConfig()
+        return config?.workspaceService?.urls
     }
 }
 
@@ -35,7 +56,8 @@ class AcctWorkspaceServiceUrlResolver implements HttpConnectorBaseURLsResolver {
  */
 class AcctSecurityServiceUrlResolver implements HttpConnectorBaseURLsResolver {
     resolveBaseURLs(): string | string[] {
-        return "http://localhost:8082"
+        const config = loadBackendServicesConfig()
+        return config?.securityService?.urls
     }
 }
 
@@ -44,7 +66,8 @@ class AcctSecurityServiceUrlResolver implements HttpConnectorBaseURLsResolver {
  */
 class AcctCatalogServiceUrlResolver implements HttpConnectorBaseURLsResolver {
     resolveBaseURLs(): string | string[] {
-        return "http://localhost:8086"
+        const config = loadBackendServicesConfig()
+        return config?.catalogService?.urls
     }
 }
 
@@ -53,7 +76,8 @@ class AcctCatalogServiceUrlResolver implements HttpConnectorBaseURLsResolver {
  */
 class AcctCurrencyServiceUrlResolver implements HttpConnectorBaseURLsResolver {
     resolveBaseURLs(): string | string[] {
-        return "http://localhost:8087"
+        const config = loadBackendServicesConfig()
+        return config?.currencyService?.urls
     }
 }
 
@@ -62,7 +86,8 @@ class AcctCurrencyServiceUrlResolver implements HttpConnectorBaseURLsResolver {
  */
 class AcctReportingServiceUrlResolver implements HttpConnectorBaseURLsResolver {
     resolveBaseURLs(): string | string[] {
-        return "http://localhost:8088"
+        const config = loadBackendServicesConfig()
+        return config?.reportingService?.urls
     }
 }
 
