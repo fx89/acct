@@ -1,0 +1,10 @@
+# The base image
+ARG DOCKER_NGINX_IMAGE_VERSION
+FROM nginx:${DOCKER_NGINX_IMAGE_VERSION}
+
+# The static content to be served
+COPY acct-gui-angular/dist/acct-gui-angular/browser /usr/share/nginx/html
+
+# The config directory is externalized to a volume so that the configuration may be changed on each specific environment
+RUN rm -rf /usr/share/nginx/html/config
+
