@@ -5,7 +5,7 @@ import com.desolatetimelines.acct.catalog.service.AcctCatalogErrorCodesRegistryS
 import java.util.Collection;
 import java.util.Map;
 
-import static org.apache.commons.lang.StringUtils.join;
+import static org.apache.commons.lang3.StringUtils.join;
 
 /**
  * Exception thrown by the {@link com.desolatetimelines.acct.catalog.service.AcctCatalogService catalog service}
