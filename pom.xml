@@ -157,6 +157,7 @@
         <module>acct-currency-collector-spec</module>
         <module>acct-currency-collector-ro-bcr</module>
         <module>acct-currency-collector-ro-bnr</module>
+        <module>acct-currency-collector-ro-rzb</module>
         <module>acct-currency-job</module>
 
         <!-- Project-specific reusable dependencies -->
