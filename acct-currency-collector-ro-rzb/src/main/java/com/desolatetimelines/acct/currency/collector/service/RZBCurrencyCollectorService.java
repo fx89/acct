@@ -88,7 +88,7 @@ public class RZBCurrencyCollectorService implements CurrencyCollectorService<RZB
                     "https://www.raiffeisen.ro/ro.exchangerates" +
                         "." + yyyyMmDdDateFormat.format(new Date()) +
                         ".BASE" +
-                        ".EUR-USD-GBP-CAD-HUF-MDL-CHF-SEK-JPY-DKK-RUB-TRY-CZK-PLN-EGP.RON" +
+                        ".EUR-USD-GBP-CAD-HUF-MDL-CHF-SEK-JPY-DKK-RUB-TRY-CZK-PLN-EGP.RON.TARGET" +
                         ".json"
                 )
                 .build()
